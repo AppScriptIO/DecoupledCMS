@@ -2,8 +2,10 @@ import configuration from 'configuration/configuration.export.js' // Load config
 import Koa from 'koa' // Koa applicaiton server
 import compose from 'koa-compose'
 import rethinkdbConfig from 'configuration/rethinkdbConfig.js'
-import _ from 'underscore'
+import _ from '../../../node_modules/underscore' // To affect changes of _ to the main app.
 const EventEmitter = require('events')
+// import { connect } from '../database/commonDatabaseFunctionality.js'
+// import getDatabaseTableDocument from 'database/query/getDatabaseTableDocument.query.js'
 
 const self = class Application extends EventEmitter {
 
@@ -27,18 +29,9 @@ const self = class Application extends EventEmitter {
         // ]
     }
 
-    static initialize(staticSubclassArray) { // One-time initialization of Applicaiton Class.
+    static async initialize(staticSubclassArray) { // One-time initialization of Applicaiton Class.
         console.info(`☕%c Running Application as ${self.config.DEPLOYMENT} - '${self.config.PROTOCOL}${self.config.HOST}'`, self.config.style.green)
-        self.eventEmitter = new self()
-        self.frontend = { // Configurations passed to frontend 
-            config: self.config,
-            setting: {
-                location: {
-                    routeBasePath: `${self.config.PROTOCOL}${self.config.HOST}`
-                }
-            },
-            route: 'route',
-            document: [
+        const documentData = [
                 {
                     key: 'registration-single',
                     layout: 'webapp-layout-toolbar',
@@ -136,17 +129,29 @@ const self = class Application extends EventEmitter {
                     }
                 },
                 
-            ],
+            ];
+        self.eventEmitter = new self()
+        self.frontend = { // Configurations passed to frontend 
+            config: self.config,
+            setting: {
+                location: {
+                    routeBasePath: `${self.config.PROTOCOL}${self.config.HOST}`
+                }
+            },
+            route: 'route',
+            document: documentData,
         }
-        staticSubclassArray.map((subclass) => {
-            self.registerStaticSubclass(subclass)
-        })
-
         _.templateSettings = { // initial underscore template settings on first import gets applied on the rest.
             evaluate: /\{\%(.+?)\%\}/g,
             interpolate: /\{\%=(.+?)\%\}/g,
             escape: /\{\%-(.+?)\%\}/g
         };
+        self.addSubclass(staticSubclassArray)
+    }
+    static addSubclass(staticSubclassArray) {
+        staticSubclassArray.map((subclass) => {
+            self.registerStaticSubclass(subclass)
+        })
     }
     constructor(skipConstructor = false) {
         super();
