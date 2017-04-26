@@ -1,6 +1,6 @@
 import Unit from './Unit.class.js'
-import getCondition from 'database/query/getCondition.query.js'
-import getValueReturningFile from 'database/query/getValueReturningFile.query.js'
+import getCondition from '../database/query/getCondition.query.js'
+import getValueReturningFile from '../database/query/getValueReturningFile.query.js'
 
 const self = class Condition extends Unit {
 

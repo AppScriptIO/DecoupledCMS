@@ -1,16 +1,17 @@
-import rethinkdbConfig from 'configuration/rethinkdbConfig.js'
+import rethinkdbConfig from '../configuration/rethinkdbConfig.js'
 import r from 'rethinkdb'
 import _ from 'underscore'
 import Application from '../class/Application.class.js'
 
 export function handleConnection() {
     return async (context, next) => {
-        context.rethinkdbConnection = await connect()
-        Application.rethinkdbConnection = await context.rethinkdbConnection
+        // context.rethinkdbConnection = await connect()
+        // Application.rethinkdbConnection = await context.rethinkdbConnection
+        context.rethinkdbConnection = Application.rethinkdbConnection
         await next() // Execute database-dependent middleware
-        context.rethinkdbConnection.close().then(() => { // Close connection
-            console.log('SZN - Rethinkdb database - connection closed')
-        })
+        // context.rethinkdbConnection.close().then(() => { // Close connection
+        //     console.log('SZN - Rethinkdb database - connection closed')
+        // })
     }
 }
 
@@ -58,6 +59,7 @@ export async function connect() {
             port: rethinkdbConfig.port, 
             db: rethinkdbConfig.database 
         })
+    console.info(`☕Connected to RethinkDB.`)
     return connection
 }
 

@@ -1,11 +1,11 @@
-import configuration from 'configuration/configuration.export.js' // Load configuration settings.
+import configuration from '../configuration/configuration.export.js' // Load configuration settings.
 import Koa from 'koa' // Koa applicaiton server
 import compose from 'koa-compose'
-import rethinkdbConfig from 'configuration/rethinkdbConfig.js'
+import rethinkdbConfig from '../configuration/rethinkdbConfig.js'
 import _ from '../../../node_modules/underscore' // To affect changes of _ to the main app.
 const EventEmitter = require('events')
-// import { connect } from '../database/commonDatabaseFunctionality.js'
-// import getDatabaseTableDocument from 'database/query/getDatabaseTableDocument.query.js'
+import { connect } from '../database/commonDatabaseFunctionality.js'
+import getDatabaseTableDocument from '../database/query/getDatabaseTableDocument.query.js'
 
 const self = class Application extends EventEmitter {
 
@@ -31,105 +31,8 @@ const self = class Application extends EventEmitter {
 
     static async initialize(staticSubclassArray) { // One-time initialization of Applicaiton Class.
         console.info(`☕%c Running Application as ${self.config.DEPLOYMENT} - '${self.config.PROTOCOL}${self.config.HOST}'`, self.config.style.green)
-        const documentData = [
-                {
-                    key: 'registration-single',
-                    layout: 'webapp-layout-toolbar',
-                    page: {
-                        selectorName: 'registration-single',
-                        file: 'registration-single.html'
-                    }
-                },
-                {
-                    key: 'registration-agency',
-                    layout: 'webapp-layout-toolbar',
-                    page: {
-                        selectorName: 'registration-agency',
-                        file: 'registration-agency.html'
-                    }
-                },
-                {
-                    key: 'homePage-view3',
-                    layout: 'webapp-layout-list',
-                    page: {
-                        selectorName: 'view-view3',
-                        file: 'view-view3.html'
-                    }
-                },
-                {
-                    key: 'homePage-view404',
-                    layout: 'webapp-layout-list',
-                    page: {
-                        selectorName: 'view-view404',
-                        file: 'view-view404.html'
-                    }
-                },
-                {
-                    key: 'universityPage',
-                    layout: 'webapp-layout-toolbar',
-                    page: {
-                        selectorName: 'universityPage',
-                        file: 'view-underconstruction.html' 
-                    }
-                },
-                {
-                    key: 'studyfieldPage',
-                    layout: 'webapp-layout-toolbar',
-                    page: {
-                        selectorName: 'studyfieldPage',
-                        file: 'view-underconstruction.html' 
-                    }
-                },
-                {
-                    key: 'countryPage',
-                    layout: 'webapp-layout-toolbar',
-                    page: {
-                        selectorName: 'countryPage',
-                        file: 'view-list-item.html' 
-                    }
-                },
-                {
-                    key: 'bucharest',
-                    layout: 'webapp-layout-toolbar',
-                    page: {
-                        selectorName: 'studyfieldSingleArticle',
-                        file: 'view-article.html' 
-                    }
-                },
-                {
-                    key: 'medicine',
-                    layout: 'webapp-layout-toolbar',
-                    page: {
-                        selectorName: 'studyfieldSingleArticle',
-                        file: 'view-article.html' 
-                    }
-                },
-                {
-                    key: 'step',
-                    layout: 'webapp-layout-step',
-                    // page: {
-                    //     selectorName: 'step1',
-                    //     file: 'view-article.html' 
-                    // }
-                },
-                {
-                    key: 'frontpage',
-                    layout: 'webapp-layout-toolbar',
-                    page: {
-                        selectorName: 'frontPage',
-                        file: 'view-frontpage.html' 
-                    }
-                },
-                {
-                    key: 'about',
-                    layout: 'webapp-layout-toolbar',
-                    page: {
-                        selectorName: 'about',
-                        file: 'view-about.html' 
-                    }
-                },
-                
-            ];
+        self.rethinkdbConnection = await connect()
+        const documentData = await getDatabaseTableDocument(self.rethinkdbConnection)
         self.eventEmitter = new self()
         self.frontend = { // Configurations passed to frontend 
             config: self.config,

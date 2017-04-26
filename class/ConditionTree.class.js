@@ -1,9 +1,9 @@
 import NestedUnitImplementation from './NestedUnitImplementation.class.js'
 import Condition from './Condition.class.js'
 import r from 'rethinkdb'
-import getAllConditionTree from 'database/query/getAllConditionTree.query.js'
-import getConditionTreeQuery from 'database/query/getConditionTree.query.js'
-import promiseProperRace from 'file/utilityFunction/promiseProperRace.js'
+import getAllConditionTree from '../database/query/getAllConditionTree.query.js'
+import getConditionTreeQuery from '../database/query/getConditionTree.query.js'
+import promiseProperRace from '../utilityFunction/promiseProperRace.js'
 
 const self = class ConditionTree extends NestedUnitImplementation {
     
