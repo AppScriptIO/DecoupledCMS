@@ -1,8 +1,9 @@
 import Application from './Application.class.js'
 import commonMethod from './mixin/commonMethod.mixin.js'
 import { mix } from 'mixwith'
+import ConditionTree from './condition/ConditionTree.class.js'
 
- const self = class NestedUnitController extends Application {
+ const self = class NestedUnitController extends mix(Application).with(commonMethod) {
 
     AppInstance; // calling instance that contains the context
     instance = {
@@ -17,7 +18,6 @@ import { mix } from 'mixwith'
 
     async initializeConditionTree(conditionTreeKey, AppInstance) { // Entrypoint Instance
         this.AppInstance = AppInstance
-        const ConditionTree = self.extendedSubclass.static['ConditionTree']
         // self.debug.push(conditionTreeKey)
         let conditionTreeInstance = await ConditionTree.createInstance(this.instance.ConditionTree, conditionTreeKey, ConditionTree.getDocumentQuery)
         // [2] Check condition.

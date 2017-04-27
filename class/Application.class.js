@@ -7,6 +7,7 @@ const EventEmitter = require('events')
 import { connect } from 'appscript/utilityFunction/middleware/commonDatabaseFunctionality.js'
 import getDatabaseTableDocument from '../utilityFunction/database/query/getDatabaseTableDocument.query.js'
 import http from 'http'
+import addStaticSubclassToClassArray from './method/addStaticSubclassToClassArray.staticMethod.js'
 
 const self = class Application extends EventEmitter {
 
@@ -29,6 +30,11 @@ const self = class Application extends EventEmitter {
         //     // 'class/Condition.class.js',
         // ]
     }
+   
+    constructor(skipConstructor = false) {
+        super();
+        if(skipConstructor) return;
+    }
 
     static async initialize(staticSubclassArray) { // One-time initialization of Applicaiton Class.
         console.info(`☕%c Running Application as ${self.config.DEPLOYMENT} - '${self.config.PROTOCOL}${self.config.HOST}'`, self.config.style.green)
@@ -50,33 +56,22 @@ const self = class Application extends EventEmitter {
             interpolate: /\{\%=(.+?)\%\}/g,
             escape: /\{\%-(.+?)\%\}/g
         };
-        self.addSubclass(staticSubclassArray)
+        self.addStaticSubclassToClassArray(staticSubclassArray)
     }
-    static addSubclass(staticSubclassArray) {
-        staticSubclassArray.map((subclass) => {
-            self.registerStaticSubclass(subclass)
-        })
-    }
-    constructor(skipConstructor = false) {
-        super();
-        if(skipConstructor) return;
-    }
+
+// Used by extended subclasses:
 
     static initializeStaticClass() { // used for extended subclasses
         let self = this
         self.serverKoa = self.createKoaServer()
     }
 
-    static registerStaticSubclass(subclass) { // Get subclasses constructors and add them to WebappUI static arrray.
-        self.extendedSubclass.static[subclass.name] = subclass
-    }
-
-    createSubclassInstance() { // Create subclasses instances and add to WebappUI static array.
-        let self = this.constructor
-        self.subclassPath.asInstance.forEach((subclassPath) => {
-            let subclass = require(subclassPath)
-            self.extendedSubclass.instance[subclass.name] = new subclass()
-        }, this)
+    static async applyKoaMiddleware(middlewareArray = false) {
+        const self = this
+        if(middlewareArray) self.middlewareArray = middlewareArray
+        await self.middlewareArray.forEach((middleware) => {
+            self.serverKoa.use(middleware)
+        }, this);
     }
 
     static createKoaServer() {
@@ -93,14 +88,8 @@ const self = class Application extends EventEmitter {
             })
     }
 
-    static async applyKoaMiddleware(middlewareArray = false) {
-        const self = this
-        if(middlewareArray) self.middlewareArray = middlewareArray
-        await self.middlewareArray.forEach((middleware) => {
-            self.serverKoa.use(middleware)
-        }, this);
-    }
-
 }
+
+self.addStaticSubclassToClassArray = addStaticSubclassToClassArray
 
 export default self

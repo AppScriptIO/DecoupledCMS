@@ -1,8 +1,6 @@
 import NestedUnitController from './NestedUnitController.class.js'
-import commonMethod from './mixin/commonMethod.mixin.js'
-import { mix } from 'mixwith'
 
-const self = class NestedUnitImplementation extends mix(NestedUnitController).with(commonMethod) {
+const self = class NestedUnitImplementation extends NestedUnitController {
 
     constructor(skipConstructor = false) {
         super(true)
