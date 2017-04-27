@@ -1,7 +1,7 @@
-import rethinkdbConfig from '../configuration/rethinkdbConfig.js'
+import rethinkdbConfig from '../../configuration/rethinkdbConfig.js'
 import r from 'rethinkdb'
 import _ from 'underscore'
-import Application from '../class/Application.class.js'
+import Application from '../../class/Application.class.js'
 
 export function handleConnection() {
     return async (context, next) => {

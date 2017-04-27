@@ -4,8 +4,9 @@ import compose from 'koa-compose'
 import rethinkdbConfig from '../configuration/rethinkdbConfig.js'
 import _ from '../../../node_modules/underscore' // To affect changes of _ to the main app.
 const EventEmitter = require('events')
-import { connect } from '../database/commonDatabaseFunctionality.js'
-import getDatabaseTableDocument from '../database/query/getDatabaseTableDocument.query.js'
+import { connect } from 'appscript/utilityFunction/middleware/commonDatabaseFunctionality.js'
+import getDatabaseTableDocument from '../utilityFunction/database/query/getDatabaseTableDocument.query.js'
+import http from 'http'
 
 const self = class Application extends EventEmitter {
 
@@ -84,13 +85,21 @@ const self = class Application extends EventEmitter {
         return serverKoa
     }
 
-    static async applyKoaMiddleware() {
-        let self = this
+    static createHttpServer() {
+        const self = this
+        http.createServer(self.serverKoa.callback())
+            .listen(self.port, ()=> {
+                console.log(`☕%c ${self.name} listening on port ${self.port}`, self.config.style.green)
+            })
+    }
+
+    static async applyKoaMiddleware(middlewareArray = false) {
+        const self = this
+        if(middlewareArray) self.middlewareArray = middlewareArray
         await self.middlewareArray.forEach((middleware) => {
             self.serverKoa.use(middleware)
         }, this);
     }
-
 
 }
 
