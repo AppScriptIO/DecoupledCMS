@@ -36,7 +36,7 @@ const self = class Application extends EventEmitter {
         if(skipConstructor) return;
     }
 
-    static async initialize(staticSubclassArray) { // One-time initialization of Applicaiton Class.
+    static async initialize(staticSubclass) { // One-time initialization of Applicaiton Class.
         console.info(`☕%c Running Application as ${self.config.DEPLOYMENT} - '${self.config.PROTOCOL}${self.config.HOST}'`, self.config.style.green)
         self.rethinkdbConnection = await connect()
         const documentData = await getDatabaseTableDocument(self.rethinkdbConnection)
@@ -56,7 +56,7 @@ const self = class Application extends EventEmitter {
             interpolate: /\{\%=(.+?)\%\}/g,
             escape: /\{\%-(.+?)\%\}/g
         };
-        self.addStaticSubclassToClassArray(staticSubclassArray)
+        // if(staticSubclass) self.addStaticSubclassToClassArray(staticSubclass)
     }
 
 // Used by extended subclasses:

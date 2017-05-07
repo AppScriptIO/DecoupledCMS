@@ -1,5 +1,5 @@
-import NestedUnitImplementation from '../NestedUnitImplementation.class.js'
-import Condition from './Condition.class.js'
+const NestedUnitImplementation = require('../../reusableNestedUnit/NestedUnitImplementation.class.js').getMethodInstance()
+import Condition from 'appscript/class/condition/Condition.class.js'
 import r from 'rethinkdb'
 import getAllConditionTree from '../../utilityFunction/database/query/getAllConditionTree.query.js'
 import getConditionTreeQuery from '../../utilityFunction/database/query/getConditionTree.query.js'
@@ -7,11 +7,26 @@ import promiseProperRace from '../../utilityFunction/promiseProperRace.js'
 
 const self = class ConditionTree extends NestedUnitImplementation {
     
-    static getDocumentQuery = getConditionTreeQuery
-
     constructor(conditionTreeKey) {
         super(true)
+        this.key = conditionTreeKey
         return this
+    }
+    
+    static getDocumentQuery = getConditionTreeQuery
+    // static getDocumentQuery(connection, conditionTreeKey) {
+    //     getConditionTreeQuery(connection, conditionTreeKey)
+    // }
+
+    // static createInstance(controllerInstanceArray, dataKey, getDocumentQueryCallback) {
+    //     NestedUnitImplementation.createInstance(controllerInstanceArray, dataKey, getDocumentQueryCallback)
+    // }
+    
+    async initializeConditionTree() {
+        if(!('jsonData' in this)) { // if not already populated with data.
+            let jsonData = await self.getDocumentQuery(self.rethinkdbConnection, this.key)
+            await this.populateInstancePropertyFromJson_this(jsonData)
+        }
     }
 
     async initializeInsertionPoint(insertionPoint, conditionTreeController) {
@@ -52,6 +67,8 @@ const self = class ConditionTree extends NestedUnitImplementation {
         return callback
     } 
     
+
+
 }
 
 export default self

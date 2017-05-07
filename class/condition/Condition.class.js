@@ -1,16 +1,24 @@
-import Unit from '../Unit.class.js'
+const Unit = require('../../reusableNestedUnit/Unit.class.js').getMethodInstance()
 import getCondition from '../../utilityFunction/database/query/getCondition.query.js'
 import getValueReturningFile from '../../utilityFunction/database/query/getValueReturningFile.query.js'
 
 const self = class Condition extends Unit {
 
-    static getDocumentQuery = getCondition
+    static getDocumentQuery = getCondition;
     
     constructor(conditionKey) {
         super(true)
+        this.key = conditionKey
         return this
     }
     
+    async initializeCondition() {
+        if(!('jsonData' in this)) { // if not already populated with data.
+            let jsonData = await self.getDocumentQuery(self.rethinkdbConnection, this.key)
+            await this.populateInstancePropertyFromJson_this(jsonData)
+        }
+    }
+
     async checkCondition(AppInstance) {
         // [1] get valueReturningFile
         let valueReturningFileKey = await this.valueReturningFileKey
@@ -27,6 +35,8 @@ const self = class Condition extends Unit {
         }
         return  this.conditionResult
     }
+
+
 }
 
 export default self

@@ -1,4 +1,4 @@
-const populateInstancePropertyFromJson = require('./populateInstancePropertyFromJson.method.js')
+import { usingGenericInstance as populateInstancePropertyFromJson } from './populateInstancePropertyFromJson.method.js'
 
 /**
  * Create unit instance, query data, and populate json data to instance.
