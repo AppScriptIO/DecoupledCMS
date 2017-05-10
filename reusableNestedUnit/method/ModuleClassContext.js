@@ -3,23 +3,25 @@ const self = class ModuleClassContext {
     methodInstance = [];
 
     constructor(createModuleInstance) {
-        this.createModuleInstance = createModuleInstance
+        const self = this
+        self.createModuleInstance = createModuleInstance
     }
 
     getMethodInstance(methodInstanceName = null, argument, importerName = null) {
-        let moduleInstance;
+        const self = this
         let debug = (importerName) ? true : false;
         if(debug) console.log(importerName) // Debug purposes to check which file impoerted it.
-        if(methodInstanceName && typeof this.methodInstance[methodInstanceName] !== 'undefined')  {
+        if(methodInstanceName && typeof self.methodInstance[methodInstanceName] !== 'undefined')  {
             if(debug) console.log('already defined !')
-            return this.methodInstance[methodInstanceName]
+            return self.methodInstance[methodInstanceName]
         } else if(methodInstanceName) {
             if(debug) console.log('create new instance !')
-            this.methodInstance[methodInstanceName] = this.createModuleInstance(argument)
-            return this.methodInstance[methodInstanceName]
+            argument['methodInstanceName'] = methodInstanceName // add name to argument so ti cab be accessed by createModuleInstance.
+            self.methodInstance[methodInstanceName] = self.createModuleInstance(argument)
+            return self.methodInstance[methodInstanceName]
         } else {
             if(debug) console.log('create without saving !')
-            return this.createModuleInstance(argument)
+            return self.createModuleInstance(argument)
         }
     }
     

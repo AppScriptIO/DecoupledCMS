@@ -18,7 +18,15 @@ module.exports = new ModuleClassContext((argument) => {
             super(true)
             if(skipConstructor) return;
         }
-        
+        static initializeStaticClass() {
+            if(argument.methodInstanceName) {
+                superclass.eventEmitter.on('initializationEnd', () => {
+                    let ClassObject = {}
+                    ClassObject[`${argument.methodInstanceName}`] = self
+                    superclass.addStaticSubclassToClassArray(ClassObject)
+                })
+            }
+        }
         async initializeConditionTree(conditionTreeKey, portAppInstance) { // Entrypoint Instance
             this.AppInstance = portAppInstance
             // self.debug.push(conditionTreeKey)
@@ -70,6 +78,7 @@ module.exports = new ModuleClassContext((argument) => {
             return await conditionInstance.checkCondition(this.AppInstance)
         }
     }
+    self.initializeStaticClass()
     return self
 })
 

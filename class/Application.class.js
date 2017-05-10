@@ -11,7 +11,7 @@ import addStaticSubclassToClassArray from './method/addStaticSubclassToClassArra
 
 const self = class Application extends EventEmitter {
 
-    static eventEmitter;
+    static eventEmitter = new EventEmitter() // i.e. new EventEmitter()
     static rethinkdbConnection = {}
     static config = configuration // Array
     static frontend;
@@ -40,7 +40,6 @@ const self = class Application extends EventEmitter {
         console.info(`☕%c Running Application as ${self.config.DEPLOYMENT} - '${self.config.PROTOCOL}${self.config.HOST}'`, self.config.style.green)
         self.rethinkdbConnection = await connect()
         const documentData = await getDatabaseTableDocument(self.rethinkdbConnection)
-        self.eventEmitter = new self()
         self.frontend = { // Configurations passed to frontend 
             config: self.config,
             setting: {
@@ -56,6 +55,7 @@ const self = class Application extends EventEmitter {
             interpolate: /\{\%=(.+?)\%\}/g,
             escape: /\{\%-(.+?)\%\}/g
         };
+        self.eventEmitter.emit('initializationEnd')
         // if(staticSubclass) self.addStaticSubclassToClassArray(staticSubclass)
     }
 
@@ -83,6 +83,9 @@ const self = class Application extends EventEmitter {
     static createHttpServer() {
         const self = this
         http.createServer(self.serverKoa.callback())
+            .on('connection', (socket) => {
+                socket.setTimeout(120);
+            })
             .listen(self.port, ()=> {
                 console.log(`☕%c ${self.name} listening on port ${self.port}`, self.config.style.green)
             })
@@ -93,3 +96,6 @@ const self = class Application extends EventEmitter {
 self.addStaticSubclassToClassArray = addStaticSubclassToClassArray
 
 export default self
+
+const instance = new self();
+export { instance as instance }

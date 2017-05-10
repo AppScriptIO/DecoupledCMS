@@ -11,7 +11,13 @@ const self = class Condition extends Unit {
         this.key = conditionKey
         return this
     }
-    
+    static initializeStaticClass() {
+        self.eventEmitter.on('initializationEnd', () => {
+            let ClassObject = {}
+            ClassObject[`${self.name}`] = self
+            self.addStaticSubclassToClassArray(ClassObject)
+        })
+    }
     async initializeCondition() {
         if(!('jsonData' in this)) { // if not already populated with data.
             let jsonData = await self.getDocumentQuery(self.rethinkdbConnection, this.key)
@@ -39,4 +45,5 @@ const self = class Condition extends Unit {
 
 }
 
+self.initializeStaticClass()
 export default self

@@ -21,7 +21,13 @@ const self = class ConditionTree extends NestedUnitImplementation {
     // static createInstance(controllerInstanceArray, dataKey, getDocumentQueryCallback) {
     //     NestedUnitImplementation.createInstance(controllerInstanceArray, dataKey, getDocumentQueryCallback)
     // }
-    
+    static initializeStaticClass() {
+        self.eventEmitter.on('initializationEnd', () => {
+            let ClassObject = {}
+            ClassObject[`${self.name}`] = self
+            self.addStaticSubclassToClassArray(ClassObject)
+        })
+    }
     async initializeConditionTree() {
         if(!('jsonData' in this)) { // if not already populated with data.
             let jsonData = await self.getDocumentQuery(self.rethinkdbConnection, this.key)
@@ -70,5 +76,5 @@ const self = class ConditionTree extends NestedUnitImplementation {
 
 
 }
-
+self.initializeStaticClass()
 export default self
