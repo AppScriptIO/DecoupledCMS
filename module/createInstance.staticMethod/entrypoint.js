@@ -1,4 +1,4 @@
-import { usingGenericInstance as populateInstancePropertyFromJson } from './populateInstancePropertyFromJson.method.js'
+import { usingGenericInstance as populateInstancePropertyFromJson } from 'appscript/module/populateInstancePropertyFromJson.method'
 
 /**
  * Create unit instance, query data, and populate json data to instance.

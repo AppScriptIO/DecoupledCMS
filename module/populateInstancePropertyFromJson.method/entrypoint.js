@@ -1,7 +1,8 @@
 /**
-* Creates properties for instance corresponding to the json objects' key-value pairs.
-* @param  {object} jsonData key-value of object will end up as property-value of class.
-*/
+ * @description Creates properties for instance corresponding to the json objects' key-value pairs.
+ * @action creates class instance properties.
+ * @param  {object} jsonData key-value of object will end up as property-value of class.
+ **/
 function usingGenericInstance(instance, jsonData) {
     if(jsonData) {
         Object.entries(jsonData).forEach(

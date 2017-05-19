@@ -7,7 +7,7 @@ const EventEmitter = require('events')
 import { connect } from 'appscript/utilityFunction/middleware/commonDatabaseFunctionality.js'
 import getDatabaseTableDocument from '../utilityFunction/database/query/getDatabaseTableDocument.query.js'
 import http from 'http'
-import addStaticSubclassToClassArray from './method/addStaticSubclassToClassArray.staticMethod.js'
+import addStaticSubclassToClassArray from 'appscript/module/addStaticSubclassToClassArray.staticMethod'
 
 const self = class Application extends EventEmitter {
 
@@ -95,7 +95,5 @@ const self = class Application extends EventEmitter {
 
 self.addStaticSubclassToClassArray = addStaticSubclassToClassArray
 
-export default self
-
 const instance = new self();
-export { instance as instance }
+export { self as default, instance as instance }

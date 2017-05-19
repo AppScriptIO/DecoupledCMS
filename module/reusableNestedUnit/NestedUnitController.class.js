@@ -1,7 +1,11 @@
-import commonMethod from './mixin/commonMethod.mixin.js'
+import commonMethod from 'appscript/module/commonMethod.mixin'
 import { mix } from 'mixwith'
-const ModuleClassContext = require('./method/ModuleClassContext.js')
+const ModuleClassContext = require('appscript/module/ModuleClassContext')
 
+/**
+ * @class
+ * @usage new instance is created for each check.
+ */
 module.exports = new ModuleClassContext((argument) => {
     const superclass = argument['superclass']
     const self = class NestedUnitController extends mix(superclass).with(commonMethod) {

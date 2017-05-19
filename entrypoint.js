@@ -1,8 +1,7 @@
 import path from 'path'
-import Application from './class/Application.class.js'
+import { default as Application } from './class/Application.class.js'
 
-module.exports = Application
-
+export { Application as default }
 // __________________________________
 
 // // Conneciton ports:

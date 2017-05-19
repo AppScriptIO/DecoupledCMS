@@ -1,8 +1,11 @@
 import { Mixin } from 'mixwith'
-import createInstance from '../method/createInstance.staticMethod.js'
-import { usingGenericInstance as populateInstancePropertyFromJson, usingThis as populateInstancePropertyFromJson_this } from '../method/populateInstancePropertyFromJson.method.js'
-import addStaticSubclassToClassArray from 'appscript/class/method/addStaticSubclassToClassArray.staticMethod.js'
+import createInstance from 'appscript/module/createInstance.staticMethod'
+import { usingGenericInstance as populateInstancePropertyFromJson, usingThis as populateInstancePropertyFromJson_this } from 'appscript/module/populateInstancePropertyFromJson.method'
+import addStaticSubclassToClassArray from 'appscript/module/addStaticSubclassToClassArray.staticMethod'
 
+/**
+ * @description Extends a class by super class and adds some common functionality.
+ */
 export default Mixin(superclass => {
     const Class = class extends superclass {
         constructor(...args) {

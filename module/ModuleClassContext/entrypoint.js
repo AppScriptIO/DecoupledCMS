@@ -1,3 +1,7 @@
+/**
+ * @class
+ * @description class used to store module instances as a way to cache them by reference key name in the array. Giving essentially a context for each saved module instance.
+ **/
 const self = class ModuleClassContext {
 
     methodInstance = [];
