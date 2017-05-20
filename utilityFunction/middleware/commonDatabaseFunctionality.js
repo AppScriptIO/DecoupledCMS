@@ -53,12 +53,21 @@ export function createTable() {
 }
 
 export async function connect() {
-    let connection = await r // Create connection
-        .connect({
-            host: rethinkdbConfig.host, 
-            port: rethinkdbConfig.port, 
-            db: rethinkdbConfig.database 
-        })
+    let connection;
+    try {
+        connection = await r // Create connection
+            .connect({
+                host: rethinkdbConfig.host, 
+                port: rethinkdbConfig.port, 
+                db: rethinkdbConfig.database 
+            })
+    } catch (e) {
+        await new Promise((resolve, reject) => setTimeout(() => resolve(), 2000));
+        console.info(`☕Connection failed to RethinkDB, retrying.`)
+        connection = await connect()
+        await new Promise((resolve, reject) => setTimeout(() => resolve(), 1000));
+        return connection
+    }
     console.info(`☕Connected to RethinkDB.`)
     return connection
 }
