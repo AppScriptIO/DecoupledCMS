@@ -5,7 +5,9 @@ import rethinkdbConfig from '../configuration/rethinkdbConfig.js'
 import _ from '../../../node_modules/underscore' // To affect changes of _ to the main app.
 const EventEmitter = require('events')
 import { connect } from 'appscript/utilityFunction/middleware/commonDatabaseFunctionality.js'
-import getDatabaseTableDocument from '../utilityFunction/database/query/getDatabaseTableDocument.query.js'
+import getTableDocument from '../utilityFunction/database/query/getTableDocument.query.js'
+const getDatabaseTableDocument = getTableDocument('document')
+
 import http from 'http'
 import addStaticSubclassToClassArray from 'appscript/module/addStaticSubclassToClassArray.staticMethod'
 
@@ -55,7 +57,7 @@ const self = class Application extends EventEmitter {
             interpolate: /\{\%=(.+?)\%\}/g,
             escape: /\{\%-(.+?)\%\}/g
         };
-        self.eventEmitter.emit('initializationEnd')
+        await self.eventEmitter.emit('initializationEnd')
         // if(staticSubclass) self.addStaticSubclassToClassArray(staticSubclass)
     }
 

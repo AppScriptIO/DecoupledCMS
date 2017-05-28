@@ -1,88 +1,84 @@
-import commonMethod from 'appscript/module/commonMethod.mixin'
 import { mix } from 'mixwith'
+import commonMethod from './commonMethod.mixin'
 const ModuleClassContext = require('appscript/module/ModuleClassContext')
+const EventEmitter = require('events')
+import createInstance from 'appscript/module/createInstance.staticMethod'
+import { usingGenericInstance as populateInstancePropertyFromJson, usingThis as populateInstancePropertyFromJson_this } from 'appscript/module/populateInstancePropertyFromJson.method'
+import addStaticSubclassToClassArray from 'appscript/module/addStaticSubclassToClassArray.staticMethod'
 
 /**
  * @class
  * @usage new instance is created for each check.
  */
-module.exports = new ModuleClassContext((argument) => {
-    const superclass = argument['superclass']
-    const self = class NestedUnitController extends mix(superclass).with(commonMethod) {
+module.exports = new ModuleClassContext((methodInstanceName, superclass, controllerMixin) => {
+    let mixinArray = [commonMethod]
+    const self = class NestedUnitController extends mix(superclass).with(...mixinArray) {
+
+        static eventEmitter = new EventEmitter() // i.e. new EventEmitter()
         static extendedSubclass = {
             static: []
         }
+
         AppInstance; // calling instance that contains the context
         instance = {
-            ConditionTree: [],
-            Condition: [],
+            nestedUnit: [],
+            unit: [],
         } // conditionTreeKey -> { Json data, properties } 
 
-        constructor(skipConstructor = false) {
+        constructor(skipConstructor = false, portAppInstance) {
             super(true)
             if(skipConstructor) return;
+            if(portAppInstance) this.AppInstance = portAppInstance
         }
+
         static initializeStaticClass() {
-            if(argument.methodInstanceName) {
+            if(methodInstanceName) {
                 superclass.eventEmitter.on('initializationEnd', () => {
                     let ClassObject = {}
-                    ClassObject[`${argument.methodInstanceName}`] = self
+                    ClassObject[`${methodInstanceName}`] = self
                     superclass.addStaticSubclassToClassArray(ClassObject)
                 })
             }
         }
-        async initializeConditionTree(conditionTreeKey, portAppInstance) { // Entrypoint Instance
-            this.AppInstance = portAppInstance
-            // self.debug.push(conditionTreeKey)
-            // let conditionTreeInstance = await ConditionTree.createInstance(this.instance.ConditionTree, conditionTreeKey, ConditionTree.getDocumentQuery)
-            let conditionTreeInstance;
-            if(!(conditionTreeKey in this.instance.ConditionTree)) {
-                conditionTreeInstance = await new self.extendedSubclass.static['ConditionTree'](conditionTreeKey)
-                await conditionTreeInstance.initializeConditionTree()
-                this.instance.ConditionTree[conditionTreeKey] = conditionTreeInstance
-            } else {
-                conditionTreeInstance = this.instance.ConditionTree[conditionTreeKey]
-            }
 
-            // [2] Check condition.
-            let conditionKey = conditionTreeInstance.conditionImplementation
-            let conditionInstance;
-            if(!(conditionKey in this.instance.Condition)) {
-                conditionInstance = await new self.extendedSubclass.static['Condition'](conditionKey)
-                await conditionInstance.initializeCondition()
-                this.instance.Condition[conditionKey] = conditionInstance
+        async getNestedUnit({nestedUnitKey, controllerInstance = this}) {
+            let nestedUnitInstance;
+            if(!(nestedUnitKey in this.instance.nestedUnit)) {
+                nestedUnitInstance = await new self.extendedSubclass.static['NestedUnit'](nestedUnitKey)
+                nestedUnitInstance.__proto__.__proto__.__proto__ = Object.create(controllerInstance)
+                await nestedUnitInstance.initializeInstance()
+                this.instance.nestedUnit[nestedUnitKey] = nestedUnitInstance
             } else {
-                conditionInstance = this.instance.Condition[conditionKey]
+                nestedUnitInstance = this.instance.nestedUnit[nestedUnitKey]
             }
-
-            let result = conditionInstance.checkCondition(this.AppInstance)
-            // [3] Iterate over insertion points
-            let callback = false;
-            if(result) {
-                // get callback from subtrees
-                for (let insertionPoint of conditionTreeInstance.insertionPoint) {
-                    callback = await conditionTreeInstance.initializeInsertionPoint(insertionPoint, this)
-                    if(callback) break
-                }
-                // if all subtress rejected, get immediate callback
-                if(!callback && 'callback' in  conditionTreeInstance) {
-                    callback = conditionTreeInstance.callback // fallback to immediate callback of instance.        
-                }
-            }
-            // [4] Callback
-            return callback
+            return nestedUnitInstance
         }
 
-        async initializeCondition(conditionKey) {
-            // self.debug.push(conditionKey)
-            // [1] Instance.
-            let Condition = self.extendedSubclass.static['Condition']
-            let conditionInstance = await Condition.createInstance(this.instance.Condition, conditionKey, Condition.getDocumentQuery)
-            // [2] Check condition
-            return await conditionInstance.checkCondition(this.AppInstance)
+        async getUnitImplementation({unitKey, controllerInstance = this}) {
+            let unitInstance;
+            if(!(unitKey in this.instance.unit)) {
+                unitInstance = await new self.extendedSubclass.static['UnitImplementation'](unitKey)
+                unitInstance.__proto__.__proto__.__proto__ = Object.create(controllerInstance)
+                await unitInstance.initializeInstance()
+                this.instance.unit[unitKey] = unitInstance
+            } else {
+                unitInstance = this.instance.unit[unitKey]
+            }
+            return unitInstance
         }
+
     }
-    self.initializeStaticClass()
-    return self
+
+    self.addStaticSubclassToClassArray = function(...args) {
+        // this - is a subclass of the class which the method resides.
+        addStaticSubclassToClassArray.call(this, ...args)
+    }
+    self.createInstance = createInstance
+    self.populateInstancePropertyFromJson = populateInstancePropertyFromJson
+    self.prototype.populateInstancePropertyFromJson_this = populateInstancePropertyFromJson_this
+
+    self.initializeStaticClass()    
+     // add controller methods for the specific module that uses them.
+    return controllerMixin ?  controllerMixin(self) : self;
 })
 

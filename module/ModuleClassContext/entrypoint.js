@@ -8,10 +8,24 @@ const self = class ModuleClassContext {
 
     constructor(createModuleInstance) {
         const self = this
+
+        /**
+         * @param {string} methodInstanceName the key name used to save the created instance or null for creating without saving.
+         * @param {multipleArguments} ... spread operator, unique parameters different depending on the function passed.
+         * @returns {instance} class instance of the module being required.
+         */
         self.createModuleInstance = createModuleInstance
     }
 
-    getMethodInstance(methodInstanceName = null, argument, importerName = null) {
+    /**
+     * 
+     * 
+     * @param {string} [methodInstanceName=null] key name of saved or being saved instance.
+     * @param {array} [args=[]] parameters to be called for createModuleInstance i.e. the function passed for creating ModuleClassContext class instance.
+     * @param {boolean} [importerName=null] debug on/off.
+     * @returns instance of a module, either created newly or returned from cache.
+     */
+    getMethodInstance(methodInstanceName = null, args = [], importerName = null) {
         const self = this
         let debug = (importerName) ? true : false;
         if(debug) console.log(importerName) // Debug purposes to check which file impoerted it.
@@ -20,12 +34,11 @@ const self = class ModuleClassContext {
             return self.methodInstance[methodInstanceName]
         } else if(methodInstanceName) {
             if(debug) console.log('create new instance !')
-            argument['methodInstanceName'] = methodInstanceName // add name to argument so ti cab be accessed by createModuleInstance.
-            self.methodInstance[methodInstanceName] = self.createModuleInstance(argument)
+            self.methodInstance[methodInstanceName] = self.createModuleInstance(methodInstanceName, ...args) // add name to argument so ti cab be accessed by createModuleInstance.
             return self.methodInstance[methodInstanceName]
         } else {
             if(debug) console.log('create without saving !')
-            return self.createModuleInstance(argument)
+            return self.createModuleInstance(null, ...args)
         }
     }
     

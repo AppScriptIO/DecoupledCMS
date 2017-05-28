@@ -1,7 +1,4 @@
 import { Mixin } from 'mixwith'
-import createInstance from 'appscript/module/createInstance.staticMethod'
-import { usingGenericInstance as populateInstancePropertyFromJson, usingThis as populateInstancePropertyFromJson_this } from 'appscript/module/populateInstancePropertyFromJson.method'
-import addStaticSubclassToClassArray from 'appscript/module/addStaticSubclassToClassArray.staticMethod'
 
 /**
  * @description Extends a class by super class and adds some common functionality.
@@ -18,9 +15,5 @@ export default Mixin(superclass => {
         //     this.jsonData = conditionTreeJsonData
         // }
     }
-    Class.addStaticSubclassToClassArray = addStaticSubclassToClassArray
-    Class.createInstance = createInstance
-    Class.populateInstancePropertyFromJson = populateInstancePropertyFromJson
-    Class.prototype.populateInstancePropertyFromJson_this = populateInstancePropertyFromJson_this
     return Class
 })
