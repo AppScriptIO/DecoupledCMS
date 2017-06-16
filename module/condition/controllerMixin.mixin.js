@@ -6,44 +6,34 @@ import { Mixin } from 'mixwith'
 export default Mixin(superclass => {
     const self = class extends superclass {
 
-        async initializeConditionTree({nestedUnitKey, controllerInstance = this}) { // Entrypoint Instance
+        /**
+         * @description when first called "this" context is assigned to the AppInstance for the comming request. And on subsequest calls it is assigned to the nestedUnit instance.
+         * 
+         * @param {any} {nestedUnitKey, controllerInstance = this} 
+         * @returns 
+         */
+        async initializeConditionTree({ nestedUnitKey, controllerInstance = this, additionalChildNestedUnit = [], pathPointerKey = null}) { // Entrypoint Instance
             // self.debug.push(nestedUnitKey)
             // let nestedUnitInstance = await ConditionTree.createInstance(this.instance.nestedUnit, nestedUnitKey, ConditionTree.getDocumentQuery)
-
+            
             // [1] get nestedUnit
-            let nestedUnitInstance = await this.getNestedUnit({nestedUnitKey, controllerInstance})
+            let nestedUnitInstance = await this.getNestedUnit({ nestedUnitKey, controllerInstance, additionalChildNestedUnit, pathPointerKey })
             // [2] Check condition.
             let {conditionImplementation:unitKey} = nestedUnitInstance
             let unitInstance = await this.getUnitImplementation({unitKey, controllerInstance})
-
-            let conditionResult = unitInstance.checkCondition()
-
+            
+            let conditionMet = await unitInstance.checkCondition()
+            
             // [3] Iterate over insertion points
-            let callback = false;
-            if(conditionResult) {
-                // get callback from subtrees
-                for (let insertionPoint of nestedUnitInstance.insertionPoint) {
-                    callback = await nestedUnitInstance.initializeInsertionPoint({insertionPoint:insertionPoint})
-                    if(callback) break
-                }
-                // if all subtress rejected, get immediate callback
-                if(!callback && 'callback' in  nestedUnitInstance) {
-                    callback = nestedUnitInstance.callback // fallback to immediate callback of instance.        
-                }
+            let callback;
+            if (conditionMet) {
+                callback = await nestedUnitInstance.loopInsertionPoint()
+                // if all subtrees rejected, get immediate callback
+                if(!callback && 'callback' in  nestedUnitInstance) callback = nestedUnitInstance.callback // fallback to immediate callback of instance.
             }
             // [4] Callback
-            return callback
-        }
-
-        async initializeCondition(unitKey) {
-            // self.debug.push(unitInstance)
-            // [1] Instance.
-            let UnitImplementation = self.extendedSubclass.static['UnitImplementation']
-            let unitInstance = await UnitImplementation.createInstance(this.instance.unit, unitKey, UnitImplementation.getDocumentQuery)
-            // [2] Check condition
-            return await unitInstance.checkCondition()
-        }
-
+            return callback ? callback : false;
+        }        
     }
     return self
 })

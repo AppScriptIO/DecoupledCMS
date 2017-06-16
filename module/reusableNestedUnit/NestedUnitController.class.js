@@ -25,7 +25,7 @@ module.exports = new ModuleClassContext((methodInstanceName, superclass, control
             unit: [],
         } // conditionTreeKey -> { Json data, properties } 
 
-        constructor(skipConstructor = false, portAppInstance) {
+        constructor(skipConstructor = false, {portAppInstance}) {
             super(true)
             if(skipConstructor) return;
             if(portAppInstance) this.AppInstance = portAppInstance
@@ -41,12 +41,17 @@ module.exports = new ModuleClassContext((methodInstanceName, superclass, control
             }
         }
 
-        async getNestedUnit({nestedUnitKey, controllerInstance = this}) {
+        async getNestedUnit({ nestedUnitKey, controllerInstance = this, additionalChildNestedUnit = [], pathPointerKey = null}) {
             let nestedUnitInstance;
             if(!(nestedUnitKey in this.instance.nestedUnit)) {
                 nestedUnitInstance = await new self.extendedSubclass.static['NestedUnit'](nestedUnitKey)
                 nestedUnitInstance.__proto__.__proto__.__proto__ = Object.create(controllerInstance)
                 await nestedUnitInstance.initializeInstance()
+                // add children trees: 
+                nestedUnitInstance.additionalChildNestedUnit = additionalChildNestedUnit
+                // add pathPointerKey to allow applying additional corresponding additional children.
+                nestedUnitInstance.pathPointerKey = pathPointerKey
+                // add to class cache
                 this.instance.nestedUnit[nestedUnitKey] = nestedUnitInstance
             } else {
                 nestedUnitInstance = this.instance.nestedUnit[nestedUnitKey]
@@ -59,6 +64,7 @@ module.exports = new ModuleClassContext((methodInstanceName, superclass, control
             if(!(unitKey in this.instance.unit)) {
                 unitInstance = await new self.extendedSubclass.static['UnitImplementation'](unitKey)
                 unitInstance.__proto__.__proto__.__proto__ = Object.create(controllerInstance)
+                // console.log(unitInstance)
                 await unitInstance.initializeInstance()
                 this.instance.unit[unitKey] = unitInstance
             } else {

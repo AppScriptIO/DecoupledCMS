@@ -15,9 +15,26 @@ module.exports = new ModuleClassContext((methodInstanceName, superclass) => {
         // static createInstance(controllerInstanceArray, dataKey, getDocumentQueryCallback) {
         //     NestedUnitImplementation.createInstance(controllerInstanceArray, dataKey, getDocumentQueryCallback)
         // }
-        
-        async initializeInsertionPoint(insertionPoint) {
-            let callback = false;
+
+        /**
+         * @description loops through all the insertion points and initializes each one to execute the children specific for it.
+         * 
+         * @param {Class Instance} nestedUnitInstance Tree instance of the module using "reusableNestedUnit" pattern. instance should have "initializeInsertionPoint" function & "insertionPoint" Array.
+         * @returns undifiend for false or any type of value depending on the module being applied.
+         */
+        async loopInsertionPoint() {
+            let middlewareArray = []
+            // get callback from subtrees
+            if(this.insertionPoint) {
+                for (let insertionPoint of this.insertionPoint) {
+                    let subsequentMiddleware = await this.initializeInsertionPoint({ insertionPoint })
+                    middlewareArray.push.apply(subsequentMiddleware)
+                }
+            }
+            return middlewareArray;
+        }
+
+        async initializeInsertionPoint({insertionPoint}) {
             // [1] get children immediate & relating to this insertion position.
             let filteredChildren = this.children.filter(object => { // filter children that correspont to the current insertionpoint.
                 return (object.insertionPointKey == insertionPoint.key && object.treePath == null)
@@ -25,33 +42,38 @@ module.exports = new ModuleClassContext((methodInstanceName, superclass) => {
             // [2] check type of subtrees execution: race first, all ... .
             let executionTypeCallbackName;
             switch(insertionPoint.executionType) {
-                case 'raceFirstPromise': 
-                    executionTypeCallbackName = 'initializeConditionTreeInRaceExecutionType'
-                    break;
+                case 'chronological': 
+                    executionTypeCallbackName = 'initializeTreeInChronologicalSequence'
+                break;
+                case 'middlewareArray': 
+                    executionTypeCallbackName = 'returnMiddlewareArray'
+                break;
                 default: 
-                    console.log('executionType doesn\'t match any kind.')
+                    console.log(`"${insertionPoint.executionType}" executionType doesn\'t match any kind.`)
             }
             // [3] call handler on them.
-            callback = this[executionTypeCallbackName](filteredChildren)
-            // [4] return callback
-            return callback
+            return await this[executionTypeCallbackName](filteredChildren)
         }
-        async initializeConditionTreeInRaceExecutionType(conditionTreeChildren) {
-            let promiseArray = []
-            promiseArray = conditionTreeChildren.map((conditionTreeChild) => {
-                return new Promise(async (resolve, reject) => {
-                    let callback = await this.initializeConditionTree(conditionTreeChild.key)
-                    if(!callback) reject('SZN - No callback choosen from this childTree.')
-                    resolve(callback)
-                })
-            })
 
-            let callback;
-            await promiseProperRace(promiseArray).then((promiseReturnValueArray) => {
-                callback = promiseReturnValueArray[0] // as only one promise is return in the array.
-            }).catch(reason => console.log(`🔀⚠️ promiseProperRace rejected because: ${reason}`))
-            return callback
+        async initializeTreeInChronologicalSequence(treeChildren) {
         }
+
+        async returnMiddlewareArray(treeChildren) {
+            let middlewareArray = []
+            await treeChildren.map(async (treeChild) => {
+                let controllerInstancePrototype = this.__proto__.__proto__.__proto__
+                // Add the rest of the immediate children to the next tree as additional children. propagate children to the next tree.
+                let additionalChildNestedUnit = this.children.push.apply(this.additionalChildNestedUnit)
+                let subsequentMiddleware = await this.initializeNestedUnit({
+                    nestedUnitKey: treeChild.nestedUnit,
+                    controllerInstance: controllerInstancePrototype,
+                    additionalChildNestedUnit: additionalChildNestedUnit,
+                    pathPointerKey: treeChild.pathPointerKey
+                })
+                middlewareArray.push.apply(subsequentMiddleware)
+            })
+            return middlewareArray
+        } 
     }
     self.initializeStaticClass(getTableDocument('middlewareNestedUnit'))
 })

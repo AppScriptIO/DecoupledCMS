@@ -23,6 +23,7 @@ function isES5(agent) {
     }
 }
 
+// This module defines context.instance.config.clientBasePath to be later used in template composition.
 export default async (context, next) => {
     let agent = useragentParser.lookup(context.request.headers['user-agent']);
     if(isES5(agent)) {

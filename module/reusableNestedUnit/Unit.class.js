@@ -3,7 +3,7 @@ const ModuleClassContext = require('appscript/module/ModuleClassContext')
 module.exports = new ModuleClassContext((methodInstanceName, superclass) => {
     const self = class Unit extends superclass {
         constructor(databaseDocumentKey, AppInstance) {
-            super(false, AppInstance)
+            super(false, {portAppInstance: AppInstance})
             this.key = databaseDocumentKey
             return this
         }

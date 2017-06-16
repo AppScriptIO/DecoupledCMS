@@ -1,24 +1,16 @@
 const ModuleClassContext = require('appscript/module/ModuleClassContext')
 import getTableDocument from 'appscript/utilityFunction/database/query/getTableDocument.query.js'
-const getValueReturningFile = getTableDocument('valueReturningFile')
+const middlewareFileDatabase = getTableDocument('middlewareFile')
 
 module.exports = new ModuleClassContext((methodInstanceName, superclass) => {
     const self = class UnitImplementation extends superclass {
-        async checkCondition() {
+        async pupolateMiddlewareFile() {
             // [1] get valueReturningFile
-            let valueReturningFileKey = await this.valueReturningFileKey
-            if(!('valueReturningFile' in this)) {
-                this.valueReturningFile = await getValueReturningFile(self.rethinkdbConnection, valueReturningFileKey)
+            let middlewareFileKey = this.middlewareFile
+            if (!('functionPath' in this)) {
+                let middlewareFile = await middlewareFileDatabase(self.rethinkdbConnection, middlewareFileKey)
+                this.functionPath = middlewareFile.filePath
             }
-            // [2] require & check condition
-            if(!this.conditionResult) {
-                let expectedReturn = this.expectedReturn
-                let filePath = this.valueReturningFile.filePath
-                let returnedValue = await require(filePath)()
-                console.log(`🔀 conditionKey: ${this.key} ${filePath}. expected: ${expectedReturn} == ${returnedValue}. compare: ${(returnedValue == expectedReturn)}`)
-                this.conditionResult = (returnedValue == expectedReturn) ? true : false;            
-            }
-            return  this.conditionResult
         }
     }
     self.initializeStaticClass(getTableDocument('middlewareImplementation'))

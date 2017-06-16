@@ -15,12 +15,30 @@ module.exports = new ModuleClassContext((methodInstanceName, superclass) => {
         //     NestedUnitImplementation.createInstance(controllerInstanceArray, dataKey, getDocumentQueryCallback)
         // }
 
+        /**
+         * @description loops through all the insertion points and initializes each one to execute the children specific for it.
+         * 
+         * @param {Class Instance} nestedUnitInstance Tree instance of the module using "reusableNestedUnit" pattern. instance should have "initializeInsertionPoint" function & "insertionPoint" Array.
+         * @returns undifiend for false or any type of value depending on the module being applied.
+         */
+        async loopInsertionPoint() {
+            let returnedValue;
+            // get callback from subtrees
+            for (let insertionPoint of this.insertionPoint) {
+                returnedValue = await this.initializeInsertionPoint({ insertionPoint })
+                if (returnedValue) break
+            }
+            return returnedValue;
+        }
+
         async initializeInsertionPoint({insertionPoint}) {
-            let callback = false;
+            let callback;
             // [1] get children immediate & relating to this insertion position.
-            let filteredChildren = this.children.filter(object => { // filter children that correspont to the current insertionpoint.
-                return (object.insertionPointKey == insertionPoint.key && object.treePath == null)
-            })
+            let filteredTreeChildren = await this.filterChildren({ insertionPointKey: insertionPoint.key })
+            // Take into consideration the indirect children added from previous (inhereted) trees.
+            // filteredTreeChildren + immediateNextChildren
+            // let nextChildren;
+
             // [2] check type of subtrees execution: race first, all ... .
             let executionTypeCallbackName;
             switch(insertionPoint.executionType) {
@@ -31,17 +49,24 @@ module.exports = new ModuleClassContext((methodInstanceName, superclass) => {
                     console.log('executionType doesn\'t match any kind.')
             }
             // [3] call handler on them.
-            callback = this[executionTypeCallbackName](filteredChildren)
+            callback = this[executionTypeCallbackName](filteredTreeChildren)
             // [4] return callback
-            return callback
+            return callback ? callback : false;
         }
         
         async initializeConditionTreeInRaceExecutionType(conditionTreeChildren) {
             let promiseArray = []
-            promiseArray = conditionTreeChildren.map((conditionTreeChild) => {
+            promiseArray = conditionTreeChildren.map(conditionTreeChild => {
                 return new Promise(async (resolve, reject) => {
                     let controllerInstancePrototype = this.__proto__.__proto__.__proto__
-                    let callback = await this.initializeConditionTree({nestedUnitKey: conditionTreeChild.key, controllerInstance: controllerInstancePrototype})
+                    // Add the rest of the immediate children to the next tree as additional children. propagate children to the next tree.
+                    let additionalChildNestedUnit = this.children.push.apply(this.additionalChildNestedUnit)
+                    let callback = await this.initializeConditionTree({
+                        nestedUnitKey: conditionTreeChild.nestedUnit, 
+                        controllerInstance: controllerInstancePrototype, 
+                        additionalChildNestedUnit: additionalChildNestedUnit,
+                        pathPointerKey: conditionTreeChild.pathPointerKey
+                    })
                     if(!callback) reject('SZN - No callback choosen from this childTree.')
                     resolve(callback)
                 })
@@ -52,7 +77,8 @@ module.exports = new ModuleClassContext((methodInstanceName, superclass) => {
                 callback = promiseReturnValueArray[0] // as only one promise is return in the array.
             }).catch(reason => console.log(`🔀⚠️ promiseProperRace rejected because: ${reason}`))
             return callback
-        } 
+        }
+
     }
     self.initializeStaticClass(getTableDocument('conditionTree'))
 })

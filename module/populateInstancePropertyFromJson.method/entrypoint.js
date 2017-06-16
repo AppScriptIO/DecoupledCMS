@@ -13,6 +13,7 @@ function usingGenericInstance(instance, jsonData) {
 }
 
 function usingThis(jsonData) {
+    // console.log(jsonData)
     usingGenericInstance(this, jsonData)
 }
 

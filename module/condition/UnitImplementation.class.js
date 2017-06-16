@@ -6,7 +6,7 @@ module.exports = new ModuleClassContext((methodInstanceName, superclass) => {
     const self = class UnitImplementation extends superclass {
         async checkCondition() {
             // [1] get valueReturningFile
-            let valueReturningFileKey = await this.valueReturningFileKey
+            let valueReturningFileKey = this.valueReturningFileKey
             if(!('valueReturningFile' in this)) {
                 this.valueReturningFile = await getValueReturningFile(self.rethinkdbConnection, valueReturningFileKey)
             }

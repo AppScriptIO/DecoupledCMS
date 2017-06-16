@@ -6,42 +6,22 @@ import { Mixin } from 'mixwith'
 export default Mixin(superclass => {
     const Class = class extends superclass {
         
-        async initializeNestedUnit(nestedUnitKey) { // Entrypoint Instance
+        async initializeNestedUnit({ nestedUnitKey, controllerInstance = this, additionalChildNestedUnit = [], pathPointerKey = null }) { // Entrypoint Instance
             // [1] get nestedUnit
-            let nestedUnitInstance = await this.getNestedUnit(nestedUnitKey)
-
+            let nestedUnitInstance = await this.getNestedUnit({ nestedUnitKey, controllerInstance, additionalChildNestedUnit, pathPointerKey })
             // [2] get unit.
-            let unitInstance = await this.getUnitImplementation(nestedUnitInstance.middlewareImplementation)
-            return unitInstance
+            let { middlewareImplementation: unitKey } = nestedUnitInstance
+            let unitInstance = await this.getUnitImplementation({ unitKey, controllerInstance })
+            await unitInstance.pupolateMiddlewareFile()
 
-            let result = unitInstance.checkCondition()
+            let middlewareArray = []
+            middlewareArray.push(unitInstance)
+
             // [3] Iterate over insertion points
-            let callback = false;
-            if(result) {
-                // get callback from subtrees
-                for (let insertionPoint of nestedUnitInstance.insertionPoint) {
-                    callback = await nestedUnitInstance.initializeInsertionPoint(insertionPoint)
-                    if(callback) break
-                }
-                // if all subtress rejected, get immediate callback
-                if(!callback && 'callback' in  nestedUnitInstance) {
-                    callback = nestedUnitInstance.callback // fallback to immediate callback of instance.        
-                }
-            }
-            // [4] Callback
-            return callback
+            let subsequentMiddleware = await nestedUnitInstance.loopInsertionPoint()
+            middlewareArray.push.apply(subsequentMiddleware)
+            return middlewareArray
         }
-
-        async initializeCondition(unitKey) {
-            // self.debug.push(unitInstance)
-            // [1] Instance.
-            let UnitImplementation = self.extendedSubclass.static['UnitImplementation']
-            let unitInstance = await UnitImplementation.createInstance(this.instance.unit, unitKey, UnitImplementation.getDocumentQuery)
-            // [2] Check condition
-            return await unitInstance.checkCondition()
-        }
-
-
     }
     return Class
 })
