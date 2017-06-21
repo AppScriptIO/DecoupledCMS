@@ -58,7 +58,7 @@ module.exports = new ModuleClassContext((methodInstanceName, superclass) => {
         async mergeAndOrderChildren(ownFilteredChildren, additionalFilteredChildren) {
             // metrge 2 arrays., appending one to the other.
             // let filteredChildren = []
-            // await filteredChildren.push.apply(ownFilteredChildren, additionalFilteredChildren);
+            // await Array.prototype.push.apply(filteredChildren, ownFilteredChildren, additionalFilteredChildren);
             let firstChildren = [],
                 lastChildren = [],
                 orderedChildren = []

@@ -28,7 +28,11 @@ module.exports = new ModuleClassContext((methodInstanceName, superclass) => {
             if(this.insertionPoint) {
                 for (let insertionPoint of this.insertionPoint) {
                     let subsequentMiddleware = await this.initializeInsertionPoint({ insertionPoint })
-                    middlewareArray.push.apply(subsequentMiddleware)
+                    if(middlewareArray.length != 0) {
+                        await Array.prototype.push.apply(middlewareArray, subsequentMiddleware)
+                    } else {
+                        middlewareArray = await subsequentMiddleware.slice()
+                    }
                 }
             }
             return middlewareArray;
@@ -37,7 +41,7 @@ module.exports = new ModuleClassContext((methodInstanceName, superclass) => {
         async initializeInsertionPoint({insertionPoint}) {
             // [1] get children immediate & relating to this insertion position.
             let filteredChildren = this.children.filter(object => { // filter children that correspont to the current insertionpoint.
-                return (object.insertionPointKey == insertionPoint.key && object.treePath == null)
+                return (object.insertionPosition.insertionPoint == insertionPoint.key && object.insertionPosition.insertionPathPointer == null)
             })
             // [2] check type of subtrees execution: race first, all ... .
             let executionTypeCallbackName;
@@ -60,18 +64,28 @@ module.exports = new ModuleClassContext((methodInstanceName, superclass) => {
 
         async returnMiddlewareArray(treeChildren) {
             let middlewareArray = []
-            await treeChildren.map(async (treeChild) => {
+            for (var index = 0; index < treeChildren.length; index++) {
+                let treeChild = treeChildren[index]
                 let controllerInstancePrototype = this.__proto__.__proto__.__proto__
                 // Add the rest of the immediate children to the next tree as additional children. propagate children to the next tree.
-                let additionalChildNestedUnit = this.children.push.apply(this.additionalChildNestedUnit)
+                if(this.children.length != 0) {
+                    await Array.prototype.push.apply(this.children, this.additionalChildNestedUnit)
+                } else {
+                    this.children = await this.additionalChildNestedUnit.slice()
+                }
                 let subsequentMiddleware = await this.initializeNestedUnit({
                     nestedUnitKey: treeChild.nestedUnit,
                     controllerInstance: controllerInstancePrototype,
-                    additionalChildNestedUnit: additionalChildNestedUnit,
+                    additionalChildNestedUnit: this.children,
                     pathPointerKey: treeChild.pathPointerKey
                 })
-                middlewareArray.push.apply(subsequentMiddleware)
-            })
+                if(middlewareArray.length != 0) {
+                    await Array.prototype.push.apply(middlewareArray, subsequentMiddleware)
+                } else {
+                    middlewareArray = await subsequentMiddleware.slice()
+                }
+            }
+
             return middlewareArray
         } 
     }

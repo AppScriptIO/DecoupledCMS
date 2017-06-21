@@ -60,11 +60,17 @@ module.exports = new ModuleClassContext((methodInstanceName, superclass) => {
                 return new Promise(async (resolve, reject) => {
                     let controllerInstancePrototype = this.__proto__.__proto__.__proto__
                     // Add the rest of the immediate children to the next tree as additional children. propagate children to the next tree.
-                    let additionalChildNestedUnit = this.children.push.apply(this.additionalChildNestedUnit)
+                     
+                     if(this.children.length != 0) {
+                        await Array.prototype.push.apply(this.children, this.additionalChildNestedUnit)
+                    } else {
+                        this.children = await this.additionalChildNestedUnit.slice()
+                    }
+
                     let callback = await this.initializeConditionTree({
                         nestedUnitKey: conditionTreeChild.nestedUnit, 
                         controllerInstance: controllerInstancePrototype, 
-                        additionalChildNestedUnit: additionalChildNestedUnit,
+                        additionalChildNestedUnit: this.children,
                         pathPointerKey: conditionTreeChild.pathPointerKey
                     })
                     if(!callback) reject('SZN - No callback choosen from this childTree.')

@@ -19,7 +19,12 @@ export default Mixin(superclass => {
 
             // [3] Iterate over insertion points
             let subsequentMiddleware = await nestedUnitInstance.loopInsertionPoint()
-            middlewareArray.push.apply(subsequentMiddleware)
+             
+            if(middlewareArray.length != 0) {
+                await Array.prototype.push.apply(middlewareArray, subsequentMiddleware)
+            } else {
+                middlewareArray = await subsequentMiddleware.slice()
+            }
             return middlewareArray
         }
     }
