@@ -6,7 +6,7 @@ import _ from '../../../node_modules/underscore' // To affect changes of _ to th
 const EventEmitter = require('events')
 import { connect } from 'appscript/utilityFunction/middleware/commonDatabaseFunctionality.js'
 import getTableDocument from '../utilityFunction/database/query/getTableDocument.query.js'
-const getDatabaseTableDocument = getTableDocument('document')
+const getDatabaseTableDocument = getTableDocument('documentFrontend')
 
 import http from 'http'
 import addStaticSubclassToClassArray from 'appscript/module/addStaticSubclassToClassArray.staticMethod'
@@ -41,7 +41,7 @@ const self = class Application extends EventEmitter {
     static async initialize(staticSubclass) { // One-time initialization of Applicaiton Class.
         console.info(`☕%c Running Application as ${self.config.DEPLOYMENT} - '${self.config.PROTOCOL}${self.config.HOST}'`, self.config.style.green)
         self.rethinkdbConnection = await connect()
-        const documentData = await getDatabaseTableDocument(self.rethinkdbConnection)
+        const documentFrontendData = await getDatabaseTableDocument(self.rethinkdbConnection)
         self.frontend = { // Configurations passed to frontend 
             config: self.config,
             setting: {
@@ -50,7 +50,7 @@ const self = class Application extends EventEmitter {
                 }
             },
             route: 'route',
-            document: documentData,
+            document: documentFrontendData,
         }
         _.templateSettings = { // initial underscore template settings on first import gets applied on the rest.
             evaluate: /\{\%(.+?)\%\}/g,
