@@ -81,7 +81,7 @@ module.exports = new ModuleClassContext((methodInstanceName, superclass) => {
             let callback;
             await promiseProperRace(promiseArray).then((promiseReturnValueArray) => {
                 callback = promiseReturnValueArray[0] // as only one promise is return in the array.
-            }).catch(reason => console.log(`🔀⚠️ promiseProperRace rejected because: ${reason}`))
+            }).catch(reason => { if(process.env.SZN_DEBUG == 'true') console.log(`🔀⚠️ promiseProperRace rejected because: ${reason}`) })
             return callback
         }
 
