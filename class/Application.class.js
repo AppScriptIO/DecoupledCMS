@@ -5,8 +5,11 @@ import rethinkdbConfig from '../configuration/rethinkdbConfig.js'
 import _ from '../../../node_modules/underscore' // To affect changes of _ to the main app.
 const EventEmitter = require('events')
 import { connect } from 'appscript/utilityFunction/middleware/commonDatabaseFunctionality.js'
-import getTableDocument from '../utilityFunction/database/query/getTableDocument.query.js'
-const getDatabaseTableDocument = getTableDocument('documentFrontend')
+let getTableDocument = {
+    generate: require('../utilityFunction/database/query/getTableDocument.query.js'),
+    instance: []
+}
+getTableDocument.instance['template_documentFrontend'] = getTableDocument.generate('template_documentFrontend')
 
 import http from 'http'
 import addStaticSubclassToClassArray from 'appscript/module/addStaticSubclassToClassArray.staticMethod'
@@ -41,7 +44,7 @@ const self = class Application extends EventEmitter {
     static async initialize(staticSubclass) { // One-time initialization of Applicaiton Class.
         console.info(`☕%c Running Application as ${self.config.DEPLOYMENT} - '${self.config.PROTOCOL}${self.config.HOST}'`, self.config.style.green)
         self.rethinkdbConnection = await connect()
-        const documentFrontendData = await getDatabaseTableDocument(self.rethinkdbConnection)
+        const documentFrontendData = await getTableDocument.instance['template_documentFrontend'](self.rethinkdbConnection)
         self.frontend = { // Configurations passed to frontend 
             config: self.config,
             setting: {

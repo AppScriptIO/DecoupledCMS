@@ -2,8 +2,13 @@ const ModuleClassContext = require('appscript/module/ModuleClassContext')
 import { Condition } from 'appscript/module/condition'
 import r from 'rethinkdb'
 
-import getTableDocument from 'appscript/utilityFunction/database/query/getTableDocument.query.js'
-const getAllConditionTree = getTableDocument('conditionTree')
+let getTableDocument = {
+    generate: require('appscript/utilityFunction/database/query/getTableDocument.query.js'),
+    instance: []
+}
+getTableDocument.instance['condition_conditionTree'] = getTableDocument.generate('condition_conditionTree')
+getTableDocument.instance['middleware_middlewareNestedUnit'] = getTableDocument.generate('middleware_middlewareNestedUnit')
+
 import promiseProperRace from 'appscript/utilityFunction/promiseProperRace.js'
 
 module.exports = new ModuleClassContext((methodInstanceName, superclass) => {
@@ -89,5 +94,5 @@ module.exports = new ModuleClassContext((methodInstanceName, superclass) => {
             return middlewareArray
         } 
     }
-    self.initializeStaticClass(getTableDocument('middlewareNestedUnit'))
+    self.initializeStaticClass(getTableDocument.instance['middleware_middlewareNestedUnit'])
 })

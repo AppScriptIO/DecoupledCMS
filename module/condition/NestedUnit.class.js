@@ -1,8 +1,11 @@
 const ModuleClassContext = require('appscript/module/ModuleClassContext')
 import r from 'rethinkdb'
 
-import getTableDocument from 'appscript/utilityFunction/database/query/getTableDocument.query.js'
-const getAllConditionTree = getTableDocument('conditionTree')
+let getTableDocument = {
+    generate: require('appscript/utilityFunction/database/query/getTableDocument.query.js'),
+    instance: []
+}
+getTableDocument.instance['condition_conditionTree'] = getTableDocument.generate('condition_conditionTree')
 import promiseProperRace from 'appscript/utilityFunction/promiseProperRace.js'
 
 module.exports = new ModuleClassContext((methodInstanceName, superclass) => {
@@ -86,5 +89,5 @@ module.exports = new ModuleClassContext((methodInstanceName, superclass) => {
         }
 
     }
-    self.initializeStaticClass(getTableDocument('conditionTree'))
+    self.initializeStaticClass(getTableDocument.instance['condition_conditionTree'])
 })

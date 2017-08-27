@@ -5,13 +5,21 @@ function getTableDocument(documentId) {
         let result;
         if(key) {
             result = await r
-                .db("webapp").table("setting").get(documentId)(documentId)
-                .filter(r.row("key").eq(key))
+                .db("webappSetting")
+                .table(documentId)
+                .filter({key: key})
+                .coerceTo('array')
                 .run(connection)
+            // result = await cursor.toArray(function(err, result) { // convert cursor stream to an array.
+            //     if (err) throw err;
+            //     return result
+            // });
             return result[0]
         } else {
             result = await r
-                .db("webapp").table("setting").get(documentId)(documentId)
+                .db("webappSetting")
+                .table(documentId)
+                .coerceTo('array')
                 .run(connection)
             return result
         }

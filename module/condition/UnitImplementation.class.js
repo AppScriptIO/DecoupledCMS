@@ -1,6 +1,10 @@
 const ModuleClassContext = require('appscript/module/ModuleClassContext')
-import getTableDocument from 'appscript/utilityFunction/database/query/getTableDocument.query.js'
-const getValueReturningFile = getTableDocument('valueReturningFile')
+let getTableDocument = {
+    generate: require('appscript/utilityFunction/database/query/getTableDocument.query.js'),
+    instance: []
+}
+getTableDocument.instance['condition_valueReturningFile'] = getTableDocument.generate('condition_valueReturningFile')
+getTableDocument.instance['condition_conditionImplementation'] = getTableDocument.generate('condition_conditionImplementation')
 
 module.exports = new ModuleClassContext((methodInstanceName, superclass) => {
     const self = class UnitImplementation extends superclass {
@@ -8,7 +12,7 @@ module.exports = new ModuleClassContext((methodInstanceName, superclass) => {
             // [1] get valueReturningFile
             let valueReturningFileKey = this.valueReturningFileKey
             if(!('valueReturningFile' in this)) {
-                this.valueReturningFile = await getValueReturningFile(self.rethinkdbConnection, valueReturningFileKey)
+                this.valueReturningFile = await getTableDocument.instance['condition_valueReturningFile'](self.rethinkdbConnection, valueReturningFileKey)
             }
             // [2] require & check condition
             if(!this.conditionResult) {
@@ -21,5 +25,5 @@ module.exports = new ModuleClassContext((methodInstanceName, superclass) => {
             return  this.conditionResult
         }
     }
-    self.initializeStaticClass(getTableDocument('conditionImplementation'))
+    self.initializeStaticClass(getTableDocument.instance['condition_conditionImplementation'])
 })

@@ -4,7 +4,11 @@ import r from 'rethinkdb'
 import _ from 'underscore'
 import filesystem from 'fs'
 
-import getTableDocument from 'appscript/utilityFunction/database/query/getTableDocument.query.js'
+let getTableDocument = {
+    generate: require('appscript/utilityFunction/database/query/getTableDocument.query.js'),
+    instance: []
+}
+getTableDocument.instance['template_viewNestedUnit'] = getTableDocument.generate('template_viewNestedUnit')
 import promiseProperRace from 'appscript/utilityFunction/promiseProperRace.js'
 
 module.exports = new ModuleClassContext((methodInstanceName, superclass) => {
@@ -82,5 +86,5 @@ module.exports = new ModuleClassContext((methodInstanceName, superclass) => {
         }
 
     }
-    self.initializeStaticClass(getTableDocument('viewNestedUnit'))
+    self.initializeStaticClass(getTableDocument.instance['template_viewNestedUnit'])
 })
