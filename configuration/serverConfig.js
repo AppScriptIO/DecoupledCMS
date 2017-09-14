@@ -7,7 +7,8 @@ export let
     PORT = (DEPLOYMENT == 'development') ? '9903' : process.env.PORT || 80,
     SSL = (DEPLOYMENT == 'development') ? true : false,
     HOST = (DEPLOYMENT == 'development') ? 'localhost' : process.env.HOST,
-    PROTOCOL = (DEPLOYMENT == 'development') ? 'http://' : 'https://'
+    PROTOCOL = (DEPLOYMENT == 'development') ? 'http://' : 'https://',
+    SOCKET_PROTOCOL = (DEPLOYMENT == 'development') ? 'ws://' : 'wss://';
 
 export default { 
   deployment: DEPLOYMENT,
@@ -17,7 +18,8 @@ export default {
   ssl: SSL,
   DEPLOYMENT,
   HOST,
-  PROTOCOL
+  PROTOCOL,
+  SOCKET_PROTOCOL
  }
 
 // export default {

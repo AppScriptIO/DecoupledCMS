@@ -19,7 +19,7 @@ module.exports = new ModuleClassContext((methodInstanceName, superclass) => {
                 let expectedReturn = this.expectedReturn
                 let filePath = this.valueReturningFile.filePath
                 let returnedValue = await require(filePath)(this.AppInstance)
-                if(process.env.SZN_DEBUG == 'true') console.log(`🔀 conditionKey: ${this.key} ${filePath}. expected: ${expectedReturn} == ${returnedValue}. compare: ${(returnedValue == expectedReturn)}`)
+                if(process.env.SZN_DEBUG == 'true' && this.AppInstance.context.headers.debug == 'true') console.log(`🔀 Comparing conditionKey: ${this.key} ${filePath}. \n • expected: ${expectedReturn} == ${returnedValue}. \n • compare result: ${(returnedValue == expectedReturn)} \n \n`)
                 this.conditionResult = (returnedValue == expectedReturn) ? true : false;            
             }
             return  this.conditionResult

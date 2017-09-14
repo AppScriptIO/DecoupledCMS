@@ -30,7 +30,7 @@ module.exports = new ModuleClassContext((methodInstanceName, superclass) => {
                 // reorder insertion points
                 if(this.insertionPoint) {
                     await this.insertionPoint.sort((prior, subsequent) => {
-                        return (prior.order <= subsequent.order) ? 1 : -1;
+                        return (prior.order <= subsequent.order) ? -1 : 1;
                     })
                 }
             }
@@ -49,8 +49,8 @@ module.exports = new ModuleClassContext((methodInstanceName, superclass) => {
         }
         async filterAndModifyChildrenArray(childrenArray, insertionPointKey, pathPointerKey) {
             return childrenArray.filter((child, index) => { // filter children that correspont to the current insertionpoint.
-                let result = (child.insertionPoint == insertionPointKey && child.insertionPathPointer == pathPointerKey)
-                if (result) childrenArray.splice(index, 1);
+                let result = (child.insertionPosition.insertionPoint == insertionPointKey && child.insertionPosition.insertionPathPointer == pathPointerKey)
+                // if (result) childrenArray.splice(index, 1); // was ment to increase the performance of the program, preventing rechecking of already checked array items. But it causes some issues.
                 return result
             })
         }

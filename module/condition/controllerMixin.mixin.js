@@ -31,8 +31,9 @@ export default Mixin(superclass => {
                 // if all subtrees rejected, get immediate callback
                 if(!callback && 'callback' in  nestedUnitInstance) callback = nestedUnitInstance.callback // fallback to immediate callback of instance.
             }
+
             // [4] Callback
-            return callback ? callback : false;
+            return (callback) ? callback : false;
         }        
     }
     return self

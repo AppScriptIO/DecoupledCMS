@@ -4,25 +4,24 @@ import path from 'path'
 import send from 'koa-sendfile' // Static files.
 import mount from 'koa-mount'
 import _ from 'underscore'
+import filesystem from 'fs'
 
 // returns a middleware object 
 export default function serveStaticSingleFile(setting) {
-
-    let middleware = async (context, next) => {
-        let filePath = path.resolve(path.normalize(`${context.instance.config.clientBasePath}${setting.filePath}`)) 
+    return async (context, next) => {
+        let filePath = await path.resolve(path.normalize(`${context.instance.config.clientBasePath}${setting.filePath}`)) 
         let argument = {
             layoutElement: 'webapp-layout-list'
         }
         let view = {};
-        if(setting.urlPath == context.path) {
-            return context.render(filePath, {
-                Application,
-                view,
-                argument
-            });
-        }
-        await next()
+        // let templateFunction = _.template(await filesystem.readFileSync(`${this.AppInstance.config.clientBasePath}/${unitInstance.templateFilePath}`, 'utf-8'))
+        
+        await context.render(filePath, {
+            Application,
+            view,
+            argument
+        });
+        // await next()
     }
-    return middleware
 }
 

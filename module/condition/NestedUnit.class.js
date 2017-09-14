@@ -41,7 +41,7 @@ module.exports = new ModuleClassContext((methodInstanceName, superclass) => {
             // Take into consideration the indirect children added from previous (inhereted) trees.
             // filteredTreeChildren + immediateNextChildren
             // let nextChildren;
-
+            
             // [2] check type of subtrees execution: race first, all ... .
             let executionTypeCallbackName;
             switch(insertionPoint.executionType) {
@@ -52,7 +52,7 @@ module.exports = new ModuleClassContext((methodInstanceName, superclass) => {
                     console.log('executionType doesn\'t match any kind.')
             }
             // [3] call handler on them.
-            callback = this[executionTypeCallbackName](filteredTreeChildren)
+            callback = await this[executionTypeCallbackName](filteredTreeChildren)
             // [4] return callback
             return callback ? callback : false;
         }
@@ -84,8 +84,8 @@ module.exports = new ModuleClassContext((methodInstanceName, superclass) => {
             let callback;
             await promiseProperRace(promiseArray).then((promiseReturnValueArray) => {
                 callback = promiseReturnValueArray[0] // as only one promise is return in the array.
-            }).catch(reason => { if(process.env.SZN_DEBUG == 'true') console.log(`🔀⚠️ promiseProperRace rejected because: ${reason}`) })
-            return callback
+            }).catch(reason => { if(process.env.SZN_DEBUG == 'true' && this.AppInstance.context.headers.debug == 'true') console.log(`🔀⚠️ promiseProperRace rejected because: ${reason}`) })
+            return callback ? callback : false;
         }
 
     }
