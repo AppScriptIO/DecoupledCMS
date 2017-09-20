@@ -19,18 +19,26 @@ export default ({setting}) => {
                 middlewareArray = await middlewareController.initializeNestedUnit({ nestedUnitKey: nestedUnitKey })
                 await implementMiddlewareOnModuleUsingJson(middlewareArray)(context, next)
                 isCalledNext = true
-                break;
+            break;
             case 'functionMiddleware':
                 // await context.instance.handleFunctionMiddleware(setting.name)
                 let filePath = setting.name
                 let middleware = await require(`${filePath}`)
                 await middleware(context, next)
                 isCalledNext = true
-                break;
+            break;
+            case 'portClassMethodMiddleware':
+                let methodName = setting.name
+                let token = await context.instance[methodName](context.request, context.response)
+                context.body = token
+            break;
             case 'document':
                 const documentKey = setting.name
                 await renderTemplateDocument({documentKey})(context, next)
-                break;
+            break;
+            case 'consoleLogMessage': 
+                console.log(setting.name)
+            break;
             default: 
                 if(process.env.SZN_DEBUG == 'true') console.log('SZN - %c Setting (callback) doesn\'t match any kind.', Application.config.style.red)
         }
