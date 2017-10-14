@@ -6,12 +6,15 @@ import serveStaticSingleFileRenderTemplate from 'appscript/utilityFunction/middl
 import send from 'koa-sendfile' // Static files.
 
 // returns a middleware object 
+// TODO: Change naming 'serverStaticDirectory' as this is no longer mounting directory, maybe should be 'serveStaticFileFromURl'
 export default function serveStaticDirectory(setting) {
     let middleware = async (context, next) => {
 
         let filePath = path.resolve(path.normalize(`${context.instance.config.clientBasePath}${context.path}`)) 
-        return send(context, filePath);
-        await next()
+        let fileStats = await send(context, filePath);
+        if(!fileStats || !fileStats.isFile()) { // if file doesn't exist then pass to the next middleware.
+            await next()
+        }
                 
         // let directoryPath = await path.resolve(path.normalize(`${context.instance.config.clientBasePath}${setting.directoryPath}`)) 
         // let mountMiddleware = mount(setting.urlPath, serverStatic(`${directoryPath}`, setting.options))
