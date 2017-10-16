@@ -1,7 +1,7 @@
 import path from 'path'
 
 export let 
-    serverBasePath = process.env.NODE_PATH || path.resolve(path.normalize(`${__dirname}/..`)),
+    serverBasePath = path.resolve(path.normalize(`${__dirname}/../../../`)),
     clientBasePath = path.resolve(path.normalize(`${serverBasePath}/../clientSide`)),
     DEPLOYMENT = process.env.DEPLOYMENT || 'development',
     PORT = (DEPLOYMENT == 'development') ? '9903' : process.env.PORT || 80,
