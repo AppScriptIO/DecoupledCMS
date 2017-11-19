@@ -1,7 +1,7 @@
 class ModuleClassContext {
     constructor(target, cacheName) {
       this.counter = 0
-      this.list = []
+      this.list = {}
       this.cacheName = cacheName
       return {
           proxified: this.proxify(target),
