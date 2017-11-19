@@ -6,11 +6,14 @@ import controllerMixin from './controllerMixin.mixin'
 
 let executedNumberUniqueIdentifier = 0 // allows to have a unique set of relations among different nested unit instances.
 
+const UnitImplementation = new ModuleClassContext({ target: UnitImplementationFunction })
+const NestedUnit = new ModuleClassContext({ target: NestedUnitFunction })
+
 module.exports = superclass => {
     let cachedUniqueName = 'MiddlewareController' + executedNumberUniqueIdentifier    
-    const cachedReusableNestedUnit = reusableNestedUnit(cachedUniqueName, superclass, controllerMixin)
-    const UnitImplementation = (new ModuleClassContext(UnitImplementationFunction, cachedUniqueName)).proxified
-    const NestedUnit = (new ModuleClassContext(NestedUnitFunction, cachedUniqueName)).proxified
+    const cachedReusableNestedUnit = reusableNestedUnit({ methodInstanceName: cachedUniqueName, superclass, controllerMixin })
+    NestedUnit.moduleContext.cacheName = cachedUniqueName
+    UnitImplementation.moduleContext.cacheName = cachedUniqueName
     
     UnitImplementation(cachedReusableNestedUnit.Unit)
     NestedUnit(cachedReusableNestedUnit.NestedUnit)

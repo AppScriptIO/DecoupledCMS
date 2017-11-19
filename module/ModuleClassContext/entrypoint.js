@@ -1,37 +1,49 @@
+/**
+ * Caches modules on demand using a unique key name. 
+ * Usage options: 
+ *  • With key - Once during app initialization, where references are saved (hard link) - e.g. condition, middleware.
+ *  • Anonymous - Several times during app runtime, where instances should be garbage collected - e.g. template.
+ */
+
 class ModuleClassContext {
-    constructor(target, cacheName) {
-      this.counter = 0
-      this.list = {}
-      this.cacheName = cacheName
-      return {
-          proxified: this.proxify(target),
-          cacheObject: this
-      }
+    constructor({ target, cacheName = null }) {
+        /* this = cache module context */
+        this.counter = 0
+        this.list = {}
+        this.cacheName = cacheName
+        let proxified = this.proxify(target)
+        return proxified
     }
     
     proxify(target) {
-      let cache = this
+      let cacheContext = this
       let handler = {
+
+        get: (target, property, receiver) => {
+            if(property == 'moduleContext') return cacheContext;
+        },
+
         apply: (target, thisArg, argumentsList) => {
             let instance
-            cache.counter ++
-            if(cache.cacheName && typeof cache.list[cache.cacheName] !== 'undefined') {
-                instance = cache.list[cache.cacheName]
-            } else if(cache.cacheName) {
+            cacheContext.counter ++
+            if(cacheContext.cacheName && cacheContext.list[cacheContext.cacheName]) {
+                instance = cacheContext.list[cacheContext.cacheName]
+            } else if(cacheContext.cacheName) {
                 if(typeof argumentsList[0] == 'object' ) {
-                    cache.list[cache.cacheName] = target.call(thisArg, Object.assign({ methodInstanceName: cache.cacheName }, argumentsList[0]))
+                    cacheContext.list[cacheContext.cacheName] = target.call(thisArg, Object.assign({ methodInstanceName: cacheContext.cacheName }, argumentsList[0]))
                 } else {
-                    cache.list[cache.cacheName] = target.call(thisArg, ...argumentsList)
+                    cacheContext.list[cacheContext.cacheName] = target.call(thisArg, ...argumentsList)
                 }
-                instance = cache.list[cache.cacheName]
+                instance = cacheContext.list[cacheContext.cacheName]
             } else {
-                instance = target.call(thisArg, argumentsList)
+                instance = target.call(thisArg, ...argumentsList)
             }
             return instance
         }
+
       }
       return new Proxy(target, handler)
     }
 }
 
-  export default ModuleClassContext
+export default ModuleClassContext

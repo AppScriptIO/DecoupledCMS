@@ -6,11 +6,19 @@ const NestedUnitFunction = require('./NestedUnit.class.js')
 
 let executedNumberUniqueIdentifier = 0 // allows to have a unique set of relations among different nested unit instances.
 
+const NestedUnit = new ModuleClassContext({ target: NestedUnitFunction })
+const UnitImplementation = new ModuleClassContext({ target: UnitImplementationFunction })
+
 module.exports = superclass => {
     let cachedUniqueName = 'TemplateController' + executedNumberUniqueIdentifier    
-    const cachedReusableNestedUnit = reusableNestedUnit(cachedUniqueName, superclass, controllerMixin)
-    const NestedUnit = (new ModuleClassContext(NestedUnitFunction, cachedUniqueName)).proxified
-    const UnitImplementation = (new ModuleClassContext(UnitImplementationFunction, cachedUniqueName)).proxified
+    const cachedReusableNestedUnit = reusableNestedUnit({ 
+        methodInstanceName: cachedUniqueName, 
+        superclass, 
+        controllerMixin 
+    })
+    NestedUnit.moduleContext.cacheName = cachedUniqueName
+    UnitImplementation.moduleContext.cacheName = cachedUniqueName
+    
     UnitImplementation(cachedReusableNestedUnit.Unit)
     NestedUnit(cachedReusableNestedUnit.NestedUnit)
     cachedReusableNestedUnit.Controller.eventEmitter.emit('initializationEnd') // register subclasses that are listening for the event to register themselves in extendedSubclass.static array.

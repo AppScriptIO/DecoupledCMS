@@ -1,15 +1,18 @@
 import assert from 'assert'
 import ModuleClassContext from './entrypoint.js'
 
+const func = function (superclass) {
+    return class extends superclass {}
+}
+const superclass = class {}    
+
 describe('Module Cacher', () => {
+    beforeEach(() => {
+    })
+
   describe('Caching module in different instances', () => {
 
-    const func = function (superclass) {
-        return class extends superclass {}
-    }
-    const superclass = class {}
-
-    let { cacheObject: context, proxified: proxiedFunc } = new ModuleClassContext(func, '1')
+    let proxiedFunc  = new ModuleClassContext({ target: func, cacheName: '1'})
     
     let moduleInstance1 = proxiedFunc(superclass)
     let moduleInstance2 = proxiedFunc(superclass)
@@ -24,9 +27,22 @@ describe('Module Cacher', () => {
     })
     
     it('should create a single instance and cache it inside list object', () => {
-        assert.strictEqual(Object.keys(context.list).length, 1)
+        assert.strictEqual(Object.keys(proxiedFunc.moduleContext.list).length, 1)
     })
     
+  })
+
+  describe('Using module without caching reference', () => {   
+    let proxiedFunc  = new ModuleClassContext({ target: func })
+    
+    let moduleInstance1 = proxiedFunc(superclass)
+    let moduleInstance2 = proxiedFunc(superclass)
+    let moduleInstance3 = proxiedFunc(superclass)
+
+    it('should create different instances', () => {
+        assert.notStrictEqual(moduleInstance1, moduleInstance2)
+        assert.notStrictEqual(moduleInstance1, moduleInstance3)
+    })
   })
 })
 
