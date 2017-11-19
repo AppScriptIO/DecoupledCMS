@@ -1,6 +1,5 @@
 import { mix } from 'mixwith'
 import commonMethod from './commonMethod.mixin'
-const ModuleClassContext = require('appscript/module/ModuleClassContext')
 const EventEmitter = require('events')
 import createInstance from 'appscript/module/createInstance.staticMethod'
 import { usingGenericInstance as populateInstancePropertyFromJson, usingThis as populateInstancePropertyFromJson_this } from 'appscript/module/populateInstancePropertyFromJson.method'
@@ -10,8 +9,13 @@ import addStaticSubclassToClassArray from 'appscript/module/addStaticSubclassToC
  * @class
  * @usage new instance is created for each check.
  */
-module.exports = new ModuleClassContext((methodInstanceName, superclass, controllerMixin) => {
-    let mixinArray = [commonMethod]
+module.exports = ({
+    methodInstanceName,
+    superclass, 
+    mixin
+}) => {
+    let controllerMixin = mixin
+    let mixinArray = [/*commonMethod*/]
     const self = class NestedUnitController extends mix(superclass).with(...mixinArray) {
 
         static eventEmitter = new EventEmitter() // i.e. new EventEmitter()
@@ -86,5 +90,5 @@ module.exports = new ModuleClassContext((methodInstanceName, superclass, control
     self.initializeStaticClass()    
      // add controller methods for the specific module that uses them.
     return controllerMixin ?  controllerMixin(self) : self;
-})
+}
 

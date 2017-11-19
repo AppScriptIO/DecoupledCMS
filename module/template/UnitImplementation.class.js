@@ -1,4 +1,3 @@
-const ModuleClassContext = require('appscript/module/ModuleClassContext')
 let getTableDocument = {
     generate: require('appscript/utilityFunction/database/query/getTableDocument.query.js'),
     instance: []
@@ -6,7 +5,7 @@ let getTableDocument = {
 getTableDocument.instance['template_viewImplementation'] = getTableDocument.generate('template_viewImplementation')
 getTableDocument.instance['template_templateFile'] = getTableDocument.generate('template_templateFile')
 
-module.exports = new ModuleClassContext((methodInstanceName, superclass) => {
+module.exports = superclass => {
     const self = class UnitImplementation extends superclass {
         async pupolateTemplateFile() {
             // [1] get valueReturningFile
@@ -18,4 +17,4 @@ module.exports = new ModuleClassContext((methodInstanceName, superclass) => {
         }
     }
     self.initializeStaticClass(getTableDocument.instance['template_viewImplementation'])
-})
+}

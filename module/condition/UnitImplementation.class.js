@@ -1,4 +1,3 @@
-const ModuleClassContext = require('appscript/module/ModuleClassContext')
 let getTableDocument = {
     generate: require('appscript/utilityFunction/database/query/getTableDocument.query.js'),
     instance: []
@@ -6,7 +5,7 @@ let getTableDocument = {
 getTableDocument.instance['condition_valueReturningFile'] = getTableDocument.generate('condition_valueReturningFile')
 getTableDocument.instance['condition_conditionImplementation'] = getTableDocument.generate('condition_conditionImplementation')
 
-module.exports = new ModuleClassContext((methodInstanceName, superclass) => {
+module.exports = superclass => {
     const self = class UnitImplementation extends superclass {
         async checkCondition() {
             // [1] get valueReturningFile
@@ -26,4 +25,4 @@ module.exports = new ModuleClassContext((methodInstanceName, superclass) => {
         }
     }
     self.initializeStaticClass(getTableDocument.instance['condition_conditionImplementation'])
-})
+}

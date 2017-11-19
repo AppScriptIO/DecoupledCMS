@@ -4,7 +4,7 @@ import { Mixin } from 'mixwith'
  * @description Extends a class by super class and adds some common functionality.
  */
 export default Mixin(superclass => {
-    const self = class extends superclass {
+    const self = class ConditionMixin extends superclass {
 
         /**
          * @description when first called "this" context is assigned to the AppInstance for the comming request. And on subsequest calls it is assigned to the nestedUnit instance.
@@ -35,6 +35,9 @@ export default Mixin(superclass => {
             // [4] Callback
             return (callback) ? callback : false;
         }        
+    }
+    self.prototype.meta = {
+        description: 'Condition prototype object'
     }
     return self
 })

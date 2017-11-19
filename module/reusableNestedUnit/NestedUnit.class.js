@@ -1,6 +1,6 @@
-const ModuleClassContext = require('appscript/module/ModuleClassContext')
-
-module.exports = new ModuleClassContext((methodInstanceName, superclass) => {
+module.exports = ({
+    superclass
+}) => {
     const self = class NestedUnitImplementation extends superclass {
         constructor(databaseDocumentKey, AppInstance) {
             super(false, {portAppInstance: AppInstance})
@@ -111,4 +111,4 @@ module.exports = new ModuleClassContext((methodInstanceName, superclass) => {
         
     }
     return self
-})
+}

@@ -7,7 +7,7 @@ import filesystem from 'fs'
  * @description Extends a class by super class and adds some common functionality.
  */
 export default Mixin(superclass => {
-    const Class = class extends superclass {
+    const self = class TemplateMixin extends superclass {
 
         renderedContentString(viewName, viewArray) {
             // loop throught the strings array to combine them and print string code to the file.
@@ -48,5 +48,8 @@ export default Mixin(superclass => {
             return renderedContent
         }
     }
-    return Class
+    self.prototype.meta = {
+        description: 'Template prototype object'
+    }
+    return self
 })

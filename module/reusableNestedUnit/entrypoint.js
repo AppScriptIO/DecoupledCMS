@@ -1,16 +1,31 @@
-import NestedUnitImplementation from './NestedUnitImplementation.class.js' // Tree
-import Unit from './Unit.class.js' // Unit
-import NestedUnitController from './NestedUnitController.class.js'
+const ModuleClassContext = require('appscript/module/ModuleClassContext')
+import ControllerFunction from './Controller.class.js'
+import NestedUnitFunction from './NestedUnit.class.js' // Tree
+import UnitFunction from './Unit.class.js' // Unit
+
+
 
 function createStaticInstanceClasses(methodInstanceName, superclass, controllerMixin) {
-    const CachedNestedUnitController = NestedUnitController.getMethodInstance(methodInstanceName, [superclass, controllerMixin])
-    const CachedUnit = Unit.getMethodInstance(methodInstanceName, [CachedNestedUnitController])
-    const CachedNestedUnitImplementation = NestedUnitImplementation.getMethodInstance(methodInstanceName, [CachedNestedUnitController])
+    const Controller = (new ModuleClassContext(ControllerFunction, methodInstanceName)).proxified
+    const NestedUnit = (new ModuleClassContext(NestedUnitFunction, methodInstanceName)).proxified
+    const Unit = (new ModuleClassContext(UnitFunction, methodInstanceName)).proxified
     
+    let cached = {}
+    cached['Controller'] = Controller({
+        superclass,
+        mixin: controllerMixin
+    })
+    cached['NestedUnit'] = NestedUnit({
+        superclass: cached.Controller
+    })
+    cached['Unit'] = Unit({
+        superclass: cached.Controller
+    })
+       
     return {
-        NestedUnitController: CachedNestedUnitController,
-        NestedUnitImplementation: CachedNestedUnitImplementation,
-        Unit: CachedUnit
+        Controller: cached.Controller,
+        NestedUnit: cached.NestedUnit,
+        Unit: cached.Unit
     }
 }
 

@@ -4,7 +4,7 @@ import { Mixin } from 'mixwith'
  * @description Extends a class by super class and adds some common functionality.
  */
 export default Mixin(superclass => {
-    const Class = class extends superclass {
+    const self = class MiddlewareMixin extends superclass {
         
         async initializeNestedUnit({ nestedUnitKey, controllerInstance = this, additionalChildNestedUnit = [], pathPointerKey = null }) { // Entrypoint Instance
             // [1] get nestedUnit
@@ -28,5 +28,8 @@ export default Mixin(superclass => {
             return middlewareArray
         }
     }
-    return Class
+    self.prototype.meta = {
+        description: 'Middleware prototype object'
+    }
+    return self
 })

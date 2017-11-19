@@ -1,4 +1,3 @@
-const ModuleClassContext = require('appscript/module/ModuleClassContext')
 // import { Condition } from 'appscript/module/condition'
 import r from 'rethinkdb'
 import _ from 'underscore'
@@ -11,7 +10,7 @@ let getTableDocument = {
 getTableDocument.instance['template_viewNestedUnit'] = getTableDocument.generate('template_viewNestedUnit')
 import promiseProperRace from 'appscript/utilityFunction/promiseProperRace.js'
 
-module.exports = new ModuleClassContext((methodInstanceName, superclass) => {
+module.exports = superclass => {
     const self = class NestedUnit extends superclass {
         // static getDocumentQuery(connection, conditionTreeKey) {
         //     getConditionTreeQuery(connection, conditionTreeKey)
@@ -87,4 +86,4 @@ module.exports = new ModuleClassContext((methodInstanceName, superclass) => {
 
     }
     self.initializeStaticClass(getTableDocument.instance['template_viewNestedUnit'])
-})
+}
