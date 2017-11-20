@@ -17,4 +17,5 @@ module.exports = superclass => {
         }
     }
     self.initializeStaticClass(getTableDocument.instance['middleware_middlewareImplementation'])
+    return self
 }

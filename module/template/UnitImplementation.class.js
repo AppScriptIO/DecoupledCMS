@@ -17,4 +17,5 @@ module.exports = superclass => {
         }
     }
     self.initializeStaticClass(getTableDocument.instance['template_viewImplementation'])
+    return self
 }

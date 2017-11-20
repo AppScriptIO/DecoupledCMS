@@ -94,4 +94,5 @@ module.exports = superclass => {
         } 
     }
     self.initializeStaticClass(getTableDocument.instance['middleware_middlewareNestedUnit'])
+    return self
 }

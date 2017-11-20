@@ -2,7 +2,7 @@
  * @class
  * @description class used to store module instances as a way to cache them by reference key name in the array. Giving essentially a context for each saved module instance.
  **/
-const self = class ModuleClassContext {
+const self = class ModuleContext {
     
     methodInstance = []
     static methodInstance = []
@@ -20,7 +20,7 @@ const self = class ModuleClassContext {
      * 
      * 
      * @param {string} [methodInstanceName=null] key name of saved or being saved instance.
-     * @param {array} [args=[]] parameters to be called for createModuleInstance i.e. the function passed for creating ModuleClassContext class instance.
+     * @param {array} [args=[]] parameters to be called for createModuleInstance i.e. the function passed for creating ModuleContext class instance.
      * @param {boolean} [importerName=null] debug on/off.
      * @returns instance of a module, either created newly or returned from cache.
      */

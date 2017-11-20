@@ -86,4 +86,5 @@ module.exports = superclass => {
 
     }
     self.initializeStaticClass(getTableDocument.instance['template_viewNestedUnit'])
+    return self
 }

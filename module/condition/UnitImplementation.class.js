@@ -25,4 +25,5 @@ module.exports = superclass => {
         }
     }
     self.initializeStaticClass(getTableDocument.instance['condition_conditionImplementation'])
+    return self
 }

@@ -1,22 +1,36 @@
-const ModuleClassContext = require('appscript/module/ModuleClassContext')
+const ModuleContext = require('appscript/module/ModuleContext')
 import ControllerFunction from './Controller.class.js'
 import NestedUnitFunction from './NestedUnit.class.js' // Tree
 import UnitFunction from './Unit.class.js' // Unit
 
-const Controller = new ModuleClassContext({ target: ControllerFunction })
-const NestedUnit = new ModuleClassContext({ target: NestedUnitFunction })
-const Unit = new ModuleClassContext({ target: UnitFunction })
+let counter = [] // allows to have a unique set of relations among different nested unit instances.
 
 function createStaticInstanceClasses({
     methodInstanceName = null, 
     superclass, 
     controllerMixin
-}) {
-    
+}) {  
+    let Controller, NestedUnit, Unit;
     if(methodInstanceName) {
-        Controller.moduleContext.cacheName = methodInstanceName
-        NestedUnit.moduleContext.cacheName = methodInstanceName
-        Unit.moduleContext.cacheName = methodInstanceName
+        const ModuleContextClass = ModuleContext({ referenceName: methodInstanceName })
+        counter[methodInstanceName] = counter[methodInstanceName] || 0
+        Controller = new ModuleContextClass({ 
+            target: ControllerFunction, 
+            cacheName: `ReusableController${counter[methodInstanceName]}` 
+        })
+        NestedUnit = new ModuleContextClass({ 
+            target: NestedUnitFunction, 
+            cacheName: `ReusableNestedUnit${counter[methodInstanceName]}`
+        })
+        Unit = new ModuleContextClass({ 
+            target: UnitFunction,
+            cacheName: `ReusableUnit${counter[methodInstanceName]}`
+        })
+        counter[methodInstanceName] ++ 
+    } else {
+        Controller = new ModuleContext({ target: ControllerFunction })
+        NestedUnit = new ModuleContext({ target: NestedUnitFunction })
+        Unit = new ModuleContext({ target: UnitFunction })
     }
     
     let cached = {}

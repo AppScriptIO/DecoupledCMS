@@ -89,4 +89,5 @@ module.exports = superclass => {
 
     }
     self.initializeStaticClass(getTableDocument.instance['condition_conditionTree'])
+    return self
 }
