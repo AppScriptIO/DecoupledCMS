@@ -1,14 +1,14 @@
 module.exports = ({
     superclass
 }) => {
-    const self = class NestedUnitImplementation extends superclass {
+    let self = class NestedUnitImplementation extends superclass {
         constructor(databaseDocumentKey, AppInstance) {
             super(false, {portAppInstance: AppInstance})
             this.key = databaseDocumentKey
             return this
         }
         static getDocumentQuery;
-        static initializeStaticClass(getTableDocument) {
+        static initializeStaticClassControllerLevel(getTableDocument) {
             let Class = this
             Class.eventEmitter.on('initializationEnd', () => {
                 let ClassObject = {}
@@ -110,5 +110,25 @@ module.exports = ({
         }
         
     }
+    self.prototype.meta = {
+        description: 'ReusableNestedUnit prototype object'
+    }
+    self = new Proxy(self, {
+        construct: function(target, argumentsList, newTarget) {
+            let instance = newTarget(...argumentsList)
+            instance.meta = {
+                description: 'RNestedUnit instance/object'
+            }
+            return instance 
+        },
+        apply: function(target, thisArg, argumentsList) {
+            let instance = target.call(thisArg, ...argumentsList)
+            instance.meta = {
+                description: 'RNestedUnit instance/object'
+            }
+            return instance
+        }
+    });
+
     return self
 }

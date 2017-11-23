@@ -13,8 +13,6 @@ export default new Proxy(()=>{}, {
     }, 
     construct: (target, argumentsList, newTarget) => {
         const Class = contextReference()
-        console.log(list)        
-        console.log(Class.list)        
         return new Class(...argumentsList)
     }
         

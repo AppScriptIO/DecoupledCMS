@@ -11,7 +11,8 @@ getTableDocument.instance['template_viewNestedUnit'] = getTableDocument.generate
 import promiseProperRace from 'appscript/utilityFunction/promiseProperRace.js'
 
 module.exports = superclass => {
-    const self = class NestedUnit extends superclass {
+    let self = class NestedUnit extends superclass {
+
         // static getDocumentQuery(connection, conditionTreeKey) {
         //     getConditionTreeQuery(connection, conditionTreeKey)
         // }
@@ -85,6 +86,26 @@ module.exports = superclass => {
         }
 
     }
-    self.initializeStaticClass(getTableDocument.instance['template_viewNestedUnit'])
+    self.initializeStaticClassControllerLevel(getTableDocument.instance['template_viewNestedUnit'])
+
+    self.prototype.meta = {
+        description: 'TemplateNestedUnit prototype object'
+    }
+    self = new Proxy(self, {
+        construct: function(target, argumentsList, newTarget) {
+            let instance = newTarget(...argumentsList)
+            instance.meta = {
+                description: 'TemplateNestedUnit instance/object'
+            }
+            return instance 
+        },
+        apply: function(target, thisArg, argumentsList) {
+            let instance = target.call(thisArg, ...argumentsList)
+            instance.meta = {
+                description: 'TemplateNestedUnit instance/object'
+            }
+            return instance
+        }
+    });
     return self
 }

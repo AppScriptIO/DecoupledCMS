@@ -10,7 +10,7 @@ const ModuleContextClass = ModuleContext({ referenceName: 'Middleware' })
 
 module.exports = superclass => {
 
-    const NestedUnit = new ModuleContextClass({ 
+    const NestedUnit = new ModuleContextClass({
         target: NestedUnitFunction, 
         cacheName: `NestedUnit${counter}` 
     })

@@ -8,7 +8,7 @@ getTableDocument.instance['condition_conditionTree'] = getTableDocument.generate
 import promiseProperRace from 'appscript/utilityFunction/promiseProperRace.js'
 
 module.exports = superclass => {
-    const self = class NestedUnit extends superclass {
+    let self = class NestedUnit extends superclass {
         // static getDocumentQuery(connection, conditionTreeKey) {
         //     getConditionTreeQuery(connection, conditionTreeKey)
         // }
@@ -88,6 +88,28 @@ module.exports = superclass => {
         }
 
     }
-    self.initializeStaticClass(getTableDocument.instance['condition_conditionTree'])
+    self.initializeStaticClassControllerLevel(getTableDocument.instance['condition_conditionTree'])
+    self.prototype.meta = {
+        description: 'ReusableNestedUnit prototype object'
+    }
+    self = new Proxy(self, {
+        construct: function(target, argumentsList, newTarget) {
+            console.log('construct')
+            let instance = newTarget(...argumentsList)
+            instance.meta = {
+                description: 'ConditionNestedUnit instance/object'
+            }
+            return instance 
+        },
+        apply: function(target, thisArg, argumentsList) {
+            console.log('apply')
+            let instance = target.call(thisArg, ...argumentsList)
+            instance.meta = {
+                description: 'ConditionNestedUnit instance/object'
+            }
+            return instance
+        }
+    });
+
     return self
 }

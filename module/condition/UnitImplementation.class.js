@@ -6,7 +6,7 @@ getTableDocument.instance['condition_valueReturningFile'] = getTableDocument.gen
 getTableDocument.instance['condition_conditionImplementation'] = getTableDocument.generate('condition_conditionImplementation')
 
 module.exports = superclass => {
-    const self = class UnitImplementation extends superclass {
+    let self = class UnitImplementation extends superclass {
         async checkCondition() {
             // [1] get valueReturningFile
             let valueReturningFileKey = this.valueReturningFileKey
@@ -24,6 +24,27 @@ module.exports = superclass => {
             return  this.conditionResult
         }
     }
-    self.initializeStaticClass(getTableDocument.instance['condition_conditionImplementation'])
+    self.initializeStaticClassControllerLevel(getTableDocument.instance['condition_conditionImplementation'])
+    self.prototype.meta = {
+        description: 'ConditionUnit prototype object'
+    }
+    self = new Proxy(self, {
+        construct: function(target, argumentsList, newTarget) {
+            console.log('construct')
+            let instance = newTarget(...argumentsList)
+            instance.meta = {
+                description: 'ConditionUnit instance/object'
+            }
+            return instance 
+        },
+        apply: function(target, thisArg, argumentsList) {
+            console.log('apply')
+            let instance = target.call(thisArg, ...argumentsList)
+            instance.meta = {
+                description: 'ConditionUnit instance/object'
+            }
+            return instance
+        }
+    });
     return self
 }

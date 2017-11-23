@@ -11,7 +11,16 @@ getTableDocument.instance['middleware_middlewareNestedUnit'] = getTableDocument.
 import promiseProperRace from 'appscript/utilityFunction/promiseProperRace.js'
 
 module.exports = superclass => {
-    const self = class NestedUnit extends superclass {
+    let self = class NestedUnit extends superclass {
+
+        constructor() {
+            return super(...arguments)
+        }
+
+        static meta = {
+            description: 'Static Middleware NU'
+        }
+
         // static getDocumentQuery(connection, conditionTreeKey) {
         //     getConditionTreeQuery(connection, conditionTreeKey)
         // }
@@ -93,6 +102,25 @@ module.exports = superclass => {
             return middlewareArray
         } 
     }
-    self.initializeStaticClass(getTableDocument.instance['middleware_middlewareNestedUnit'])
+    self.initializeStaticClassControllerLevel(getTableDocument.instance['middleware_middlewareNestedUnit'])
+    self.prototype.meta = {
+        description: 'MiddlewareNestedUnit prototype object'
+    }
+    self = new Proxy(self, {
+        construct: function(target, argumentsList, newTarget) {
+            let instance = newTarget(...argumentsList)
+            instance.meta = {
+                description: 'MiddlewareNestedUnit instance/object'
+            }
+            return instance 
+        },
+        apply: function(target, thisArg, argumentsList) {
+            let instance = target.call(thisArg, ...argumentsList)
+            instance.meta = {
+                description: 'MiddlewareNestedUnit instance/object'
+            }
+            return instance
+        }
+    });
     return self
 }

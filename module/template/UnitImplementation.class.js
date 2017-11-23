@@ -6,7 +6,7 @@ getTableDocument.instance['template_viewImplementation'] = getTableDocument.gene
 getTableDocument.instance['template_templateFile'] = getTableDocument.generate('template_templateFile')
 
 module.exports = superclass => {
-    const self = class UnitImplementation extends superclass {
+    let self = class UnitImplementation extends superclass {
         async pupolateTemplateFile() {
             // [1] get valueReturningFile
             let templateFileKey = this.templateFile
@@ -16,6 +16,27 @@ module.exports = superclass => {
             }
         }
     }
-    self.initializeStaticClass(getTableDocument.instance['template_viewImplementation'])
+    self.initializeStaticClassControllerLevel(getTableDocument.instance['template_viewImplementation'])
+
+    self.prototype.meta = {
+        description: 'TemplateUnit prototype object'
+    }
+    self = new Proxy(self, {
+        construct: function(target, argumentsList, newTarget) {
+            let instance = newTarget(...argumentsList)
+            instance.meta = {
+                description: 'TemplateUnit instance/object'
+            }
+            return instance 
+        },
+        apply: function(target, thisArg, argumentsList) {
+            let instance = target.call(thisArg, ...argumentsList)
+            instance.meta = {
+                description: 'TemplateUnit instance/object'
+            }
+            return instance
+        }
+    });
+
     return self
 }

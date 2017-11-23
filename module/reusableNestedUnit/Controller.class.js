@@ -11,12 +11,14 @@ import addStaticSubclassToClassArray from 'appscript/module/addStaticSubclassToC
  */
 module.exports = ({
     methodInstanceName,
-    superclass, 
+    superclass,
     mixin
 }) => {
-    let controllerMixin = mixin
     let mixinArray = [/*commonMethod*/]
-    const self = class NestedUnitController extends mix(superclass).with(...mixinArray) {
+    let self = class NestedUnitController extends mix(superclass).with(...mixinArray) {
+        static meta = {
+            description: 'Static Reusable Controller'
+        }
 
         static eventEmitter = new EventEmitter() // i.e. new EventEmitter()
         static extendedSubclass = {
@@ -87,8 +89,34 @@ module.exports = ({
     self.populateInstancePropertyFromJson = populateInstancePropertyFromJson
     self.prototype.populateInstancePropertyFromJson_this = populateInstancePropertyFromJson_this
 
-    self.initializeStaticClass()    
-     // add controller methods for the specific module that uses them.
-    return controllerMixin ?  controllerMixin(self) : self;
+    self.initializeStaticClass()
+
+    // Mutation observer on array for debugging purposes.
+    // self.extendedSubclass.static = new Proxy(self.extendedSubclass.static, {
+    //     set: function(target, property, value, receiver) {      
+    //         target[property] = value;
+    //         console.log(methodInstanceName)
+    //         console.log(target)
+    //       return true;
+    //     }
+    // })
+    
+    self.prototype.meta = {
+        description: 'ReusableController prototype object'
+    }
+    self = new Proxy(self, {
+        construct: function(target, argumentsList, newTarget) {
+            let instance = newTarget(...argumentsList)
+            instance.meta = {
+                description: 'xController instance/object'
+            }
+            return instance 
+        }
+    });
+
+    // add controller methods for the specific module that uses them.
+    return mixin ?  
+        mixin(self) :  // return Specific implementation Controller
+        self; // return Reusable nested unit
 }
 

@@ -1,12 +1,12 @@
 module.exports = ({ superclass }) => {
-    const self = class Unit extends superclass {
+    let self = class Unit extends superclass {
         constructor(databaseDocumentKey, AppInstance) {
             super(false, {portAppInstance: AppInstance})
             this.key = databaseDocumentKey
             return this
         }
         static getDocumentQuery;
-        static initializeStaticClass(getTableDocument) {
+        static initializeStaticClassControllerLevel(getTableDocument) {
             let Class = this
             Class.eventEmitter.on('initializationEnd', () => {
                 let ClassObject = {}
@@ -27,5 +27,25 @@ module.exports = ({ superclass }) => {
             }
         }
     }
+    self.prototype.meta = {
+        description: 'ReusableUnit prototype object'
+    }
+    self = new Proxy(self, {
+        construct: function(target, argumentsList, newTarget) {
+            let instance = newTarget(...argumentsList)
+            instance.meta = {
+                description: 'RUnit instance/object'
+            }
+            return instance 
+        },
+        apply: function(target, thisArg, argumentsList) {
+            let instance = target.call(thisArg, ...argumentsList)
+            instance.meta = {
+                description: 'RUnit instance/object'
+            }
+            return instance
+        }
+    });
     return self
+
 }

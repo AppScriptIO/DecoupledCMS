@@ -9,28 +9,21 @@ function createStaticInstanceClasses({
     methodInstanceName = null, 
     superclass, 
     controllerMixin
-}) {  
+}) {
     let Controller, NestedUnit, Unit;
+    
+    const MC = (methodInstanceName) ? ModuleContext({ referenceName: methodInstanceName }) : ModuleContext;
+    
+    Controller = new MC({ target: ControllerFunction })
+    NestedUnit = new MC({ target: NestedUnitFunction })
+    Unit = new MC({ target: UnitFunction })
+
     if(methodInstanceName) {
-        const ModuleContextClass = ModuleContext({ referenceName: methodInstanceName })
         counter[methodInstanceName] = counter[methodInstanceName] || 0
-        Controller = new ModuleContextClass({ 
-            target: ControllerFunction, 
-            cacheName: `ReusableController${counter[methodInstanceName]}` 
-        })
-        NestedUnit = new ModuleContextClass({ 
-            target: NestedUnitFunction, 
-            cacheName: `ReusableNestedUnit${counter[methodInstanceName]}`
-        })
-        Unit = new ModuleContextClass({ 
-            target: UnitFunction,
-            cacheName: `ReusableUnit${counter[methodInstanceName]}`
-        })
+        Controller.moduleContext.cacheName = `ReusableController${counter[methodInstanceName]}`
+        NestedUnit.moduleContext.cacheName = `ReusableNestedUnit${counter[methodInstanceName]}`
+        Unit.moduleContext.cacheName = `ReusableUnit${counter[methodInstanceName]}`
         counter[methodInstanceName] ++ 
-    } else {
-        Controller = new ModuleContext({ target: ControllerFunction })
-        NestedUnit = new ModuleContext({ target: NestedUnitFunction })
-        Unit = new ModuleContext({ target: UnitFunction })
     }
     
     let cached = {}
