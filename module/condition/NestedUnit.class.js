@@ -90,6 +90,7 @@ module.exports = superclass => {
 
     }
     self.initializeStaticClassControllerLevel(getTableDocument.instance['condition_conditionTree'])
+    
     self = prototypeChainDebug(self)
     
     return self

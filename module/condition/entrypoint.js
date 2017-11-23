@@ -8,7 +8,7 @@ let counter = 0 // allows to have a unique set of relations among different nest
 
 const ModuleContextClass = ModuleContext({ referenceName: 'Condition' })
 
-module.exports = superclass => {
+module.exports = ({ superclass = Object } = {}) => {
 
     const NestedUnit = new ModuleContextClass({ 
         target: NestedUnitFunction, 

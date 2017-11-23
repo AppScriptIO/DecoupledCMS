@@ -1,7 +1,7 @@
 import Application from 'appscript'
 import renderTemplateDocument from 'appscript/utilityFunction/middleware/renderTemplateDocument.middleware.js'
 import implementMiddlewareOnModuleUsingJson from 'appscript/utilityFunction/middleware/implementMiddlewareOnModuleUsingJson.js' // Middleware extending server functionality
-const MiddlewareController = require('appscript/module/middleware')(Application)
+const MiddlewareController = require('appscript/module/middleware')({superclass: Application})
 
 /**
  * @param {object} Setting holds the json configurations. Where each json is composed of setting.type, setting.name.

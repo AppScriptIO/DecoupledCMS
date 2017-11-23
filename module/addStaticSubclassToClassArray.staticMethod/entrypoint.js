@@ -13,3 +13,10 @@
         self.extendedSubclass.static[key] = value
     });
 }
+
+export let updated = function ({ keyName = null, subclass }) {
+    const self = this
+    if(!keyName) return;
+    self.extendedSubclass.static[keyName] = subclass
+}
+

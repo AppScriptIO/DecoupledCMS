@@ -6,7 +6,7 @@ const NestedUnitFunction = require('./NestedUnit.class.js')
 
 let counter = 0 // allows to have a unique set of relations among different nested unit instances.
 
-module.exports = superclass => {
+module.exports = ({ superclass = Object } = {}) => {
 
     const NestedUnit = new ModuleContext({
         target: NestedUnitFunction

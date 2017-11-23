@@ -7,7 +7,7 @@ let getTableDocument = {
 getTableDocument.instance['template_documentBackend'] = getTableDocument.generate('template_documentBackend')
 
 export default ({ documentKey }) => {
-    let TemplateControllerCachedInstance = TemplateController(Application)
+    let TemplateControllerCachedInstance = TemplateController({superclass: Application})
     return async (context, next) => {
         let connection = Application.rethinkdbConnection
         let documentObject = await getTableDocument.instance['template_documentBackend'](connection, documentKey)

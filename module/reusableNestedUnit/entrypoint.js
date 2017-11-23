@@ -7,8 +7,8 @@ let counter = [] // allows to have a unique set of relations among different nes
 
 function createStaticInstanceClasses({
     methodInstanceName = null, 
-    superclass, 
-    controllerMixin
+    superclass = Object, 
+    controllerMixin = null
 }) {
     let Controller, NestedUnit, Unit;
     

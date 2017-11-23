@@ -27,6 +27,7 @@ module.exports = superclass => {
         }
     }
     self.initializeStaticClassControllerLevel(getTableDocument.instance['condition_conditionImplementation'])
+    
     self = prototypeChainDebug(self)
     
     return self

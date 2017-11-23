@@ -49,6 +49,13 @@ const self = class Application extends EventEmitter {
     }
 
 // Used by extended subclasses:
+    static addStaticClassToSubclassArray({ keyName = null, subclass }) {
+        if (keyName) {
+            self.eventEmitter.on('initializationEnd', () => {
+                self.extendedSubclass.static[keyName] = subclass
+            })
+        }
+    }
 
     static initializeStaticClass() { // used for extended subclasses
         let self = this
