@@ -4,6 +4,7 @@ const EventEmitter = require('events')
 import createInstance from 'appscript/module/createInstance.staticMethod'
 import { usingGenericInstance as populateInstancePropertyFromJson, usingThis as populateInstancePropertyFromJson_this } from 'appscript/module/populateInstancePropertyFromJson.method'
 import addStaticSubclassToClassArray from 'appscript/module/addStaticSubclassToClassArray.staticMethod'
+import prototypeChainDebug from 'appscript/module/prototypeChainDebug'
 
 /**
  * @class
@@ -100,20 +101,8 @@ module.exports = ({
     //       return true;
     //     }
     // })
+    self = prototypeChainDebug(self)
     
-    self.prototype.meta = {
-        description: 'ReusableController prototype object'
-    }
-    self = new Proxy(self, {
-        construct: function(target, argumentsList, newTarget) {
-            let instance = newTarget(...argumentsList)
-            instance.meta = {
-                description: 'xController instance/object'
-            }
-            return instance 
-        }
-    });
-
     // add controller methods for the specific module that uses them.
     return mixin ?  
         mixin(self) :  // return Specific implementation Controller

@@ -1,14 +1,11 @@
 import { Mixin } from 'mixwith'
+import prototypeChainDebug from 'appscript/module/prototypeChainDebug'
 
 /**
  * @description Extends a class by super class and adds some common functionality.
  */
 export default Mixin(superclass => {
     let self = class MiddlewareMixin extends superclass {
-        
-        static meta = {
-            description: 'Static Middleware Controller'
-        }
 
         async initializeNestedUnit({ nestedUnitKey, controllerInstance = this, additionalChildNestedUnit = [], pathPointerKey = null }) { // Entrypoint Instance
             // [1] get nestedUnit
@@ -32,25 +29,7 @@ export default Mixin(superclass => {
             return middlewareArray
         }
     }
-    self.prototype.meta = {
-        description: `${self.name} prototype`
-    }
-    self = new Proxy(self, {
-        construct: function(target, argumentsList, newTarget) {
-            let instance = newTarget(...argumentsList)
-            instance.meta = {
-                description: 'MiddlewareController instance/object'
-            }
-            return instance 
-        },
-        apply: function(target, thisArg, argumentsList) {
-            let instance = new target(...argumentsList)
-            instance.meta = {
-                description: 'MiddlewareController instance/object'
-            }
-            return instance
-        }
-    });
-
+    self = prototypeChainDebug(self)
+    
     return self
 })

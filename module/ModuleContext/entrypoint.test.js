@@ -6,7 +6,7 @@ const func = function (superclass) {
 }
 const superclass = class {}    
 
-describe.only('Module Cacher', () => {
+describe('Module Cacher', () => {
     beforeEach(() => {
     })
     

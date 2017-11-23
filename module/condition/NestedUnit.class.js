@@ -1,4 +1,5 @@
 import r from 'rethinkdb'
+import prototypeChainDebug from 'appscript/module/prototypeChainDebug'
 
 let getTableDocument = {
     generate: require('appscript/utilityFunction/database/query/getTableDocument.query.js'),
@@ -89,27 +90,7 @@ module.exports = superclass => {
 
     }
     self.initializeStaticClassControllerLevel(getTableDocument.instance['condition_conditionTree'])
-    self.prototype.meta = {
-        description: 'ReusableNestedUnit prototype object'
-    }
-    self = new Proxy(self, {
-        construct: function(target, argumentsList, newTarget) {
-            console.log('construct')
-            let instance = newTarget(...argumentsList)
-            instance.meta = {
-                description: 'ConditionNestedUnit instance/object'
-            }
-            return instance 
-        },
-        apply: function(target, thisArg, argumentsList) {
-            console.log('apply')
-            let instance = target.call(thisArg, ...argumentsList)
-            instance.meta = {
-                description: 'ConditionNestedUnit instance/object'
-            }
-            return instance
-        }
-    });
-
+    self = prototypeChainDebug(self)
+    
     return self
 }

@@ -15,7 +15,7 @@ module.exports = superclass => {
         target: UnitImplementationFunction
     })
 
-    const cachedReusableNestedUnit = reusableNestedUnit({ 
+    const cachedReusableNestedUnit = reusableNestedUnit({
         superclass, 
         controllerMixin // is passed as one instance to all calls
     })

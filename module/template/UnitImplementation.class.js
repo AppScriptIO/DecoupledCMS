@@ -1,3 +1,5 @@
+import prototypeChainDebug from 'appscript/module/prototypeChainDebug'
+
 let getTableDocument = {
     generate: require('appscript/utilityFunction/database/query/getTableDocument.query.js'),
     instance: []
@@ -17,26 +19,7 @@ module.exports = superclass => {
         }
     }
     self.initializeStaticClassControllerLevel(getTableDocument.instance['template_viewImplementation'])
-
-    self.prototype.meta = {
-        description: 'TemplateUnit prototype object'
-    }
-    self = new Proxy(self, {
-        construct: function(target, argumentsList, newTarget) {
-            let instance = newTarget(...argumentsList)
-            instance.meta = {
-                description: 'TemplateUnit instance/object'
-            }
-            return instance 
-        },
-        apply: function(target, thisArg, argumentsList) {
-            let instance = target.call(thisArg, ...argumentsList)
-            instance.meta = {
-                description: 'TemplateUnit instance/object'
-            }
-            return instance
-        }
-    });
-
+    self = prototypeChainDebug(self)
+    
     return self
 }

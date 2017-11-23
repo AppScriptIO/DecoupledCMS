@@ -1,3 +1,5 @@
+import prototypeChainDebug from 'appscript/module/prototypeChainDebug'
+
 let getTableDocument = {
     generate: require('appscript/utilityFunction/database/query/getTableDocument.query.js'),
     instance: []
@@ -25,26 +27,7 @@ module.exports = superclass => {
         }
     }
     self.initializeStaticClassControllerLevel(getTableDocument.instance['condition_conditionImplementation'])
-    self.prototype.meta = {
-        description: 'ConditionUnit prototype object'
-    }
-    self = new Proxy(self, {
-        construct: function(target, argumentsList, newTarget) {
-            console.log('construct')
-            let instance = newTarget(...argumentsList)
-            instance.meta = {
-                description: 'ConditionUnit instance/object'
-            }
-            return instance 
-        },
-        apply: function(target, thisArg, argumentsList) {
-            console.log('apply')
-            let instance = target.call(thisArg, ...argumentsList)
-            instance.meta = {
-                description: 'ConditionUnit instance/object'
-            }
-            return instance
-        }
-    });
+    self = prototypeChainDebug(self)
+    
     return self
 }

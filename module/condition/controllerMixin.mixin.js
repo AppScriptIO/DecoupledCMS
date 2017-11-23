@@ -1,13 +1,11 @@
 import { Mixin } from 'mixwith'
+import prototypeChainDebug from 'appscript/module/prototypeChainDebug'
 
 /**
  * @description Extends a class by super class and adds some common functionality.
  */
 export default Mixin(superclass => {
     let self = class ConditionMixin extends superclass {
-        static meta = {
-            description: 'Static Condition Controller'
-        }
 
         /**
          * @description when first called "this" context is assigned to the AppInstance for the comming request. And on subsequest calls it is assigned to the nestedUnit instance.
@@ -39,25 +37,7 @@ export default Mixin(superclass => {
             return (callback) ? callback : false;
         }        
     }
-    self.prototype.meta = {
-        description: `${self.name} prototype`
-    }
-    self = new Proxy(self, {
-        construct: function(target, argumentsList, newTarget) {
-            let instance = newTarget(...argumentsList)
-            instance.meta = {
-                description: 'ConditionController instance/object'
-            }
-            return instance 
-        },
-        apply: function(target, thisArg, argumentsList) {
-            let instance = new target(...argumentsList)
-            instance.meta = {
-                description: 'ConditionController instance/object'
-            }
-            return instance
-        }
-    });
-
+    self = prototypeChainDebug(self)
+    
     return self
 })

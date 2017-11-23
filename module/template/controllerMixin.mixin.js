@@ -2,15 +2,13 @@ import { Mixin } from 'mixwith'
 import _ from 'underscore'
 import { default as Application } from 'appscript'
 import filesystem from 'fs'
+import prototypeChainDebug from 'appscript/module/prototypeChainDebug'
 
 /**
  * @description Extends a class by super class and adds some common functionality.
  */
 export default Mixin(superclass => {
     let self = class TemplateMixin extends superclass {
-        static meta = {
-            description: 'Static Template Controller'
-        }
 
         renderedContentString(viewName, viewArray) {
             // loop throught the strings array to combine them and print string code to the file.
@@ -51,25 +49,6 @@ export default Mixin(superclass => {
             return renderedContent
         }
     }
-    self.prototype.meta = {
-        description: `${self.name} prototype`
-    }
-    self = new Proxy(self, {
-        construct: function(target, argumentsList, newTarget) {
-            let instance = newTarget(...argumentsList)
-            instance.meta = {
-                description: 'TemplateController instance/object'
-            }
-            return instance 
-        },
-        apply: function(target, thisArg, argumentsList) {
-            let instance = new target(...argumentsList)
-            instance.meta = {
-                description: 'TemplateController instance/object'
-            }
-            return instance
-        }
-    });
-
+    self = prototypeChainDebug(self)
     return self
 })

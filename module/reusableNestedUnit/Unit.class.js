@@ -1,3 +1,5 @@
+import prototypeChainDebug from 'appscript/module/prototypeChainDebug'
+
 module.exports = ({ superclass }) => {
     let self = class Unit extends superclass {
         constructor(databaseDocumentKey, AppInstance) {
@@ -27,25 +29,8 @@ module.exports = ({ superclass }) => {
             }
         }
     }
-    self.prototype.meta = {
-        description: 'ReusableUnit prototype object'
-    }
-    self = new Proxy(self, {
-        construct: function(target, argumentsList, newTarget) {
-            let instance = newTarget(...argumentsList)
-            instance.meta = {
-                description: 'RUnit instance/object'
-            }
-            return instance 
-        },
-        apply: function(target, thisArg, argumentsList) {
-            let instance = target.call(thisArg, ...argumentsList)
-            instance.meta = {
-                description: 'RUnit instance/object'
-            }
-            return instance
-        }
-    });
+    self = prototypeChainDebug(self)
+    
     return self
 
 }
