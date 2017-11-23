@@ -8,8 +8,7 @@ let counter = 0 // allows to have a unique set of relations among different nest
 
 const ModuleContextClass = ModuleContext({ referenceName: 'Middleware' })
 
-module.exports = ({ superclass = Object } = {}) => {
-
+module.exports = ({ superclass }) => {
     const NestedUnit = new ModuleContextClass({
         target: NestedUnitFunction, 
         cacheName: `NestedUnit${counter}` 
@@ -25,8 +24,8 @@ module.exports = ({ superclass = Object } = {}) => {
         controllerMixin: MiddlewareController
     })
     
-    NestedUnit(cachedReusableNestedUnit.NestedUnit)
-    UnitImplementation(cachedReusableNestedUnit.Unit)
+    NestedUnit({superclass: cachedReusableNestedUnit.NestedUnit})
+    UnitImplementation({superclass: cachedReusableNestedUnit.Unit})
     cachedReusableNestedUnit.Controller.eventEmitter.emit('initializationEnd') // register subclasses that are listening for the event to register themselves in extendedSubclass.static array.
     
     counter++ // next function execution will have a different cachedName. This will prevent instances from sharing colliding data.

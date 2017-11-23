@@ -11,7 +11,7 @@ let getTableDocument = {
 getTableDocument.instance['template_viewNestedUnit'] = getTableDocument.generate('template_viewNestedUnit')
 import promiseProperRace from 'appscript/utilityFunction/promiseProperRace.js'
 
-module.exports = superclass => {
+module.exports = ({ superclass }) => {
     let self = class NestedUnit extends superclass {
 
         // static getDocumentQuery(connection, conditionTreeKey) {

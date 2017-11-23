@@ -7,7 +7,7 @@ let getTableDocument = {
 getTableDocument.instance['template_viewImplementation'] = getTableDocument.generate('template_viewImplementation')
 getTableDocument.instance['template_templateFile'] = getTableDocument.generate('template_templateFile')
 
-module.exports = superclass => {
+module.exports = ({ superclass }) => {
     let self = class UnitImplementation extends superclass {
         async pupolateTemplateFile() {
             // [1] get valueReturningFile

@@ -4,7 +4,7 @@ import prototypeChainDebug from 'appscript/module/prototypeChainDebug'
 /**
  * @description Extends a class by super class and adds some common functionality.
  */
-export default Mixin(superclass => {
+export default Mixin(({ superclass }) => {
     let self = class MiddlewareMixin extends superclass {
 
         async initializeNestedUnit({ nestedUnitKey, controllerInstance = this, additionalChildNestedUnit = [], pathPointerKey = null }) { // Entrypoint Instance

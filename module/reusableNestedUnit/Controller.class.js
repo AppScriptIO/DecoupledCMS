@@ -105,7 +105,7 @@ module.exports = ({
     
     // add controller methods for the specific module that uses them.
     return mixin ?  
-        mixin(self) :  // return Specific implementation Controller
+        mixin({ superclass: self}) :  // return Specific implementation Controller
         self; // return Reusable nested unit
 }
 

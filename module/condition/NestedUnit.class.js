@@ -8,7 +8,7 @@ let getTableDocument = {
 getTableDocument.instance['condition_conditionTree'] = getTableDocument.generate('condition_conditionTree')
 import promiseProperRace from 'appscript/utilityFunction/promiseProperRace.js'
 
-module.exports = superclass => {
+module.exports = ({ superclass }) => {
     let self = class NestedUnit extends superclass {
         // static getDocumentQuery(connection, conditionTreeKey) {
         //     getConditionTreeQuery(connection, conditionTreeKey)

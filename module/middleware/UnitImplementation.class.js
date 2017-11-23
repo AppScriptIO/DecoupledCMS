@@ -7,7 +7,7 @@ let getTableDocument = {
 getTableDocument.instance['middleware_middlewareFile'] = getTableDocument.generate('middleware_middlewareFile')
 getTableDocument.instance['middleware_middlewareImplementation'] = getTableDocument.generate('middleware_middlewareImplementation')
 
-module.exports = superclass => {
+module.exports = ({ superclass }) => {
     let self = class UnitImplementation extends superclass {
         async pupolateMiddlewareFile() {
             // [1] get valueReturningFile

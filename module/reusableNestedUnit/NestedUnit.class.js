@@ -1,8 +1,6 @@
 import prototypeChainDebug from 'appscript/module/prototypeChainDebug'
 
-module.exports = ({
-    superclass
-}) => {
+module.exports = ({ superclass }) => {
     let self = class NestedUnitImplementation extends superclass {
         constructor(databaseDocumentKey, AppInstance) {
             super(false, {portAppInstance: AppInstance})

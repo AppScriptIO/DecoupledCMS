@@ -11,7 +11,7 @@ getTableDocument.instance['middleware_middlewareNestedUnit'] = getTableDocument.
 
 import promiseProperRace from 'appscript/utilityFunction/promiseProperRace.js'
 
-module.exports = superclass => {
+module.exports = ({ superclass }) => {
     let self = class NestedUnit extends superclass {
 
         constructor() {
