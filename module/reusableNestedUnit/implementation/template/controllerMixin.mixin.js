@@ -22,7 +22,7 @@ export default Mixin(({ superclass }) => {
             let nestedUnitInstance = await this.getNestedUnit({ nestedUnitKey, controllerInstance, additionalChildNestedUnit, pathPointerKey })
             // [2] get unit.
             let { viewImplementation: unitKey } = nestedUnitInstance
-            let unitInstance = await this.getUnitImplementation({ unitKey, controllerInstance })
+            let unitInstance = await this.getUnit({ unitKey, controllerInstance })
             await unitInstance.pupolateTemplateFile()
             
             // views argument that will be initiallized inside templates:

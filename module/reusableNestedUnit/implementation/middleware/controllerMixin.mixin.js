@@ -12,7 +12,7 @@ export default Mixin(({ superclass }) => {
             let nestedUnitInstance = await this.getNestedUnit({ nestedUnitKey, controllerInstance, additionalChildNestedUnit, pathPointerKey })
             // [2] get unit.
             let { middlewareImplementation: unitKey } = nestedUnitInstance
-            let unitInstance = await this.getUnitImplementation({ unitKey, controllerInstance })
+            let unitInstance = await this.getUnit({ unitKey, controllerInstance })
             await unitInstance.pupolateMiddlewareFile()
 
             let middlewareArray = []

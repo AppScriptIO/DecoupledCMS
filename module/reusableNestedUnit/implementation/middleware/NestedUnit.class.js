@@ -22,7 +22,7 @@ module.exports = ({ superclass }) => {
         // }
 
         // static createInstance(controllerInstanceArray, dataKey, getDocumentQueryCallback) {
-        //     NestedUnitImplementation.createInstance(controllerInstanceArray, dataKey, getDocumentQueryCallback)
+        //     NestedUnit.createInstance(controllerInstanceArray, dataKey, getDocumentQueryCallback)
         // }
 
         /**

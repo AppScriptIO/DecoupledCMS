@@ -79,7 +79,7 @@ describe('Connecting class inhiritance dynamically', () => {
 
         it('Should return same subclass references', () => {
             assert.strictEqual(Controller1.extendedSubclass.static['NestedUnit'], Controller1.extendedSubclass.static['NestedUnit'])
-            assert.strictEqual(Controller1.extendedSubclass.static['UnitImplementation'], Controller1.extendedSubclass.static['UnitImplementation'])
+            assert.strictEqual(Controller1.extendedSubclass.static['Unit'], Controller1.extendedSubclass.static['Unit'])
         })
 
     })

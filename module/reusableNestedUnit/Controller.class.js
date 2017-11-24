@@ -66,10 +66,10 @@ module.exports = ({
             return nestedUnitInstance
         }
 
-        async getUnitImplementation({unitKey, controllerInstance = this}) {
+        async getUnit({unitKey, controllerInstance = this}) {
             let unitInstance;
             if(!(unitKey in this.instance.unit)) {
-                unitInstance = await new self.extendedSubclass.static['UnitImplementation'](unitKey)
+                unitInstance = await new self.extendedSubclass.static['Unit'](unitKey)
                 unitInstance.__proto__.__proto__.__proto__ = Object.create(controllerInstance)
                 // console.log(unitInstance)
                 await unitInstance.initializeInstance()

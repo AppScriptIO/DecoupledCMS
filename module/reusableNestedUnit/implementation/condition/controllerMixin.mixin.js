@@ -21,7 +21,7 @@ export default Mixin(({ superclass }) => {
             let nestedUnitInstance = await this.getNestedUnit({ nestedUnitKey, controllerInstance, additionalChildNestedUnit, pathPointerKey })
             // [2] Check condition.
             let {conditionImplementation:unitKey} = nestedUnitInstance
-            let unitInstance = await this.getUnitImplementation({unitKey, controllerInstance})
+            let unitInstance = await this.getUnit({unitKey, controllerInstance})
             
             let conditionMet = await unitInstance.checkCondition()
             

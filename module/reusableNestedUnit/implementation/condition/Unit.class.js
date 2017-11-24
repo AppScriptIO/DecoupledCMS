@@ -8,7 +8,7 @@ getTableDocument.instance['condition_valueReturningFile'] = getTableDocument.gen
 getTableDocument.instance['condition_conditionImplementation'] = getTableDocument.generate('condition_conditionImplementation')
 
 module.exports = ({ superclass }) => {
-    let self = class UnitImplementation extends superclass {
+    let self = class Unit extends superclass {
         async checkCondition() {
             // [1] get valueReturningFile
             let valueReturningFileKey = this.valueReturningFileKey
