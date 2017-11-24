@@ -3,47 +3,73 @@ import ControllerFunction from './Controller.class.js'
 import NestedUnitFunction from './NestedUnit.class.js' // Tree
 import UnitFunction from './Unit.class.js' // Unit
 
-let counter = [] // allows to have a unique set of relations among different nested unit instances.
+let counter = [] // allows to have a unique set of relations among different nested unit classes (Tree of classes).
 
+/**
+ * Create connections between static classes (constructors) in a required way. 
+ * @return {Object} Related Classes 
+ */
 function createStaticInstanceClasses({
-    methodInstanceName = null, 
-    superclass, 
-    controllerMixin = null
+    superclass, /* Usually the higher Application class */
+    implementationType,
+    cacheName = false /* {Boolean || String} */
 }) {
-    let Controller, NestedUnit, Unit;
-    
-    const MC = (methodInstanceName) ? ModuleContext({ referenceName: methodInstanceName }) : ModuleContext;
-    
-    Controller = new MC({ target: ControllerFunction })
-    NestedUnit = new MC({ target: NestedUnitFunction })
-    Unit = new MC({ target: UnitFunction })
+    // Used as caching key.
+    if(cacheName) cacheName = (typeof cacheName == 'boolean') ? implementationType : cacheName;
 
-    if(methodInstanceName) {
-        counter[methodInstanceName] = counter[methodInstanceName] || 0
-        Controller.moduleContext.cacheName = `ReusableController${counter[methodInstanceName]}`
-        NestedUnit.moduleContext.cacheName = `ReusableNestedUnit${counter[methodInstanceName]}`
-        Unit.moduleContext.cacheName = `ReusableUnit${counter[methodInstanceName]}`
-        counter[methodInstanceName] ++ 
+    // load specific implementation functions (class producers).
+    let implementationConfig;
+    switch (implementationType) {
+        case 'Middleware':
+            implementationConfig = require('./implementation/middleware')
+        break;
+        case 'Condition':
+            implementationConfig = require('./implementation/condition')
+        break;
+        case 'Template':
+            implementationConfig = require('./implementation/template')
+        break;
+
+        default:
+            console.log('No implementation chosen for building class tree in ReusableNestedUnit.')
+        break;
+    }
+
+    // Choose to create a cached context or anonymous garbage collected one.
+    const MC = ModuleContext({ referenceName: cacheName })
+    
+    // Create new context for the modules using proxy.
+    let ControllerFunc = new MC({ target: ControllerFunction })
+    let NestedUnitFunc = new MC({ target: NestedUnitFunction })
+    let UnitFunc = new MC({ target: UnitFunction })
+    const SpecificNestedUnitFunc = new MC({ target: implementationConfig.NestedUnitFunction })
+    const SpecificUnitFunc = new MC({ target: implementationConfig.UnitFunction })
+
+    // Choose unique names to cache the related classes with.
+    if(cacheName) {
+        counter[cacheName] = counter[cacheName] || 0
+        ControllerFunc.moduleContext.cacheName = `${cacheName}ReusableController${counter[cacheName]}`
+        NestedUnitFunc.moduleContext.cacheName = `${cacheName}ReusableNestedUnit${counter[cacheName]}`
+        UnitFunc.moduleContext.cacheName = `${cacheName}ReusableUnit${counter[cacheName]}`
+        SpecificNestedUnitFunc.moduleContext.cacheName = `${cacheName}SpecificNestedUnit${counter[cacheName]}`
+        SpecificUnitFunc.moduleContext.cacheName = `${cacheName}SpecificUnit${counter[cacheName]}`
+        counter[cacheName] ++ 
     }
     
-    let cached = {}
-    cached['Controller'] = Controller({
+    // Call class producer functions to return a new class with the specific connections.
+    let Controller = ControllerFunc({
+        methodInstanceName: cacheName,
         superclass,
-        mixin: controllerMixin
+        mixin: implementationConfig.ControllerMixin
     })
-    cached['NestedUnit'] = NestedUnit({
-        superclass: cached.Controller
-    })
-    cached['Unit'] = Unit({
-        superclass: cached.Controller
-    })
+    let NestedUnit = NestedUnitFunc({ superclass: Controller })
+    let Unit = UnitFunc({ superclass: Controller })
+    SpecificNestedUnitFunc({ superclass: NestedUnit })
+    SpecificUnitFunc({ superclass: Unit })
+    Controller.eventEmitter.emit('initializationEnd') // register subclasses that are listening for the event to register themselves in extendedSubclass.static array.
     
-    return {
-        Controller: cached.Controller,
-        NestedUnit: cached.NestedUnit,
-        Unit: cached.Unit
-    }
-
+    // return Controller in which it holds the tree structure.
+    return Controller
 }
 
 export default createStaticInstanceClasses

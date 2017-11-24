@@ -1,4 +1,3 @@
-import { Condition } from 'appscript/module/condition'
 import r from 'rethinkdb'
 import prototypeChainDebug from 'appscript/module/prototypeChainDebug'
 
