@@ -15,7 +15,11 @@ function createStaticInstanceClasses({
     cacheName = false /* {Boolean || String} */
 }) {
     // Used as caching key.
-    if(cacheName) cacheName = (typeof cacheName == 'boolean') ? implementationType : cacheName;
+    let automaticCacheNaming;
+    if(cacheName && typeof cacheName == 'boolean') {
+        automaticCacheNaming = true
+        cacheName = implementationType
+    }
 
     // load specific implementation functions (class producers).
     let implementationConfig;
@@ -36,7 +40,7 @@ function createStaticInstanceClasses({
     }
 
     // Choose to create a cached context or anonymous garbage collected one.
-    const MC = ModuleContext({ referenceName: cacheName })
+    const MC = ModuleContext({ referenceName: implementationType /*  used to combine all related contexts under same object */ })
     
     // Create new context for the modules using proxy.
     let ControllerFunc = new MC({ target: ControllerFunction })
@@ -45,15 +49,23 @@ function createStaticInstanceClasses({
     const SpecificNestedUnitFunc = new MC({ target: implementationConfig.NestedUnitFunction })
     const SpecificUnitFunc = new MC({ target: implementationConfig.UnitFunction })
 
-    // Choose unique names to cache the related classes with.
     if(cacheName) {
-        counter[cacheName] = counter[cacheName] || 0
-        ControllerFunc.moduleContext.cacheName = `${cacheName}ReusableController${counter[cacheName]}`
-        NestedUnitFunc.moduleContext.cacheName = `${cacheName}ReusableNestedUnit${counter[cacheName]}`
-        UnitFunc.moduleContext.cacheName = `${cacheName}ReusableUnit${counter[cacheName]}`
-        SpecificNestedUnitFunc.moduleContext.cacheName = `${cacheName}SpecificNestedUnit${counter[cacheName]}`
-        SpecificUnitFunc.moduleContext.cacheName = `${cacheName}SpecificUnit${counter[cacheName]}`
-        counter[cacheName] ++ 
+        // Choose unique names to cache the related classes with.
+        ControllerFunc.moduleContext.cacheName = `${cacheName}ReusableController`
+        NestedUnitFunc.moduleContext.cacheName = `${cacheName}ReusableNestedUnit`
+        UnitFunc.moduleContext.cacheName = `${cacheName}ReusableUnit`
+        SpecificNestedUnitFunc.moduleContext.cacheName = `${cacheName}SpecificNestedUnit`
+        SpecificUnitFunc.moduleContext.cacheName = `${cacheName}SpecificUnit`
+    
+        if(automaticCacheNaming) {
+            counter[cacheName] = counter[cacheName] || 0
+            ControllerFunc.moduleContext.cacheName += `${counter[cacheName]}`
+            NestedUnitFunc.moduleContext.cacheName += `${counter[cacheName]}`
+            UnitFunc.moduleContext.cacheName += `${counter[cacheName]}`
+            SpecificNestedUnitFunc.moduleContext.cacheName += `${counter[cacheName]}`
+            SpecificUnitFunc.moduleContext.cacheName += `${counter[cacheName]}`
+            counter[cacheName] ++         
+        }
     }
     
     // Call class producer functions to return a new class with the specific connections.

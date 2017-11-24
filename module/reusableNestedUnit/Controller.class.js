@@ -39,7 +39,7 @@ module.exports = ({
         }
 
         static initializeStaticClass() {
-            if(methodInstanceName) {
+            if(methodInstanceName && superclass && superclass.eventEmitter) {
                 superclass.eventEmitter.on('initializationEnd', () => {
                     let ClassObject = {}
                     ClassObject[`${methodInstanceName}`] = self
