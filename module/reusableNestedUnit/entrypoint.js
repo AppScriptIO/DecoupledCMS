@@ -6,6 +6,19 @@ import UnitFunction from './Unit.class.js' // Unit
 let counter = [] // allows to have a unique set of relations among different nested unit classes (Tree of classes).
 
 /**
+ * API: 
+ * Static class tree generator
+ * ⇓
+ * Copy of static class tree → Unique static context for class tree.
+ * ⇓
+ * new Contex with specific variables → soft linked context for subsequent calls.
+ * ⇓
+ * Commands → execute tasks inside above context.
+ * ⇓
+ * returns results
+ */
+
+/**
  * Create connections between static classes (constructors) in a required way. 
  * @return {Object} Related Classes 
  */
