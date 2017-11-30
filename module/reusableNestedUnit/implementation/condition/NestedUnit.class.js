@@ -61,7 +61,6 @@ module.exports = ({ superclass }) => {
             let promiseArray = []
             promiseArray = conditionTreeChildren.map(conditionTreeChild => {
                 return new Promise(async (resolve, reject) => {
-                    let controllerInstancePrototype = this.__proto__.__proto__.__proto__
                     // Add the rest of the immediate children to the next tree as additional children. propagate children to the next tree.
                      
                      if(this.children.length != 0) {
@@ -72,7 +71,6 @@ module.exports = ({ superclass }) => {
 
                     let callback = await this.initializeConditionTree({
                         nestedUnitKey: conditionTreeChild.nestedUnit, 
-                        controllerInstance: controllerInstancePrototype, 
                         additionalChildNestedUnit: this.children,
                         pathPointerKey: conditionTreeChild.pathPointerKey
                     })

@@ -85,7 +85,6 @@ module.exports = ({
             if(!(nestedUnitKey in this.instance.nestedUnit)) {
                 nestedUnitInstance = await this.callSubclass('NestedUnit', [nestedUnitKey])
                 await nestedUnitInstance.initializeInstance()
-                console.log(nestedUnitInstance)
                 // add children trees: 
                 nestedUnitInstance.additionalChildNestedUnit = additionalChildNestedUnit
                 // add pathPointerKey to allow applying additional corresponding additional children.

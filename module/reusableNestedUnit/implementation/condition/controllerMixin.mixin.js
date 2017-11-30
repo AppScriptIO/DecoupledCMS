@@ -10,18 +10,19 @@ export default Mixin(({ superclass }) => {
         /**
          * @description when first called "this" context is assigned to the AppInstance for the comming request. And on subsequest calls it is assigned to the nestedUnit instance.
          * 
-         * @param {any} {nestedUnitKey, controllerInstance = this} 
+         * @param {any} {nestedUnitKey} 
          * @returns 
          */
-        async initializeConditionTree({ nestedUnitKey, controllerInstance = this, additionalChildNestedUnit = [], pathPointerKey = null}) { // Entrypoint Instance
+        async initializeConditionTree({ nestedUnitKey, additionalChildNestedUnit = [], pathPointerKey = null}) { // Entrypoint Instance
             // self.debug.push(nestedUnitKey)
             // let nestedUnitInstance = await ConditionTree.createInstance(this.instance.nestedUnit, nestedUnitKey, ConditionTree.getDocumentQuery)
             
             // [1] get nestedUnit
-            let nestedUnitInstance = await this.getNestedUnit({ nestedUnitKey, controllerInstance, additionalChildNestedUnit, pathPointerKey })
+            let nestedUnitInstance = await this.getNestedUnit({ nestedUnitKey, additionalChildNestedUnit, pathPointerKey })
+            
             // [2] Check condition.
             let {conditionImplementation:unitKey} = nestedUnitInstance
-            let unitInstance = await this.getUnit({unitKey, controllerInstance})
+            let unitInstance = await this.getUnit({unitKey})
             
             let conditionMet = await unitInstance.checkCondition()
             

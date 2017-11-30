@@ -14,13 +14,14 @@ let MiddlewareController = createStaticInstanceClasses({
 export default ({setting}) => {
     return async (context, next) => {
         let isCalledNext = false
+        // console.log(setting)
         switch(setting.type) {
             case 'middlewareNestedUnit':
                 // await context.instance.handleMiddlewareNestedUnit(setting.name) // another way is to create a method in the instance class.        
                 const nestedUnitKey = setting.name
                 const portAppInstance = context.instance
                 let middlewareArray;
-                let middlewareController = await new MiddlewareController(false, { portAppInstance: portAppInstance })
+                let middlewareController = await MiddlewareController.createContext({ portAppInstance: portAppInstance })
                 middlewareArray = await middlewareController.initializeNestedUnit({ nestedUnitKey: nestedUnitKey })
                 await implementMiddlewareOnModuleUsingJson(middlewareArray)(context, next)
                 isCalledNext = true

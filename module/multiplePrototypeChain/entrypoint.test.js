@@ -29,6 +29,11 @@ describe('Multiple Prototype Chain creation', () => {
             assert.strictEqual(newInstance.t, 't')                        
             assert.strictEqual(newInstance.delegatedPrototype.t, 't')                        
         })        
+
+        it('In operator should check in the delegatedPrototype', () => {
+            newInstance.b = 'b'
+            assert.strictEqual('b' in newInstance, true)                        
+        })        
     
         it('create new prototypes with corresponding delegatedPrototypes values equal to original proto chain', () => {
             // Subclass

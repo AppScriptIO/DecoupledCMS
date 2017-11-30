@@ -61,7 +61,6 @@ module.exports = ({ superclass }) => {
             let renderedStringArray = []
             for (var index = 0; index < treeChildren.length; index++) {
                 let treeChild = treeChildren[index]
-                let controllerInstancePrototype = this.__proto__.__proto__.__proto__
                 // Add the rest of the immediate children to the next tree as additional children. propagate children to the next tree.
                 if(this.children.length != 0) {
                     await Array.prototype.push.apply(this.children, this.additionalChildNestedUnit)
@@ -71,7 +70,6 @@ module.exports = ({ superclass }) => {
                 let subsequentRenderedTemplate = [
                     await this.initializeNestedUnit({
                         nestedUnitKey: treeChild.nestedUnit,
-                        controllerInstance: controllerInstancePrototype,
                         additionalChildNestedUnit: this.children,
                         pathPointerKey: treeChild.pathPointerKey
                     })

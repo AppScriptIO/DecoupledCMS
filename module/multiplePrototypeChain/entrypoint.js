@@ -66,7 +66,10 @@ let self = class MultiplePrototypeChain {
                         return Reflect.set(delegatedPrototype, property, value)
                     break;
                 }
-            }
+            }, 
+            has: function(target, prop) {
+                return prop in delegatedPrototype
+            }          
         }
     }
 
