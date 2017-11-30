@@ -5,9 +5,9 @@
  **/
 function usingGenericInstance(instance, jsonData) {
     if(jsonData) {
-        Object.entries(jsonData).forEach(
-            ([key, value]) => instance[key] = value
-        )
+        Object.entries(jsonData).forEach(([key, value]) => {
+            instance[key] = value
+        })
     }
     instance.jsonData = jsonData // to keep track of populated instances.
 }

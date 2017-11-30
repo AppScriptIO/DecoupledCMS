@@ -2,7 +2,7 @@ import assert from 'assert'
 import { ClassProducer } from './dynamicClassExtention.js'
 // const ModuleContext = require('appscript/module/ModuleContext')
 
-describe('Testing different implementation concepts', () => {
+describe.skip('Testing different implementation concepts', () => {
     
     describe('Creating static classes from function', () => {
         let staticClass1 = ClassProducer({ Superclass: null /* semilar to extending Function.prototype (if it was possible as it is an object) */ })

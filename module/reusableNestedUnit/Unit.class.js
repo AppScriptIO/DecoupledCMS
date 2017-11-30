@@ -1,7 +1,7 @@
 import prototypeChainDebug from 'appscript/module/prototypeChainDebug'
 
 module.exports = ({ superclass }) => {
-    let self = class Unit extends superclass {
+    let self = class RUnit extends superclass {
         constructor(databaseDocumentKey, AppInstance) {
             super(false, {portAppInstance: AppInstance})
             this.key = databaseDocumentKey

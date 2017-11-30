@@ -7,12 +7,12 @@ import prototypeChainDebug from 'appscript/module/prototypeChainDebug'
 export default Mixin(({ superclass }) => {
     let self = class MiddlewareMixin extends superclass {
 
-        async initializeNestedUnit({ nestedUnitKey, controllerInstance = this, additionalChildNestedUnit = [], pathPointerKey = null }) { // Entrypoint Instance
+        async initializeNestedUnit({ nestedUnitKey, additionalChildNestedUnit = [], pathPointerKey = null }) { // Entrypoint Instance
             // [1] get nestedUnit
-            let nestedUnitInstance = await this.getNestedUnit({ nestedUnitKey, controllerInstance, additionalChildNestedUnit, pathPointerKey })
+            let nestedUnitInstance = await this.getNestedUnit({ nestedUnitKey, additionalChildNestedUnit, pathPointerKey })
             // [2] get unit.
             let { middlewareImplementation: unitKey } = nestedUnitInstance
-            let unitInstance = await this.getUnit({ unitKey, controllerInstance })
+            let unitInstance = await this.getUnit({ unitKey })
             await unitInstance.pupolateMiddlewareFile()
 
             let middlewareArray = []

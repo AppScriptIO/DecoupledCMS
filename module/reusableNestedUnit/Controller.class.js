@@ -5,6 +5,7 @@ import createInstance from 'appscript/module/createInstance.staticMethod'
 import { usingGenericInstance as populateInstancePropertyFromJson, usingThis as populateInstancePropertyFromJson_this } from 'appscript/module/populateInstancePropertyFromJson.method'
 import addStaticSubclassToClassArray from 'appscript/module/addStaticSubclassToClassArray.staticMethod'
 import prototypeChainDebug from 'appscript/module/prototypeChainDebug'
+import { MultiplePrototypeChain } from 'appscript/module/multiplePrototypeChain'
 import assert from 'assert'
 
 let debugExecuted = false
@@ -48,66 +49,17 @@ module.exports = ({
             let self = this // specific Controller that is a subclass of 'self' (ReusableController)
             let contextInstance = new self(false, ...args)
 
-            // create proxied refrence of subclasses
+            // create a new list object for proxied refrence of subclasses
             contextInstance.instanceExtendedSubclass = Object.keys(self.extendedSubclass.static)
                 .reduce((object, key) => {
-                    // add proxy to the subclass
-                    object[key] = self.createPrototypeChainOnConstructor(self.extendedSubclass.static[key]);
+                    // add proxied subclass to the list
+                    object[key] = MultiplePrototypeChain.newChainOnInstanceCreation({
+                        Class: self.extendedSubclass.static[key],
+                        contextInstance
+                    })
                     return object
                 }, {})
             return contextInstance
-        }
-
-        static createPrototypeChainOnConstructor(Class) {
-            return new Proxy(Class, {
-                construct: (target, argumentsList, newConstructorFunc) => {
-                    let instance = Reflect.construct(target, argumentsList)
-                    Object.setPrototypeOf(instance, self.createUniqueProtoChain(Object.getPrototypeOf(instance)))
-                    console.log(instance.__proto__.__proto__)
-                    return instance
-                },
-                // getPrototypeOf(target) {
-
-                // }                    
-            })
-        }
-
-        static createUniqueProtoChain(currentPrototype) {
-            if( currentPrototype == null || 
-                currentPrototype.constructor == Object ||
-                currentPrototype.constructor == Function
-            ) return currentPrototype
-            
-            let delegatedPrototype = Object.getPrototypeOf(currentPrototype)
-            let pointerPrototype = Object.create(self.createUniqueProtoChain(delegatedPrototype))
-            pointerPrototype = new Proxy(pointerPrototype, {
-                get: function(target, property, receiver) {
-                    Object.defineProperty(pointerPrototype, 'delegatedPrototype', {
-                        value: currentPrototype,
-                        writable: true,
-                        enumerable: true,
-                        configurable: true
-                    })
-                    switch (property) {
-                        case 'delegatedPrototype':
-                            return currentPrototype
-                        break;
-                        case '__proto__':
-                            return Object.getPrototypeOf(pointerPrototype)
-                        break;
-                        default:
-                        break;
-                    }
-                    if(currentPrototype.hasOwnProperty(property)) {
-                        return Reflect.get(currentPrototype, property)
-                    } else if(Object.getPrototypeOf(target)) {
-                        return Reflect.get(Object.getPrototypeOf(target), property)
-                    } else {
-                        return undefined
-                    }
-                }
-            })            
-            return pointerPrototype
         }
 
         static initializeStaticClass() {
@@ -128,82 +80,32 @@ module.exports = ({
             return Reflect.construct(contextInstance.instanceExtendedSubclass[name], args)
         }
 
-        async getNestedUnit({ nestedUnitKey, controllerInstance = this, additionalChildNestedUnit = [], pathPointerKey = null}) {
+        async getNestedUnit({ nestedUnitKey, additionalChildNestedUnit = [], pathPointerKey = null}) {
             let nestedUnitInstance;
-            if(!(nestedUnitKey in controllerInstance.instance.nestedUnit)) {
-                if(this.instanceExtendedSubclass) {
-                    nestedUnitInstance = await this.callSubclass('NestedUnit', [nestedUnitKey])                    
-                    if(!debugExecuted) {
-                        controllerInstance = this.__proto__
-                        // console.log(controllerInstance)
-                        // console.log(nestedUnitInstance.__proto__.__proto__.__proto__)
-                        controllerInstance.AppInstance = this.AppInstance
-                        controllerInstance.instance = this.instance
-                        assert.strictEqual(controllerInstance, nestedUnitInstance.__proto__.__proto__.__proto__)
-                        debugExecuted = true
-                    }
-                    nestedUnitInstance.__proto__.__proto__.__proto__ = controllerInstance
-                } else {
-                    nestedUnitInstance = await self.callSubclass('NestedUnit', [nestedUnitKey])                    
-                    if(!debugExecuted) {
-                        controllerInstance = this.__proto__
-                        // console.log(controllerInstance)
-                        // console.log(nestedUnitInstance.__proto__.__proto__.__proto__)
-                        controllerInstance.AppInstance = this.AppInstance
-                        controllerInstance.instance = this.instance
-                        assert.strictEqual(controllerInstance, nestedUnitInstance.__proto__.__proto__.__proto__)
-                        debugExecuted = true
-                    }
-                    nestedUnitInstance.__proto__.__proto__.__proto__ = controllerInstance
-                }
+            if(!(nestedUnitKey in this.instance.nestedUnit)) {
+                nestedUnitInstance = await this.callSubclass('NestedUnit', [nestedUnitKey])
                 await nestedUnitInstance.initializeInstance()
+                console.log(nestedUnitInstance)
                 // add children trees: 
                 nestedUnitInstance.additionalChildNestedUnit = additionalChildNestedUnit
                 // add pathPointerKey to allow applying additional corresponding additional children.
                 nestedUnitInstance.pathPointerKey = pathPointerKey
                 // add to class cache
-                controllerInstance.instance.nestedUnit[nestedUnitKey] = nestedUnitInstance
+                this.instance.nestedUnit[nestedUnitKey] = nestedUnitInstance
             } else {
-                nestedUnitInstance = controllerInstance.instance.nestedUnit[nestedUnitKey]
+                nestedUnitInstance = this.instance.nestedUnit[nestedUnitKey]
             }
             return nestedUnitInstance
         }
 
-        async getUnit({unitKey, controllerInstance = this}) {
+        async getUnit({unitKey}) {
             let unitInstance;
-            if(!(unitKey in controllerInstance.instance.unit)) {
-                if(this.instanceExtendedSubclass) {
-                    unitInstance = await this.callSubclass('Unit', [unitKey])
-                    if(!debugEx2) {
-                        controllerInstance = this.__proto__
-                        // console.log(controllerInstance)
-                        // console.log(nestedUnitInstance.__proto__.__proto__.__proto__)
-                        controllerInstance.AppInstance = this.AppInstance
-                        controllerInstance.instance = this.instance
-                        assert.strictEqual(controllerInstance, unitInstance.__proto__.__proto__.__proto__)
-                        debugEx2 = true
-                    }
-                    // assert.strictEqual(unitInstance.__proto__.__proto__.__proto__, controllerInstance)
-                    unitInstance.__proto__.__proto__.__proto__ = controllerInstance
-                } else {
-                    unitInstance = await self.callSubclass('Unit', [unitKey])
-                    if(!debugEx2) {
-                        controllerInstance = this.__proto__
-                        // console.log(controllerInstance)
-                        // console.log(nestedUnitInstance.__proto__.__proto__.__proto__)
-                        controllerInstance.AppInstance = this.AppInstance
-                        controllerInstance.instance = this.instance
-                        assert.strictEqual(controllerInstance, unitInstance.__proto__.__proto__.__proto__)
-                        debugEx2 = true
-                    }
-                    // assert.strictEqual(unitInstance.__proto__.__proto__.__proto__, controllerInstance)
-                    unitInstance.__proto__.__proto__.__proto__ = controllerInstance
-                }
-                // console.log(unitInstance)
+            if(!(unitKey in this.instance.unit)) {
+                unitInstance = await this.callSubclass('Unit', [unitKey])
                 await unitInstance.initializeInstance()
-                controllerInstance.instance.unit[unitKey] = unitInstance
+                this.instance.unit[unitKey] = unitInstance
             } else {
-                unitInstance = controllerInstance.instance.unit[unitKey]
+                unitInstance = this.instance.unit[unitKey]
             }
             return unitInstance
         }

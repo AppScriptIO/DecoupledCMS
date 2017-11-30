@@ -61,7 +61,7 @@ function createStaticInstanceClasses({
     let UnitFunc = new MC({ target: UnitFunction })
     const SpecificNestedUnitFunc = new MC({ target: implementationConfig.NestedUnitFunction })
     const SpecificUnitFunc = new MC({ target: implementationConfig.UnitFunction })
-
+    
     if(cacheName) {
         // Choose unique names to cache the related classes with.
         ControllerFunc.moduleContext.cacheName = `${cacheName}ReusableController`

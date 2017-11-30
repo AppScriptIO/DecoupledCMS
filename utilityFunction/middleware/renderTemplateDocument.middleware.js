@@ -17,7 +17,8 @@ export default ({ documentKey }) => {
         // context.instance.config.clientBasePath should be defined using useragentDetection module.
         // NOTE:  documentKey should be received from database and nested unit key retreived from there too.
         // document could have different rules for users etc.. access previlages
-        let templateController = await new TemplateController(false, { portAppInstance: context.instance })
+        let templateController = await TemplateController.createContext({ portAppInstance: context.instance })
+        
         let renderedContent = await templateController.initializeNestedUnit({ nestedUnitKey: documentObject.viewNestedUnit })
         context.body = renderedContent;
     
