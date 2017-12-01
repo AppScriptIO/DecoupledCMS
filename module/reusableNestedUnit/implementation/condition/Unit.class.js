@@ -1,5 +1,6 @@
 import { classDecorator as prototypeChainDebug} from 'appscript/module/prototypeChainDebug'
-import { add, execute } from 'appscript/utilityFunction/decoratorUtility.js'
+import { add, execute, applyMixin, conditional } from 'appscript/utilityFunction/decoratorUtility.js'
+import { extendedSubclassPattern } from 'appscript/utilityFunction/extendedSubclassPattern.js'
 
 let getTableDocument = {
     generate: require('appscript/utilityFunction/database/query/getTableDocument.query.js'),
@@ -10,11 +11,12 @@ getTableDocument.instance['condition_conditionImplementation'] = getTableDocumen
 
 export default ({ Superclass }) => {
     let self = 
-        @prototypeChainDebug
+        @conditional({ decorator: prototypeChainDebug, condition: process.env.SZN_DEBUG })
         @execute({
             staticMethod: 'initializeStaticClass', 
             args: [ getTableDocument.instance['condition_conditionImplementation'] ] 
         })
+        @extendedSubclassPattern.Subclass()
         class Unit extends Superclass {
             async checkCondition() {
                 // [1] get valueReturningFile
@@ -26,8 +28,8 @@ export default ({ Superclass }) => {
                 if(!this.conditionResult) {
                     let expectedReturn = this.expectedReturn
                     let filePath = this.valueReturningFile.filePath
-                    let returnedValue = await require(filePath)(this.AppInstance)
-                    if(process.env.SZN_DEBUG == 'true' && this.AppInstance.context.headers.debug == 'true') console.log(`🔀 Comparing conditionKey: ${this.key} ${filePath}. \n • expected: ${expectedReturn} == ${returnedValue}. \n • compare result: ${(returnedValue == expectedReturn)} \n \n`)
+                    let returnedValue = await require(filePath)(this.portAppInstance)
+                    if(process.env.SZN_DEBUG == 'true' && this.portAppInstance.context.headers.debug == 'true') console.log(`🔀 Comparing conditionKey: ${this.key} ${filePath}. \n • expected: ${expectedReturn} == ${returnedValue}. \n • compare result: ${(returnedValue == expectedReturn)} \n \n`)
                     this.conditionResult = (returnedValue == expectedReturn) ? true : false;            
                 }
                 return  this.conditionResult

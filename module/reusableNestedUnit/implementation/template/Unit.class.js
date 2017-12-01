@@ -1,5 +1,6 @@
 import { classDecorator as prototypeChainDebug} from 'appscript/module/prototypeChainDebug'
-import { add, execute } from 'appscript/utilityFunction/decoratorUtility.js'
+import { add, execute, applyMixin, conditional } from 'appscript/utilityFunction/decoratorUtility.js'
+import { extendedSubclassPattern } from 'appscript/utilityFunction/extendedSubclassPattern.js'
 
 let getTableDocument = {
     generate: require('appscript/utilityFunction/database/query/getTableDocument.query.js'),
@@ -8,13 +9,14 @@ let getTableDocument = {
 getTableDocument.instance['template_viewImplementation'] = getTableDocument.generate('template_viewImplementation')
 getTableDocument.instance['template_templateFile'] = getTableDocument.generate('template_templateFile')
 
-module.exports = ({ Superclass }) => {
+export default ({ Superclass }) => {
     let self = 
-        @prototypeChainDebug
+        @conditional({ decorator: prototypeChainDebug, condition: process.env.SZN_DEBUG })
         @execute({
             staticMethod: 'initializeStaticClass', 
             args: [ getTableDocument.instance['template_viewImplementation'] ] 
         })
+        @extendedSubclassPattern.Subclass()
         class Unit extends Superclass {
             async pupolateTemplateFile() {
                 // [1] get valueReturningFile

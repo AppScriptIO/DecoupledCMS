@@ -14,7 +14,7 @@ export default function serveStaticSingleFile(setting) {
             layoutElement: 'webapp-layout-list'
         }
         let view = {};
-        // let templateFunction = _.template(await filesystem.readFileSync(`${this.AppInstance.config.clientBasePath}/${unitInstance.templateFilePath}`, 'utf-8'))
+        // let templateFunction = _.template(await filesystem.readFileSync(`${this.portAppInstance.config.clientBasePath}/${unitInstance.templateFilePath}`, 'utf-8'))
         
         await context.render(filePath, {
             Application,

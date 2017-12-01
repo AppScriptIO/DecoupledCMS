@@ -1,7 +1,8 @@
 import r from 'rethinkdb'
 import { classDecorator as prototypeChainDebug} from 'appscript/module/prototypeChainDebug'
-import { add, execute } from 'appscript/utilityFunction/decoratorUtility.js'
+import { add, execute, applyMixin, conditional } from 'appscript/utilityFunction/decoratorUtility.js'
 import promiseProperRace from 'appscript/utilityFunction/promiseProperRace.js'
+import { extendedSubclassPattern } from 'appscript/utilityFunction/extendedSubclassPattern.js'
 
 let getTableDocument = {
     generate: require('appscript/utilityFunction/database/query/getTableDocument.query.js'),
@@ -12,16 +13,13 @@ getTableDocument.instance['middleware_middlewareNestedUnit'] = getTableDocument.
 
 export default ({ Superclass }) => {
     let self = 
-        @prototypeChainDebug
+        @conditional({ decorator: prototypeChainDebug, condition: process.env.SZN_DEBUG })
         @execute({
             staticMethod: 'initializeStaticClass', 
             args: [ getTableDocument.instance['middleware_middlewareNestedUnit'] ] 
         })
+        @extendedSubclassPattern.Subclass()            
         class NestedUnit extends Superclass {
-
-            constructor() {
-                return super(...arguments)
-            }
 
             // static getDocumentQuery(connection, conditionTreeKey) {
             //     getConditionTreeQuery(connection, conditionTreeKey)

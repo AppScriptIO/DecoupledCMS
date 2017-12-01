@@ -91,7 +91,7 @@ function createStaticInstanceClasses({
     let Unit = UnitFunc({ Superclass: Controller })
     SpecificNestedUnitFunc({ Superclass: NestedUnit })
     SpecificUnitFunc({ Superclass: Unit })
-    Controller.eventEmitter.emit('initializationEnd') // register subclasses that are listening for the event to register themselves in extendedSubclass.static array.
+    Controller.eventEmitter.emit('addSubclass') // register subclasses that are listening for the event to register themselves in extendedSubclass.static array.
     
     // return Controller in which it holds the tree structure.
     return Controller

@@ -1,18 +1,19 @@
 import { classDecorator as prototypeChainDebug} from 'appscript/module/prototypeChainDebug'
+import { add, execute, applyMixin, conditional } from 'appscript/utilityFunction/decoratorUtility.js'
 
 export default ({ Superclass }) => {
-    let self = @prototypeChainDebug
+    let self = 
+    @conditional({ decorator: prototypeChainDebug, condition: process.env.SZN_DEBUG })
     class RNestedUnit extends Superclass {
 
         static getDocumentQuery;
 
         static initializeStaticClass(self, getTableDocument) {
-            super.initializeStaticClassControllerLevel()
             self.getDocumentQuery = getTableDocument
         }
 
-        constructor(databaseDocumentKey, AppInstance) {
-            super(false, {portAppInstance: AppInstance})
+        constructor(databaseDocumentKey) {
+            super()
             this.key = databaseDocumentKey
             return this
         }

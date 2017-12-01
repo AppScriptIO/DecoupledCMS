@@ -3,12 +3,14 @@ import _ from 'underscore'
 import { default as Application } from 'appscript'
 import filesystem from 'fs'
 import { classDecorator as prototypeChainDebug} from 'appscript/module/prototypeChainDebug'
+import { add, execute, applyMixin, conditional } from 'appscript/utilityFunction/decoratorUtility.js'
 
 /**
  * @description Extends a class by super class and adds some common functionality.
  */
 export default Mixin(({ Superclass }) => {
-    let self = @prototypeChainDebug
+    let self = 
+    @conditional({ decorator: prototypeChainDebug, condition: process.env.SZN_DEBUG })
     class TemplateMixin extends Superclass {
         
         /**
@@ -25,7 +27,7 @@ export default Mixin(({ Superclass }) => {
             
             // views argument that will be initiallized inside templates:
             // let view = {}
-            let templateFunction = _.template(await filesystem.readFileSync(`${this.AppInstance.config.clientBasePath}/${unitInstance.templateFilePath}`, 'utf-8'))
+            let templateFunction = _.template(await filesystem.readFileSync(`${this.portAppInstance.config.clientBasePath}/${unitInstance.templateFilePath}`, 'utf-8'))
             // Shared arguments between all templates being rendered
 
             // loop through template and create rendered view content.
@@ -33,7 +35,7 @@ export default Mixin(({ Superclass }) => {
 
             const templateArgument = {
                 templateController: this,
-                context: this.AppInstance.context,
+                context: this.portAppInstance.context,
                 Application,
                 argument: {}
             }

@@ -1,6 +1,7 @@
 import r from 'rethinkdb'
 import { classDecorator as prototypeChainDebug} from 'appscript/module/prototypeChainDebug'
-import { add, execute } from 'appscript/utilityFunction/decoratorUtility.js'
+import { add, execute, applyMixin, conditional } from 'appscript/utilityFunction/decoratorUtility.js'
+import { extendedSubclassPattern } from 'appscript/utilityFunction/extendedSubclassPattern.js'
 
 let getTableDocument = {
     generate: require('appscript/utilityFunction/database/query/getTableDocument.query.js'),
@@ -11,11 +12,12 @@ import promiseProperRace from 'appscript/utilityFunction/promiseProperRace.js'
 
 export default ({ Superclass }) => {
     let self = 
-        @prototypeChainDebug
+        @conditional({ decorator: prototypeChainDebug, condition: process.env.SZN_DEBUG })
         @execute({
             staticMethod: 'initializeStaticClass', 
             args: [ getTableDocument.instance['condition_conditionTree'] ] 
         })
+        @extendedSubclassPattern.Subclass()
         class NestedUnit extends Superclass {
             // static getDocumentQuery(connection, conditionTreeKey) {
             //     getConditionTreeQuery(connection, conditionTreeKey)
@@ -89,7 +91,7 @@ export default ({ Superclass }) => {
                 let callback;
                 await promiseProperRace(promiseArray).then((promiseReturnValueArray) => {
                     callback = promiseReturnValueArray[0] // as only one promise is return in the array.
-                }).catch(reason => { if(process.env.SZN_DEBUG == 'true' && this.AppInstance.context.headers.debug == 'true') console.log(`🔀⚠️ promiseProperRace rejected because: ${reason}`) })
+                }).catch(reason => { if(process.env.SZN_DEBUG == 'true' && this.portAppInstance.context.headers.debug == 'true') console.log(`🔀⚠️ promiseProperRace rejected because: ${reason}`) })
                 return callback ? callback : false;
             }
 

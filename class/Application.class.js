@@ -8,26 +8,19 @@ import _ from '../../../node_modules/underscore' // To affect changes of _ to th
 import { connect } from 'appscript/utilityFunction/middleware/commonDatabaseFunctionality.js'
 import { add, execute, applyMixin } from 'appscript/utilityFunction/decoratorUtility.js'
 import addStaticSubclassToClassArray from 'appscript/module/addStaticSubclassToClassArray.staticMethod'
+import { extendedSubclassPattern } from 'appscript/utilityFunction/extendedSubclassPattern.js'
 
 const self = 
 @add({ to: 'static'}, {
     addStaticSubclassToClassArray
 })
+@extendedSubclassPattern.Superclass()
 class Application extends EventEmitter {
 
-    static eventEmitter = (new EventEmitter()).setMaxListeners(200) // increase maximum eventliseners (default = 10) // i.e. new EventEmitter()
     static rethinkdbConnection = {}
     static config = configuration // Array
     static frontend;
-    static extendedSubclass = {
-        static: []
-    }
    
-    constructor(skipConstructor = false) {
-        super();
-        if(skipConstructor) return;
-    }
-
     static async initialize(/*staticSubclass*/) { // One-time initialization of Applicaiton Class.
         console.info(`☕%c Running Application as ${self.config.DEPLOYMENT} - '${self.config.PROTOCOL}${self.config.HOST}'`, self.config.style.green)
         self.rethinkdbConnection = await connect()
@@ -37,17 +30,11 @@ class Application extends EventEmitter {
             escape: /\{\%-(.+?)\%\}/g
         };
         await self.eventEmitter.emit('initializationEnd')
+        await self.eventEmitter.emit('addSubclass')
         // if(staticSubclass) self.addStaticSubclassToClassArray(staticSubclass)
     }
 
 // Used by extended subclasses:
-    // Add subclasses to list
-    static addSubclass({ keyName, Subclass = this } = {}) {
-        if(!keyName) keyName = Subclass.name
-        self.eventEmitter.on('initializationEnd', () => {
-            self.extendedSubclass.static[keyName] = Subclass
-        })
-    }
 
     static initializeStaticClass() { // used for extended subclasses
         let self = this
@@ -59,7 +46,7 @@ class Application extends EventEmitter {
         if(middlewareArray) self.middlewareArray = middlewareArray
         await self.middlewareArray.forEach((middleware) => {
             self.serverKoa.use(middleware)
-        }, this);
+        }, this)
     }
 
     static createKoaServer() {

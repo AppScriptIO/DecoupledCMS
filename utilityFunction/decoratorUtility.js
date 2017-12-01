@@ -34,3 +34,8 @@ export function applyMixin({ mixin = null }) {
         return Class
     }
 }
+
+// Apply decorator only if condition is true
+export function conditional({ condition = true, decorator }) {
+    return (condition) ? decorator : Class => { return Class } ; 
+}
