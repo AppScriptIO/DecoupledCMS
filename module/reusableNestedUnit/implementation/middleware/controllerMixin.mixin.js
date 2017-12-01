@@ -1,12 +1,17 @@
 import { Mixin } from 'mixwith'
-import prototypeChainDebug from 'appscript/module/prototypeChainDebug'
+import { classDecorator as prototypeChainDebug} from 'appscript/module/prototypeChainDebug'
 
 /**
  * @description Extends a class by super class and adds some common functionality.
  */
-export default Mixin(({ superclass }) => {
-    let self = class MiddlewareMixin extends superclass {
+export default Mixin(({ Superclass }) => {
+    let self = @prototypeChainDebug
+    class MiddlewareMixin extends Superclass {
 
+        /**
+         * 
+         * @return {Array of Objects}  each object contains instruction settings to be used through an implementing module.
+         */
         async initializeNestedUnit({ nestedUnitKey, additionalChildNestedUnit = [], pathPointerKey = null }) { // Entrypoint Instance
             // [1] get nestedUnit
             let nestedUnitInstance = await this.getNestedUnit({ nestedUnitKey, additionalChildNestedUnit, pathPointerKey })
@@ -29,7 +34,6 @@ export default Mixin(({ superclass }) => {
             return middlewareArray
         }
     }
-    self = prototypeChainDebug(self)
     
     return self
 })

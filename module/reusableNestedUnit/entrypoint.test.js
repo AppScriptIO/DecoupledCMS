@@ -7,12 +7,12 @@ describe('ReusableNestedUnit module - Connecting class inhiritance dynamically',
     describe('Creating static classes without cache', () => {
         
         let Controller1 = createStaticInstanceClasses({ 
-            superclass: null, 
+            Superclass: null, 
             implementationType: 'Middleware',
             cacheName: false
         })
         let Controller2 = createStaticInstanceClasses({ 
-            superclass: null, 
+            Superclass: null, 
             implementationType: 'Middleware',
             cacheName: false
         })
@@ -26,12 +26,12 @@ describe('ReusableNestedUnit module - Connecting class inhiritance dynamically',
     describe('Caching static classes using automatic naming', () => {
 
         let Controller1 = createStaticInstanceClasses({ 
-            superclass: null, 
+            Superclass: null, 
             implementationType: 'Middleware',
             cacheName: true
         })
         let Controller2 = createStaticInstanceClasses({ 
-            superclass: null, 
+            Superclass: null, 
             implementationType: 'Middleware',
             cacheName: true
         })
@@ -45,12 +45,12 @@ describe('ReusableNestedUnit module - Connecting class inhiritance dynamically',
     describe('Caching static classes using different passed cacheName', () => {
         
         let Controller1 = createStaticInstanceClasses({ 
-            superclass: null, 
+            Superclass: null, 
             implementationType: 'Middleware',
             cacheName: 'X'
         })
         let Controller2 = createStaticInstanceClasses({ 
-            superclass: null, 
+            Superclass: null, 
             implementationType: 'Middleware',
             cacheName: 'Y'
         })
@@ -64,12 +64,12 @@ describe('ReusableNestedUnit module - Connecting class inhiritance dynamically',
     describe('Caching static classes using different same passed cacheName', () => {
         
         let Controller1 = createStaticInstanceClasses({ 
-            superclass: null, 
+            Superclass: null, 
             implementationType: 'Middleware',
             cacheName: 'X'
         })
         let Controller2 = createStaticInstanceClasses({ 
-            superclass: null, 
+            Superclass: null, 
             implementationType: 'Middleware',
             cacheName: 'X'
         })
@@ -88,7 +88,7 @@ describe('ReusableNestedUnit module - Connecting class inhiritance dynamically',
     describe.skip('Check instance prototype chain', () => {
         
         let Controller = createStaticInstanceClasses({
-            superclass: Application, 
+            Superclass: Application, 
             implementationType: 'Middleware',
             cacheName: false
         })

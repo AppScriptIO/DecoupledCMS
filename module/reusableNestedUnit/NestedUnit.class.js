@@ -1,21 +1,20 @@
-import prototypeChainDebug from 'appscript/module/prototypeChainDebug'
+import { classDecorator as prototypeChainDebug} from 'appscript/module/prototypeChainDebug'
 
-module.exports = ({ superclass }) => {
-    let self = class RNestedUnit extends superclass {
+export default ({ Superclass }) => {
+    let self = @prototypeChainDebug
+    class RNestedUnit extends Superclass {
+
+        static getDocumentQuery;
+
+        static initializeStaticClass(getTableDocument) {
+            super.initializeStaticClassControllerLevel()
+            self.getDocumentQuery = getTableDocument
+        }
+
         constructor(databaseDocumentKey, AppInstance) {
             super(false, {portAppInstance: AppInstance})
             this.key = databaseDocumentKey
             return this
-        }
-        static getDocumentQuery;
-        static initializeStaticClassControllerLevel(getTableDocument) {
-            let Class = this
-            Class.eventEmitter.on('initializationEnd', () => {
-                let ClassObject = {}
-                ClassObject[`${Class.name}`] = Class
-                Class.addStaticSubclassToClassArray(ClassObject)
-            })
-            self.getDocumentQuery = getTableDocument
         }
         
         /**
@@ -47,6 +46,7 @@ module.exports = ({ superclass }) => {
             let additionalFilteredChildren = await this.filterAndModifyChildrenArray(this.additionalChildNestedUnit, insertionPointKey, this.pathPointerKey)
             return await this.mergeAndOrderChildren(ownFilteredChildren, additionalFilteredChildren);
         }
+
         async filterAndModifyChildrenArray(childrenArray, insertionPointKey, pathPointerKey) {
             return childrenArray.filter((child, index) => { // filter children that correspont to the current insertionpoint.
                 let result = (child.insertionPosition.insertionPoint == insertionPointKey && child.insertionPosition.insertionPathPointer == pathPointerKey)
@@ -54,6 +54,7 @@ module.exports = ({ superclass }) => {
                 return result
             })
         }
+
         // order additional children that will be mixed into ownChildren. According to a setting that needs to be added into each child object.
         async mergeAndOrderChildren(ownFilteredChildren, additionalFilteredChildren) {
             // metrge 2 arrays., appending one to the other.
@@ -110,7 +111,6 @@ module.exports = ({ superclass }) => {
         }
         
     }
-    self = prototypeChainDebug(self)
     
     return self
 }

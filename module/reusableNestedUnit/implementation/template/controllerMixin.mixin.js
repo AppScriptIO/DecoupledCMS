@@ -2,21 +2,19 @@ import { Mixin } from 'mixwith'
 import _ from 'underscore'
 import { default as Application } from 'appscript'
 import filesystem from 'fs'
-import prototypeChainDebug from 'appscript/module/prototypeChainDebug'
+import { classDecorator as prototypeChainDebug} from 'appscript/module/prototypeChainDebug'
 
 /**
  * @description Extends a class by super class and adds some common functionality.
  */
-export default Mixin(({ superclass }) => {
-    let self = class TemplateMixin extends superclass {
-
-        renderedContentString(viewName, viewArray) {
-            // loop throught the strings array to combine them and print string code to the file.
-            if(viewArray[viewName]) {
-                return viewArray[viewName].join() // joins all array components into one string.
-            }
-        }
+export default Mixin(({ Superclass }) => {
+    let self = @prototypeChainDebug
+    class TemplateMixin extends Superclass {
         
+        /**
+         * 
+         * @return {String} String of rendered HTML document content.
+         */
         async initializeNestedUnit({ nestedUnitKey, additionalChildNestedUnit = [], pathPointerKey = null }) { // Entrypoint Instance
             // [1] get nestedUnit
             let nestedUnitInstance = await this.getNestedUnit({ nestedUnitKey, additionalChildNestedUnit, pathPointerKey })
@@ -48,7 +46,15 @@ export default Mixin(({ superclass }) => {
             )
             return renderedContent
         }
+
+        renderedContentString(viewName, viewArray) {
+            // loop throught the strings array to combine them and print string code to the file.
+            if(viewArray[viewName]) {
+                return viewArray[viewName].join() // joins all array components into one string.
+            }
+        }
+
     }
-    self = prototypeChainDebug(self)
+
     return self
 })

@@ -1,22 +1,22 @@
-import prototypeChainDebug from 'appscript/module/prototypeChainDebug'
+import { classDecorator as prototypeChainDebug} from 'appscript/module/prototypeChainDebug'
 
-module.exports = ({ superclass }) => {
-    let self = class RUnit extends superclass {
+export default ({ Superclass }) => {
+    let self = @prototypeChainDebug 
+    class RUnit extends Superclass {
+
+        static getDocumentQuery;
+
+        static initializeStaticClass(getTableDocument) {
+            self.getDocumentQuery = getTableDocument
+            super.initializeStaticClassControllerLevel()
+        }
+
         constructor(databaseDocumentKey, AppInstance) {
             super(false, {portAppInstance: AppInstance})
             this.key = databaseDocumentKey
             return this
         }
-        static getDocumentQuery;
-        static initializeStaticClassControllerLevel(getTableDocument) {
-            let Class = this
-            Class.eventEmitter.on('initializationEnd', () => {
-                let ClassObject = {}
-                ClassObject[`${Class.name}`] = Class
-                Class.addStaticSubclassToClassArray(ClassObject)
-            })
-            self.getDocumentQuery = getTableDocument
-        }
+
         /**
          * @description gets document from database using documentKey and populates the data to the instance.
          * 
@@ -29,8 +29,6 @@ module.exports = ({ superclass }) => {
             }
         }
     }
-    self = prototypeChainDebug(self)
     
     return self
-
 }

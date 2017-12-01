@@ -8,7 +8,7 @@ getTableDocument.instance['template_documentBackend'] = getTableDocument.generat
 
 export default ({ documentKey }) => {
     let TemplateController = createStaticInstanceClasses({ 
-        superclass: Application, 
+        Superclass: Application, 
         implementationType: 'Template'
     })
     return async (context, next) => {

@@ -23,7 +23,7 @@ let counter = [] // allows to have a unique set of relations among different nes
  * @return {Object} Related Classes 
  */
 function createStaticInstanceClasses({
-    superclass, /* Usually the higher Application class */
+    Superclass, /* Usually the higher Application class */
     implementationType,
     cacheName = false /* {Boolean || String} */
 }) {
@@ -84,13 +84,13 @@ function createStaticInstanceClasses({
     // Call class producer functions to return a new class with the specific connections.
     let Controller = ControllerFunc({
         methodInstanceName: cacheName,
-        superclass,
+        Superclass,
         mixin: implementationConfig.ControllerMixin
     })
-    let NestedUnit = NestedUnitFunc({ superclass: Controller })
-    let Unit = UnitFunc({ superclass: Controller })
-    SpecificNestedUnitFunc({ superclass: NestedUnit })
-    SpecificUnitFunc({ superclass: Unit })
+    let NestedUnit = NestedUnitFunc({ Superclass: Controller })
+    let Unit = UnitFunc({ Superclass: Controller })
+    SpecificNestedUnitFunc({ Superclass: NestedUnit })
+    SpecificUnitFunc({ Superclass: Unit })
     Controller.eventEmitter.emit('initializationEnd') // register subclasses that are listening for the event to register themselves in extendedSubclass.static array.
     
     // return Controller in which it holds the tree structure.

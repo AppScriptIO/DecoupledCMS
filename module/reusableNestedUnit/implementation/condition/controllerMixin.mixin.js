@@ -1,17 +1,19 @@
 import { Mixin } from 'mixwith'
-import prototypeChainDebug from 'appscript/module/prototypeChainDebug'
+import { classDecorator as prototypeChainDebug} from 'appscript/module/prototypeChainDebug'
 
 /**
  * @description Extends a class by super class and adds some common functionality.
  */
-export default Mixin(({ superclass }) => {
-    let self = class ConditionMixin extends superclass {
+export default Mixin(({ Superclass }) => {
+    let self = 
+    @prototypeChainDebug
+    class ConditionMixin extends Superclass {
 
         /**
          * @description when first called "this" context is assigned to the AppInstance for the comming request. And on subsequest calls it is assigned to the nestedUnit instance.
          * 
          * @param {any} {nestedUnitKey} 
-         * @returns 
+         * @returns { Object || False } Object containing instruction settings to be used through an implementing module.
          */
         async initializeConditionTree({ nestedUnitKey, additionalChildNestedUnit = [], pathPointerKey = null}) { // Entrypoint Instance
             // self.debug.push(nestedUnitKey)
@@ -38,7 +40,6 @@ export default Mixin(({ superclass }) => {
             return (callback) ? callback : false;
         }        
     }
-    self = prototypeChainDebug(self)
     
     return self
 })

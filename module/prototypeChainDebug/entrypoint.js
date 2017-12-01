@@ -2,7 +2,7 @@
  * Adds prototype information on static classes, prototypes, and instances.
  * Returns a proxy with traps to add meta information.
  */
-export default Class => {
+function prototypeChainDebug(Class) {
     // Static class
     Class.meta = {
         Class: `${Class.name}`,
@@ -38,4 +38,5 @@ export default Class => {
     return Class
 }
 
-    
+export { prototypeChainDebug as classDecorator}
+export default prototypeChainDebug

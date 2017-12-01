@@ -3,7 +3,7 @@ import renderTemplateDocument from 'appscript/utilityFunction/middleware/renderT
 import implementMiddlewareOnModuleUsingJson from 'appscript/utilityFunction/middleware/implementMiddlewareOnModuleUsingJson.js' // Middleware extending server functionality
 import createStaticInstanceClasses from 'appscript/module/reusableNestedUnit'
 let MiddlewareController = createStaticInstanceClasses({ 
-    superclass: Application, 
+    Superclass: Application, 
     implementationType: 'Middleware',
     cacheName: true
 })
