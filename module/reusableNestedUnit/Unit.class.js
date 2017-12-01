@@ -6,7 +6,7 @@ export default ({ Superclass }) => {
 
         static getDocumentQuery;
 
-        static initializeStaticClass(getTableDocument) {
+        static initializeStaticClass(self, getTableDocument) {
             self.getDocumentQuery = getTableDocument
             super.initializeStaticClassControllerLevel()
         }

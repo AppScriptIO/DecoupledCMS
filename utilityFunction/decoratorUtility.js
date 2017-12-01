@@ -17,9 +17,20 @@ export function add({ to = 'static' }, method) {
     }
 }
 
-export function execute({ staticMethod, args = [] }) {
+export function execute({ staticMethod, self = true, args = [] }) {
     return Class => {
+        if(self) args.unshift(Class) // add to beginning 
         Class[staticMethod](...args)
+        return Class
+    }
+}
+
+export function applyMixin({ mixin = null }) {
+    return Class => {
+        // add controller methods for the specific module that uses them.
+            Class = (mixin) ?
+                mixin({ Superclass: Class }) /* return Specific implementation Controller */ : 
+                Class /* return Reusable nested unit */;
         return Class
     }
 }

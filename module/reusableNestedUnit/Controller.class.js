@@ -1,4 +1,3 @@
-import { mix } from 'mixwith'
 import commonMethod from './commonMethod.mixin'
 const EventEmitter = require('events')
 import createInstance from 'appscript/module/createInstance.staticMethod'
@@ -6,7 +5,8 @@ import { usingGenericInstance as populateInstancePropertyFromJson, usingThis as 
 import addStaticSubclassToClassArray from 'appscript/module/addStaticSubclassToClassArray.staticMethod'
 import { classDecorator as prototypeChainDebug} from 'appscript/module/prototypeChainDebug'
 import { MultiplePrototypeChain } from 'appscript/module/multiplePrototypeChain'
-import { add, execute } from 'appscript/utilityFunction/decoratorUtility.js'
+import { add, execute, applyMixin } from 'appscript/utilityFunction/decoratorUtility.js'
+import { mix } from 'mixwith'
 
 /**
  * @class
@@ -29,6 +29,7 @@ export default ({
             populateInstancePropertyFromJson_this
         })
         @execute({ staticMethod: 'initializeStaticClass' })
+        @applyMixin({ mixin })
         class ReusableController extends mix(Superclass).with(...mixinArray) {
 
             static eventEmitter = new EventEmitter() // i.e. new EventEmitter()
@@ -36,7 +37,7 @@ export default ({
                 static: {}
             }
 
-            static initializeStaticClass() {
+            static initializeStaticClass(self) {
                 // Mutation observer on array for debugging purposes.
                 // self.extendedSubclass.static = new Proxy(self.extendedSubclass.static, {
                 //     set: function(target, property, value, receiver) {      
@@ -137,13 +138,6 @@ export default ({
 
         }
 
-    // add controller methods for the specific module that uses them.
-    let Controller
-    if(mixin) {
-        Controller = mixin({ Superclass: self}) // return Specific implementation Controller
-    } else {
-        Controller = self; // return Reusable nested unit
-    }
-    return Controller
+    return self
 }
 

@@ -1,34 +1,26 @@
+const EventEmitter = require('events')
+import http from 'http'
 import configuration from '../configuration/configuration.export.js' // Load configuration settings.
 import Koa from 'koa' // Koa applicaiton server
 import compose from 'koa-compose'
 import rethinkdbConfig from '../configuration/rethinkdbConfig.js'
 import _ from '../../../node_modules/underscore' // To affect changes of _ to the main app.
-const EventEmitter = require('events')
 import { connect } from 'appscript/utilityFunction/middleware/commonDatabaseFunctionality.js'
-
-import http from 'http'
+import { add, execute, applyMixin } from 'appscript/utilityFunction/decoratorUtility.js'
 import addStaticSubclassToClassArray from 'appscript/module/addStaticSubclassToClassArray.staticMethod'
 
-const self = class Application extends EventEmitter {
+const self = 
+@add({ to: 'static'}, {
+    addStaticSubclassToClassArray
+})
+class Application extends EventEmitter {
 
     static eventEmitter = (new EventEmitter()).setMaxListeners(200) // increase maximum eventliseners (default = 10) // i.e. new EventEmitter()
     static rethinkdbConnection = {}
     static config = configuration // Array
     static frontend;
     static extendedSubclass = {
-        instance: [],
         static: []
-    }
-    static subclassPath = {
-        asInstance: [
-            'class/StaticContent.class.js',
-            'class/Api.class.js',
-            'class/Test.class.js',
-        ],
-        // asStatic: [
-        //     // 'class/ConditionTree.class.js',
-        //     // 'class/Condition.class.js',
-        // ]
     }
    
     constructor(skipConstructor = false) {
@@ -36,7 +28,7 @@ const self = class Application extends EventEmitter {
         if(skipConstructor) return;
     }
 
-    static async initialize(staticSubclass) { // One-time initialization of Applicaiton Class.
+    static async initialize(/*staticSubclass*/) { // One-time initialization of Applicaiton Class.
         console.info(`☕%c Running Application as ${self.config.DEPLOYMENT} - '${self.config.PROTOCOL}${self.config.HOST}'`, self.config.style.green)
         self.rethinkdbConnection = await connect()
         _.templateSettings = { // initial underscore template settings on first import gets applied on the rest.
@@ -49,12 +41,12 @@ const self = class Application extends EventEmitter {
     }
 
 // Used by extended subclasses:
-    static addStaticClassToSubclassArray({ keyName = null, subclass }) {
-        if (keyName) {
-            self.eventEmitter.on('initializationEnd', () => {
-                self.extendedSubclass.static[keyName] = subclass
-            })
-        }
+    // Add subclasses to list
+    static addSubclass({ keyName, Subclass = this } = {}) {
+        if(!keyName) keyName = Subclass.name
+        self.eventEmitter.on('initializationEnd', () => {
+            self.extendedSubclass.static[keyName] = Subclass
+        })
     }
 
     static initializeStaticClass() { // used for extended subclasses
@@ -93,8 +85,6 @@ const self = class Application extends EventEmitter {
     }
 
 }
-
-self.addStaticSubclassToClassArray = addStaticSubclassToClassArray
 
 const instance = new self();
 export { self as default, instance as instance }
