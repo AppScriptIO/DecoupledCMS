@@ -5,13 +5,13 @@ import filesystem from 'fs'
 import { classDecorator as prototypeChainDebug} from 'appscript/module/prototypeChainDebug'
 import { add, execute, applyMixin, conditional } from 'appscript/utilityFunction/decoratorUtility.js'
 import { extendedSubclassPattern } from 'appscript/utilityFunction/extendedSubclassPattern.js'
+import promiseProperRace from 'appscript/utilityFunction/promiseProperRace.js'
 
 let getTableDocument = {
     generate: require('appscript/utilityFunction/database/query/getTableDocument.query.js'),
     instance: []
 }
 getTableDocument.instance['template_viewNestedUnit'] = getTableDocument.generate('template_viewNestedUnit')
-import promiseProperRace from 'appscript/utilityFunction/promiseProperRace.js'
 
 export default ({ Superclass }) => {
     let self = 

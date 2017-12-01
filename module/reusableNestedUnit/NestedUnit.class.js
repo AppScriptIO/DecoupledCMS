@@ -23,16 +23,12 @@ export default ({ Superclass }) => {
          * 
          */
         async initializeInstance() {
-            let Class = this.constructor
-            if(!('jsonData' in this)) { // if not already populated with data.
-                let jsonData = await Class.getDocumentQuery(Class.rethinkdbConnection, this.key)
-                await this.populateInstancePropertyFromJson_this(jsonData)
-                // reorder insertion points
-                if(this.insertionPoint) {
-                    await this.insertionPoint.sort((prior, subsequent) => {
-                        return (prior.order <= subsequent.order) ? -1 : 1;
-                    })
-                }
+            await super.initializeInstance()
+            // reorder insertion points
+            if(!('jsonData' in this) && this.insertionPoint) {
+                await this.insertionPoint.sort((prior, subsequent) => {
+                    return (prior.order <= subsequent.order) ? -1 : 1;
+                })
             }
         }
         

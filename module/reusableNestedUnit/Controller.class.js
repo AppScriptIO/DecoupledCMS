@@ -78,6 +78,19 @@ export default ({
                 await instance.initializeInstance()
                 return instance
             }
+            
+            /**
+             * @description gets document from database using documentKey and populates the data to the instance.
+             * during which 'jsonData' property is set. if it is set, it means that the instance is already populated with data.
+             * 
+             */
+            async initializeInstance() {
+                let Class = this.constructor
+                if(!('jsonData' in this)) { // if not already populated with data.
+                    let jsonData = await Class.getDocumentQuery(Class.rethinkdbConnection, this.key)
+                    await this.populateInstancePropertyFromJson_this(jsonData)
+                }
+            }
 
         }
 
