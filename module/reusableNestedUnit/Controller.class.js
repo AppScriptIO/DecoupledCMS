@@ -5,29 +5,8 @@ import addStaticSubclassToClassArray from 'appscript/module/addStaticSubclassToC
 import { classDecorator as prototypeChainDebug} from 'appscript/module/prototypeChainDebug'
 import { add, execute, applyMixin, conditional } from 'appscript/utilityFunction/decoratorUtility.js'
 import { extendedSubclassPattern } from 'appscript/utilityFunction/extendedSubclassPattern.js'
-import { superclassInstanceContextPattern } from 'appscript/utilityFunction/superclassInstanceContextPattern.js'
+import { superclassInstanceContextPattern, cacheInstance } from 'appscript/utilityFunction/superclassInstanceContextPattern.js'
 import { mix } from 'mixwith'
-
-function cacheInstance({ cacheArrayName, keyArgumentName = 'key' }) { // decorator + proxy
-    return (target, name, descriptor) => {
-        let method = target[name]
-        descriptor.value = new Proxy(method, {
-            apply: async (target, thisArg, argumentsList) => {
-                let [{ [keyArgumentName]: key }] = argumentsList // extract key using the specified key parameter name in the method.
-                let cacheArray = thisArg.instance[cacheArrayName] // Sub array of 'this.instance' in which instances are saved.
-                let instance;
-                if(key in cacheArray) {
-                    instance = cacheArray[key]
-                } else {
-                    instance = await target.apply(thisArg, argumentsList)
-                    cacheArray[key] = instance // add to class cache
-                }
-                return instance
-            }          
-        })
-        return descriptor
-    }
-}
 
 /**
  * @class
@@ -61,7 +40,7 @@ export default ({
             })
             async getNestedUnit({ nestedUnitKey, additionalChildNestedUnit = [], pathPointerKey = null}) {
                 let instance = await this.callSubclass('NestedUnit', [nestedUnitKey])
-                await instance.initializeInstance()
+                await instance.reflectDatabaseDataToAppObject()
                 // add children trees: 
                 instance.additionalChildNestedUnit = additionalChildNestedUnit
                 // add pathPointerKey to allow applying additional corresponding additional children.
@@ -75,7 +54,7 @@ export default ({
             })
             async getUnit({ unitKey }) {
                 let instance = await this.callSubclass('Unit', [unitKey])
-                await instance.initializeInstance()
+                await instance.reflectDatabaseDataToAppObject()
                 return instance
             }
             
@@ -84,11 +63,15 @@ export default ({
              * during which 'jsonData' property is set. if it is set, it means that the instance is already populated with data.
              * 
              */
-            async initializeInstance() {
-                let Class = this.constructor
-                if(!('jsonData' in this)) { // if not already populated with data.
-                    let jsonData = await Class.getDocumentQuery(Class.rethinkdbConnection, this.key)
-                    await this.populateInstancePropertyFromJson_this(jsonData)
+            async reflectDatabaseDataToAppObject({
+                object = this, 
+                key = this.key, 
+                queryFunc = this.constructor.getDocumentQuery,
+                connection = self.rethinkdbConnection
+            } = {}) {
+                if(!('jsonData' in object)) { // if not already populated with data.
+                    let jsonData = await queryFunc({ key, connection })
+                    await this.populateInstancePropertyFromJson_this({ jsonData })
                 }
             }
 

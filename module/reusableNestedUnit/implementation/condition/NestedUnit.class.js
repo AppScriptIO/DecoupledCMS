@@ -2,12 +2,11 @@ import r from 'rethinkdb'
 import { classDecorator as prototypeChainDebug} from 'appscript/module/prototypeChainDebug'
 import { add, execute, applyMixin, conditional } from 'appscript/utilityFunction/decoratorUtility.js'
 import { extendedSubclassPattern } from 'appscript/utilityFunction/extendedSubclassPattern.js'
+import { curried as getTableDocumentCurried } from "appscript/utilityFunction/database/query/getTableDocument.query.js";
 
-let getTableDocument = {
-    generate: require('appscript/utilityFunction/database/query/getTableDocument.query.js'),
-    instance: []
+let getDocument = {
+    NestedUnit: getTableDocumentCurried({ documentId: 'condition_conditionTree' }),
 }
-getTableDocument.instance['condition_conditionTree'] = getTableDocument.generate('condition_conditionTree')
 import promiseProperRace from 'appscript/utilityFunction/promiseProperRace.js'
 
 export default ({ Superclass }) => {
@@ -15,7 +14,7 @@ export default ({ Superclass }) => {
         @conditional({ decorator: prototypeChainDebug, condition: process.env.SZN_DEBUG })
         @execute({
             staticMethod: 'initializeStaticClass', 
-            args: [ getTableDocument.instance['condition_conditionTree'] ] 
+            args: [ getDocument['NestedUnit'] ]
         })
         @extendedSubclassPattern.Subclass()
         class NestedUnit extends Superclass {

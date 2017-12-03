@@ -1,32 +1,32 @@
 import { classDecorator as prototypeChainDebug} from 'appscript/module/prototypeChainDebug'
 import { add, execute, applyMixin, conditional } from 'appscript/utilityFunction/decoratorUtility.js'
 import { extendedSubclassPattern } from 'appscript/utilityFunction/extendedSubclassPattern.js'
+import { curried as getTableDocumentCurried } from "appscript/utilityFunction/database/query/getTableDocument.query.js";
 
-let getTableDocument = {
-    generate: require('appscript/utilityFunction/database/query/getTableDocument.query.js'),
-    instance: []
+let getDocument = {
+    'Unit': getTableDocumentCurried({ documentId: 'middleware_middlewareImplementation' }),
+    'File': getTableDocumentCurried({ documentId: 'middleware_middlewareFile' }),
 }
-getTableDocument.instance['middleware_middlewareFile'] = getTableDocument.generate('middleware_middlewareFile')
-getTableDocument.instance['middleware_middlewareImplementation'] = getTableDocument.generate('middleware_middlewareImplementation')
 
 export default ({ Superclass }) => {
     let self = 
-        @conditional({ decorator: prototypeChainDebug, condition: process.env.SZN_DEBUG })    
+        @conditional({ decorator: prototypeChainDebug, condition: process.env.SZN_DEBUG })
         @execute({
             staticMethod: 'initializeStaticClass', 
-            args: [ getTableDocument.instance['middleware_middlewareImplementation'] ] 
+            args: [ getDocument['Unit'] ]
         })
         @extendedSubclassPattern.Subclass()
         class Unit extends Superclass {
             async pupolateMiddlewareFile() {
-                // [1] get valueReturningFile
                 let middlewareFileKey = this.middlewareFile
                 if (!('functionPath' in this)) {
-                    let middlewareFile = await getTableDocument.instance['middleware_middlewareFile'](self.rethinkdbConnection, middlewareFileKey)
+                    let middlewareFile = await getDocument['File']({
+                        key: middlewareFileKey,
+                        connection: self.rethinkdbConnection
+                    })
                     this.functionPath = middlewareFile.filePath
                 }
             }
         }
-    
     return self
 }

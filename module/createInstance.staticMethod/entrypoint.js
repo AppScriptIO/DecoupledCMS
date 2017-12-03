@@ -22,7 +22,7 @@ export default async function (controllerInstanceArray, dataKey, getDocumentQuer
     // [2] Populate properties.
     if(!('jsonData' in instance)) { // if not already populated with data.
         let jsonData = await getDocumentQueryCallback(Class.rethinkdbConnection, dataKey)
-        await populateInstancePropertyFromJson(instance, jsonData)
+        await populateInstancePropertyFromJson({ object: instance, jsonData })
     }
 
     return instance // return the newly cr

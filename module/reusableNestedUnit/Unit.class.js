@@ -8,8 +8,8 @@ export default ({ Superclass }) => {
 
         static getDocumentQuery;
 
-        static initializeStaticClass(self, getTableDocument) {
-            self.getDocumentQuery = getTableDocument
+        static initializeStaticClass(self, getDocument) {
+            self.getDocumentQuery = getDocument
         }
 
         constructor(databaseDocumentKey) {

@@ -41,3 +41,24 @@ export function superclassInstanceContextPattern() {
         return Class
     }
 }
+
+export function cacheInstance({ cacheArrayName, keyArgumentName = 'key' }) { // decorator + proxy
+    return (target, name, descriptor) => {
+        let method = target[name]
+        descriptor.value = new Proxy(method, {
+            apply: async (target, thisArg, argumentsList) => {
+                let [{ [keyArgumentName]: key }] = argumentsList // extract key using the specified key parameter name in the method.
+                let cacheArray = thisArg.instance[cacheArrayName] // Sub array of 'this.instance' in which instances are saved.
+                let instance;
+                if(key in cacheArray) {
+                    instance = cacheArray[key]
+                } else {
+                    instance = await target.apply(thisArg, argumentsList)
+                    cacheArray[key] = instance // add to class cache
+                }
+                return instance
+            }          
+        })
+        return descriptor
+    }
+}

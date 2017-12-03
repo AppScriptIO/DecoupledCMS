@@ -8,8 +8,9 @@ export default ({ Superclass }) => {
 
         static getDocumentQuery;
 
-        static initializeStaticClass(self, getTableDocument) {
-            self.getDocumentQuery = getTableDocument
+        static initializeStaticClass(self, getDocument) {
+            // console.log(getDocument)
+            self.getDocumentQuery = getDocument
         }
 
         constructor(databaseDocumentKey) {
@@ -22,8 +23,8 @@ export default ({ Superclass }) => {
          * @description gets document from database using documentKey and populates the data to the instance.
          * 
          */
-        async initializeInstance() {
-            await super.initializeInstance()
+        async reflectDatabaseDataToAppObject() {
+            await super.reflectDatabaseDataToAppObject()
             // reorder insertion points
             if(!('jsonData' in this) && this.insertionPoint) {
                 await this.insertionPoint.sort((prior, subsequent) => {

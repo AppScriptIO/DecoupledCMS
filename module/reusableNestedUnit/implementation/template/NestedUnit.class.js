@@ -6,19 +6,18 @@ import { classDecorator as prototypeChainDebug} from 'appscript/module/prototype
 import { add, execute, applyMixin, conditional } from 'appscript/utilityFunction/decoratorUtility.js'
 import { extendedSubclassPattern } from 'appscript/utilityFunction/extendedSubclassPattern.js'
 import promiseProperRace from 'appscript/utilityFunction/promiseProperRace.js'
+import { curried as getTableDocumentCurried } from "appscript/utilityFunction/database/query/getTableDocument.query.js";
 
-let getTableDocument = {
-    generate: require('appscript/utilityFunction/database/query/getTableDocument.query.js'),
-    instance: []
+let getDocument = {
+    Unit: getTableDocumentCurried({ documentId: 'template_viewNestedUnit' }),
 }
-getTableDocument.instance['template_viewNestedUnit'] = getTableDocument.generate('template_viewNestedUnit')
 
 export default ({ Superclass }) => {
     let self = 
         @conditional({ decorator: prototypeChainDebug, condition: process.env.SZN_DEBUG })  
         @execute({ 
             staticMethod: 'initializeStaticClass', 
-            args: [ getTableDocument.instance['template_viewNestedUnit'] ] 
+            args: [ getDocument['Unit'] ]
         })
         @extendedSubclassPattern.Subclass()
         class NestedUnit extends Superclass {

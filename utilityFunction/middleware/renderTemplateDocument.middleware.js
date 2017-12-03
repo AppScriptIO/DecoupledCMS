@@ -1,7 +1,9 @@
 import Application from 'appscript'
 import createStaticInstanceClasses from 'appscript/module/reusableNestedUnit'
+import {default as getTableDocumentDefault} from "appscript/utilityFunction/database/query/getTableDocument.query.js";
+
 let getTableDocument = {
-    generate: require('appscript/utilityFunction/database/query/getTableDocument.query.js'),
+    generate: getTableDocumentDefault,
     instance: []
 }
 getTableDocument.instance['template_documentBackend'] = getTableDocument.generate('template_documentBackend')

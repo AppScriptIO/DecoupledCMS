@@ -1,28 +1,29 @@
 import { classDecorator as prototypeChainDebug} from 'appscript/module/prototypeChainDebug'
 import { add, execute, applyMixin, conditional } from 'appscript/utilityFunction/decoratorUtility.js'
 import { extendedSubclassPattern } from 'appscript/utilityFunction/extendedSubclassPattern.js'
+import { curried as getTableDocumentCurried } from "appscript/utilityFunction/database/query/getTableDocument.query.js";
 
-let getTableDocument = {
-    generate: require('appscript/utilityFunction/database/query/getTableDocument.query.js'),
-    instance: []
+let getDocument = {
+    Unit: getTableDocumentCurried({ documentId: 'condition_conditionImplementation' }),
+    File: getTableDocumentCurried({ documentId: 'condition_valueReturningFile' }),
 }
-getTableDocument.instance['condition_valueReturningFile'] = getTableDocument.generate('condition_valueReturningFile')
-getTableDocument.instance['condition_conditionImplementation'] = getTableDocument.generate('condition_conditionImplementation')
 
 export default ({ Superclass }) => {
     let self = 
         @conditional({ decorator: prototypeChainDebug, condition: process.env.SZN_DEBUG })
         @execute({
             staticMethod: 'initializeStaticClass', 
-            args: [ getTableDocument.instance['condition_conditionImplementation'] ] 
+            args: [ getDocument['Unit'] ] 
         })
         @extendedSubclassPattern.Subclass()
         class Unit extends Superclass {
             async checkCondition() {
-                // [1] get valueReturningFile
                 let valueReturningFileKey = this.valueReturningFileKey
                 if(!('valueReturningFile' in this)) {
-                    this.valueReturningFile = await getTableDocument.instance['condition_valueReturningFile'](self.rethinkdbConnection, valueReturningFileKey)
+                    this.valueReturningFile = await getDocument['File']({ 
+                        key: valueReturningFileKey,
+                        connection: self.rethinkdbConnection
+                    })
                 }
                 // [2] require & check condition
                 if(!this.conditionResult) {
