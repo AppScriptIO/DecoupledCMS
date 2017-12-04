@@ -44,51 +44,7 @@ export default ({ Superclass }) => {
                 }
                 return returnedValue;
             }
-
-            async initializeInsertionPoint({ insertionPoint, children }) {
-                let callback;                
-                // [2] check type of subtrees execution: race first, all ... .
-                let executionTypeCallbackName;
-                switch(insertionPoint.executionType) {
-                    case 'raceFirstPromise': 
-                        executionTypeCallbackName = 'initializeConditionTreeInRaceExecutionType'
-                    break;
-                    default: 
-                        console.log('executionType doesn\'t match any kind.')
-                }
-                // [3] call handler on them.
-                return await this[executionTypeCallbackName](children)
-            }
             
-            async initializeConditionTreeInRaceExecutionType(conditionTreeChildren) {
-                let promiseArray = []
-                promiseArray = conditionTreeChildren.map(conditionTreeChild => {
-                    return new Promise(async (resolve, reject) => {
-                        // Add the rest of the immediate children to the next tree as additional children. propagate children to the next tree.
-                        
-                        if(this.children.length != 0) {
-                            await Array.prototype.push.apply(this.children, this.additionalChildNestedUnit)
-                        } else {
-                            this.children = await this.additionalChildNestedUnit.slice()
-                        }
-
-                        let callback = await this.initializeNestedUnit({
-                            nestedUnitKey: conditionTreeChild.nestedUnit, 
-                            additionalChildNestedUnit: this.children,
-                            pathPointerKey: conditionTreeChild.pathPointerKey
-                        })
-                        if(!callback) reject('SZN - No callback choosen from this childTree.')
-                        resolve(callback)
-                    })
-                })
-
-                let callback;
-                await promiseProperRace(promiseArray).then((promiseReturnValueArray) => {
-                    callback = promiseReturnValueArray[0] // as only one promise is return in the array.
-                }).catch(reason => { if(process.env.SZN_DEBUG == 'true' && this.portAppInstance.context.headers.debug == 'true') console.log(`🔀⚠️ promiseProperRace rejected because: ${reason}`) })
-                return callback ? callback : false;
-            }
-
         }
             
     return self

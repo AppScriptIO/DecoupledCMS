@@ -1,5 +1,6 @@
 import { classDecorator as prototypeChainDebug} from 'appscript/module/prototypeChainDebug'
 import { add, execute, applyMixin, conditional } from 'appscript/utilityFunction/decoratorUtility.js'
+import promiseProperRace from 'appscript/utilityFunction/promiseProperRace.js'
 
 export default ({ Superclass }) => {
     let self = 
@@ -44,7 +45,6 @@ export default ({ Superclass }) => {
             let additionalFilteredChildren = await this.filterAndModifyChildrenArray(this.additionalChildNestedUnit, insertionPointKey, this.pathPointerKey)
             return await this.mergeAndOrderChildren(ownFilteredChildren, additionalFilteredChildren);
         }
-
         /**
          * Get children corresponding to the current insertion point.
          * // Take into consideration the indirect children added from previous (inhereted) trees.
@@ -61,7 +61,6 @@ export default ({ Superclass }) => {
                 return result
             })
         }
-
         // order additional children that will be mixed into ownChildren. According to a setting that needs to be added into each child object.
         async mergeAndOrderChildren(ownFilteredChildren, additionalFilteredChildren) {
             // metrge 2 arrays., appending one to the other.
@@ -117,6 +116,82 @@ export default ({ Superclass }) => {
             return Array.prototype.concat(firstChildren, orderedChildren, lastChildren)
         }
         
+        /**
+         * Call correct execution type method of the current insertionpoint settings.
+         */
+        async initializeInsertionPoint({ insertionPoint, children }) {
+            // [2] check type of subtrees execution: race first, all ... .
+            let callback;
+            switch(insertionPoint.executionType) { // execution type callback name
+                case 'raceFirstPromise': 
+                    callback = 'initializeNestedUnitInRaceExecutionType'
+                break;
+                case 'middlewareArray': // TODO: Deprected name - Change middlewareArray in database to chronological
+                case 'chronological': 
+                    callback = 'initializeTreeInChronologicalSequence'
+                break;
+                default: 
+                    console.log(`"${insertionPoint.executionType}" executionType doesn\'t match any kind.`)
+            }
+            // [3] call handler on them.
+            return await this[callback](children)
+        }
+
+        async initializeTreeInChronologicalSequence(children /* nestedUnitChildren / TreeChildren */) {
+            let array = [] // nested Unit Array or rendered nested unit initalization results.
+            for (var index = 0; index < children.length; index++) {
+                let child = children[index]
+                // Add the rest of the immediate children to the next tree as additional children. propagate children to the next tree.
+                if(this.children.length != 0) {
+                    await Array.prototype.push.apply(this.children, this.additionalChildNestedUnit)
+                } else {
+                    this.children = await this.additionalChildNestedUnit.slice()
+                }
+                let initialized = await this.initializeNestedUnit({
+                    nestedUnitKey: child.nestedUnit,
+                    additionalChildNestedUnit: this.children,
+                    pathPointerKey: child.pathPointerKey
+                })
+                let subsequentArray = Array.isArray(initialized) ? initialized : [ initialized ]; // Convert to array                
+                if(array.length != 0) {
+                    await Array.prototype.push.apply(array, subsequentArray)
+                } else {
+                    array = await subsequentArray.slice()
+                }
+            }
+
+            return array
+        } 
+
+        async initializeNestedUnitInRaceExecutionType(children) {
+            let promiseArray = []
+            promiseArray = children.map(conditionTreeChild => {
+                return new Promise(async (resolve, reject) => {
+                    // Add the rest of the immediate children to the next tree as additional children. propagate children to the next tree.
+                    
+                    if(this.children.length != 0) {
+                        await Array.prototype.push.apply(this.children, this.additionalChildNestedUnit)
+                    } else {
+                        this.children = await this.additionalChildNestedUnit.slice()
+                    }
+
+                    let callback = await this.initializeNestedUnit({
+                        nestedUnitKey: conditionTreeChild.nestedUnit, 
+                        additionalChildNestedUnit: this.children,
+                        pathPointerKey: conditionTreeChild.pathPointerKey
+                    })
+                    if(!callback) reject('SZN - No callback choosen from this childTree.')
+                    resolve(callback)
+                })
+            })
+
+            let callback;
+            await promiseProperRace(promiseArray).then((promiseReturnValueArray) => {
+                callback = promiseReturnValueArray[0] // as only one promise is return in the array.
+            }).catch(reason => { if(process.env.SZN_DEBUG == 'true' && this.portAppInstance.context.headers.debug == 'true') console.log(`🔀⚠️ promiseProperRace rejected because: ${reason}`) })
+            return callback ? callback : false;
+        }
+
     }
     
     return self

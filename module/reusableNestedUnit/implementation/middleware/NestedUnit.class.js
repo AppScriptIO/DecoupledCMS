@@ -50,50 +50,6 @@ export default ({ Superclass }) => {
                 return array;
             }
 
-            async initializeInsertionPoint({ insertionPoint, children }) {
-                // [2] check type of subtrees execution: race first, all ... .
-                let callback;
-                switch(insertionPoint.executionType) { // execution type callback name
-                    case 'chronological': 
-                        callback = 'initializeTreeInChronologicalSequence'
-                    break;
-                    case 'middlewareArray': 
-                        callback = 'returnMiddlewareArray'
-                    break;
-                    default: 
-                        console.log(`"${insertionPoint.executionType}" executionType doesn\'t match any kind.`)
-                }
-                // [3] call handler on them.
-                return await this[callback](children)
-            }
-
-            async initializeTreeInChronologicalSequence(treeChildren) {
-            }
-
-            async returnMiddlewareArray(treeChildren) {
-                let middlewareArray = []
-                for (var index = 0; index < treeChildren.length; index++) {
-                    let treeChild = treeChildren[index]
-                    // Add the rest of the immediate children to the next tree as additional children. propagate children to the next tree.
-                    if(this.children.length != 0) {
-                        await Array.prototype.push.apply(this.children, this.additionalChildNestedUnit)
-                    } else {
-                        this.children = await this.additionalChildNestedUnit.slice()
-                    }
-                    let subsequentArray = await this.initializeNestedUnit({
-                        nestedUnitKey: treeChild.nestedUnit,
-                        additionalChildNestedUnit: this.children,
-                        pathPointerKey: treeChild.pathPointerKey
-                    })
-                    if(middlewareArray.length != 0) {
-                        await Array.prototype.push.apply(middlewareArray, subsequentArray)
-                    } else {
-                        middlewareArray = await subsequentArray.slice()
-                    }
-                }
-
-                return middlewareArray
-            } 
         }
     
     return self
