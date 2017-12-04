@@ -20,22 +20,6 @@ export default ({ Superclass }) => {
         }
         
         /**
-         * Get children corresponding to the current insertion point.
-         */
-        async filterChildrenOfCurrentInsertionPoint({
-            insertionPointKey,
-            children = this.children
-         } = {}) {
-            // [1] get children immediate & relating to this insertion position.
-            return await children.filter(child => { // filter children that correspont to the current insertionpoint.
-                return (
-                    child.insertionPosition.insertionPoint == insertionPointKey &&
-                    child.insertionPosition.insertionPathPointer == null
-                )
-            })
-        }
-
-        /**
          * @description gets document from database using documentKey and populates the data to the instance.
          * 
          */
@@ -55,16 +39,25 @@ export default ({ Superclass }) => {
          * @param {any} {insertionPointKey, insertionPath = null} 
          * @returns 
          */
-        async filterChildren({insertionPointKey}) {
-            let ownFilteredChildren = await this.filterAndModifyChildrenArray(this.children, insertionPointKey, null)
+        async filterAndOrderChildren({ insertionPointKey, children = this.children }) {
+            let ownFilteredChildren = await this.filterAndModifyChildrenArray(children, insertionPointKey, null)
             let additionalFilteredChildren = await this.filterAndModifyChildrenArray(this.additionalChildNestedUnit, insertionPointKey, this.pathPointerKey)
             return await this.mergeAndOrderChildren(ownFilteredChildren, additionalFilteredChildren);
         }
 
-        async filterAndModifyChildrenArray(childrenArray, insertionPointKey, pathPointerKey) {
-            return childrenArray.filter((child, index) => { // filter children that correspont to the current insertionpoint.
-                let result = (child.insertionPosition.insertionPoint == insertionPointKey && child.insertionPosition.insertionPathPointer == pathPointerKey)
-                // if (result) childrenArray.splice(index, 1); // was ment to increase the performance of the program, preventing rechecking of already checked array items. But it causes some issues.
+        /**
+         * Get children corresponding to the current insertion point.
+         * // Take into consideration the indirect children added from previous (inhereted) trees.
+         * // filteredTreeChildren + immediateNextChildren
+         * // let nextChildren;
+         */
+        async filterAndModifyChildrenArray(children, insertionPointKey, pathPointerKey) {
+            return children.filter((child, index) => { // filter children that correspont to the current insertionpoint.
+                let result = (
+                    child.insertionPosition.insertionPoint == insertionPointKey &&
+                    child.insertionPosition.insertionPathPointer == pathPointerKey
+                )
+                // if (result) children.splice(index, 1); // was ment to increase the performance of the program, preventing rechecking of already checked array items. But it causes some issues.
                 return result
             })
         }

@@ -40,18 +40,19 @@ export default ({ Superclass }) => {
                 let view = {}
                 if(this.insertionPoint) {
                     for (let insertionPoint of this.insertionPoint) {
+                        let children = await this.filterAndOrderChildren({ insertionPointKey: insertionPoint.key })                                        
                         if(!(insertionPoint.name in view)) view[insertionPoint.name] = []
-                        Array.prototype.push.apply( view[insertionPoint.name], await this.initializeInsertionPoint({ insertionPoint }) )
+                        Array.prototype.push.apply( 
+                            view[insertionPoint.name],
+                            await this.initializeInsertionPoint({ insertionPoint, children }) 
+                        )
                     }
                 }
                 return view;
             }
 
-            async initializeInsertionPoint({insertionPoint}) {
-                // [1] get children immediate & relating to this insertion position.
-                let filteredChildren = this.children.filter(object => { // filter children that correspont to the current insertionpoint.
-                    return (object.insertionPosition.insertionPoint == insertionPoint.key && object.insertionPosition.insertionPathPointer == null)
-                })
+            async initializeInsertionPoint({ insertionPoint, children }) {
+
                 // [2] check type of subtrees execution: race first, all ... .
                 let executionTypeCallbackName;
                 switch(insertionPoint.executionType) {
@@ -62,7 +63,7 @@ export default ({ Superclass }) => {
                         console.log(`"${insertionPoint.executionType}" executionType doesn\'t match any kind (in function called initializeInsertionPoint of NestedUnit.class.js file).`)
                 }
                 // [3] call handler on them & and return rendered template array corresponding to the specifc insertionPoint.
-                return await this[executionTypeCallbackName](filteredChildren)
+                return await this[executionTypeCallbackName](children)
             }
 
             async initializeTreeInChronologicalSequence(treeChildren) {

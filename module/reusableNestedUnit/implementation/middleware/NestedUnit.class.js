@@ -38,10 +38,7 @@ export default ({ Superclass }) => {
                 // get callback from subtrees
                 if(this.insertionPoint) {
                     for (let insertionPoint of this.insertionPoint) {
-                        let children = await this.filterChildrenOfCurrentInsertionPoint({
-                            insertionPointKey: insertionPoint.key,
-                            children: this.children
-                        })
+                        let children = await this.filterAndOrderChildren({ insertionPointKey: insertionPoint.key })                                        
                         let subsequentArray = await this.initializeInsertionPoint({ insertionPoint, children })
                         if(array.length != 0) {
                             await Array.prototype.push.apply(array, subsequentArray)

@@ -36,33 +36,28 @@ export default ({ Superclass }) => {
                 let returnedValue;
                 // get callback from subtrees
                 for (let insertionPoint of this.insertionPoint) {
-                    returnedValue = await this.initializeInsertionPoint({ insertionPoint })
+                    // [1] get children immediate & relating to this insertion position.
+                    let children = await this.filterAndOrderChildren({ insertionPointKey: insertionPoint.key })                
+                    // let children = await this.filterChildrenOfCurrentInsertionPoint({ insertionPointKey: insertionPoint.key })
+                    returnedValue = await this.initializeInsertionPoint({ insertionPoint, children })
                     if (returnedValue) break
                 }
                 return returnedValue;
             }
 
-            async initializeInsertionPoint({insertionPoint}) {
-                let callback;
-                // [1] get children immediate & relating to this insertion position.
-                let filteredTreeChildren = await this.filterChildren({ insertionPointKey: insertionPoint.key })
-                // Take into consideration the indirect children added from previous (inhereted) trees.
-                // filteredTreeChildren + immediateNextChildren
-                // let nextChildren;
-                
+            async initializeInsertionPoint({ insertionPoint, children }) {
+                let callback;                
                 // [2] check type of subtrees execution: race first, all ... .
                 let executionTypeCallbackName;
                 switch(insertionPoint.executionType) {
                     case 'raceFirstPromise': 
                         executionTypeCallbackName = 'initializeConditionTreeInRaceExecutionType'
-                        break;
+                    break;
                     default: 
                         console.log('executionType doesn\'t match any kind.')
                 }
                 // [3] call handler on them.
-                callback = await this[executionTypeCallbackName](filteredTreeChildren)
-                // [4] return callback
-                return callback ? callback : false;
+                return await this[executionTypeCallbackName](children)
             }
             
             async initializeConditionTreeInRaceExecutionType(conditionTreeChildren) {
