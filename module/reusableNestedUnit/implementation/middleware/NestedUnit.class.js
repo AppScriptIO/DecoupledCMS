@@ -38,7 +38,11 @@ export default ({ Superclass }) => {
                 // get callback from subtrees
                 if(this.insertionPoint) {
                     for (let insertionPoint of this.insertionPoint) {
-                        let subsequentArray = await this.initializeInsertionPoint({ insertionPoint })
+                        let children = await this.filterChildrenOfCurrentInsertionPoint({
+                            insertionPointKey: insertionPoint.key,
+                            children: this.children
+                        })
+                        let subsequentArray = await this.initializeInsertionPoint({ insertionPoint, children })
                         if(array.length != 0) {
                             await Array.prototype.push.apply(array, subsequentArray)
                         } else {
@@ -49,25 +53,21 @@ export default ({ Superclass }) => {
                 return array;
             }
 
-            async initializeInsertionPoint({insertionPoint}) {
-                // [1] get children immediate & relating to this insertion position.
-                let filteredChildren = this.children.filter(object => { // filter children that correspont to the current insertionpoint.
-                    return (object.insertionPosition.insertionPoint == insertionPoint.key && object.insertionPosition.insertionPathPointer == null)
-                })
+            async initializeInsertionPoint({ insertionPoint, children }) {
                 // [2] check type of subtrees execution: race first, all ... .
-                let executionTypeCallbackName;
-                switch(insertionPoint.executionType) {
+                let callback;
+                switch(insertionPoint.executionType) { // execution type callback name
                     case 'chronological': 
-                        executionTypeCallbackName = 'initializeTreeInChronologicalSequence'
+                        callback = 'initializeTreeInChronologicalSequence'
                     break;
                     case 'middlewareArray': 
-                        executionTypeCallbackName = 'returnMiddlewareArray'
+                        callback = 'returnMiddlewareArray'
                     break;
                     default: 
                         console.log(`"${insertionPoint.executionType}" executionType doesn\'t match any kind.`)
                 }
                 // [3] call handler on them.
-                return await this[executionTypeCallbackName](filteredChildren)
+                return await this[callback](children)
             }
 
             async initializeTreeInChronologicalSequence(treeChildren) {

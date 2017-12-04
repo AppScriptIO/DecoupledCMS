@@ -20,6 +20,22 @@ export default ({ Superclass }) => {
         }
         
         /**
+         * Get children corresponding to the current insertion point.
+         */
+        async filterChildrenOfCurrentInsertionPoint({
+            insertionPointKey,
+            children = this.children
+         } = {}) {
+            // [1] get children immediate & relating to this insertion position.
+            return await children.filter(child => { // filter children that correspont to the current insertionpoint.
+                return (
+                    child.insertionPosition.insertionPoint == insertionPointKey &&
+                    child.insertionPosition.insertionPathPointer == null
+                )
+            })
+        }
+
+        /**
          * @description gets document from database using documentKey and populates the data to the instance.
          * 
          */
