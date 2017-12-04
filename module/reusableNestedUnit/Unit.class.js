@@ -13,7 +13,7 @@ export default ({ Superclass }) => {
         }
 
         constructor(databaseDocumentKey) {
-            super()
+            super() 
             this.key = databaseDocumentKey
             return this
         }

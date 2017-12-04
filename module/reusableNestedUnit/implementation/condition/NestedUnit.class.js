@@ -77,7 +77,7 @@ export default ({ Superclass }) => {
                             this.children = await this.additionalChildNestedUnit.slice()
                         }
 
-                        let callback = await this.initializeConditionTree({
+                        let callback = await this.initializeNestedUnit({
                             nestedUnitKey: conditionTreeChild.nestedUnit, 
                             additionalChildNestedUnit: this.children,
                             pathPointerKey: conditionTreeChild.pathPointerKey

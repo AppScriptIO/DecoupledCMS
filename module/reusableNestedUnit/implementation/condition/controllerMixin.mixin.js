@@ -16,7 +16,7 @@ export default Mixin(({ Superclass }) => {
          * @param {any} {nestedUnitKey} 
          * @returns { Object || False } Object containing instruction settings to be used through an implementing module.
          */
-        async initializeConditionTree({ nestedUnitKey, additionalChildNestedUnit = [], pathPointerKey = null}) { // Entrypoint Instance
+        async initializeNestedUnit({ nestedUnitKey, additionalChildNestedUnit = [], pathPointerKey = null}) { // Entrypoint Instance
             // self.debug.push(nestedUnitKey)
             // let nestedUnitInstance = await ConditionTree.createInstance(this.instance.nestedUnit, nestedUnitKey, ConditionTree.getDocumentQuery)
             

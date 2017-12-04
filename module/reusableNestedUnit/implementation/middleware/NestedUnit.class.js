@@ -34,19 +34,19 @@ export default ({ Superclass }) => {
              * @returns undifiend for false or any type of value depending on the module being applied.
              */
             async loopInsertionPoint() {
-                let middlewareArray = []
+                let array = []
                 // get callback from subtrees
                 if(this.insertionPoint) {
                     for (let insertionPoint of this.insertionPoint) {
-                        let subsequentMiddleware = await this.initializeInsertionPoint({ insertionPoint })
-                        if(middlewareArray.length != 0) {
-                            await Array.prototype.push.apply(middlewareArray, subsequentMiddleware)
+                        let subsequentArray = await this.initializeInsertionPoint({ insertionPoint })
+                        if(array.length != 0) {
+                            await Array.prototype.push.apply(array, subsequentArray)
                         } else {
-                            middlewareArray = await subsequentMiddleware.slice()
+                            array = await subsequentArray.slice()
                         }
                     }
                 }
-                return middlewareArray;
+                return array;
             }
 
             async initializeInsertionPoint({insertionPoint}) {
@@ -83,15 +83,15 @@ export default ({ Superclass }) => {
                     } else {
                         this.children = await this.additionalChildNestedUnit.slice()
                     }
-                    let subsequentMiddleware = await this.initializeNestedUnit({
+                    let subsequentArray = await this.initializeNestedUnit({
                         nestedUnitKey: treeChild.nestedUnit,
                         additionalChildNestedUnit: this.children,
                         pathPointerKey: treeChild.pathPointerKey
                     })
                     if(middlewareArray.length != 0) {
-                        await Array.prototype.push.apply(middlewareArray, subsequentMiddleware)
+                        await Array.prototype.push.apply(middlewareArray, subsequentArray)
                     } else {
-                        middlewareArray = await subsequentMiddleware.slice()
+                        middlewareArray = await subsequentArray.slice()
                     }
                 }
 
