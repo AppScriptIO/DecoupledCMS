@@ -1,5 +1,6 @@
 import { classDecorator as prototypeChainDebug} from 'appscript/module/prototypeChainDebug'
 import { add, execute, applyMixin, conditional } from 'appscript/utilityFunction/decoratorUtility.js'
+import promiseProperRace from 'appscript/utilityFunction/promiseProperRace.js'
 
 export default ({ Superclass }) => {
     let self = 
@@ -20,6 +21,73 @@ export default ({ Superclass }) => {
         }
         
         /**
+         * @description loops through all the insertion points and initializes each one to execute the children specific for it.
+         * 
+         * @param {Class Instance} nestedUnitInstance Tree instance of the module using "reusableNestedUnit" pattern. instance should have "initializeInsertionPoint" function & "insertionPoint" Array.
+         * @returns undifiend for false or any type of value depending on the module being applied.
+         */
+        /**
+         * @description loops through all the insertion points and initializes each one to execute the children specific for it.
+         * 
+         * @param {Class Instance} nestedUnitInstance Tree instance of the module using "reusableNestedUnit" pattern. instance should have "initializeInsertionPoint" function & "insertionPoint" Array.
+         * @returns undifiend for false or any type of value depending on the module being applied.
+         */
+        async loopInsertionPoint({ type }) {
+            switch (type) {
+                case 'aggregateIntoObject':
+                    let view = {}
+                    if(this.insertionPoint) {
+                        for (let insertionPoint of this.insertionPoint) {
+                            let children = await this.filterAndOrderChildren({ insertionPointKey: insertionPoint.key })                                        
+                            let subsequent = await this.initializeInsertionPoint({ insertionPoint, children })                        
+                            if(!(insertionPoint.name in view)) view[insertionPoint.name] = []
+                            Array.prototype.push.apply( 
+                                view[insertionPoint.name],
+                                subsequent 
+                            )
+                        }
+                    }
+                    return view;                        
+                break;
+                case 'aggregateIntoArray':
+                    let array = []
+                    if(this.insertionPoint) { // get callback from subtrees
+                        for (let insertionPoint of this.insertionPoint) {
+                            let children = await this.filterAndOrderChildren({ insertionPointKey: insertionPoint.key })                                        
+                            let subsequentArray = await this.initializeInsertionPoint({ insertionPoint, children })
+                            if(array.length != 0) {
+                                await Array.prototype.push.apply(array, subsequentArray)
+                            } else {
+                                array = await subsequentArray.slice()
+                            }
+                        }
+                    }
+                    return array;
+                break;
+                /**
+                 * @description loops through all the insertion points and initializes each one to execute the children specific for it.
+                 * 
+                 * @param {Class Instance} nestedUnitInstance Tree instance of the module using "reusableNestedUnit" pattern. instance should have "initializeInsertionPoint" function & "insertionPoint" Array.
+                 * @returns undifiend for false or any type of value depending on the module being applied.
+                 */
+                case 'returnedFirstValue':
+                    let returned;
+                    // get callback from subtrees
+                    for (let insertionPoint of this.insertionPoint) {
+                        // [1] get children immediate & relating to this insertion position.
+                        let children = await this.filterAndOrderChildren({ insertionPointKey: insertionPoint.key })                
+                        // let children = await this.filterChildrenOfCurrentInsertionPoint({ insertionPointKey: insertionPoint.key })
+                        returned = await this.initializeInsertionPoint({ insertionPoint, children })
+                        if (returned) break
+                    }
+                    return returned;
+                default:
+                    console.log(`"${type}" type doesn\'t match any kind.`)
+                break;
+            }
+        }
+
+        /**
          * @description gets document from database using documentKey and populates the data to the instance.
          * 
          */
@@ -39,20 +107,27 @@ export default ({ Superclass }) => {
          * @param {any} {insertionPointKey, insertionPath = null} 
          * @returns 
          */
-        async filterChildren({insertionPointKey}) {
-            let ownFilteredChildren = await this.filterAndModifyChildrenArray(this.children, insertionPointKey, null)
+        async filterAndOrderChildren({ insertionPointKey, children = this.children }) {
+            let ownFilteredChildren = await this.filterAndModifyChildrenArray(children, insertionPointKey, null)
             let additionalFilteredChildren = await this.filterAndModifyChildrenArray(this.additionalChildNestedUnit, insertionPointKey, this.pathPointerKey)
             return await this.mergeAndOrderChildren(ownFilteredChildren, additionalFilteredChildren);
         }
-
-        async filterAndModifyChildrenArray(childrenArray, insertionPointKey, pathPointerKey) {
-            return childrenArray.filter((child, index) => { // filter children that correspont to the current insertionpoint.
-                let result = (child.insertionPosition.insertionPoint == insertionPointKey && child.insertionPosition.insertionPathPointer == pathPointerKey)
-                // if (result) childrenArray.splice(index, 1); // was ment to increase the performance of the program, preventing rechecking of already checked array items. But it causes some issues.
+        /**
+         * Get children corresponding to the current insertion point.
+         * // Take into consideration the indirect children added from previous (inhereted) trees.
+         * // filteredTreeChildren + immediateNextChildren
+         * // let nextChildren;
+         */
+        async filterAndModifyChildrenArray(children, insertionPointKey, pathPointerKey) {
+            return children.filter((child, index) => { // filter children that correspont to the current insertionpoint.
+                let result = (
+                    child.insertionPosition.insertionPoint == insertionPointKey &&
+                    child.insertionPosition.insertionPathPointer == pathPointerKey
+                )
+                // if (result) children.splice(index, 1); // was ment to increase the performance of the program, preventing rechecking of already checked array items. But it causes some issues.
                 return result
             })
         }
-
         // order additional children that will be mixed into ownChildren. According to a setting that needs to be added into each child object.
         async mergeAndOrderChildren(ownFilteredChildren, additionalFilteredChildren) {
             // metrge 2 arrays., appending one to the other.
@@ -108,6 +183,82 @@ export default ({ Superclass }) => {
             return Array.prototype.concat(firstChildren, orderedChildren, lastChildren)
         }
         
+        /**
+         * Call correct execution type method of the current insertionpoint settings.
+         */
+        async initializeInsertionPoint({ insertionPoint, children }) {
+            // [2] check type of subtrees execution: race first, all ... .
+            let callback;
+            switch(insertionPoint.executionType) { // execution type callback name
+                case 'raceFirstPromise': 
+                    callback = 'initializeNestedUnitInRaceExecutionType'
+                break;
+                case 'middlewareArray': // TODO: Deprected name - Change middlewareArray in database to chronological
+                case 'chronological': 
+                    callback = 'initializeTreeInChronologicalSequence'
+                break;
+                default: 
+                    console.log(`"${insertionPoint.executionType}" executionType doesn\'t match any kind.`)
+            }
+            // [3] call handler on them.
+            return await this[callback](children)
+        }
+
+        async initializeTreeInChronologicalSequence(children /* nestedUnitChildren / TreeChildren */) {
+            let array = [] // nested Unit Array or rendered nested unit initalization results.
+            for (var index = 0; index < children.length; index++) {
+                let child = children[index]
+                // Add the rest of the immediate children to the next tree as additional children. propagate children to the next tree.
+                if(this.children.length != 0) {
+                    await Array.prototype.push.apply(this.children, this.additionalChildNestedUnit)
+                } else {
+                    this.children = await this.additionalChildNestedUnit.slice()
+                }
+                let initialized = await this.initializeNestedUnit({
+                    nestedUnitKey: child.nestedUnit,
+                    additionalChildNestedUnit: this.children,
+                    pathPointerKey: child.pathPointerKey
+                })
+                let subsequentArray = Array.isArray(initialized) ? initialized : [ initialized ]; // Convert to array                
+                if(array.length != 0) {
+                    await Array.prototype.push.apply(array, subsequentArray)
+                } else {
+                    array = await subsequentArray.slice()
+                }
+            }
+
+            return array
+        } 
+
+        async initializeNestedUnitInRaceExecutionType(children) {
+            let promiseArray = []
+            promiseArray = children.map(conditionTreeChild => {
+                return new Promise(async (resolve, reject) => {
+                    // Add the rest of the immediate children to the next tree as additional children. propagate children to the next tree.
+                    
+                    if(this.children.length != 0) {
+                        await Array.prototype.push.apply(this.children, this.additionalChildNestedUnit)
+                    } else {
+                        this.children = await this.additionalChildNestedUnit.slice()
+                    }
+
+                    let callback = await this.initializeNestedUnit({
+                        nestedUnitKey: conditionTreeChild.nestedUnit, 
+                        additionalChildNestedUnit: this.children,
+                        pathPointerKey: conditionTreeChild.pathPointerKey
+                    })
+                    if(!callback) reject('SZN - No callback choosen from this childTree.')
+                    resolve(callback)
+                })
+            })
+
+            let callback;
+            await promiseProperRace(promiseArray).then((promiseReturnValueArray) => {
+                callback = promiseReturnValueArray[0] // as only one promise is return in the array.
+            }).catch(reason => { if(process.env.SZN_DEBUG == 'true' && this.portAppInstance.context.headers.debug == 'true') console.log(`🔀⚠️ promiseProperRace rejected because: ${reason}`) })
+            return callback ? callback : false;
+        }
+
     }
     
     return self

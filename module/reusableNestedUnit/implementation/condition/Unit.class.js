@@ -1,5 +1,5 @@
 import { classDecorator as prototypeChainDebug} from 'appscript/module/prototypeChainDebug'
-import { add, execute, applyMixin, conditional } from 'appscript/utilityFunction/decoratorUtility.js'
+import { add, execute, applyMixin, conditional, executeOnceForEachInstance } from 'appscript/utilityFunction/decoratorUtility.js'
 import { extendedSubclassPattern } from 'appscript/utilityFunction/extendedSubclassPattern.js'
 import { curried as getTableDocumentCurried } from "appscript/utilityFunction/database/query/getTableDocument.query.js";
 
@@ -17,14 +17,16 @@ export default ({ Superclass }) => {
         })
         @extendedSubclassPattern.Subclass()
         class Unit extends Superclass {
+            async pupolateUnitWithFile() {
+                await super.pupolateUnitWithFile({
+                    getDocument: getDocument['File'],
+                    fileKey: this.valueReturningFileKey,
+                    extract: { destinationKey: 'valueReturningFile' }
+                })
+            }
+
+            @executeOnceForEachInstance()                        
             async checkCondition() {
-                let valueReturningFileKey = this.valueReturningFileKey
-                if(!('valueReturningFile' in this)) {
-                    this.valueReturningFile = await getDocument['File']({ 
-                        key: valueReturningFileKey,
-                        connection: self.rethinkdbConnection
-                    })
-                }
                 // [2] require & check condition
                 if(!this.conditionResult) {
                     let expectedReturn = this.expectedReturn

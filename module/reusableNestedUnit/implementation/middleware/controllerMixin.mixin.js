@@ -17,16 +17,15 @@ export default Mixin(({ Superclass }) => {
         async initializeNestedUnit({ nestedUnitKey, additionalChildNestedUnit = [], pathPointerKey = null }) { // Entrypoint Instance
             // [1] get nestedUnit
             let nestedUnitInstance = await this.getNestedUnit({ nestedUnitKey, additionalChildNestedUnit, pathPointerKey })
-            // [2] get unit.
-            let { middlewareImplementation: unitKey } = nestedUnitInstance
+             let { middlewareImplementation: unitKey } = nestedUnitInstance
             let unitInstance = await this.getUnit({ unitKey })
-            await unitInstance.pupolateMiddlewareFile()
-
+            await unitInstance.pupolateUnitWithFile()
+            
             let middlewareArray = []
             middlewareArray.push(unitInstance)
 
             // [3] Iterate over insertion points
-            let subsequentMiddleware = await nestedUnitInstance.loopInsertionPoint()
+            let subsequentMiddleware = await nestedUnitInstance.loopInsertionPoint({ type: 'aggregateIntoArray' })
              
             if(middlewareArray.length != 0) {
                 await Array.prototype.push.apply(middlewareArray, subsequentMiddleware)

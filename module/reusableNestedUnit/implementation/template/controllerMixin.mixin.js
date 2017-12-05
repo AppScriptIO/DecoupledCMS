@@ -23,15 +23,14 @@ export default Mixin(({ Superclass }) => {
             // [2] get unit.
             let { viewImplementation: unitKey } = nestedUnitInstance
             let unitInstance = await this.getUnit({ unitKey })
-            await unitInstance.pupolateTemplateFile()
+            await unitInstance.pupolateUnitWithFile()
             
             // views argument that will be initiallized inside templates:
             // let view = {}
             let templateFunction = _.template(await filesystem.readFileSync(`${this.portAppInstance.config.clientBasePath}/${unitInstance.templateFilePath}`, 'utf-8'))
             // Shared arguments between all templates being rendered
-
             // loop through template and create rendered view content.
-            let view = await nestedUnitInstance.loopInsertionPoint()
+            let view = await nestedUnitInstance.loopInsertionPoint({ type: 'aggregateIntoObject' })
 
             const templateArgument = {
                 templateController: this,
