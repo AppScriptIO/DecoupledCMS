@@ -16,23 +16,18 @@ export default Mixin(({ Superclass }) => {
          * @param {any} {nestedUnitKey} 
          * @returns { Object || False } Object containing instruction settings to be used through an implementing module.
          */
-        async initializeNestedUnit({ nestedUnitKey, additionalChildNestedUnit = [], pathPointerKey = null}) { // Entrypoint Instance
-            // self.debug.push(nestedUnitKey)
-            // let nestedUnitInstance = await ConditionTree.createInstance(this.instance.nestedUnit, nestedUnitKey, ConditionTree.getDocumentQuery)
-            
+        async initializeNestedUnit({ nestedUnitKey, additionalChildNestedUnit = [], pathPointerKey = null}) { // Entrypoint Instance           
             // [1] get nestedUnit
             let nestedUnitInstance = await this.getNestedUnit({ nestedUnitKey, additionalChildNestedUnit, pathPointerKey })
-            
-            // [2] Check condition.
-            let {conditionImplementation:unitKey} = nestedUnitInstance
+            let { conditionImplementation:unitKey} = nestedUnitInstance
             let unitInstance = await this.getUnit({unitKey})
-            
+            await unitInstance.pupolateUnitWithFile()
             let conditionMet = await unitInstance.checkCondition()
             
             // [3] Iterate over insertion points
             let callback;
             if (conditionMet) {
-                callback = await nestedUnitInstance.loopInsertionPoint()
+                callback = await nestedUnitInstance.loopInsertionPoint({ type: 'returnedFirstValue' })
                 // if all subtrees rejected, get immediate callback
                 if(!callback && 'callback' in  nestedUnitInstance) callback = nestedUnitInstance.callback // fallback to immediate callback of instance.
             }

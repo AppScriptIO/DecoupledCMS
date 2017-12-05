@@ -48,7 +48,7 @@ function createStaticInstanceClasses({
         break;
 
         default:
-            console.log('No implementation chosen for building class tree in ReusableNestedUnit.')
+            console.log('⚠️ No implementation chosen for building class tree in ReusableNestedUnit.')
         break;
     }
 

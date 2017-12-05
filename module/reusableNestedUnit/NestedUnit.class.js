@@ -21,6 +21,73 @@ export default ({ Superclass }) => {
         }
         
         /**
+         * @description loops through all the insertion points and initializes each one to execute the children specific for it.
+         * 
+         * @param {Class Instance} nestedUnitInstance Tree instance of the module using "reusableNestedUnit" pattern. instance should have "initializeInsertionPoint" function & "insertionPoint" Array.
+         * @returns undifiend for false or any type of value depending on the module being applied.
+         */
+        /**
+         * @description loops through all the insertion points and initializes each one to execute the children specific for it.
+         * 
+         * @param {Class Instance} nestedUnitInstance Tree instance of the module using "reusableNestedUnit" pattern. instance should have "initializeInsertionPoint" function & "insertionPoint" Array.
+         * @returns undifiend for false or any type of value depending on the module being applied.
+         */
+        async loopInsertionPoint({ type }) {
+            switch (type) {
+                case 'aggregateIntoObject':
+                    let view = {}
+                    if(this.insertionPoint) {
+                        for (let insertionPoint of this.insertionPoint) {
+                            let children = await this.filterAndOrderChildren({ insertionPointKey: insertionPoint.key })                                        
+                            let subsequent = await this.initializeInsertionPoint({ insertionPoint, children })                        
+                            if(!(insertionPoint.name in view)) view[insertionPoint.name] = []
+                            Array.prototype.push.apply( 
+                                view[insertionPoint.name],
+                                subsequent 
+                            )
+                        }
+                    }
+                    return view;                        
+                break;
+                case 'aggregateIntoArray':
+                    let array = []
+                    if(this.insertionPoint) { // get callback from subtrees
+                        for (let insertionPoint of this.insertionPoint) {
+                            let children = await this.filterAndOrderChildren({ insertionPointKey: insertionPoint.key })                                        
+                            let subsequentArray = await this.initializeInsertionPoint({ insertionPoint, children })
+                            if(array.length != 0) {
+                                await Array.prototype.push.apply(array, subsequentArray)
+                            } else {
+                                array = await subsequentArray.slice()
+                            }
+                        }
+                    }
+                    return array;
+                break;
+                /**
+                 * @description loops through all the insertion points and initializes each one to execute the children specific for it.
+                 * 
+                 * @param {Class Instance} nestedUnitInstance Tree instance of the module using "reusableNestedUnit" pattern. instance should have "initializeInsertionPoint" function & "insertionPoint" Array.
+                 * @returns undifiend for false or any type of value depending on the module being applied.
+                 */
+                case 'returnedFirstValue':
+                    let returned;
+                    // get callback from subtrees
+                    for (let insertionPoint of this.insertionPoint) {
+                        // [1] get children immediate & relating to this insertion position.
+                        let children = await this.filterAndOrderChildren({ insertionPointKey: insertionPoint.key })                
+                        // let children = await this.filterChildrenOfCurrentInsertionPoint({ insertionPointKey: insertionPoint.key })
+                        returned = await this.initializeInsertionPoint({ insertionPoint, children })
+                        if (returned) break
+                    }
+                    return returned;
+                default:
+                    console.log(`"${type}" type doesn\'t match any kind.`)
+                break;
+            }
+        }
+
+        /**
          * @description gets document from database using documentKey and populates the data to the instance.
          * 
          */

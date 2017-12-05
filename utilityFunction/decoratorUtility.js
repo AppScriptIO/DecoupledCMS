@@ -39,3 +39,27 @@ export function applyMixin({ mixin = null }) {
 export function conditional({ condition = true, decorator }) {
     return (condition) ? decorator : Class => { return Class } ; 
 }
+
+// method decorator to execute method only once on instance
+export function executeOnceForEachInstance() { // decorator + proxy
+    return (target, methodName, descriptor) => {
+        let method = target[methodName]
+        descriptor.value = new Proxy(method, {
+            apply: async (target, thisArg, argumentsList) => {
+                if( thisArg.executedmethod && 
+                    thisArg.executedmethod[methodName] &&
+                    thisArg.executedmethod[methodName]['executed']
+                ) {
+                    return thisArg.executedmethod[methodName]['result']
+                }
+                thisArg.executedmethod = {}
+                thisArg.executedmethod[methodName] = {}
+                let instance = await target.apply(thisArg, argumentsList)
+                thisArg.executedmethod[methodName]['executed'] = true
+                thisArg.executedmethod[methodName]['result'] = instance
+                return instance
+            }
+        })
+        return descriptor
+    }
+}
