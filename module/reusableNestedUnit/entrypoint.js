@@ -23,7 +23,7 @@ let counter = [] // allows to have a unique set of relations among different nes
  * @return {Object} Related Classes 
  */
 function createStaticInstanceClasses({
-    Superclass, /* Usually the higher Application class */
+    Superclass = Object, /* Usually the higher Application class */
     implementationType,
     cacheName = false /* {Boolean || String} */
 }) {
@@ -45,6 +45,9 @@ function createStaticInstanceClasses({
         break;
         case 'Template':
             implementationConfig = require('./implementation/template')
+        break;
+        case 'Shellscript':
+            implementationConfig = require('./implementation/shellscript')
         break;
 
         default:

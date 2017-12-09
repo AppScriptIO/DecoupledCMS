@@ -14,7 +14,7 @@ import { mix } from 'mixwith'
  */
 export default ({
     methodInstanceName,
-    Superclass,
+    Superclass = Object,
     mixin
 }) => {
     let mixinArray = [/*commonMethod*/]

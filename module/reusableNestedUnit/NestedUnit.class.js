@@ -81,6 +81,15 @@ export default ({ Superclass }) => {
                         if (returned) break
                     }
                     return returned;
+                break;
+                case 'executeScript':
+                    for (let insertionPoint of this.insertionPoint) {
+                        // [1] get children immediate & relating to this insertion position.
+                        let children = await this.filterAndOrderChildren({ insertionPointKey: insertionPoint.key })                
+                        // let children = await this.filterChildrenOfCurrentInsertionPoint({ insertionPointKey: insertionPoint.key })
+                        await this.initializeInsertionPoint({ insertionPoint, children })
+                    }
+                break;
                 default:
                     console.log(`"${type}" type doesn\'t match any kind.`)
                 break;
@@ -190,6 +199,9 @@ export default ({ Superclass }) => {
             // [2] check type of subtrees execution: race first, all ... .
             let callback;
             switch(insertionPoint.executionType) { // execution type callback name
+                case 'allPromise': 
+                    callback = 'initializeNestedUnitInAllPromiseExecutionType'
+                break;
                 case 'raceFirstPromise': 
                     callback = 'initializeNestedUnitInRaceExecutionType'
                 break;
@@ -259,6 +271,36 @@ export default ({ Superclass }) => {
             return callback ? callback : false;
         }
 
+        async initializeNestedUnitInAllPromiseExecutionType(children) {
+            let promiseArray = []
+            promiseArray = children.map(conditionTreeChild => {
+                return new Promise(async (resolve, reject) => {
+                    // Add the rest of the immediate children to the next tree as additional children. propagate children to the next tree.
+                    
+                    if(this.children.length != 0) {
+                        await Array.prototype.push.apply(this.children, this.additionalChildNestedUnit)
+                    } else {
+                        this.children = await this.additionalChildNestedUnit.slice()
+                    }
+
+                    await this.initializeNestedUnit({
+                        nestedUnitKey: conditionTreeChild.nestedUnit, 
+                        additionalChildNestedUnit: this.children,
+                        pathPointerKey: conditionTreeChild.pathPointerKey
+                    })
+                    resolve()
+                })
+            })
+
+            await Promise.all(promiseArray).then(() => {
+            }).catch(reason => { 
+                if(process.env.SZN_DEBUG == 'true') console.log(`🔀⚠️ promiseProperRace rejected because: ${reason}`) 
+                process.exit(1)
+            })
+            return;
+        }
+
+        
     }
     
     return self
