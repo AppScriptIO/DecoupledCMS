@@ -205,12 +205,12 @@ export default ({ Superclass }) => {
                 case 'raceFirstPromise': 
                     callback = 'initializeNestedUnitInRaceExecutionType'
                 break;
-                case 'middlewareArray': // TODO: Deprected name - Change middlewareArray in database to chronological
                 case 'chronological': 
                     callback = 'initializeTreeInChronologicalSequence'
                 break;
                 default: 
                     console.log(`"${insertionPoint.executionType}" executionType doesn\'t match any kind.`)
+                break;
             }
             // [3] call handler on them.
             return await this[callback](children)
