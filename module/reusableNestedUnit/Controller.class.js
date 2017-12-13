@@ -31,7 +31,7 @@ export default ({
         @conditional({ condition: mixin, decorator: applyMixin({ mixin }) })
         @extendedSubclassPattern.Superclass()
         @superclassInstanceContextPattern()
-        @conditional({ decorator: extendedSubclassPattern.Subclass(), condition: (methodInstanceName && Superclass) })
+        @conditional({ decorator: extendedSubclassPattern.Subclass(), condition: (methodInstanceName && Superclass && Superclass.addSubclass != undefined ) })
         class ReusableController extends mix(Superclass).with(...mixinArray) {
 
             @cacheInstance({ 
