@@ -16,7 +16,8 @@ import { mix } from 'mixwith'
 export default ({
     methodInstanceName,
     Superclass = EventEmitter, // defaulting to EventEmitter and not Object / Function because extending Object/Function manipulates this prototype in new calls for some reason.
-    mixin
+    mixin, 
+    rethinkdbConnection = Superclass.rethinkdbConnection
 }) => {
     let mixinArray = [/*commonMethod*/]
     let self = 
@@ -35,6 +36,8 @@ export default ({
         @superclassInstanceContextPattern() // applied on the mixin i.e. specific controller.
         class ReusableController extends mix(Superclass).with(...mixinArray) {
             
+            static rethinkdbConnection = rethinkdbConnection
+
             @cacheInstance({ 
                 cacheArrayName: 'nestedUnit',
                 keyArgumentName: 'nestedUnitKey'
