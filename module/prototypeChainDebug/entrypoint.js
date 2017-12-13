@@ -3,6 +3,7 @@
  * Returns a proxy with traps to add meta information.
  */
 function prototypeChainDebug(Class) {
+
     // Static class
     Class.meta = {
         Class: `${Class.name}`,
