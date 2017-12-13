@@ -24,12 +24,7 @@ export default Mixin(({ Superclass }) => {
                 let { unit: unitKey} = nestedUnitInstance
                 let unitInstance = await this.getUnit({ unitKey })
                 // execute command
-                try {
-                    await unitInstance.executeScript()
-                } catch (error) { // NOT WORKING !!! 
-                    console.log('ERRORED !!!')
-                    throw error
-                }
+                await unitInstance.executeScript()
             }
             
             // [3] Iterate over insertion points

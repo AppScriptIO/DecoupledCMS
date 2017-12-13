@@ -24,14 +24,25 @@ export default ({ Superclass }) => {
 | |___  >  <|  __/| (__ | |_| || |_|  __/    
 |_____|/_/\\_\\\\___| \\___| \\__,_| \\__|\\___|
 ${this.command} ${this.argument}`;
+                let childProcess;
                 switch (this.implementation) {
                     case 'spawn':
-                        console.log(message)
-                        spawnSync(this.command, this.argument, this.option)
+                        try {
+                            console.log(message)
+                            childProcess = spawnSync(this.command, this.argument, this.option)
+                            if(childProcess.status > 0) throw childProcess.error
+                        } catch (error) {
+                            process.exit(childProcess.status)
+                        }
                     break;
                     case 'spawnAsynchronous':
-                        console.log(message)
-                        spawn(this.command, this.argument, this.option)
+                        try {
+                            console.log(message)
+                            childProcess = spawn(this.command, this.argument, this.option)
+                            if(childProcess.status > 0) throw childProcess.error
+                        } catch (error) {
+                            process.exit(childProcess.status)
+                        }
                     break;
                     default:
                         console.log('shellscriptUnit.implementation does not match any option.')
