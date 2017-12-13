@@ -13,7 +13,7 @@ export function superclassInstanceContextPattern() {
             
             // loop over arguments and add properties
             // contextInstance.portAppInstance // calling instance that contains the context
-            Object.entries(argsObject).forEach(([key, value]) => {
+            if(argsObject) Object.entries(argsObject).forEach(([key, value]) => {
                 contextInstance[key] = value
             })
             // Add cache list

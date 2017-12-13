@@ -1,3 +1,4 @@
+const EventEmitter = require('events');
 import commonMethod from './commonMethod.mixin'
 import createInstance from 'appscript/module/createInstance.staticMethod'
 import { usingGenericInstance as populateInstancePropertyFromJson, usingThis as populateInstancePropertyFromJson_this } from 'appscript/module/populateInstancePropertyFromJson.method'
@@ -14,12 +15,12 @@ import { mix } from 'mixwith'
  */
 export default ({
     methodInstanceName,
-    Superclass = Object,
-    mixin
+    Superclass = EventEmitter, // defaulting to EventEmitter and not Object / Function because extending Object/Function manipulates this prototype in new calls for some reason.
+    mixin, 
+    rethinkdbConnection = Superclass.rethinkdbConnection
 }) => {
     let mixinArray = [/*commonMethod*/]
     let self = 
-        @conditional({ decorator: prototypeChainDebug, condition: process.env.SZN_DEBUG })
         @add({ to: 'static'}, { 
             createInstance,
             populateInstancePropertyFromJson,
@@ -28,11 +29,14 @@ export default ({
         @add({ to: 'prototype'}, {
             populateInstancePropertyFromJson_this
         })
-        @conditional({ condition: mixin, decorator: applyMixin({ mixin }) })
+        @conditional({ decorator: prototypeChainDebug, condition: process.env.SZN_DEBUG })
         @extendedSubclassPattern.Superclass()
-        @superclassInstanceContextPattern()
-        @conditional({ decorator: extendedSubclassPattern.Subclass(), condition: (methodInstanceName && Superclass) })
+        @conditional({ decorator: extendedSubclassPattern.Subclass(), condition: (methodInstanceName && Superclass && Superclass.addSubclass != undefined ) })
+        @conditional({ condition: mixin, decorator: applyMixin({ mixin }) })
+        @superclassInstanceContextPattern() // applied on the mixin i.e. specific controller.
         class ReusableController extends mix(Superclass).with(...mixinArray) {
+            
+            static rethinkdbConnection = rethinkdbConnection
 
             @cacheInstance({ 
                 cacheArrayName: 'nestedUnit',

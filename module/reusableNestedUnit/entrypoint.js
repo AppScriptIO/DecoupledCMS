@@ -23,10 +23,11 @@ let counter = [] // allows to have a unique set of relations among different nes
  * @return {Object} Related Classes 
  */
 function createStaticInstanceClasses({
-    Superclass = Object, /* Usually the higher Application class */
+    Superclass, /* Usually the higher Application class */
     implementationType,
-    cacheName = false /* {Boolean || String} */
-}) {
+    cacheName = false, /* {Boolean || String} */
+    rethinkdbConnection
+} = {}) {
     // Used as caching key.
     let automaticCacheNaming;
     if(cacheName && typeof cacheName == 'boolean') {
@@ -88,7 +89,8 @@ function createStaticInstanceClasses({
     let Controller = ControllerFunc({
         methodInstanceName: cacheName,
         Superclass,
-        mixin: implementationConfig.ControllerMixin
+        mixin: implementationConfig.ControllerMixin, 
+        rethinkdbConnection
     })
     let NestedUnit = NestedUnitFunc({ Superclass: Controller })
     let Unit = UnitFunc({ Superclass: Controller })
