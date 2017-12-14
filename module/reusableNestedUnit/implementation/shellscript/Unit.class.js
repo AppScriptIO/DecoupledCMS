@@ -44,6 +44,17 @@ ${this.command} ${this.argument}`;
                             process.exit(childProcess.status)
                         }
                     break;
+                    case 'file':
+                        try {
+                            console.log(message)
+                            let appBasePath = '/project/application/source/containerInstallationNodejs/shellScript/'
+                            this.option.cwd = appBasePath
+                            childProcess = spawn('sh', this.filename,  this.option)
+                            if(childProcess.status > 0) throw childProcess.error
+                        } catch (error) {
+                            process.exit(childProcess.status)
+                        }
+                    break;
                     default:
                         console.log('shellscriptUnit.implementation does not match any option.')
                     break;
