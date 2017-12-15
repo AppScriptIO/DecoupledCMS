@@ -27,7 +27,6 @@ export default ({ Superclass }) => {
                 switch (this.implementation) {
                     case 'spawn':
                         try {
-                            console.log(this.appBasePath)
                             console.log(message); console.log(`${this.command} ${this.argument}`)
                             childProcess = spawnSync(this.command, this.argument, this.option)
                             if(childProcess.status > 0) throw childProcess.error
