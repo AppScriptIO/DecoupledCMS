@@ -84,7 +84,7 @@ function createStaticInstanceClasses({
             counter[cacheName] ++         
         }
     }
-    
+
     // Call class producer functions to return a new class with the specific connections.
     let Controller = ControllerFunc({
         methodInstanceName: cacheName,

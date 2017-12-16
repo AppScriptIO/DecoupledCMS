@@ -8,6 +8,7 @@ import { add, execute, applyMixin, conditional } from 'appscript/utilityFunction
 import { extendedSubclassPattern } from 'appscript/utilityFunction/extendedSubclassPattern.js'
 import { superclassInstanceContextPattern, cacheInstance } from 'appscript/utilityFunction/superclassInstanceContextPattern.js'
 import { mix } from 'mixwith'
+import assert from 'assert'
 
 /**
  * @class
@@ -18,13 +19,14 @@ export default ({
     Superclass = EventEmitter, // defaulting to EventEmitter and not Object / Function because extending Object/Function manipulates this prototype in new calls for some reason.
     mixin, 
     rethinkdbConnection = Superclass.rethinkdbConnection
-}) => {
+} = {}) => {
+    Superclass.rethinkdbConnection = rethinkdbConnection // Setting this variable on Controller class below causes issues, which maybe related to the way rethinkdb is called or the proxies encapsulating the class.
     let mixinArray = [/*commonMethod*/]
     let self = 
         @add({ to: 'static'}, { 
             createInstance,
             populateInstancePropertyFromJson,
-            addStaticSubclassToClassArray
+            addStaticSubclassToClassArray,
         })
         @add({ to: 'prototype'}, {
             populateInstancePropertyFromJson_this
@@ -35,8 +37,6 @@ export default ({
         @conditional({ condition: mixin, decorator: applyMixin({ mixin }) })
         @superclassInstanceContextPattern() // applied on the mixin i.e. specific controller.
         class ReusableController extends mix(Superclass).with(...mixinArray) {
-            
-            static rethinkdbConnection = rethinkdbConnection
 
             @cacheInstance({ 
                 cacheArrayName: 'nestedUnit',
@@ -44,6 +44,9 @@ export default ({
             })
             async getNestedUnit({ nestedUnitKey, additionalChildNestedUnit = [], pathPointerKey = null}) {
                 let instance = await this.callSubclass('NestedUnit', [nestedUnitKey])
+                if(Object.getPrototypeOf(self.rethinkdbConnection).constructor.name == 'Object') {
+                    console.log('Opsie !!')
+                }
                 await instance.reflectDatabaseDataToAppObject()
                 // add children trees: 
                 instance.additionalChildNestedUnit = additionalChildNestedUnit
@@ -73,6 +76,7 @@ export default ({
                 queryFunc = this.constructor.getDocumentQuery,
                 connection = self.rethinkdbConnection
             } = {}) {
+                assert.strictEqual(Object.getPrototypeOf(self.rethinkdbConnection).constructor.name, 'TcpConnection')
                 if(!('jsonData' in object)) { // if not already populated with data.
                     let jsonData = await queryFunc({ key, connection })
                     await this.populateInstancePropertyFromJson_this({ jsonData })

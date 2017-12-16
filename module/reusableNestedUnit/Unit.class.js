@@ -1,5 +1,6 @@
 import { classDecorator as prototypeChainDebug} from 'appscript/module/prototypeChainDebug'
 import { add, execute, applyMixin, conditional, executeOnceForEachInstance } from 'appscript/utilityFunction/decoratorUtility.js'
+import assert from 'assert'
 
 export default ({ Superclass }) => {
     let self =
@@ -24,6 +25,7 @@ export default ({ Superclass }) => {
             getDocument, // function
             extract = null // object with two properties - extract: { sourceKey: 'key from source object', destinationKey: 'key to "this" destination' }
          }) {
+            assert.strictEqual(Object.getPrototypeOf(self.rethinkdbConnection).constructor.name, 'TcpConnection')
             let File = await getDocument({
                 key: fileKey,
                 connection: self.rethinkdbConnection
