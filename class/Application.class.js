@@ -9,6 +9,7 @@ import { connect } from 'appscript/utilityFunction/middleware/commonDatabaseFunc
 import { add, execute, applyMixin } from 'appscript/utilityFunction/decoratorUtility.js'
 import addStaticSubclassToClassArray from 'appscript/module/addStaticSubclassToClassArray.staticMethod'
 import { extendedSubclassPattern } from 'appscript/utilityFunction/extendedSubclassPattern.js'
+import assert from 'assert'
 
 const self = 
 @add({ to: 'static'}, {
@@ -23,6 +24,8 @@ class Application extends EventEmitter {
    
     static async initialize(/*staticSubclass*/) { // One-time initialization of Applicaiton Class.
         console.info(`☕%c Running Application as ${self.config.DEPLOYMENT} - '${self.config.PROTOCOL}${self.config.HOST}'`, self.config.style.green)
+        assert.notStrictEqual(self.config.HOST, undefined)
+        
         self.rethinkdbConnection = await connect()
         _.templateSettings = { // initial underscore template settings on first import gets applied on the rest.
             evaluate: /\{\%(.+?)\%\}/g,
