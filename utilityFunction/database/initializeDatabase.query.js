@@ -1,5 +1,13 @@
 import rethinkDB from 'rethinkdb' 
 
+export async function deleteAllDatabase(connection) {
+    let databaseList = await rethinkDB.dbList().run(connection);
+    databaseList = await databaseList.filter(item => item != 'rethinkdb') // remove default 'rethinkdb' database.
+    for (let databaseName of databaseList) {
+        await rethinkDB.dbDrop(databaseName).run(connection)
+    }
+}
+
 export async function createDatabase(databaseName, connection) {
     let databaseExists = await rethinkDB.dbList().contains(databaseName).run(connection);
     if(!databaseExists) {
