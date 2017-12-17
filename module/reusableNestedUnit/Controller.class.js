@@ -1,4 +1,6 @@
 const EventEmitter = require('events');
+import assert from 'assert'
+import { mix } from 'mixwith'
 import commonMethod from './commonMethod.mixin'
 import createInstance from 'appscript/module/createInstance.staticMethod'
 import { usingGenericInstance as populateInstancePropertyFromJson, usingThis as populateInstancePropertyFromJson_this } from 'appscript/module/populateInstancePropertyFromJson.method'
@@ -7,19 +9,17 @@ import { classDecorator as prototypeChainDebug} from 'appscript/module/prototype
 import { add, execute, applyMixin, conditional } from 'appscript/utilityFunction/decoratorUtility.js'
 import { extendedSubclassPattern } from 'appscript/utilityFunction/extendedSubclassPattern.js'
 import { superclassInstanceContextPattern, cacheInstance } from 'appscript/utilityFunction/superclassInstanceContextPattern.js'
-import { mix } from 'mixwith'
-import assert from 'assert'
 
 /**
  * @class
  * @usage new instance is created for each check.
  */
-export default ({
+export function ControllerFunction({
     methodInstanceName,
     Superclass = EventEmitter, // defaulting to EventEmitter and not Object / Function because extending Object/Function manipulates this prototype in new calls for some reason.
     mixin, 
     rethinkdbConnection = Superclass.rethinkdbConnection
-} = {}) => {
+} = {}) {
     Superclass.rethinkdbConnection = rethinkdbConnection // Setting this variable on Controller class below causes issues, which maybe related to the way rethinkdb is called or the proxies encapsulating the class.
     let mixinArray = [/*commonMethod*/]
     let self = 
@@ -84,4 +84,3 @@ export default ({
 
     return self
 }
-

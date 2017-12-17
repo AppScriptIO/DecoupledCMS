@@ -1,5 +1,5 @@
 const ModuleContext = require('appscript/module/ModuleContext')
-import ControllerFunction from './Controller.class.js'
+import { ControllerFunction } from './Controller.class.js'
 import NestedUnitFunction from './NestedUnit.class.js' // Tree
 import UnitFunction from './Unit.class.js' // Unit
 
