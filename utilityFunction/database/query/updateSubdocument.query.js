@@ -1,5 +1,5 @@
-r.db("webapp").table("setting").get("conditionImplementation").update({
-  conditionImplementation: r.row('conditionImplementation')
+r.db("webapp").table("setting").get("unitKey").update({
+  unitKey: r.row('unitKey')
   .map(function(condition) {
     return r.branch(condition('expectedReturn').eq('true'),
       condition.merge({this: true}),

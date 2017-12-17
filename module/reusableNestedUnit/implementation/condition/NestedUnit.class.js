@@ -4,8 +4,9 @@ import { add, execute, applyMixin, conditional } from 'appscript/utilityFunction
 import { extendedSubclassPattern } from 'appscript/utilityFunction/extendedSubclassPattern.js'
 import { curried as getTableDocumentCurried } from "appscript/utilityFunction/database/query/getTableDocument.query.js";
 
+let databasePrefix = 'condition_'
 let getDocument = {
-    NestedUnit: getTableDocumentCurried({ documentId: 'condition_conditionTree' }),
+    NestedUnit: getTableDocumentCurried({ documentId: `${databasePrefix}nestedUnit` }),
 }
 import promiseProperRace from 'appscript/utilityFunction/promiseProperRace.js'
 

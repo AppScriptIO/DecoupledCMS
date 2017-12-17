@@ -5,8 +5,9 @@ import promiseProperRace from 'appscript/utilityFunction/promiseProperRace.js'
 import { extendedSubclassPattern } from 'appscript/utilityFunction/extendedSubclassPattern.js'
 import { curried as getTableDocumentCurried } from "appscript/utilityFunction/database/query/getTableDocument.query.js";
 
+let databasePrefix = 'middleware_'
 let getDocument = {
-    NestedUnit: getTableDocumentCurried({ documentId: 'middleware_middlewareNestedUnit'})
+    NestedUnit: getTableDocumentCurried({ documentId: `${databasePrefix}nestedUnit`})
 }
 
 export default ({ Superclass }) => {

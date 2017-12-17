@@ -19,7 +19,7 @@ export default Mixin(({ Superclass }) => {
         async initializeNestedUnit({ nestedUnitKey, additionalChildNestedUnit = [], pathPointerKey = null}) { // Entrypoint Instance           
             // [1] get nestedUnit
             let nestedUnitInstance = await this.getNestedUnit({ nestedUnitKey, additionalChildNestedUnit, pathPointerKey })
-            let { conditionImplementation:unitKey} = nestedUnitInstance
+            let { unitKey:unitKey } = nestedUnitInstance
             let unitInstance = await this.getUnit({unitKey})
             await unitInstance.pupolateUnitWithFile()
             let conditionMet = await unitInstance.checkCondition()

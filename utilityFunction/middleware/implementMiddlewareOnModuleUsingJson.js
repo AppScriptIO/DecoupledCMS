@@ -9,7 +9,7 @@ import Application from 'appscript'
 //     })
 
 /**
- * @param {array} staticMiddlewareSetting holds the json middle configurations. Where each json is composed of executionType, functionPath, arguments.
+ * @param {array} staticMiddlewareSetting holds the json middle configurations. Where each json is composed of executionType, filePath, arguments.
  */
 export default (staticMiddlewareSetting) => {
     let middlewareArray = []
@@ -18,12 +18,12 @@ export default (staticMiddlewareSetting) => {
         let middleware;
         switch (setting.executionType) {
             case 'middleware':
-                middleware = require(`${setting.functionPath}`)
+                middleware = require(`${setting.file.filePath}`)
                 middlewareArray.push(middleware) 
             break;
             case 'regularFunction':
             default:
-                middleware = setting.arguments ? require(`${setting.functionPath}`)(setting.arguments) : require(`${setting.functionPath}`)();
+                middleware = setting.arguments ? require(`${setting.file.filePath}`)(setting.arguments) : require(`${setting.file.filePath}`)();
                 middlewareArray.push(middleware) 
             break;
         }

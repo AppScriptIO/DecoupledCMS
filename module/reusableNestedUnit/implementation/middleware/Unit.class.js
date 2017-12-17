@@ -3,9 +3,10 @@ import { add, execute, applyMixin, conditional } from 'appscript/utilityFunction
 import { extendedSubclassPattern } from 'appscript/utilityFunction/extendedSubclassPattern.js'
 import { curried as getTableDocumentCurried } from "appscript/utilityFunction/database/query/getTableDocument.query.js";
 
+let databasePrefix = 'middleware_'
 let getDocument = {
-    'Unit': getTableDocumentCurried({ documentId: 'middleware_middlewareImplementation' }),
-    'File': getTableDocumentCurried({ documentId: 'middleware_middlewareFile' }),
+    'Unit': getTableDocumentCurried({ documentId: `${databasePrefix}unit` }),
+    'File': getTableDocumentCurried({ documentId: `${databasePrefix}file` }),
 }
 
 export default ({ Superclass }) => {
@@ -20,8 +21,8 @@ export default ({ Superclass }) => {
             async pupolateUnitWithFile() {
                 await super.pupolateUnitWithFile({
                     getDocument: getDocument['File'],
-                    fileKey: this.middlewareFile,
-                    extract: { sourceKey: 'filePath', destinationKey: 'functionPath' }
+                    fileKey: this.fileKey,
+                    extract: { destinationKey: 'file' }
                 })
             }
         }

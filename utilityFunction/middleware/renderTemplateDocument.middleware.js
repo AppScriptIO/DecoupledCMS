@@ -21,7 +21,7 @@ export default ({ documentKey }) => {
         // document could have different rules for users etc.. access previlages
         let templateController = await TemplateController.createContext({ portAppInstance: context.instance })
         
-        let renderedContent = await templateController.initializeNestedUnit({ nestedUnitKey: documentObject.viewNestedUnit })
+        let renderedContent = await templateController.initializeNestedUnit({ nestedUnitKey: documentObject.templateNestedUnit })
         context.body = renderedContent;
     
         await next()

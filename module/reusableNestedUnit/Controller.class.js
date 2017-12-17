@@ -44,9 +44,6 @@ export default ({
             })
             async getNestedUnit({ nestedUnitKey, additionalChildNestedUnit = [], pathPointerKey = null}) {
                 let instance = await this.callSubclass('NestedUnit', [nestedUnitKey])
-                if(Object.getPrototypeOf(self.rethinkdbConnection).constructor.name == 'Object') {
-                    console.log('Opsie !!')
-                }
                 await instance.reflectDatabaseDataToAppObject()
                 // add children trees: 
                 instance.additionalChildNestedUnit = additionalChildNestedUnit

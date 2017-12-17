@@ -4,8 +4,9 @@ import { extendedSubclassPattern } from 'appscript/utilityFunction/extendedSubcl
 import { curried as getTableDocumentCurried } from "appscript/utilityFunction/database/query/getTableDocument.query.js";
 import { exec, execSync, spawn, spawnSync } from 'child_process'
 
+let databasePrefix = 'shellscript_'
 let getDocument = {
-    'Unit': getTableDocumentCurried({ documentId: 'shellscript_unit' })
+    'Unit': getTableDocumentCurried({ documentId: `${databasePrefix}unit` })
 }
 
 export default ({ Superclass }) => {
