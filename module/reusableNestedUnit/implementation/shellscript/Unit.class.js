@@ -46,10 +46,11 @@ export default ({ Superclass }) => {
                     break;
                     case 'file':
                         try {
-                            console.log(message); console.log(`shellscript file: ${this.filename}`)                            
+                            console.log(message); console.log(`shellscript file: ${this.filename}, shellscriptPath: ${this.shellscriptPath}`)                            
                             this.option.cwd = this.shellscriptPath
                             execSync(`sh ${this.filename}`, this.option)
                         } catch (error) {
+                            throw error
                             process.exit(1)
                         }
                     break;
