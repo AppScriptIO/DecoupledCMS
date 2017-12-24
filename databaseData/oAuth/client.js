@@ -10,7 +10,4 @@ let data = [
     }
 ];
 
-export default {
-    databaseTableName: 'client',
-    data: data
-}
+export default data

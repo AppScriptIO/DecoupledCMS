@@ -1,4 +1,5 @@
 import filesystem from 'fs'
+import path from 'path'
 
 export default ({
     localPath,
@@ -10,15 +11,18 @@ export default ({
     let settingArray = []
     for (let value of dataArray) {
         let setting = { databaseTableName: value }
-        setting.data = [] // initialize
+        let local = [], shared = []
         {
-            let filePath = `appscript/databaseData/${implementation}/${value}.js`
-            if(filesystem.existsSync(filePath)) setting.data.push(require(filePath))
+            let modulePath = path.dirname(require.resolve('appscript'))
+            let filePath = path.join(modulePath, `databaseData/${implementation}/${value}.js`)
+            if(filesystem.existsSync(filePath)) shared = require(filePath)
         }
         {
             let filePath = `${localPath}/${value}.js`
-            if(filesystem.existsSync(filePath)) setting.data.push(require(filePath))
+            if(filesystem.existsSync(filePath)) local = require(filePath)
         }
+        setting.data = [...shared, ...local]
+        if(setting.data.length < 1) console.log(implementation + ' ' + value)
         settingArray.push(setting)
     }
 

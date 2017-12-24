@@ -29,7 +29,4 @@ let data = [
     }
 ];
 
-export default {
-    databaseTableName: 'token',
-    data: data
-}
+export default data

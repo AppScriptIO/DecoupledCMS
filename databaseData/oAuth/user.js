@@ -6,7 +6,4 @@ let data = [
     }
 ];
 
-export default {
-    databaseTableName: 'user',
-    data: data
-}
+export default data
