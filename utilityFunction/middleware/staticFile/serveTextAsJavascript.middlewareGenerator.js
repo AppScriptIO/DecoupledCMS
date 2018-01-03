@@ -5,16 +5,18 @@ import mount from 'koa-mount'
 import serveStaticSingleFileRenderTemplate from 'appscript/utilityFunction/middleware/staticFile/serveStaticSingleFileRenderTemplate.middlewareGenerator.js'
 import send from 'koa-sendfile' // Static files.
 import filesystem from 'fs'
+import Stream from 'stream'
+import multistream from 'multistream'
 
+// read streams and send them using koa - https://github.com/koajs/koa/issues/944 http://book.mixu.net/node/ch9.html
 // returns a middleware object 
-// TODO: Change naming 'serverStaticDirectory' as this is no longer mounting directory, maybe should be 'serveStaticFileFromURl'
 export default function serveStaticDirectory(setting) {
     let middleware = async (context, next) => {
         let fileRelativePath = context.path.substr(0, context.path.lastIndexOf('$')) // remove function name
         let filePath = path.resolve(path.normalize(`${context.instance.config.clientBasePath}${fileRelativePath}`)) 
         try {
-            let string = await covertTextFileToJSModule({ filePath })
-            context.body = string
+            let stream = await covertTextFileToJSModule({ filePath })
+            context.body = stream // Koa handles the stream and send it to the client.
             context.type = 'application/javascript'
         } catch (error) {
          console.log(error)
@@ -27,7 +29,12 @@ export default function serveStaticDirectory(setting) {
 }
 
 async function covertTextFileToJSModule({ filePath }) {
-    let text = filesystem.readFileSync(filePath)
-    return `export default \`${text.toString()}\``
-
+    let fileStream = filesystem.createReadStream(filePath)
+    let beforeStream = (new Stream.Readable)
+    beforeStream.push('export default \`')
+    beforeStream.push(null)
+    let afterStream = (new Stream.Readable)
+    afterStream.push('\`')
+    afterStream.push(null)
+    return multistream([beforeStream, fileStream, afterStream])
 }
