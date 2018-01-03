@@ -42,6 +42,10 @@ let data = [
       filePath: 'appscript/utilityFunction/middleware/staticFile/serveStaticDirectory.middlewareGenerator.js',
     },
     {
+      label: { name: 'serveTextAsJavascript.middlewareGenerator.js' }, key: '1b770b52-e40a-46a7-91ca-efd7f355d101',
+      filePath: 'appscript/utilityFunction/middleware/staticFile/serveTextAsJavascript.middlewareGenerator.js',
+    },
+    {
       key: 'aad0f39d-ebcc-40ce-a2f5-4ab41a971b46',
       label: {
         name: 'serveStaticSingleFileRenderTemplate.middlewareGenerator.js'

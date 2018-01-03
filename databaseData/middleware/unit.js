@@ -1,9 +1,7 @@
 let data = [
     {
+        label: { name: 'Empty middleware for creating chains' },
         key: 'e28c566e-e456-44a9-a85f-28a3bb225e97',
-        label: {
-            name: 'Empty middleware for creating chains'
-        },
         executionType: 'regularFunction',
         fileKey: '350d2024-49ad-4c6a-afa1-f348b212170f',
     },
@@ -64,17 +62,17 @@ let data = [
         fileKey: 'bb770b52-e40a-46a7-91ca-efd7f355d10f',
     },
     {
-        key: 'c2539d29-d217-41c9-a984-a17d741946c5',
-        label: {
-            name: 'static assets'
-        },
+        label: { name: 'static assets' }, key: 'c2539d29-d217-41c9-a984-a17d741946c5', 
+        executionType: 'regularFunction', fileKey: 'bb770b52-e40a-46a7-91ca-efd7f355d10f',
         arguments: {
             directoryPath: `/asset/`,
             urlPath: '/asset',
             options: { gzip: true },
         },
-        executionType: 'regularFunction',
-        fileKey: 'bb770b52-e40a-46a7-91ca-efd7f355d10f',
+    },
+    {
+        label: { name: 'static asset convert text to js' }, key: '22539d29-d217-41c9-a984-a17d741945c5', 
+        executionType: 'regularFunction', fileKey: '1b770b52-e40a-46a7-91ca-efd7f355d101', arguments: { options: { gzip: true }, },
     },
     { // [NOT EXACTLY] Overrides that of the above general rule for asset folder subfiles.
         key: '07e1ba94-0808-4dc1-b832-f7a54b377692',

@@ -33,6 +33,9 @@ export default ({ Superclass }) => {
          * @returns undifiend for false or any type of value depending on the module being applied.
          */
         async loopInsertionPoint({ type }) {
+            this.children = this.children || [] // if children is not set, define it as empty array
+            this.insertionPoint = this.insertionPoint || [] // if insertionPoint is not set, define it as empty array
+
             switch (type) {
                 case 'aggregateIntoObject':
                     let view = {}

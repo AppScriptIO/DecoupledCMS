@@ -38,6 +38,10 @@ let data = [
       },
       filePath: 'appscript/utilityFunction/conditionCheck/getUrlPathLevel3.js',
     },
+    {
+        label: { name: 'return last Includes function' }, key: '2cba92fa-14bf-4e58-b875-c3ee3b1f31a8',
+      filePath: 'appscript/utilityFunction/conditionCheck/getUrlPathLastIncludesFunction.js',
+    },
 ];
 
 
