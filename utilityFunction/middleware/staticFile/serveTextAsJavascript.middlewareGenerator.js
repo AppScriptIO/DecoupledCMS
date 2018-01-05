@@ -22,9 +22,9 @@ export default function serveStaticDirectory(setting) {
         let view = {};
 
         let templatePart = {
-            css: underscore.template(filesystem.readFileSync(`${fileDirectoryPath}/.css`, 'utf8'))({ Application, argument}),
-            js: underscore.template(filesystem.readFileSync(`${fileDirectoryPath}/.js`, 'utf8'))({ Application, argument}),
-            html: underscore.template(filesystem.readFileSync(`${fileDirectoryPath}/.html`, 'utf8'))({ Application, argument}),
+            css: underscore.template(filesystem.readFileSync(`${fileDirectoryPath}/component.css`, 'utf8'))({ Application, argument}),
+            js: underscore.template(filesystem.readFileSync(`${fileDirectoryPath}/component.js`, 'utf8'))({ Application, argument}),
+            html: underscore.template(filesystem.readFileSync(`${fileDirectoryPath}/component.html`, 'utf8'))({ Application, argument}),
         }
         try {
             let content = filesystem.readFileSync(filePath, 'utf8')
