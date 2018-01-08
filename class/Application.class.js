@@ -75,6 +75,7 @@ class Application extends EventEmitter {
     }
 
 }
-
 const instance = new self();
-export { self as default, instance as instance }
+
+import microservice from 'appscript/microservice'
+export { self as default, instance as instance, microservice as microservice }
