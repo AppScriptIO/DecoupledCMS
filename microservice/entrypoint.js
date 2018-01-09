@@ -1,5 +1,5 @@
 
-import { default as Application } from 'appscript'
+import { default as Application } from '../class/Application.class.js'
 import initializeDatabaseData from 'appscript/utilityFunction/database/initializeDatabaseData.js'
 import oAuthInitializePortServer from 'appscript/class/port/oAuth/initializePortServer.js'
 import webappUIInitializePortServer from 'appscript/class/port/webappUI/initializePortServer.js'
@@ -9,12 +9,16 @@ import websocketInitializePortServer from 'appscript/class/port/webSocket/initia
 
 async function microservice({
     configuration,
-    entrypointConditionKey
+    entrypointConditionKey,
+    databaseData
 }) {
-    Application.eventEmitter.on('initializationEnd', initializeDatabaseData({ databaseVersion: configuration.databaseVersion }))
+    Application.eventEmitter.on('initializationEnd', initializeDatabaseData({
+        databaseVersion: configuration.databaseVersion,
+        databaseData
+    }))
     Application.eventEmitter.on('initializationEnd', oAuthInitializePortServer())
     Application.eventEmitter.on('initializationEnd', webappUIInitializePortServer())
-    Application.eventEmitter.on('initializationEnd', staticContentInitializePortServer({ entrypointConditionKey: ''}))
+    Application.eventEmitter.on('initializationEnd', staticContentInitializePortServer({ entrypointConditionKey}))
     Application.eventEmitter.on('initializationEnd', apiInitializePortServer())
     Application.eventEmitter.on('initializationEnd', websocketInitializePortServer())
     Application.initialize() // allows calling a child class from its parent class.

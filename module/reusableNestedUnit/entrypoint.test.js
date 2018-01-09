@@ -1,6 +1,6 @@
 import assert from 'assert'
 import createStaticInstanceClasses from './entrypoint.js'
-import { default as Application } from 'appscript'
+import { default as Application } from '../../class/Application.class.js'
 
 describe('ReusableNestedUnit module - Connecting class inhiritance dynamically', () => {
 

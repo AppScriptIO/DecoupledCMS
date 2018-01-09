@@ -1,6 +1,6 @@
 import views from 'koa-views'
 import bodyParser from 'koa-bodyparser'
-import { default as Application } from 'appscript'
+import { default as Application } from '../../Application.class.js'
 import WebappUIClass from 'appscript/class/port/webappUI/WebappUI.class.js'
 import debugLogMiddleNestedUnitStructure from 'appscript/utilityFunction/debugLogMiddlewareNestedUnitStructure.js'
 import createStaticInstanceClasses from 'appscript/module/reusableNestedUnit'

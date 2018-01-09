@@ -1,4 +1,4 @@
-import { default as Application } from 'appscript'
+import { default as Application } from '../../Application.class.js'
 import rethinkDB from 'rethinkdb' 
 
 let getTableDocument = {

@@ -8,7 +8,7 @@ import filesystem from 'fs'
 import Stream from 'stream'
 import multistream from 'multistream'
 import underscore from 'underscore'
-import Application from 'appscript'
+import { default as Application } from '../../../class/Application.class.js'
 
 // read streams and send them using koa - https://github.com/koajs/koa/issues/944 http://book.mixu.net/node/ch9.html
 // returns a middleware object 

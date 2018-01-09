@@ -1,4 +1,4 @@
-import { default as Application } from 'appscript'
+import { default as Application } from '../../Application.class.js'
 import WebSocketModule from 'ws'
 import { add, execute, applyMixin } from 'appscript/utilityFunction/decoratorUtility.js'
 import { extendedSubclassPattern } from 'appscript/utilityFunction/extendedSubclassPattern.js';

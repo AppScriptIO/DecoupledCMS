@@ -1,4 +1,4 @@
-import Application from 'appscript'
+import { default as Application } from '../../class/Application.class.js'
 import createStaticInstanceClasses from 'appscript/module/reusableNestedUnit'
 import {default as getTableDocumentDefault} from "appscript/utilityFunction/database/query/getTableDocument.query.js";
 

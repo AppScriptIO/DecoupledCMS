@@ -1,5 +1,6 @@
 const EventEmitter = require('events')
 import http from 'http'
+import assert from 'assert'
 import configuration from '../configuration/configuration.export.js' // Load configuration settings.
 import Koa from 'koa' // Koa applicaiton server
 import compose from 'koa-compose'
@@ -9,7 +10,6 @@ import { connect } from 'appscript/utilityFunction/middleware/commonDatabaseFunc
 import { add, execute, applyMixin } from 'appscript/utilityFunction/decoratorUtility.js'
 import addStaticSubclassToClassArray from 'appscript/module/addStaticSubclassToClassArray.staticMethod'
 import { extendedSubclassPattern } from 'appscript/utilityFunction/extendedSubclassPattern.js'
-import assert from 'assert'
 
 const self = 
 @add({ to: 'static'}, {
@@ -77,5 +77,4 @@ class Application extends EventEmitter {
 }
 const instance = new self();
 
-import microservice from 'appscript/microservice'
-export { self as default, instance as instance, microservice as microservice }
+export { self as default, instance as instance }

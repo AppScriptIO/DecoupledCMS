@@ -1,4 +1,4 @@
-import Application from 'appscript'
+import { default as Application } from '../../class/Application.class.js'
 import renderTemplateDocument from 'appscript/utilityFunction/middleware/renderTemplateDocument.middleware.js'
 import implementMiddlewareOnModuleUsingJson from 'appscript/utilityFunction/middleware/implementMiddlewareOnModuleUsingJson.js' // Middleware extending server functionality
 import createStaticInstanceClasses from 'appscript/module/reusableNestedUnit'

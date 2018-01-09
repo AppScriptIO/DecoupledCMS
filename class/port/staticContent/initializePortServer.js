@@ -1,6 +1,6 @@
 import views from 'koa-views'
 import bodyParser from 'koa-bodyparser'
-import { default as Application } from 'appscript'
+import { default as Application } from '../../Application.class.js'
 import StaticContentClass from 'appscript/class/port/staticContent/StaticContent.class.js'
 import createClassInstancePerRequest from 'appscript/utilityFunction/middleware/createClassInstancePerRequest.middleware.js'
 import createStaticInstanceClasses from 'appscript/module/reusableNestedUnit'
@@ -56,9 +56,9 @@ export default ({entrypointConditionKey} = {}) => async () => {
         //     // [1] Create instances and check conditions. Get callback either a function or document
         //     // The instance responsible for rquests of specific port.
         //     let conditionController = await new ConditionController(false, { portAppInstance: context.instance})
-        //     let entrypointConditionTree = '78f91938-f9cf-4cbf-9bc8-f97836ff23dd'
-        //     if(process.env.SZN_DEBUG == 'true' && context.header.debug == 'true') console.log(`🍊 Entrypoint Condition Key: ${entrypointConditionTree} \n \n`)
-        //     let callback = await conditionController.initializeNestedUnit({nestedUnitKey: entrypointConditionTree})
+        //     let entrypointConditionKey = '78f91938-f9cf-4cbf-9bc8-f97836ff23dd'
+        //     if(process.env.SZN_DEBUG == 'true' && context.header.debug == 'true') console.log(`🍊 Entrypoint Condition Key: ${entrypointConditionKey} \n \n`)
+        //     let callback = await conditionController.initializeNestedUnit({nestedUnitKey: entrypointConditionKey})
         //     // if(process.env.SZN_DEBUG == 'true') console.log(`🍊 Callback object: ${callback.name}`)
         //     // [2] Use callback
         //     if(process.env.SZN_DEBUG == 'true' && context.header.debug == 'true') console.log(`🔀✔️ Choosen callback is: %c ${callback.name}`, self.config.style.green)
@@ -73,9 +73,8 @@ export default ({entrypointConditionKey} = {}) => async () => {
             // [1] Create instances and check conditions. Get callback either a function or document
             // The instance responsible for rquests of specific port.
             let conditionController = await ConditionController.createContext({ portAppInstance: context.instance })
-            let entrypointConditionTree = entrypointConditionKey
-            if(process.env.SZN_DEBUG == 'true' && context.header.debug == 'true') console.log(`🍊 Entrypoint Condition Key: ${entrypointConditionTree} \n \n`)
-            let callback = await conditionController.initializeNestedUnit({nestedUnitKey: entrypointConditionTree})
+            if(process.env.SZN_DEBUG == 'true' && context.header.debug == 'true') console.log(`🍊 Entrypoint Condition Key: ${entrypointConditionKey} \n \n`)
+            let callback = await conditionController.initializeNestedUnit({nestedUnitKey: entrypointConditionKey})
             // if(process.env.SZN_DEBUG == 'true') console.log(`🍊 Callback object: ${callback.name}`)
             // [2] Use callback
             if(process.env.SZN_DEBUG == 'true' && context.header.debug == 'true') console.log(`🔀✔️ Choosen callback is: %c ${callback.name}`, self.config.style.green)

@@ -1,6 +1,6 @@
 // API server
 import Koa from 'koa' // Koa applicaiton server
-import Application from 'appscript'
+import {default as Application} from '../../Application.class.js'
 import { add, execute, applyMixin } from 'appscript/utilityFunction/decoratorUtility.js'
 import { extendedSubclassPattern } from 'appscript/utilityFunction/extendedSubclassPattern.js';
 

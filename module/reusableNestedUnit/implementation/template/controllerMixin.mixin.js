@@ -1,9 +1,10 @@
 import { Mixin } from 'mixwith'
 import _ from 'underscore'
-import { default as Application } from 'appscript'
+import { default as Application } from '../../../../class/Application.class.js'
 import filesystem from 'fs'
 import { classDecorator as prototypeChainDebug} from 'appscript/module/prototypeChainDebug'
 import { add, execute, applyMixin, conditional } from 'appscript/utilityFunction/decoratorUtility.js'
+import assert from "assert"
 
 /**
  * @description Extends a class by super class and adds some common functionality.
@@ -18,6 +19,8 @@ export default Mixin(({ Superclass }) => {
          * @return {String} String of rendered HTML document content.
          */
         async initializeNestedUnit({ nestedUnitKey, additionalChildNestedUnit = [], pathPointerKey = null }) { // Entrypoint Instance
+            assert(nestedUnitKey, '• Key should be present. The passed value is either undefined, null, or empty string.')
+
             // [1] get nestedUnit
             let nestedUnitInstance = await this.getNestedUnit({ nestedUnitKey, additionalChildNestedUnit, pathPointerKey })
             // [2] get unit.

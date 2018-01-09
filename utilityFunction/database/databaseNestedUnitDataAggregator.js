@@ -13,9 +13,13 @@ export default ({
         let setting = { databaseTableName: value }
         let local = [], shared = []
         {
-            let modulePath = path.dirname(require.resolve('appscript'))
-            let filePath = path.join(modulePath, `databaseData/${implementation}/${value}.js`)
-            if(filesystem.existsSync(filePath)) shared = require(filePath)
+            // let modulePath = path.dirname(require.resolve('appscript'))
+            let filePath = path.resolve(path.join(__dirname, '../../', `databaseData/${implementation}/${value}.js`))
+            if(filesystem.existsSync(filePath)) {
+                shared = require(filePath)
+            } else {
+                console.log(`• dbData - shared data ${filePath} not present, skipping.`)
+            }
         }
         {
             let filePath = `${localPath}/${value}.js`

@@ -1,6 +1,8 @@
 import r from 'rethinkdb'
 import { curryNamed } from 'appscript/utilityFunction/namedCurry.js'
+import assert from "assert"
 
+// IMPORTANT: when false value (null, empty, undefined) is passed as key, the query will get all keys in db document.
 function getTableDocument(documentId) {
     return async function getCondition(connection, key) {
         let result;

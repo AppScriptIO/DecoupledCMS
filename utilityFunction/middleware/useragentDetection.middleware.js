@@ -2,7 +2,7 @@ import path from 'path'
 const useragentParser = require('useragent') // https://www.npmjs.com/package/useragent
 require('useragent/features');
 import serverConfig from 'appscript/configuration/serverConfig.js'
-import Application from 'appscript'
+import { default as Application } from '../../class/Application.class.js'
 
 function isES5(agent) {
     switch (agent.family) {
