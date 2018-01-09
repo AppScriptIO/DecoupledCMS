@@ -11,6 +11,7 @@ import { connect } from 'appscript/utilityFunction/middleware/commonDatabaseFunc
 import { add, execute, applyMixin } from 'appscript/utilityFunction/decoratorUtility.js'
 import addStaticSubclassToClassArray from 'appscript/module/addStaticSubclassToClassArray.staticMethod'
 import { extendedSubclassPattern } from 'appscript/utilityFunction/extendedSubclassPattern.js'
+import underscore from 'underscore'
 
 const self = 
 @add({ to: 'static'}, {
@@ -20,6 +21,7 @@ const self =
 class Application extends EventEmitter {
     
     static rethinkdbConnection = {}
+    static underscore;
     static config = configuration // Array
     static frontend;
     
@@ -29,19 +31,20 @@ class Application extends EventEmitter {
         
         self.rethinkdbConnection = await connect()
         
+        // TODO: Sync settings between multiple underscore installations or fix issue when multiple installations present.
+        // Solution option - when underscore used outside appscript module, export it to get it's settings.
         // underscore template should have one single instance accross application - To affect changes of _ to the main app.
         let underscorePath = require.resolve('underscore')
         let appLevelUnderscorePath = path.resolve(__dirname, '../../../node_modules/underscore/underscore.js')
-
-        let underscore;
         if(filesystem.existsSync(appLevelUnderscorePath) && underscorePath !== appLevelUnderscorePath) {
             // case - multiple underscore installations present
-            console.log(`• Underscore template - Found multiple underscore installations, Using application level underscore instance (module in heigher hierarchy) i.e. ${appLevelUnderscorePath}.`)
-            underscore = require(appLevelUnderscorePath)
+            console.log(`• Underscore template - Found multiple underscore installations, Using appscript local underscore instance (module in lower hierarchy) i.e. ${underscorePath}.`)
+            // self.underscore = require(appLevelUnderscorePath)
+            // throw 'Found multiple underscore installations. This will prevent consistent settings between modules that use underscore for templating e.g. koa-view and local appscript underscore usage.'
         } else {
             // single either appscript module installation or applevel installation.
             console.log(`• Underscore template - Found a single installation of underscore, using ${underscorePath}.`)
-            underscore = require(underscorePath)
+            // self.underscore = require(underscorePath)
         }
         
         underscore.templateSettings = { // initial underscore template settings on first import gets applied on the rest.
