@@ -50,6 +50,9 @@ function createStaticInstanceClasses({
         case 'Shellscript':
             implementationConfig = require('./implementation/shellscript')
         break;
+        case 'Schema':
+            implementationConfig = require('./implementation/schema')
+        break;
 
         default:
             console.log('⚠️ No implementation chosen for building class tree in ReusableNestedUnit.')

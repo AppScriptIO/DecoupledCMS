@@ -1,7 +1,13 @@
 import ApiClass from 'appscript/class/port/api/Api.class.js'
 import createClassInstancePerRequest from 'appscript/utilityFunction/middleware/createClassInstancePerRequest.middleware.js'
-import RestApi from 'appscript/class/port/api/middleware/database/restEndpointApi.js'
-let restEndpointApi = new RestApi('api/v1')
+import createStaticInstanceClasses from 'appscript/module/reusableNestedUnit'
+import { default as Application } from '../../Application.class.js'
+
+let SchemaController = createStaticInstanceClasses({
+    Superclass: Application, 
+    implementationType: 'Schema',
+    cacheName: true
+})
 
 export default ({} = {}) => () => {
     let Class = ApiClass
@@ -14,16 +20,12 @@ export default ({} = {}) => () => {
             await context.req.setTimeout(30000);                        
             await next()
         },
-        // async (context, next) => {
-        //     let middleware;
-        //     let middlewareController = await new MiddlewareController(false, { portAppInstance: context.instance })
-        //     middlewareArray = await middwareController.initializeNestedUnit({ nestedUnitKey: '' })
-        //     await implementMiddlewareOnModuleUsingJson(middlewareArray)(context, next)
-        // },
-        // async (context, next) => {
-        //     context.instance.middlewareArray[0](context, next)
-        // },
-        restEndpointApi.route(),
+        async (context, next) => {
+            let schemaController = await SchemaController.createContext({ portAppInstance: context.instance })
+            let data = await schemaController.initializeNestedUnit({ nestedUnitKey: 'article' })
+            context.body = data
+            await next()
+        },
     ]
     Class.applyKoaMiddleware(middlewareArray)
     Class.createHttpServer()

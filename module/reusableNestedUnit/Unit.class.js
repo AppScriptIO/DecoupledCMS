@@ -26,10 +26,7 @@ export default ({ Superclass }) => {
             extract = null // object with two properties - extract: { sourceKey: 'key from source object', destinationKey: 'key to "this" destination' }
          }) {
             assert.strictEqual(Object.getPrototypeOf(self.rethinkdbConnection).constructor.name, 'TcpConnection')
-            let file = await getDocument({
-                key: fileKey,
-                connection: self.rethinkdbConnection
-            })
+            let file = await getDocument({ key: fileKey, connection: self.rethinkdbConnection })
             if(extract) this[extract.destinationKey] = (extract.sourceKey) ? file[extract.sourceKey] : file;
         }
     }
