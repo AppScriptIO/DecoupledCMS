@@ -38,7 +38,7 @@ export function ControllerFunction({
         @superclassInstanceContextPattern() // applied on the mixin i.e. specific controller.
         class ReusableController extends mix(Superclass).with(...mixinArray) {
 
-            @cacheInstance({ 
+            @cacheInstance({
                 cacheArrayName: 'nestedUnit',
                 keyArgumentName: 'nestedUnitKey'
             })
@@ -76,6 +76,7 @@ export function ControllerFunction({
                 assert.strictEqual(Object.getPrototypeOf(self.rethinkdbConnection).constructor.name, 'TcpConnection')
                 if(!('jsonData' in object)) { // if not already populated with data.
                     let jsonData = await queryFunc({ key, connection })
+                    assert(jsonData, `• "${key}" nestedUnit document must be present in the database, the requested key does not exist in database. The passed value is either undefined, null, or empty string.`)
                     await this.populateInstancePropertyFromJson_this({ jsonData })
                 }
             }

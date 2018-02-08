@@ -1,12 +1,12 @@
 import r from 'rethinkdb'
 
-function getTableDocument(documentId) {
+function getTableDocument(tableName) {
     return async (connection, filterObject) => {
         let result;
         if(filterObject) {
             result = await r
                 .db("webappSetting")
-                .table(documentId)
+                .table(tableName)
                 .filter(filterObject)
                 .coerceTo('array')
                 .run(connection)
@@ -18,7 +18,7 @@ function getTableDocument(documentId) {
         } else {
             result = await r
                 .db("webappSetting")
-                .table(documentId)
+                .table(tableName)
                 .coerceTo('array')
                 .run(connection)
             return result

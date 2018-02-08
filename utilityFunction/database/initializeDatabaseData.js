@@ -24,7 +24,7 @@ function initializeDatabaseData({databaseVersion, databaseData} = {}) {
                     generate: getTableDocumentDefault,
                     instance: []
                 }
-                getTableDocument.instance['template_documentFrontend'] = await getTableDocument.generate('template_documentFrontend')
+                getTableDocument.instance['template_documentFrontend'] = await getTableDocument.generate('webappSetting', 'template_documentFrontend')
                 const documentFrontendData = await getTableDocument.instance['template_documentFrontend'](self.rethinkdbConnection)
                 self.frontend = { // Configurations passed to frontend 
                     config: self.config,

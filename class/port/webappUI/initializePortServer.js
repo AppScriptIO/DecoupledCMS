@@ -46,17 +46,7 @@ export default ({entrypointConditionKey} = {}) => async () => {
         },            
         async (context, next) => { // MIDDLEWARE
             let middlewareArray;
-            // 1. create new context for subclasses.
-            // 2. use new context and base for subclasses.
-            // MiddlewareController.prototype = new MiddlewareController(false, { portAppInstance: context.instance })
             let middlewareController = await MiddlewareController.createContext({ portAppInstance: context.instance })
-            // MiddlewareController = new Proxy(MiddlewareController, {
-            //     construct: function(target, argumentsList, newTarget) {
-            //         let instance = new target(...argumentsList)
-            //         instance.__proto__ = middlewareController
-            //         return instance 
-            //     }                            
-            // })
             middlewareArray = await middlewareController.initializeNestedUnit({ nestedUnitKey: '43d6e114-54b4-47d8-aa68-a2ae97b961d5' })
             await implementMiddlewareOnModuleUsingJson(middlewareArray)(context, next)
         },
@@ -72,7 +62,7 @@ export default ({entrypointConditionKey} = {}) => async () => {
             // [2] Use callback
             if(process.env.SZN_DEBUG == 'true' && context.header.debug == 'true') console.log(`🔀✔️ Choosen callback is: %c ${callback.name}`, self.config.style.green)
             await implementConditionActionOnModuleUsingJson({setting: callback})(context, next)
-        }, 
+        },
         async (context, next) => {
             // console.log('Last Middleware reached.')
             await next()

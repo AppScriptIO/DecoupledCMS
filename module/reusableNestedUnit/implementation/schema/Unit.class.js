@@ -5,8 +5,8 @@ import { curried as getTableDocumentCurried } from "appscript/utilityFunction/da
 
 let databasePrefix = 'schema_'
 let getDocument = {
-    'Unit': getTableDocumentCurried({ documentId: `${databasePrefix}unit` }),
-    'File': getTableDocumentCurried({ documentId: `${databasePrefix}file` }),
+    'Unit': getTableDocumentCurried({ databaseName: 'webappSetting', tableName: `${databasePrefix}unit` }),
+    'File': getTableDocumentCurried({ databaseName: 'webappSetting', tableName: `${databasePrefix}file` }),
 }
 
 export default ({ Superclass }) => {
@@ -27,11 +27,15 @@ export default ({ Superclass }) => {
             }
 
             @executeOnceForEachInstance()                        
-            async resolveDataset() {
+            async resolveDataset({ parentResult = null }) {
                 // [2] require & check condition
                 if(!this.dataset) {
                     let filePath = this.file.filePath
-                    this.dataset = await require(filePath)(this.portAppInstance)
+                    this.dataset = await require(filePath)({
+                        portClassInstance: this.portAppInstance, // contains also portClassInstance.context of the request. 
+                        parentResult, // parent dataset result.
+                        
+                    })
                 }
                 return  this.dataset
             }

@@ -37,7 +37,7 @@ export default ({ Superclass }) => {
             this.insertionPoint = this.insertionPoint || [] // if insertionPoint is not set, define it as empty array
 
             switch (type) {
-                case 'aggregateIntoObject':
+                case 'aggregateIntoTemplateObject':
                     let view = {}
                     if(this.insertionPoint) {
                         for (let insertionPoint of this.insertionPoint) {
@@ -51,6 +51,17 @@ export default ({ Superclass }) => {
                         }
                     }
                     return view;                        
+                break;
+                case 'aggregateIntoContentObject':
+                    let object = {}
+                    if(this.insertionPoint) {
+                        for (let insertionPoint of this.insertionPoint) {
+                            let children = await this.filterAndOrderChildren({ insertionPointKey: insertionPoint.key })                                        
+                            let subsequent = await this.initializeInsertionPoint({ insertionPoint, children })                        
+                            object['subsequent'] = subsequent
+                        }
+                    }
+                    return object;                        
                 break;
                 case 'aggregateIntoArray':
                     let array = []
@@ -232,7 +243,8 @@ export default ({ Superclass }) => {
                 let initialized = await this.initializeNestedUnit({
                     nestedUnitKey: child.nestedUnit,
                     additionalChildNestedUnit: this.children,
-                    pathPointerKey: child.pathPointerKey
+                    pathPointerKey: child.pathPointerKey,
+                    parentResult: this.ownResultData
                 })
                 let subsequentArray = Array.isArray(initialized) ? initialized : [ initialized ]; // Convert to array                
                 if(array.length != 0) {
@@ -260,7 +272,8 @@ export default ({ Superclass }) => {
                     let callback = await this.initializeNestedUnit({
                         nestedUnitKey: conditionTreeChild.nestedUnit, 
                         additionalChildNestedUnit: this.children,
-                        pathPointerKey: conditionTreeChild.pathPointerKey
+                        pathPointerKey: conditionTreeChild.pathPointerKey,
+                        parentResult: this.ownResultData
                     })
                     if(!callback) reject('SZN - No callback choosen from this childTree.')
                     resolve(callback)
@@ -289,7 +302,8 @@ export default ({ Superclass }) => {
                     await this.initializeNestedUnit({
                         nestedUnitKey: conditionTreeChild.nestedUnit, 
                         additionalChildNestedUnit: this.children,
-                        pathPointerKey: conditionTreeChild.pathPointerKey
+                        pathPointerKey: conditionTreeChild.pathPointerKey,
+                        parentResult: this.ownResultData
                     })
                     resolve()
                 })

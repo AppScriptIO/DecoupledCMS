@@ -3,13 +3,13 @@ import { curryNamed } from 'appscript/utilityFunction/namedCurry.js'
 import assert from "assert"
 
 // IMPORTANT: when false value (null, empty, undefined) is passed as key, the query will get all keys in db document.
-function getTableDocument(documentId) {
+function getTableDocument(databaseName, tableName) {
     return async function getCondition(connection, key) {
         let result;
         if(key) {
             result = await r
-                .db("webappSetting")
-                .table(documentId)
+                .db(databaseName)
+                .table(tableName)
                 .filter({key: key})
                 .coerceTo('array')
                 .run(connection)
@@ -20,8 +20,8 @@ function getTableDocument(documentId) {
             return result[0]
         } else {
             result = await r
-                .db("webappSetting")
-                .table(documentId)
+                .db(databaseName)
+                .table(tableName)
                 .coerceTo('array')
                 .run(connection)
             return result
@@ -29,12 +29,12 @@ function getTableDocument(documentId) {
     }
 }
 
-async function getTableDocumentAllParams({ documentId, connection, key }) {
+async function getTableDocumentAllParams({ databaseName, tableName, connection, key }) {
     let result;
     if(key) {
         result = await r
-            .db("webappSetting")
-            .table(documentId)
+            .db(databaseName)
+            .table(tableName)
             .filter({key: key})
             .coerceTo('array')
             .run(connection)
@@ -45,14 +45,15 @@ async function getTableDocumentAllParams({ documentId, connection, key }) {
         return result[0]
     } else {
         result = await r
-            .db("webappSetting")
-            .table(documentId)
+            .db(databaseName)
+            .table(tableName)
             .coerceTo('array')
             .run(connection)
         return result
     }
 }
 
-let curried = curryNamed(['documentId', 'connection', 'key'], getTableDocumentAllParams)
+let requiredArgument = ['databaseName', 'tableName', 'connection', /* 'key' */ ] // commented out are optional
+let curried = curryNamed(requiredArgument, getTableDocumentAllParams) // 
 
 export { getTableDocument as default, curried}

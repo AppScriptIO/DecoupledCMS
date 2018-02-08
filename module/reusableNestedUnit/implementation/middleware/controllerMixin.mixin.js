@@ -16,7 +16,7 @@ export default Mixin(({ Superclass }) => {
          * @return {Array of Objects}  each object contains instruction settings to be used through an implementing module.
          */
         async initializeNestedUnit({ nestedUnitKey, additionalChildNestedUnit = [], pathPointerKey = null }) { // Entrypoint Instance
-            assert(nestedUnitKey, '• Key should be present. The passed value is either undefined, null, or empty string.')
+            assert(nestedUnitKey, `• ${nestedUnitKey} Key should be present. The passed value is either undefined, null, or empty string.`)
 
             // [1] get nestedUnit
             let nestedUnitInstance = await this.getNestedUnit({ nestedUnitKey, additionalChildNestedUnit, pathPointerKey })

@@ -10,8 +10,8 @@ let data = [
     /**
      * Content API: /api/v1/
      */
-    { label: { name: '/<api>/' }, key: '41c1a07a-cfa4-4568-a728-afda3415a47d', expectedReturn: 'api', fileKey: '956a0f0f-437a-4cdf-9bcd-f205fc8336f9', },
-    { label: { name: '<>/<v1>' }, key: 'b62cb56a-1932-42fd-9829-76d8bda4ff12', expectedReturn: 'v1', fileKey: 'd3b24455-3c21-4b5d-80b6-55bd9cdb98e2', },
+    { label: { name: '/content/' }, key: '41c1a07a-cfa4-4568-a728-afda3415a47d', expectedReturn: 'content', fileKey: '956a0f0f-437a-4cdf-9bcd-f205fc8336f9', },
+    { label: { name: '<>/<level 2 exists>' }, key: 'b62cb56a-1932-42fd-9829-76d8bda4ff12', expectedReturn: true, fileKey: '96196816-a934-4f2c-b625-6ae97514be15', },
 
     /**
      * Port: StaticContent

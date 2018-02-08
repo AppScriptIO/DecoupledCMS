@@ -5,8 +5,8 @@ import { curried as getTableDocumentCurried } from "appscript/utilityFunction/da
 
 let databasePrefix = 'condition_'
 let getDocument = {
-    Unit: getTableDocumentCurried({ documentId: `${databasePrefix}unit` }),
-    File: getTableDocumentCurried({ documentId: `${databasePrefix}file` }),
+    Unit: getTableDocumentCurried({ databaseName: 'webappSetting', tableName: `${databasePrefix}unit` }),
+    File: getTableDocumentCurried({ databaseName: 'webappSetting', tableName: `${databasePrefix}file` }),
 }
 
 export default ({ Superclass }) => {

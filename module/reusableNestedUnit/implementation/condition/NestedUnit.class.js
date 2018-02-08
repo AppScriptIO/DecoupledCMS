@@ -6,7 +6,7 @@ import { curried as getTableDocumentCurried } from "appscript/utilityFunction/da
 
 let databasePrefix = 'condition_'
 let getDocument = {
-    NestedUnit: getTableDocumentCurried({ documentId: `${databasePrefix}nestedUnit` }),
+    NestedUnit: getTableDocumentCurried({ databaseName: 'webappSetting', tableName: `${databasePrefix}nestedUnit` }),
 }
 import promiseProperRace from 'appscript/utilityFunction/promiseProperRace.js'
 

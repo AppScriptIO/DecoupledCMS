@@ -33,8 +33,8 @@ export default Mixin(({ Superclass }) => {
             let templateFunction = _.template(await filesystem.readFileSync(`${this.portAppInstance.config.clientBasePath}/${unitInstance.file.filePath}`, 'utf-8'))
             // Shared arguments between all templates being rendered
             // loop through template and create rendered view content.
-            let view = await nestedUnitInstance.loopInsertionPoint({ type: 'aggregateIntoObject' })
-
+            let view = await nestedUnitInstance.loopInsertionPoint({ type: 'aggregateIntoTemplateObject' })
+            
             const templateArgument = {
                 templateController: this,
                 context: this.portAppInstance.context,

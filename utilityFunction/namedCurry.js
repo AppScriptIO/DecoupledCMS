@@ -1,7 +1,9 @@
 /**
  * Source: https://github.com/gunar/ncurry 
+ *  Allows for currying on named parameters i.e. { param1: '', param2: ''}
  */
-// Allows for currying on named parameters i.e. { param1: '', param2: ''}
+// IMPORTANT: take notice of the way "namedCurry" works, if all required arguments are passed then it will execute the function not always the desired behavior.
+ 
 export function curryNamed (keys, fn) {
     return function helper (cache) {
         return function (...objects) {

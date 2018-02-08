@@ -6,10 +6,10 @@ let getTableDocument = {
     generate: getTableDocumentDefault,
     instance: []
 }
-getTableDocument.instance['template_documentBackend'] = getTableDocument.generate('template_documentBackend')
+getTableDocument.instance['template_documentBackend'] = getTableDocument.generate('webappSetting', 'template_documentBackend')
 
 export default ({ documentKey }) => {
-    let TemplateController = createStaticInstanceClasses({ 
+    let TemplateController = createStaticInstanceClasses({
         Superclass: Application, 
         implementationType: 'Template'
     })

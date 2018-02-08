@@ -9,7 +9,7 @@ import { curried as getTableDocumentCurried } from "appscript/utilityFunction/da
 
 let databasePrefix = 'template_'
 let getDocument = {
-    NestedUnit: getTableDocumentCurried({ documentId: `${databasePrefix}nestedUnit` }),
+    NestedUnit: getTableDocumentCurried({ databaseName: 'webappSetting', tableName: `${databasePrefix}nestedUnit` }),
 }
 
 export default ({ Superclass }) => {

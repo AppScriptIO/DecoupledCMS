@@ -18,12 +18,12 @@ export default Mixin(({ Superclass }) => {
          * @returns { Object || False } Object containing instruction settings to be used through an implementing module.
          */
         async initializeNestedUnit({ nestedUnitKey, additionalChildNestedUnit = [], pathPointerKey = null}) { // Entrypoint Instance  
-            assert(nestedUnitKey, '• Key should be present. The passed value is either undefined, null, or empty string.')
-                     
+            assert(nestedUnitKey, `• "${nestedUnitKey}" Key should be present. The passed value is either undefined, null, or empty string.`)
             // [1] get nestedUnit
             let nestedUnitInstance = await this.getNestedUnit({ nestedUnitKey, additionalChildNestedUnit, pathPointerKey })
             let { unitKey:unitKey } = nestedUnitInstance
-            let unitInstance = await this.getUnit({unitKey})
+            assert(unitKey, `• "${unitKey}" nestedUnit should have a unitKey field. The passed value is either undefined, null, or empty string.`)
+            let unitInstance = await this.getUnit({ unitKey })
             await unitInstance.pupolateUnitWithFile()
             let conditionMet = await unitInstance.checkCondition()
             

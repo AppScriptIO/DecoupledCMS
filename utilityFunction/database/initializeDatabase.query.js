@@ -39,5 +39,14 @@ export async function createTableAndInsertData(databaseName, databaseData, conne
                     .catch(error => console.log(error))
             })
             .catch(error => console.log(`📢 ${tableData.databaseTableName} table already exists.`))
+
+        // create index
+        if(tableData.index) {
+            for(let indexField of tableData.index) {
+                await rethinkDB.db(databaseName).table(tableData.databaseTableName).indexCreate(indexField).run(connection)
+                    .then(response => { console.log(`📢 ${tableData.databaseTableName} - created index for field ${indexField}.`) })
+                    .catch(error => console.log(`📢 ${tableData.databaseTableName} - index for field ${indexField} already exists.`))
+                }
+        }
     }
 }

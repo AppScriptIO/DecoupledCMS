@@ -6,7 +6,7 @@ import { exec, execSync, spawn, spawnSync } from 'child_process'
 
 let databasePrefix = 'shellscript_'
 let getDocument = {
-    'Unit': getTableDocumentCurried({ documentId: `${databasePrefix}unit` })
+    'Unit': getTableDocumentCurried({ databaseName: 'webappSetting', tableName: `${databasePrefix}unit` })
 }
 
 export default ({ Superclass }) => {
