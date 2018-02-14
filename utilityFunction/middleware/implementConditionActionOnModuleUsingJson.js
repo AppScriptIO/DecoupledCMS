@@ -48,6 +48,6 @@ export default ({setting}) => {
             default: 
                 if(process.env.SZN_DEBUG == 'true') console.log('SZN - %c Setting (callback) doesn\'t match any kind.', Application.config.style.red)
         }
-        // if(!isCalledNext) await next()
+        return isCalledNext
     }
 }

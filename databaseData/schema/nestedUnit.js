@@ -6,8 +6,8 @@ let data = [
             { key: 'de45db35-5e0d-49b1-82bc-659fc787b0c1', order: 1, executionType: 'chronological' },
         ],
         children: [
-            // { nestedUnit: 'title', pathPointerKey: 'xyz', insertionPosition: { insertionPathPointer: null,  insertionPoint: 'de45db35-5e0d-49b1-82bc-659fc787b0c1', order: 1, /* placement: { type: 'after/before', pathPointer: 'KeyXXXX', } */ } },
-            // { nestedUnit: 'paragraph', pathPointerKey: 'xyz', insertionPosition: { insertionPathPointer: null,  insertionPoint: 'de45db35-5e0d-49b1-82bc-659fc787b0c1', order: 1, /* placement: { type: 'after/before', pathPointer: 'KeyXXXX', } */ } },
+            { nestedUnit: 'title', pathPointerKey: 'xyz', insertionPosition: { insertionPathPointer: null,  insertionPoint: 'de45db35-5e0d-49b1-82bc-659fc787b0c1', order: 1, /* placement: { type: 'after/before', pathPointer: 'KeyXXXX', } */ } },
+            { nestedUnit: 'paragraph', pathPointerKey: 'xyz', insertionPosition: { insertionPathPointer: null,  insertionPoint: 'de45db35-5e0d-49b1-82bc-659fc787b0c1', order: 1, /* placement: { type: 'after/before', pathPointer: 'KeyXXXX', } */ } },
             // { nestedUnit: 'person', pathPointerKey: 'xyz', insertionPosition: { insertionPathPointer: null,  insertionPoint: 'de45db35-5e0d-49b1-82bc-659fc787b0c1', order: 1, /* placement: { type: 'after/before', pathPointer: 'KeyXXXX', } */ } },
         ],
     },

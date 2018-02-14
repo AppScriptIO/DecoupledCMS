@@ -32,12 +32,12 @@ export default ({ Superclass }) => {
          * @param {Class Instance} nestedUnitInstance Tree instance of the module using "reusableNestedUnit" pattern. instance should have "initializeInsertionPoint" function & "insertionPoint" Array.
          * @returns undifiend for false or any type of value depending on the module being applied.
          */
-        async loopInsertionPoint({ type }) {
+        async loopInsertionPoint({ type, argument = {} }) {
             this.children = this.children || [] // if children is not set, define it as empty array
             this.insertionPoint = this.insertionPoint || [] // if insertionPoint is not set, define it as empty array
 
             switch (type) {
-                case 'aggregateIntoTemplateObject':
+                case 'aggregateIntoTemplateObject': {
                     let view = {}
                     if(this.insertionPoint) {
                         for (let insertionPoint of this.insertionPoint) {
@@ -51,19 +51,19 @@ export default ({ Superclass }) => {
                         }
                     }
                     return view;                        
-                break;
-                case 'aggregateIntoContentObject':
-                    let object = {}
+                } break;
+                case 'aggregateIntoContentArray': {
+                    let array = []
                     if(this.insertionPoint) {
                         for (let insertionPoint of this.insertionPoint) {
                             let children = await this.filterAndOrderChildren({ insertionPointKey: insertionPoint.key })                                        
-                            let subsequent = await this.initializeInsertionPoint({ insertionPoint, children })                        
-                            object['subsequent'] = subsequent
+                            let subsequentArray = await this.initializeInsertionPoint({ insertionPoint, children, argument })
+                            await Array.prototype.push.apply(array, subsequentArray)
                         }
                     }
-                    return object;                        
-                break;
-                case 'aggregateIntoArray':
+                    return array;                        
+                } break;
+                case 'aggregateIntoArray': {
                     let array = []
                     if(this.insertionPoint) { // get callback from subtrees
                         for (let insertionPoint of this.insertionPoint) {
@@ -77,14 +77,14 @@ export default ({ Superclass }) => {
                         }
                     }
                     return array;
-                break;
+                } break;
                 /**
                  * @description loops through all the insertion points and initializes each one to execute the children specific for it.
                  * 
                  * @param {Class Instance} nestedUnitInstance Tree instance of the module using "reusableNestedUnit" pattern. instance should have "initializeInsertionPoint" function & "insertionPoint" Array.
                  * @returns undifiend for false or any type of value depending on the module being applied.
                  */
-                case 'returnedFirstValue':
+                case 'returnedFirstValue': {
                     let returned;
                     // get callback from subtrees
                     for (let insertionPoint of this.insertionPoint) {
@@ -95,18 +95,18 @@ export default ({ Superclass }) => {
                         if (returned) break
                     }
                     return returned;
-                break;
-                case 'executeScript':
+                } break;
+                case 'executeScript': {
                     for (let insertionPoint of this.insertionPoint) {
                         // [1] get children immediate & relating to this insertion position.
                         let children = await this.filterAndOrderChildren({ insertionPointKey: insertionPoint.key })                
                         // let children = await this.filterChildrenOfCurrentInsertionPoint({ insertionPointKey: insertionPoint.key })
                         await this.initializeInsertionPoint({ insertionPoint, children })
                     }
-                break;
-                default:
+                } break;
+                default:{
                     console.log(`"${type}" type doesn\'t match any kind.`)
-                break;
+                } break;
             }
         }
 
@@ -209,7 +209,7 @@ export default ({ Superclass }) => {
         /**
          * Call correct execution type method of the current insertionpoint settings.
          */
-        async initializeInsertionPoint({ insertionPoint, children }) {
+        async initializeInsertionPoint({ insertionPoint, children, argument }) {
             // [2] check type of subtrees execution: race first, all ... .
             let callback;
             switch(insertionPoint.executionType) { // execution type callback name
@@ -227,10 +227,10 @@ export default ({ Superclass }) => {
                 break;
             }
             // [3] call handler on them.
-            return await this[callback](children)
+            return await this[callback](children, argument)
         }
 
-        async initializeTreeInChronologicalSequence(children /* nestedUnitChildren / TreeChildren */) {
+        async initializeTreeInChronologicalSequence(children, argument /* nestedUnitChildren / TreeChildren */) {
             let array = [] // nested Unit Array or rendered nested unit initalization results.
             for (var index = 0; index < children.length; index++) {
                 let child = children[index]
@@ -244,7 +244,8 @@ export default ({ Superclass }) => {
                     nestedUnitKey: child.nestedUnit,
                     additionalChildNestedUnit: this.children,
                     pathPointerKey: child.pathPointerKey,
-                    parentResult: this.ownResultData
+                    parent: this,
+                    argument
                 })
                 let subsequentArray = Array.isArray(initialized) ? initialized : [ initialized ]; // Convert to array                
                 if(array.length != 0) {
@@ -253,7 +254,7 @@ export default ({ Superclass }) => {
                     array = await subsequentArray.slice()
                 }
             }
-
+            array = array.filter(item => item) // remove null results, where nested unit is not executed (i.e. fields are not mentioned i nthe request.)
             return array
         } 
 
@@ -273,7 +274,7 @@ export default ({ Superclass }) => {
                         nestedUnitKey: conditionTreeChild.nestedUnit, 
                         additionalChildNestedUnit: this.children,
                         pathPointerKey: conditionTreeChild.pathPointerKey,
-                        parentResult: this.ownResultData
+                        parent: this
                     })
                     if(!callback) reject('SZN - No callback choosen from this childTree.')
                     resolve(callback)
@@ -303,7 +304,7 @@ export default ({ Superclass }) => {
                         nestedUnitKey: conditionTreeChild.nestedUnit, 
                         additionalChildNestedUnit: this.children,
                         pathPointerKey: conditionTreeChild.pathPointerKey,
-                        parentResult: this.ownResultData
+                        parent: this
                     })
                     resolve()
                 })

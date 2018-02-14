@@ -40,7 +40,10 @@ export function conditional({ condition = true, decorator }) {
     return (condition) ? decorator : Class => { return Class } ; 
 }
 
-// method decorator to execute method only once on instance
+/** 
+ * method decorator to execute method only once on instance. caching the result of the first execution to return it on subsequent calls.
+ * Tracks execution using 'executedmethod' object, which it adds to this argument.
+*/
 export function executeOnceForEachInstance() { // decorator + proxy
     return (target, methodName, descriptor) => {
         let method = target[methodName]
@@ -58,6 +61,23 @@ export function executeOnceForEachInstance() { // decorator + proxy
                 thisArg.executedmethod[methodName]['executed'] = true
                 thisArg.executedmethod[methodName]['result'] = instance
                 return instance
+            }
+        })
+        return descriptor
+    }
+}
+
+/** 
+ * method decorator to check if nestedUnit is parent or child, i.e. top level or nested levels.
+ * Adds "executionLevel" property to this argument.
+*/
+export function executionLevel() { // decorator + proxy
+    return (target, methodName, descriptor) => {
+        let method = target[methodName]
+        descriptor.value = new Proxy(method, {
+            apply: async (target, thisArg, argumentsList) => {
+                thisArg.executionLevel = (thisArg.key) ? 'nested' : 'topLevel'
+                return await target.apply(thisArg, argumentsList)
             }
         })
         return descriptor

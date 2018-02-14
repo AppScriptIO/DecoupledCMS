@@ -26,18 +26,16 @@ export default ({ Superclass }) => {
                 })
             }
 
-            @executeOnceForEachInstance()                        
             async resolveDataset({ parentResult = null }) {
                 // [2] require & check condition
-                if(!this.dataset) {
-                    let filePath = this.file.filePath
-                    this.dataset = await require(filePath)({
-                        portClassInstance: this.portAppInstance, // contains also portClassInstance.context of the request. 
-                        parentResult, // parent dataset result.
-                        
-                    })
-                }
-                return  this.dataset
+                let dataset;
+                let filePath = this.file.filePath
+                dataset = await require(filePath)({
+                    portClassInstance: this.portAppInstance, // contains also portClassInstance.context of the request. 
+                    args: this.args,
+                    parentResult, // parent dataset result.
+                })
+                return dataset
             }
 
         }

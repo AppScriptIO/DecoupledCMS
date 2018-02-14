@@ -99,7 +99,12 @@ let data = [
         executionType: 'regularFunction',
         fileKey: 'bb770b52-e40a-46a7-91ca-efd7f355d10f',
     },
+    {
+        label: { name: 'body parser' }, key: '984safdasf-0ae9-4dd0-aae8-4796bbe0581f', 
+        executionType: 'regularFunction', fileKey: '6784asfd-e22b-4a07-83d0-1ff2c1d51902',
+    },
 
+    
 ]
 
 export default data

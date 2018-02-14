@@ -58,6 +58,13 @@ let data = [
         name: 'renderTemplateDocument.middleware.js'
       },
       filePath: 'appscript/utilityFunction/middleware/renderTemplateDocument.middleware.js',
+    },
+    {
+      key: '6784asfd-e22b-4a07-83d0-1ff2c1d51902',
+      label: {
+        name: 'bodyParser.middleware.js'
+      },
+      filePath: 'appscript/utilityFunction/middleware/bodyParser.middleware.js',
     }
   ];
   
