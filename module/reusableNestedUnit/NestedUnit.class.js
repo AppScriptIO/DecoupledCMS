@@ -10,7 +10,6 @@ export default ({ Superclass }) => {
         static getDocumentQuery;
 
         static initializeStaticClass(self, getDocument) {
-            // console.log(getDocument)
             self.getDocumentQuery = getDocument
         }
 
@@ -219,7 +218,7 @@ export default ({ Superclass }) => {
                 case 'raceFirstPromise': 
                     callback = 'initializeNestedUnitInRaceExecutionType'
                 break;
-                case 'chronological': 
+                case 'chronological': // TODO: change 'chronological' to 'sequential' as it makes it crealer and the words is more common.
                     callback = 'initializeTreeInChronologicalSequence'
                 break;
                 default: 
@@ -230,16 +229,35 @@ export default ({ Superclass }) => {
             return await this[callback](children, argument)
         }
 
+        async addAdditionalChildNestedUnit({ nestedUnit }) {
+            // Add the rest of the immediate children to the next tree as additional children. propagate children to the next tree.
+            if(nestedUnit.children.length != 0) {
+                await Array.prototype.push.apply(nestedUnit.children, nestedUnit.additionalChildNestedUnit)
+            } else {
+                nestedUnit.children = await nestedUnit.additionalChildNestedUnit.slice()
+            }
+        }
+
         async initializeTreeInChronologicalSequence(children, argument /* nestedUnitChildren / TreeChildren */) {
-            let array = [] // nested Unit Array or rendered nested unit initalization results.
-            for (var index = 0; index < children.length; index++) {
-                let child = children[index]
-                // Add the rest of the immediate children to the next tree as additional children. propagate children to the next tree.
-                if(this.children.length != 0) {
-                    await Array.prototype.push.apply(this.children, this.additionalChildNestedUnit)
-                } else {
-                    this.children = await this.additionalChildNestedUnit.slice()
-                }
+            // implementation using plain for loops
+            // let array = [] // nested Unit Array or rendered nested unit initalization results.
+            // for (let child of children) {
+            //     await this.addAdditionalChildNestedUnit({ nestedUnit: this })
+            //     let initialized = await this.initializeNestedUnit({
+            //         nestedUnitKey: child.nestedUnit,
+            //         additionalChildNestedUnit: this.children,
+            //         pathPointerKey: child.pathPointerKey,
+            //         parent: this,
+            //         argument
+            //     })
+            //     let subsequentArray = Array.isArray(initialized) ? initialized : [ initialized ]; // Convert to array                
+            //     (array.length != 0) ? Array.prototype.push.apply(array, subsequentArray) : array = subsequentArray.slice();
+            // }
+
+            // implementation using array.reduce to sequentially accumolate values.
+            let array = await children.reduce(async (accumulatorPromise, child, index) => { // sequential accumolation of results
+                let accumulator = await accumulatorPromise
+                await this.addAdditionalChildNestedUnit({ nestedUnit: this })
                 let initialized = await this.initializeNestedUnit({
                     nestedUnitKey: child.nestedUnit,
                     additionalChildNestedUnit: this.children,
@@ -247,39 +265,31 @@ export default ({ Superclass }) => {
                     parent: this,
                     argument
                 })
-                let subsequentArray = Array.isArray(initialized) ? initialized : [ initialized ]; // Convert to array                
-                if(array.length != 0) {
-                    await Array.prototype.push.apply(array, subsequentArray)
-                } else {
-                    array = await subsequentArray.slice()
-                }
-            }
+                // initialized can be an array or single item // TODO: refactor for more readable and cleaner array accumulation.
+                let subsequentArray = Array.isArray(initialized) ? initialized : [ initialized ];
+                (accumulator.length != 0) ? Array.prototype.push.apply(accumulator, subsequentArray) : accumulator = subsequentArray.slice()
+                return accumulator
+            }, Promise.resolve([]))
             array = array.filter(item => item) // remove null results, where nested unit is not executed (i.e. fields are not mentioned i nthe request.)
             return array
         } 
 
-        async initializeNestedUnitInRaceExecutionType(children) {
+        async initializeNestedUnitInRaceExecutionType(children, argument) {
             let promiseArray = []
-            promiseArray = children.map(conditionTreeChild => {
-                return new Promise(async (resolve, reject) => {
-                    // Add the rest of the immediate children to the next tree as additional children. propagate children to the next tree.
-                    
-                    if(this.children.length != 0) {
-                        await Array.prototype.push.apply(this.children, this.additionalChildNestedUnit)
-                    } else {
-                        this.children = await this.additionalChildNestedUnit.slice()
-                    }
-
+            promiseArray = children.map(conditionTreeChild => 
+                new Promise(async (resolve, reject) => {
+                    await this.addAdditionalChildNestedUnit({ nestedUnit: this })
                     let callback = await this.initializeNestedUnit({
                         nestedUnitKey: conditionTreeChild.nestedUnit, 
                         additionalChildNestedUnit: this.children,
                         pathPointerKey: conditionTreeChild.pathPointerKey,
-                        parent: this
+                        parent: this,
+                        argument
                     })
                     if(!callback) reject('SZN - No callback choosen from this childTree.')
                     resolve(callback)
                 })
-            })
+            )
 
             let callback;
             await promiseProperRace(promiseArray).then((promiseReturnValueArray) => {
@@ -288,37 +298,36 @@ export default ({ Superclass }) => {
             return callback ? callback : false;
         }
 
-        async initializeNestedUnitInAllPromiseExecutionType(children) {
-            let promiseArray = []
-            promiseArray = children.map(conditionTreeChild => {
+        async initializeNestedUnitInAllPromiseExecutionType(children, argument) {
+            let promiseArray = children.map(conditionTreeChild => {
                 return new Promise(async (resolve, reject) => {
-                    // Add the rest of the immediate children to the next tree as additional children. propagate children to the next tree.
-                    
-                    if(this.children.length != 0) {
-                        await Array.prototype.push.apply(this.children, this.additionalChildNestedUnit)
-                    } else {
-                        this.children = await this.additionalChildNestedUnit.slice()
-                    }
-
-                    await this.initializeNestedUnit({
+                    await this.addAdditionalChildNestedUnit({ nestedUnit: this })
+                    let initialized = await this.initializeNestedUnit({
                         nestedUnitKey: conditionTreeChild.nestedUnit, 
                         additionalChildNestedUnit: this.children,
                         pathPointerKey: conditionTreeChild.pathPointerKey,
-                        parent: this
+                        parent: this,
+                        argument
                     })
-                    resolve()
+                    resolve(initialized)
                 })
             })
 
-            await Promise.all(promiseArray).then(() => {
-            }).catch(reason => { 
-                if(process.env.SZN_DEBUG == 'true') console.log(`🔀⚠️ promiseProperRace rejected because: ${reason}`) 
-                process.exit(1)
-            })
-            return;
+            let initializedArray = await Promise.all(promiseArray)
+                .catch(reason => { 
+                    if(process.env.SZN_DEBUG == 'true') console.log(`🔀⚠️ promiseProperRace rejected because: ${reason}`) 
+                    process.exit(1)
+                })
+            
+            let array = initializedArray
+                .reduce((accumulator, initialized, index) => {
+                    let subsequentArray = Array.isArray(initialized) ? initialized : [ initialized ];
+                    (accumulator.length != 0) ? Array.prototype.push.apply(accumulator, subsequentArray) : accumulator = subsequentArray.slice()
+                    return accumulator
+                }, [])
+                .filter(item => item) // remove null results, where nested unit is not executed (i.e. fields are not mentioned i nthe request.)
+            return array;
         }
-
-        
     }
     
     return self

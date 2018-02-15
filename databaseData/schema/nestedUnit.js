@@ -3,7 +3,7 @@ let data = [
     {
         label: { name: 'article' }, key: 'article', unitKey: 'article',
         insertionPoint: [
-            { key: 'de45db35-5e0d-49b1-82bc-659fc787b0c1', order: 1, executionType: 'chronological' },
+            { key: 'de45db35-5e0d-49b1-82bc-659fc787b0c1', order: 1, executionType: 'allPromise' },
         ],
         children: [
             { nestedUnit: 'title', pathPointerKey: 'xyz', insertionPosition: { insertionPathPointer: null,  insertionPoint: 'de45db35-5e0d-49b1-82bc-659fc787b0c1', order: 1, /* placement: { type: 'after/before', pathPointer: 'KeyXXXX', } */ } },
@@ -17,7 +17,7 @@ let data = [
     {
         label: { name: 'person' }, key: '0c01c061-92d4-44ad-8cda-098352c107ea', unitKey: '',
         insertionPoint: [
-            { key: 'de45db35-5e0d-49b1-82bc-659fc787b0c1', order: 1, executionType: 'chronological' },
+            { key: 'de45db35-5e0d-49b1-82bc-659fc787b0c1', order: 1, executionType: 'allPromise' },
         ],
         children: [
             { nestedUnit: 'name', pathPointerKey: 'xyz', insertionPosition: { insertionPathPointer: null,  insertionPoint: 'de45db35-5e0d-49b1-82bc-659fc787b0c1', order: 1, /* placement: { type: 'after/before', pathPointer: 'KeyXXXX', } */ } },

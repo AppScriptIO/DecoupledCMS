@@ -101,7 +101,7 @@ export default Mixin(({ Superclass }) => {
                     let subsequentDataset = await nestedUnitInstance.loopInsertionPoint({ type: 'aggregateIntoContentArray' })      
                     object[unitInstance.fieldName] = this.formatDatasetOfNestedType({ 
                         subsequentDataset, 
-                        dataset: nestedUnitInstance, 
+                        dataset: nestedUnitInstance.dataset, 
                         option: { 
                             extrafield: nestedUnitInstance.requestOption.extrafield 
                         } 
