@@ -21,11 +21,17 @@ export default Mixin(({ Superclass }) => {
             assert(nestedUnitKey, `• "${nestedUnitKey}" Key should be present. The passed value is either undefined, null, or empty string.`)
             // [1] get nestedUnit
             let nestedUnitInstance = await this.getNestedUnit({ nestedUnitKey, additionalChildNestedUnit, pathPointerKey })
-            let { unitKey:unitKey } = nestedUnitInstance
-            assert(unitKey, `• "${unitKey}" nestedUnit should have a unitKey field. The passed value is either undefined, null, or empty string.`)
-            let unitInstance = await this.getUnit({ unitKey })
-            await unitInstance.pupolateUnitWithFile()
-            let conditionMet = await unitInstance.checkCondition()
+
+            let conditionMet;
+            if(nestedUnitInstance.unitKey) {
+                let { unitKey:unitKey } = nestedUnitInstance
+                assert(unitKey, `• "${unitKey}" nestedUnit should have a unitKey field. The passed value is either undefined, null, or empty string.`)
+                let unitInstance = await this.getUnit({ unitKey })
+                await unitInstance.pupolateUnitWithFile()
+                conditionMet = await unitInstance.checkCondition()
+            } else { // if no unitKey set, then the neseted unit is considered a holder for other nested units and should pass to the nested children.
+                conditionMet = true
+            }
             
             // [3] Iterate over insertion points
             let callback;

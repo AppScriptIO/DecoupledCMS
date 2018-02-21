@@ -17,8 +17,11 @@ function isES5(agent) {
             return agent.satisfies('<14.0.0') ? true : false;
         case 'Safari': 
             return agent.satisfies('<10.0.0') ? true : false;
+        case 'Safari': 
+            return agent.satisfies('<10.0.0') ? true : false;
+        case 'Other':
         default:
-            return true
+            return (agent.source.toLowerCase().includes('postman')) ? false : true;
         break;
     }
 }

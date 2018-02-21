@@ -5,10 +5,11 @@ import { createDatabase, createTableAndInsertData, deleteAllDatabase } from "app
 function initializeDatabaseData({databaseVersion, databaseData} = {}) {
     return async () => {
         const connection = Application.rethinkdbConnection
+        console.groupCollapsed('Database data insertion:')
         console.log(`SZN Database version: ${databaseVersion}`)
         if(!databaseVersion) await deleteAllDatabase(connection).then(console.log('SZN Rethinkdb - All databases dropped.'))
 
-        createDatabase('webappSetting', connection)
+        await createDatabase('webappSetting', connection)
             .then(async () => {
                 try {
                     await createTableAndInsertData('webappSetting', databaseData.webappSetting, connection)
@@ -18,36 +19,17 @@ function initializeDatabaseData({databaseVersion, databaseData} = {}) {
                     process.exit(1)
                 }
             })
-            .then(async () => { // initialize template document front end.
-                const self = Application
-                let getTableDocument = {
-                    generate: getTableDocumentDefault,
-                    instance: []
-                }
-                getTableDocument.instance['template_documentFrontend'] = await getTableDocument.generate('webappSetting', 'template_documentFrontend')
-                const documentFrontendData = await getTableDocument.instance['template_documentFrontend'](self.rethinkdbConnection)
-                self.frontend = { // Configurations passed to frontend 
-                    config: self.config,
-                    setting: {
-                        location: {
-                            routeBasePath: `${self.config.PROTOCOL}${self.config.HOST}`
-                        }
-                    },
-                    route: 'route',
-                    document: documentFrontendData,
-                }    
-            })
 
-        createDatabase('webappContent', connection)
-            .then(() => {
+        await createDatabase('webappContent', connection)
+            .then(async () => {
                 try {
-                    createTableAndInsertData('webappContent', databaseData.webappContent, connection)            
+                    await createTableAndInsertData('webappContent', databaseData.webappContent, connection)            
                 } catch (error) {
                     console.log('webappContent - cannot create table / insert data for webappContent')
                     console.log(error)
                 }
             })
-
+        console.groupEnd()
     }
 }
 

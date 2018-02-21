@@ -1,4 +1,5 @@
-const EventEmitter = require('events')
+// const EventEmitter = require('events')
+import EventEmitter from 'promise-events' // executes listeners with promise.all, allowing for await on event emittion.
 
 
 /**

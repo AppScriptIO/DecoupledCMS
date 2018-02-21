@@ -1,5 +1,6 @@
 import { curried as getTableDocumentCurried } from "appscript/utilityFunction/database/query/getTableDocument.query.js";
 import r from 'rethinkdb'
+import { aggregation, multipleRelationship } from 'appscript/utilityFunction/database/query/patternImplementation.js'
 
 export default async function({ portClassInstance, parentResult, args }) {
   let databaseConnection = portClassInstance.constructor.rethinkdbConnection
@@ -25,39 +26,18 @@ async function singleDocument({
   aggregatedArticleKey,
   languageDocumentKey
 }) {
+  const contentDatabase = r.db('webappContent')
+  var article = contentDatabase.table('article');
+  let language = contentDatabase.table('language');
+  let relationshipTable = contentDatabase.table('relationship')
+  let version = aggregation({ table: article, aggregatedDocumentKey: aggregatedArticleKey })
 
-  var article = r.db('webappContent').table('article');
-  let language = r.db('webappContent').table('language');
-  let aggregatedArticle = article.filter({ key: aggregatedArticleKey });
-
-  let version =
-    aggregatedArticle
-      .concatMap(function(document) {
-        return document('version')
-      })
-      .concatMap(function(document) {
-        let related = article.getAll(document, {index: 'key'});
-        return related
-      });
-
+  let tableArray = [ { name: 'article', table: article }, { name: 'language', table: language } ]
   let result = await
-    r.db('webappContent').table('relationship')
-      .map(function(document) { return { relationship: document } })
-      .concatMap(function(document) {
-        let related = article.getAll(document('relationship')('article')('documentKey'), { index: 'key' });
-        return related.map(function(relatedDocument) {
-          return document.merge({ article: relatedDocument })
-        })
-      })
-      .concatMap(function(document) {
-        let related = language.getAll(document('relationship')('language')('documentKey'), { index: 'key' });
-        return related.map(function(relatedDocument) {
-          return document.merge({ language: relatedDocument })
-        })
-      })
-      .filter(function(document) { return document('language')('key').eq(languageDocumentKey) })
-      .filter(function(document) {
-        return version.contains(function(version) {
+      multipleRelationship({ relationshipTable, tableArray })
+      .filter((document) => { return document('language')('key').eq(languageDocumentKey) })
+      .filter((document) => {
+        return version.contains((version) => {
           return document('article')('key').eq(version('key'))
         })
       })
@@ -73,24 +53,14 @@ async function multipleDocument({
   databaseConnection,
   languageDocumentKey
 }) {
-  var article = r.db('webappContent').table('article');
-  let language = r.db('webappContent').table('language');
+  const contentDatabase = r.db('webappContent')
+  var article = contentDatabase.table('article');
+  let language = contentDatabase.table('language');
+  let relationshipTable = contentDatabase.table('relationship')
 
+  let tableArray = [ { name: 'article', table: article }, { name: 'language', table: language } ]
   let result = await
-    r.db('webappContent').table('relationship')
-      .map(function(document) { return { relationship: document } })
-      .concatMap(function(document) {
-        let related = article.getAll(document('relationship')('article')('documentKey'), { index: 'key' });
-        return related.map(function(relatedDocument) {
-          return document.merge({ article: relatedDocument })
-        })
-      })
-      .concatMap(function(document) {
-        let related = language.getAll(document('relationship')('language')('documentKey'), { index: 'key' });
-        return related.map(function(relatedDocument) {
-          return document.merge({ language: relatedDocument })
-        })
-      })
+      multipleRelationship({ relationshipTable, tableArray })
       .filter(function(document) { return document('language')('key').eq(languageDocumentKey) })
       .getField('article')
       .coerceTo('array')
@@ -102,19 +72,10 @@ async function documentRelatedToAggregation({ // all documents of an article
   databaseConnection,
   aggregatedArticleKey
 }) {
-  var article = r.db('webappContent').table('article');
-  let aggregatedArticle = article.filter({ key: aggregatedArticleKey });
-
-  let version =
-    aggregatedArticle
-      .concatMap(function(document) {
-        return document('version')
-      })
-      .concatMap(function(document) {
-        let related = article.getAll(document, {index: 'key'});
-        return related
-      })
-      .coerceTo('array')
-      .run(databaseConnection);
+  let article = r.db('webappContent').table('article');
+  let version = 
+    aggregation({ table: article, aggregatedDocumentKey: aggregatedArticleKey })
+    .coerceTo('array')
+    .run(databaseConnection);
   return version
 }

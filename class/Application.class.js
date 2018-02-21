@@ -1,8 +1,8 @@
-const EventEmitter = require('events')
 import http from 'http'
 import assert from 'assert'
 import path from 'path'
 import filesystem from 'fs'
+import EventEmitter from 'events'
 import configuration from '../configuration/configuration.export.js' // Load configuration settings.
 import Koa from 'koa' // Koa applicaiton server
 import compose from 'koa-compose'
@@ -12,13 +12,14 @@ import { add, execute, applyMixin } from 'appscript/utilityFunction/decoratorUti
 import addStaticSubclassToClassArray from 'appscript/module/addStaticSubclassToClassArray.staticMethod'
 import { extendedSubclassPattern } from 'appscript/utilityFunction/extendedSubclassPattern.js'
 import underscore from 'underscore'
+import {default as getTableDocumentDefault} from "appscript/utilityFunction/database/query/getTableDocument.query.js";
 
 const self = 
 @add({ to: 'static'}, {
     addStaticSubclassToClassArray
 })
 @extendedSubclassPattern.Superclass()
-class Application extends EventEmitter {
+class Application extends EventEmitter { /* Core event emitter module, different from the module used in the static property "self.eventEmitter" */
     
     static rethinkdbConnection = {}
     static underscore;
@@ -56,7 +57,10 @@ class Application extends EventEmitter {
 
         await self.eventEmitter.emit('initializationEnd')
         await self.eventEmitter.emit('addSubclass')
+        await self.loadFrontendData() // initialize template document front end.
+
         // if(staticSubclass) self.addStaticSubclassToClassArray(staticSubclass)
+        console.log('• App up & running !')
     }
 
 // Used by extended subclasses:
@@ -81,19 +85,43 @@ class Application extends EventEmitter {
     }
 
     static createHttpServer() {
-        const self = this
-        self.httpServer = http.createServer(self.serverKoa.callback())
-            .on('connection', (socket) => {
-                socket.setTimeout(0, () => {
-                    console.log('HTTP server connection socket was timedout (console.log in socket.setTimeout)!')
-                }); // request socket.
-            })
-            .listen(self.port, ()=> {
+        return new Promise((resolve, reject) => {
+            const self = this
+            self.httpServer = http.createServer(self.serverKoa.callback())
+            // self.httpServer.on('connection', (socket) => {
+            //     console.info('SOCKET OPENED' + JSON.stringify(socket.address()))
+            //     socket.on('end', () => { console.info('SOCKET END: other end of the socket sends a FIN packet') })
+            //     socket.on('timeout', () => { console.info('SOCKET TIMEOUT') })
+            //     socket.on('error', (error) => { console.info('SOCKET ERROR: ' + JSON.stringify(error)) })
+            //     socket.on('close', (had_error) => { console.info('SOCKET CLOSED. Is ERROR ?: ' + had_error) })
+            // })
+            // self.httpServer.setTimeout(0, () => {
+            //     console.log('HTTP server connection socket was timedout (console.log in httpServer.setTimeout)!')
+            // })
+            self.httpServer.listen(self.port, ()=> {
                 console.log(`☕%c ${self.name} listening on port ${self.port}`, self.config.style.green)
+                resolve()
             })
-        self.httpServer.setTimeout(0, () => {
-            console.log('HTTP server connection socket was timedout (console.log in httpServer.setTimeout)!')
         })
+    }
+
+    static async loadFrontendData() {
+        let getTableDocument = {
+            generate: getTableDocumentDefault,
+            instance: []
+        }
+        getTableDocument.instance['template_documentFrontend'] = await getTableDocument.generate('webappSetting', 'template_documentFrontend')
+        const documentFrontendData = await getTableDocument.instance['template_documentFrontend'](self.rethinkdbConnection)
+        self.frontend = { // Configurations passed to frontend 
+            config: self.config,
+            setting: {
+                location: {
+                    routeBasePath: `${self.config.PROTOCOL}${self.config.HOST}`
+                }
+            },
+            route: 'route',
+            document: documentFrontendData
+        }    
     }
 
 }

@@ -18,7 +18,7 @@ let ConditionController = createStaticInstanceClasses({
     cacheName: true
 })
 
-export default ({} = {}) => () => {
+export default ({} = {}) => async () => {
     let Class = ApiClass
     let middlewareArray = [
         createClassInstancePerRequest(Class),
@@ -36,14 +36,15 @@ export default ({} = {}) => () => {
         },
         async (context, next) => {
             let conditionController = await ConditionController.createContext({ portAppInstance: context.instance })
-            let callback = await conditionController.initializeNestedUnit({ nestedUnitKey: '12e03c10-d9fb-4890-a6e9-51052a8c011f' })
+            let callback = await conditionController.initializeNestedUnit({ nestedUnitKey: 'asdf8-d9fb-4890-a6e9-51052a8c011f' })
             let isCalledNext = await implementConditionActionOnModuleUsingJson({setting: callback})(context, next)
             if(!isCalledNext) await next()
         },
-        async ({ request, response }, next) => {
+        async (context, next) => {
+            context.uiElement = {}
             // console.log('Reached last middleware')
         }
     ]
     Class.applyKoaMiddleware(middlewareArray)
-    Class.createHttpServer()
+    await Class.createHttpServer()
 }

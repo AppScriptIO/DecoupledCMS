@@ -2,9 +2,9 @@
 import WebSocketModule from 'ws'
 import WebSocketClass from 'appscript/class/port/webSocket/WebSocket.class.js'
 
-export default ({} = {}) => () => {
+export default ({} = {}) => async () => {
     let Class = WebSocketClass
-    Class.createWebsocketServer()
+    await Class.createWebsocketServer()
     Class.webSocketServer.on('connection', function connection(ws) {
         // console.log('client connected !')
         ws.on('message', function incoming(message) {

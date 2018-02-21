@@ -7,6 +7,9 @@ let data = [
     {    key: 'relationshipx5yz', 'language': { documentKey: 'Arabic' }, 'article': { documentKey: '5' }    },
     {    key: 'relationshipx6yz', 'language': { documentKey: 'English' }, 'article': { documentKey: '6' }    },
 
+    {    key: 'relationshipx123', 'language': { documentKey: 'English' }, 'ui': { documentKey: 't2' }    },
+    {    key: 'relationshipx622z', 'language': { documentKey: 'Arabic' }, 'ui': { documentKey: 't1' }    },
+
 ]
 
 module.exports = { //  many-to-many relationship between documents

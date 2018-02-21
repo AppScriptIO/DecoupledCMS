@@ -13,7 +13,6 @@ export default function serveStaticSingleFile(setting) {
         let argument = {
             layoutElement: 'webapp-layout-list'
         }
-
         let view = {};
         // let templateFunction = _.template(await filesystem.readFileSync(`${this.portAppInstance.config.clientBasePath}/${unitInstance.filePath}`, 'utf-8'))
         

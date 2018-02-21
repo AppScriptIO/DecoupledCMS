@@ -12,16 +12,20 @@ async function microservice({
     entrypointConditionKey,
     databaseData
 }) {
-    Application.eventEmitter.on('initializationEnd', initializeDatabaseData({
-        databaseVersion: configuration.databaseVersion,
-        databaseData
-    }))
-    Application.eventEmitter.on('initializationEnd', oAuthInitializePortServer())
-    Application.eventEmitter.on('initializationEnd', webappUIInitializePortServer())
-    Application.eventEmitter.on('initializationEnd', staticContentInitializePortServer({ entrypointConditionKey}))
-    Application.eventEmitter.on('initializationEnd', apiInitializePortServer())
-    Application.eventEmitter.on('initializationEnd', websocketInitializePortServer())
-    Application.initialize() // allows calling a child class from its parent class.
+    await Application.eventEmitter.on('initializationEnd', async () => {
+        await initializeDatabaseData({
+            databaseVersion: configuration.databaseVersion,
+            databaseData
+        })()
+        console.groupCollapsed('Port classes initialization:')
+        await oAuthInitializePortServer()()
+        await webappUIInitializePortServer()()
+        await staticContentInitializePortServer({ entrypointConditionKey})()
+        await apiInitializePortServer()()
+        await websocketInitializePortServer()()
+        console.groupEnd()
+    })
+    await Application.initialize() // allows calling a child class from its parent class.
 }
 
 export { microservice as microservice }

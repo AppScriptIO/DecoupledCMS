@@ -23,10 +23,17 @@ class WebSocket extends Application {
     }
 
     static createWebsocketServer() {
-       
-        // WebSocket - ws package.
-        const websocketPort = self.port;
-        self.webSocketServer = new WebSocketModule.Server({ port: websocketPort  }, () => console.log(`☕%c ${self.name} listening on port ${websocketPort}`, Application.config.style.green))
+       return new Promise((resolve, reject) => {
+           // WebSocket - ws package.
+           const websocketPort = self.port;
+           self.webSocketServer = new WebSocketModule.Server(
+               { port: websocketPort  }, 
+               () => { 
+                   console.log(`☕%c ${self.name} listening on port ${websocketPort}`, Application.config.style.green)
+                   resolve()
+               }
+           )
+       })
 
 
         // Socket.io - npm package

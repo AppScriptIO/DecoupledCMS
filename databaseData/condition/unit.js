@@ -10,6 +10,7 @@ let data = [
     /**
      * Content API: /api/v1/
      */
+    { label: { name: 'Method = OPTIONS' }, key: '98df-cfa4-4568-a728-afda3415a47d', expectedReturn: 'OPTIONS', fileKey: '301ff7c3-e0f7-45be-9ac3-8ce2c88416fe', },
     { label: { name: '/content/' }, key: '41c1a07a-cfa4-4568-a728-afda3415a47d', expectedReturn: 'content', fileKey: '956a0f0f-437a-4cdf-9bcd-f205fc8336f9', },
     { label: { name: '<>/<level 2 exists>' }, key: 'b62cb56a-1932-42fd-9829-76d8bda4ff12', expectedReturn: true, fileKey: '96196816-a934-4f2c-b625-6ae97514be15', },
 

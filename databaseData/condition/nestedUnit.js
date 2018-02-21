@@ -121,7 +121,30 @@ let data = [
      * Port: Content API "/content/?parameter=x"
      */
     {
-        label: { name: 'api content' }, key: '12e03c10-d9fb-4890-a6e9-51052a8c011f',
+        label: { name: 'API etnrypoint' }, key: 'asdf8-d9fb-4890-a6e9-51052a8c011f',
+        unitKey: null,
+        insertionPoint: [
+            { key: 'a9e163e4-3389-481e-afa2-d23f6e650c76', order: 1, executionType: 'raceFirstPromise' },
+            { key: 'asdf-3389-481e-afa2-d23f6e650c76', order: 2, executionType: 'raceFirstPromise' },
+        ],
+        children: [
+            { nestedUnit: '321dsf-d9fb-4890-a6e9-51052a8c011f', pathPointerKey: 'XYZ6', insertionPosition: { insertionPathPointer: null,  insertionPoint: 'a9e163e4-3389-481e-afa2-d23f6e650c76' } },
+            { nestedUnit: '12e03c10-d9fb-4890-a6e9-51052a8c011f', pathPointerKey: 'XYZ6', insertionPosition: { insertionPathPointer: null,  insertionPoint: 'asdf-3389-481e-afa2-d23f6e650c76' } },
+        ],
+        callback: { name: 'appscript/utilityFunction/middleware/apiContentMessage.middleware.js', type: 'functionMiddleware' },
+    },
+    {
+        label: { name: 'method OPTIONS' }, key: '321dsf-d9fb-4890-a6e9-51052a8c011f',
+        unitKey: '98df-cfa4-4568-a728-afda3415a47d',
+        insertionPoint: [
+            { key: 'a9e163e4-3389-481e-afa2-d23f6e650c76', order: 1, executionType: 'raceFirstPromise' },
+        ],
+        children: [
+        ],
+        callback: { name: 'appscript/utilityFunction/middleware/handleOptionsRequest.middleware.js', type: 'functionMiddleware' },
+    },
+    {
+        label: { name: 'api content - "/content"' }, key: '12e03c10-d9fb-4890-a6e9-51052a8c011f',
         unitKey: '41c1a07a-cfa4-4568-a728-afda3415a47d',
         insertionPoint: [
             { key: 'a9e163e4-3389-481e-afa2-d23f6e650c76', order: 1, executionType: 'raceFirstPromise' },
