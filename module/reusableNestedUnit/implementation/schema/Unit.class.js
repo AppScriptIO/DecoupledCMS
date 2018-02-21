@@ -30,7 +30,9 @@ export default ({ Superclass }) => {
                 // [2] require & check condition
                 let dataset;
                 let filePath = this.file.filePath
-                dataset = await require(filePath)({
+                let module = require(filePath)
+                if(typeof module !== 'function') module = module.default // case es6 module loaded with require function (will load it as an object)
+                dataset = await module({
                     portClassInstance: this.portAppInstance, // contains also portClassInstance.context of the request. 
                     args: this.args,
                     parentResult, // parent dataset result.

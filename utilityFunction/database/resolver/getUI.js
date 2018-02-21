@@ -6,7 +6,7 @@ import { aggregation, multipleRelationship } from 'appscript/utilityFunction/dat
 // TODO: export singleDocument to be used for server side request when passing uiElement to the frontend after rendering files.
 
 
-export default async function({ portClassInstance, parentResult, args }) {
+export default async function resolver({ portClassInstance, parentResult, args }) {
   let databaseConnection = portClassInstance.constructor.rethinkdbConnection
   let context = portClassInstance.context
   let parameter = context.request.query
@@ -20,7 +20,7 @@ export default async function({ portClassInstance, parentResult, args }) {
   return result
 }
 
-async function singleDocument({
+export async function singleDocument({
   databaseConnection,
   aggregatedKey,
   languageDocumentKey
@@ -49,3 +49,5 @@ async function singleDocument({
   
   return result
 }
+
+// export { resolver as default, singleDocument as singleDocument }

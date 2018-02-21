@@ -41,7 +41,6 @@ export default ({} = {}) => async () => {
             if(!isCalledNext) await next()
         },
         async (context, next) => {
-            context.uiElement = {}
             // console.log('Reached last middleware')
         }
     ]

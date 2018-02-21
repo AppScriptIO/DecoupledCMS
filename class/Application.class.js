@@ -13,6 +13,7 @@ import addStaticSubclassToClassArray from 'appscript/module/addStaticSubclassToC
 import { extendedSubclassPattern } from 'appscript/utilityFunction/extendedSubclassPattern.js'
 import underscore from 'underscore'
 import {default as getTableDocumentDefault} from "appscript/utilityFunction/database/query/getTableDocument.query.js";
+import { singleDocument } from "appscript/utilityFunction/database/resolver/getUI.js";
 
 const self = 
 @add({ to: 'static'}, {
@@ -120,7 +121,12 @@ class Application extends EventEmitter { /* Core event emitter module, different
                 }
             },
             route: 'route',
-            document: documentFrontendData
+            document: documentFrontendData, 
+            uiContent: await singleDocument({
+                databaseConnection: Application.rethinkdbConnection,
+                aggregatedKey: 't1',
+                languageDocumentKey: 'Arabic'
+            })
         }    
     }
 
