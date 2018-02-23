@@ -117,7 +117,8 @@ class Application extends EventEmitter { /* Core event emitter module, different
             config: self.config,
             setting: {
                 location: {
-                    routeBasePath: `${self.config.PROTOCOL}${self.config.HOST}`
+                    routeBasePath: `${self.config.PROTOCOL}${self.config.HOST}`,
+                    cdnBasePath: self.extendedSubclass.static['StaticContent'].url
                 }
             },
             route: 'route',
@@ -125,7 +126,7 @@ class Application extends EventEmitter { /* Core event emitter module, different
             uiContent: await singleDocument({
                 databaseConnection: Application.rethinkdbConnection,
                 aggregatedKey: 't1',
-                languageDocumentKey: 'Arabic'
+                languageDocumentKey: 'English'
             })
         }    
     }

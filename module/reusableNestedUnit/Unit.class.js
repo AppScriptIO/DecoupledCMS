@@ -29,6 +29,8 @@ export default ({ Superclass }) => {
             let file = await getDocument({ key: fileKey, connection: self.rethinkdbConnection })
             if(extract) this[extract.destinationKey] = (extract.sourceKey) ? file[extract.sourceKey] : file;
         }
+
+        // TODO: Add function for loading file using the file object settings, i.e. load filepath as es6 module or as regular module with default export.
     }
     
     return self
