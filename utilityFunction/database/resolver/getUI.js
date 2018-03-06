@@ -32,7 +32,7 @@ export async function singleDocument({
   let version = aggregation({ table: ui, aggregatedDocumentKey: aggregatedKey })
 
   let result = await
-      multipleRelationship({ 
+      multipleRelationship({
         relationshipTable, 
         tableArray: [ { name: 'ui', table: ui }, { name: 'language', table: language } ]
       })

@@ -34,7 +34,7 @@ export default Mixin(({ Superclass }) => {
             // Shared arguments between all templates being rendered
             // loop through template and create rendered view content.
             let view = await nestedUnitInstance.loopInsertionPoint({ type: 'aggregateIntoTemplateObject' })
-            
+                       
             const templateArgument = {
                 templateController: this,
                 context: this.portAppInstance.context,
@@ -52,9 +52,9 @@ export default Mixin(({ Superclass }) => {
         }
 
         renderedContentString(viewName, viewArray) {
-            // loop throught the strings array to combine them and print string code to the file.
-            if(viewArray[viewName]) {
-                return viewArray[viewName].join() // joins all array components into one string.
+            // loop throught the strings array to combine them and print string code to the file.            
+            if(viewArray[viewName] && Array.isArray(viewArray[viewName])) {
+                return viewArray[viewName].join('') // joins all array components into one string.
             }
         }
 
