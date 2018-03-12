@@ -1,5 +1,5 @@
 import views from 'koa-views'
-import bodyParser from 'koa-bodyparser'
+import bodyParser from 'appscript/utilityFunction/middleware/bodyParser.middleware.js'
 import { default as Application } from '../../Application.class.js'
 import WebappUIClass from 'appscript/class/port/webappUI/WebappUI.class.js'
 import debugLogMiddleNestedUnitStructure from 'appscript/utilityFunction/debugLogMiddlewareNestedUnitStructure.js'
@@ -30,6 +30,15 @@ export default ({entrypointConditionKey} = {}) => async () => {
             // await context.req.setTimeout(0);            
             // instance.middlewareArray.push(middleware)
             context.set('connection', 'keep-alive')
+
+            let urlQuery = context.request.query
+            context.frontendPerContext = {
+                setting: { 
+                    mode: { 
+                        language: urlQuery.language || Application.frontend.setting.mode.language 
+                    } 
+                } 
+            }
             await next()
         },
         async (context, next) => { // add middleware sequence for fast testing.

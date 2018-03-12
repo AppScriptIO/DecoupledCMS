@@ -1,5 +1,5 @@
 import views from 'koa-views'
-import bodyParser from 'koa-bodyparser'
+import bodyParser from 'appscript/utilityFunction/middleware/bodyParser.middleware.js'
 import { default as Application } from '../../Application.class.js'
 import StaticContentClass from 'appscript/class/port/staticContent/StaticContent.class.js'
 import createClassInstancePerRequest from 'appscript/utilityFunction/middleware/createClassInstancePerRequest.middleware.js'

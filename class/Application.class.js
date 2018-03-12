@@ -113,12 +113,16 @@ class Application extends EventEmitter { /* Core event emitter module, different
         }
         getTableDocument.instance['template_documentFrontend'] = await getTableDocument.generate('webappSetting', 'template_documentFrontend')
         const documentFrontendData = await getTableDocument.instance['template_documentFrontend'](self.rethinkdbConnection)
+        let language = 'English'
         self.frontend = { // Configurations passed to frontend 
             config: self.config,
             setting: {
                 location: {
                     routeBasePath: `${self.config.PROTOCOL}${self.config.HOST}`,
                     cdnBasePath: self.extendedSubclass.static['StaticContent'].url
+                },
+                mode: { // version / mode of app
+                    language: language
                 }
             },
             route: 'route',
@@ -126,9 +130,9 @@ class Application extends EventEmitter { /* Core event emitter module, different
             uiContent: await singleDocument({
                 databaseConnection: Application.rethinkdbConnection,
                 aggregatedKey: 't1',
-                languageDocumentKey: 'English'
+                languageDocumentKey: language
             })
-        }    
+        }
     }
 
 }
