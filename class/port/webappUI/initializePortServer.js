@@ -30,12 +30,17 @@ export default ({entrypointConditionKey} = {}) => async () => {
             // await context.req.setTimeout(0);            
             // instance.middlewareArray.push(middleware)
             context.set('connection', 'keep-alive')
-
+            await next()
+        },
+        async (context, next) => { // TODO: Transfer to separate middleware file and add to nested unit system.
             let urlQuery = context.request.query
+            let queryLanguage = (urlQuery.language) ?
+                urlQuery.language.replace(/\b\w/g, l => l.toUpperCase()) // Capitalize first letter.
+                : null ;
             context.frontendPerContext = {
                 setting: { 
                     mode: { 
-                        language: urlQuery.language || Application.frontend.setting.mode.language 
+                        language: queryLanguage || Application.frontend.setting.mode.language 
                     } 
                 } 
             }

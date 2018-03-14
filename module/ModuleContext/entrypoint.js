@@ -1,7 +1,7 @@
 /**
  * Caches modules on demand using a unique key name. 
  * Usage options: 
- *  • With key - Once during app initialization, where references are saved (hard link) - e.g. condition, middleware.
+ *  • With key - Once during app initialization, where references are saved (hard link) to a string key - e.g. "condition", "middleware".
  *  • Anonymous - Several times during app runtime, where instances should be garbage collected - e.g. template.
  */
 
@@ -15,7 +15,6 @@ export default new Proxy(()=>{}, {
         const Class = contextReference()
         return new Class(...argumentsList)
     }
-        
 })
 
 function contextReference({ referenceName = null } = {}) {
