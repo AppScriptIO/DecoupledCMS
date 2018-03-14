@@ -28,7 +28,8 @@ export default Mixin(({ Superclass }) => {
                     "field": []
                 }
             ],
-            "extrafield": true
+            "schemaMode": "nonStrict", // allow empty datasets for specified fields in the nested unit schema.
+            "extrafield": true // includes fields that are not extracted using the schema.
         } */
         @executionLevel()        
         async initializeNestedUnit({ 
@@ -62,7 +63,13 @@ export default Mixin(({ Superclass }) => {
             // check if fieldname exists in the request option, if not skip nested unit.
             if(!nestedUnitInstance.requestOption) return; // fieldName was not specified in the parent nestedUnit, therefore skip its execution
             nestedUnitInstance.dataset = await unitInstance.resolveDataset({ parentResult: argument.dataset || parent.dataset })
-            assert.notEqual(nestedUnitInstance.dataset, undefined, '• returned dataset cannot be undefined.')
+            // TODO: Fix requestOption - i.e. above it is used to pass "field" option only.
+            if(this.portAppInstance.context.request.body.schemaMode == "nonStrict") { // Don't enforce strict schema, i.e. all nested children should exist.
+                // if(nestedUnitInstance.dataset) nestedUnitInstance.dataset = null // TODO: throws error as next it is being used.
+            } else {
+                assert.notEqual(nestedUnitInstance.dataset, undefined, `• returned dataset cannot be undefined for fieldName: ${unitInstance.fieldName}.`)
+            }
+
 
             // check type of dataset
             let datasetHandling;

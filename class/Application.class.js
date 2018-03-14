@@ -114,6 +114,10 @@ class Application extends EventEmitter { /* Core event emitter module, different
         getTableDocument.instance['template_documentFrontend'] = await getTableDocument.generate('webappSetting', 'template_documentFrontend')
         const documentFrontendData = await getTableDocument.instance['template_documentFrontend'](self.rethinkdbConnection)
         let language = 'English'
+        let uiContent = await multipleDocument({
+            databaseConnection: Application.rethinkdbConnection,
+            languageDocumentKey: language
+        })
         self.frontend = { // Configurations passed to frontend 
             config: self.config,
             setting: {
@@ -127,10 +131,7 @@ class Application extends EventEmitter { /* Core event emitter module, different
             },
             route: 'route',
             document: documentFrontendData, 
-            uiContent: await multipleDocument({
-                databaseConnection: Application.rethinkdbConnection,
-                languageDocumentKey: language
-            })
+            uiContent: uiContent
         }
     }
 
