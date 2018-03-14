@@ -16,7 +16,10 @@ export default async function resolver({ portClassInstance, parentResult, args }
   let aggregatedKey = parameter.key
   let languageDocumentKey = parameter.language
   
-  let result = await singleDocument({ databaseConnection, aggregatedKey, languageDocumentKey })
+  let result = (aggregatedKey) ?
+  await singleDocument({ databaseConnection, aggregatedKey, languageDocumentKey}) :
+  await multipleDocument({ databaseConnection, languageDocumentKey }) ;
+
   return result
 }
 
@@ -47,6 +50,26 @@ export async function singleDocument({
       .nth(0) // select first array item
       .run(databaseConnection);
   
+  return result
+}
+
+export async function multipleDocument({
+  databaseConnection,
+  languageDocumentKey
+}) {
+  const contentDatabase = r.db('webappContent')
+  var ui = contentDatabase.table('ui');
+  let language = contentDatabase.table('language');
+  let relationshipTable = contentDatabase.table('relationship')
+
+  let tableArray = [ { name: 'ui', table: ui }, { name: 'language', table: language } ]
+  let result = await
+      multipleRelationship({ relationshipTable, tableArray })
+      .filter(function(document) { return document('language')('key').eq(languageDocumentKey) })
+      .getField('ui') // from each sequence unit.
+      .reduce((previous, current) => { return previous.merge(current) })
+      // .coerceTo('array')
+      .run(databaseConnection);
   return result
 }
 

@@ -9,6 +9,8 @@ let data = [
 
     {    key: 'relationshipx123', 'language': { documentKey: 'English' }, 'ui': { documentKey: 't2' }    },
     {    key: 'relationshipx622z', 'language': { documentKey: 'Arabic' }, 'ui': { documentKey: 't1' }    },
+    {    key: 'relationshipx123', 'language': { documentKey: 'English' }, 'ui': { documentKey: 'd2' }    },
+    {    key: 'relationshipx622z', 'language': { documentKey: 'Arabic' }, 'ui': { documentKey: 'd1' }    },
 
 ]
 

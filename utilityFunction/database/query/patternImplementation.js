@@ -20,7 +20,7 @@ export function aggregation({
             return related
         })
     
-        return table
+    return version
 }
 
 /**

@@ -12,16 +12,14 @@ export default async function({ portClassInstance, parentResult, args }) {
   let aggregatedArticleKey = parameter.key
   let languageDocumentKey = parameter.language
   
-  let result;
-  if(aggregatedArticleKey) {
-    result = await singleDocument({ databaseConnection, aggregatedArticleKey, languageDocumentKey})
-  } else {
-    result = await multipleDocument({ databaseConnection, languageDocumentKey })
-  }
+  let result = (aggregatedArticleKey) ?
+    await singleDocument({ databaseConnection, aggregatedArticleKey, languageDocumentKey}) :
+    await multipleDocument({ databaseConnection, languageDocumentKey }) ;
+    
   return result
 }
 
-async function singleDocument({
+export async function singleDocument({
   databaseConnection,
   aggregatedArticleKey,
   languageDocumentKey
@@ -32,9 +30,11 @@ async function singleDocument({
   let relationshipTable = contentDatabase.table('relationship')
   let version = aggregation({ table: article, aggregatedDocumentKey: aggregatedArticleKey })
 
-  let tableArray = [ { name: 'article', table: article }, { name: 'language', table: language } ]
   let result = await
-      multipleRelationship({ relationshipTable, tableArray })
+      multipleRelationship({
+        relationshipTable, 
+        tableArray: [ { name: 'article', table: article }, { name: 'language', table: language } ]
+      })
       .filter((document) => { return document('language')('key').eq(languageDocumentKey) })
       .filter((document) => {
         return version.contains((version) => {
@@ -49,7 +49,7 @@ async function singleDocument({
   return result
 }
 
-async function multipleDocument({
+export async function multipleDocument({
   databaseConnection,
   languageDocumentKey
 }) {
@@ -68,7 +68,7 @@ async function multipleDocument({
   return result
 }
 
-async function documentRelatedToAggregation({ // all documents of an article
+export async function documentRelatedToAggregation({ // all documents of an article
   databaseConnection,
   aggregatedArticleKey
 }) {
