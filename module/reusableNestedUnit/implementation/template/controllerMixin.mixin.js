@@ -29,32 +29,52 @@ export default Mixin(({ Superclass }) => {
             await unitInstance.pupolateUnitWithFile()
             
             // views argument that will be initiallized inside templates:
-            // let view = {}
-            let templateFunction = _.template(await filesystem.readFileSync(`${this.portAppInstance.config.clientBasePath}/${unitInstance.file.filePath}`, 'utf-8'))
-            // Shared arguments between all templates being rendered
             // loop through template and create rendered view content.
             let view = await nestedUnitInstance.loopInsertionPoint({ type: 'aggregateIntoTemplateObject' })
-                       
+            
+            let templatePath = `${this.portAppInstance.config.clientBasePath}/${unitInstance.file.filePath}`
+            let renderedContent;
+            switch (unitInstance.executionType) {
+                default:
+                case 'underscoreRendering':
+                    renderedContent = await this.underscoreRendering({ templatePath, view })
+                break;
+            }
+
+            switch (unitInstance.processRenderedContent) {
+                case 'wrapJsTag':
+                    renderedContent = `<script type="module" async>${renderedContent}</script>`
+                break;
+                default: // skip
+            }
+
+            return renderedContent
+        }
+
+        async underscoreRendering({ templatePath, view }) {
+            // Load template file.
+            let templateString = await filesystem.readFileSync(templatePath, 'utf-8')
+            // Shared arguments between all templates being rendered
             const templateArgument = {
                 templateController: this,
                 context: this.portAppInstance.context,
                 Application,
                 argument: {}
             }
-            let renderedContent = templateFunction(
+            let renderedContent = _.template(templateString)(
                 Object.assign(
                     {}, 
-                    templateArgument, 
-                    { view, templateArgument }
+                    templateArgument, // use templateArgument in current template
+                    { view, templateArgument } // pass templateArgument to nested templates
                 )
             )
-            return renderedContent
+            return renderedContent                  
         }
 
-        renderedContentString(viewName, viewArray) {
+        renderedContentString(viewName, viewObject) {
             // loop throught the strings array to combine them and print string code to the file.            
-            if(viewArray[viewName] && Array.isArray(viewArray[viewName])) {
-                return viewArray[viewName].join('') // joins all array components into one string.
+            if(viewObject[viewName] && Array.isArray(viewObject[viewName])) {
+                return viewObject[viewName].join('') // joins all array components into one string.
             }
         }
 

@@ -14,8 +14,14 @@ let data = [
             },
             {
                 key: 'eeb37eba-5ef4-4a3d-8096-9baeeb31c81d',
-                name: 'body',
+                name: 'bodyOpen',
                 order: 3,
+                executionType: 'chronological'
+            },
+            {
+                key: '1afwe6f1-5ef4-4a3d-8096-9baeeb31c81d',
+                name: 'bodyClose',
+                order: 4,
                 executionType: 'chronological'
             },
         ],
@@ -39,6 +45,14 @@ let data = [
             {
                 nestedUnit: '558062b7-64cf-4903-84da-e6ac06350a1f', pathPointerKey: '06e58b5b-6ca3-469b-b85c-a3954df24741',
                 insertionPosition: { insertionPathPointer: null, insertionPoint: '6b087d33-58df-4edd-aa41-1ffb33af16cf', order: 1, }
+            },
+            {
+                nestedUnit: '684wef-64cf-4903-84da-e6ac06350a1f', pathPointerKey: 'x',
+                insertionPosition: { insertionPathPointer: null, insertionPoint: '1afwe6f1-5ef4-4a3d-8096-9baeeb31c81d', order: 1, }
+            },
+            {
+                nestedUnit: 'txj3-64cf-4903-84da-e6ac06350a1f', pathPointerKey: 'x',
+                insertionPosition: { insertionPathPointer: null, insertionPoint: '1afwe6f1-5ef4-4a3d-8096-9baeeb31c81d', order: 1, }
             },
         ]
     },
@@ -67,6 +81,14 @@ let data = [
         label: { name: 'entrypointJavascript' }, key: '558062b7-64cf-4903-84da-e6ac06350a1f', unitKey: '4e485c9f-ad08-4117-b668-83aba51dac70',
         insertionPoint: [],
         children: []
+    },
+    {
+        label: { name: 'serviceWorker' }, key: '684wef-64cf-4903-84da-e6ac06350a1f', unitKey: 'sda8f64-ad08-4117-b668-83aba51dac70',
+        insertionPoint: [], children: []
+    },
+    {
+        label: { name: 'webScoket' }, key: 'txj3-64cf-4903-84da-e6ac06350a1f', unitKey: '486jhkl-ad08-4117-b668-83aba51dac70',
+        insertionPoint: [], children: []
     },
 
 ];
