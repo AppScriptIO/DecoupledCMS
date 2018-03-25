@@ -12,36 +12,20 @@ import { default as Application } from '../../../class/Application.class.js'
 
 // read streams and send them using koa - https://github.com/koajs/koa/issues/944 http://book.mixu.net/node/ch9.html
 // returns a middleware object 
-export default function serveStaticDirectory(setting) {
+// TODO: change file name to something like 'render serverside javascript' & convert function to be used for other files not only web components.
+export default function serveStaticFile(setting) {
     let middleware = async (context, next) => {
-        let fileRelativePath = context.path.substr(0, context.path.lastIndexOf('$')) // remove function name
-        let filePath = path.join(context.instance.config.clientBasePath, fileRelativePath) 
 
-        let fileDirectoryPath = filePath.substr(0, filePath.lastIndexOf('/'))
-        let argument = { layoutElement: 'webapp-layout-list' }
-        let view = {};
-
-        let templatePart = {
-            css: underscore.template(filesystem.readFileSync(`${fileDirectoryPath}/component.css`, 'utf8'))({ Application, argument}),
-            js: underscore.template(filesystem.readFileSync(`${fileDirectoryPath}/component.js`, 'utf8'))({ Application, argument}),
-            html: underscore.template(filesystem.readFileSync(`${fileDirectoryPath}/component.html`, 'utf8'))({ Application, argument}),
-        }
-        try {
-            let content = filesystem.readFileSync(filePath, 'utf8')
-            let rendered = underscore.template(content)({ Application, view, argument: Object.assign(argument, templatePart)})
-            context.body = rendered // Koa handles the stream and send it to the client.
-            // context.type = 'application/javascript'
-        } catch (error) {
-         console.log(error)
-         await next()
-        }
+        context.body = renderWebcomponent({ context })
+        // context.type = 'application/javascript'        
         // let directoryPath = await path.resolve(path.normalize(`${context.instance.config.clientBasePath}${setting.directoryPath}`)) 
         // let mountMiddleware = mount(setting.urlPath, serverStatic(`${directoryPath}`, setting.options))
+        await next()
     }
     return middleware
 }
 
-async function covertTextFileToJSModule({ filePath }) {
+async function covertTextFileToJSModule({ filePath }) { // wrap string from file with export satatement using streams
     let fileStream = filesystem.createReadStream(filePath)
     let beforeStream = (new Stream.Readable)
     beforeStream.push('export default \`')
@@ -52,3 +36,24 @@ async function covertTextFileToJSModule({ filePath }) {
     return multistream([beforeStream, fileStream, afterStream])
 }
 
+function renderWebcomponent({context}) {
+    let fileRelativePath = context.path.substr(0, context.path.lastIndexOf('$')) // remove function name
+    let filePath = path.join(context.instance.config.clientBasePath, fileRelativePath) 
+
+    let fileDirectoryPath = filePath.substr(0, filePath.lastIndexOf('/'))
+    let argument = { layoutElement: 'webapp-layout-list' }
+    let view = {};
+
+    let templatePart = {
+        css: underscore.template(filesystem.readFileSync(`${fileDirectoryPath}/component.css`, 'utf8'))({ Application, argument}),
+        js: underscore.template(filesystem.readFileSync(`${fileDirectoryPath}/component.js`, 'utf8'))({ Application, argument}),
+        html: underscore.template(filesystem.readFileSync(`${fileDirectoryPath}/component.html`, 'utf8'))({ Application, argument}),
+    }
+    try {
+        let content = filesystem.readFileSync(filePath, 'utf8')
+        let rendered = underscore.template(content)({ Application, view, argument: Object.assign(argument, templatePart)})
+        return rendered // Koa handles the stream and send it to the client.
+    } catch (error) {
+        console.log(error)
+    }
+}

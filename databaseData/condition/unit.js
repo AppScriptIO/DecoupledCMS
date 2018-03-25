@@ -23,7 +23,7 @@ let data = [
 
 
     { label: { name: 'URL: /asset/' }, key: 'af30c7db-4d26-4e4c-bab9-a4a5cc666edb', expectedReturn: 'asset', fileKey: '956a0f0f-437a-4cdf-9bcd-f205fc8336f9', },
-    { label: { name: 'URL: /serviceWorker.js' }, key: 'eeace9bc-1ccc-4050-af0b-0aa0f34884e3', expectedReturn: 'serviceWorker.js', fileKey: '956a0f0f-437a-4cdf-9bcd-f205fc8336f9', },
+    { label: { name: 'URL: /serviceWorker.js$' }, key: 'eeace9bc-1ccc-4050-af0b-0aa0f34884e3', expectedReturn: 'serviceWorker.js$', fileKey: '956a0f0f-437a-4cdf-9bcd-f205fc8336f9', },
 
     /**
      * General conditions
