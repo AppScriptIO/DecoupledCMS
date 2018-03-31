@@ -13,7 +13,7 @@ import addStaticSubclassToClassArray from 'appscript/module/addStaticSubclassToC
 import { extendedSubclassPattern } from 'appscript/utilityFunction/extendedSubclassPattern.js'
 import underscore from 'underscore'
 import {default as getTableDocumentDefault} from "appscript/utilityFunction/database/query/getTableDocument.query.js";
-import { singleDocument, multipleDocument } from "appscript/utilityFunction/database/resolver/getUI.js";
+import { getMergedMultipleDocumentOfSpecificLanguage as queryPatternImplementation} from "appscript/utilityFunction/database/query/patternImplementation.js";
 
 const self = 
 @add({ to: 'static'}, {
@@ -114,9 +114,10 @@ class Application extends EventEmitter { /* Core event emitter module, different
         getTableDocument.instance['template_documentFrontend'] = await getTableDocument.generate('webappSetting', 'template_documentFrontend')
         const documentFrontendData = await getTableDocument.instance['template_documentFrontend'](self.rethinkdbConnection)
         let language = 'English'
-        let uiContent = await multipleDocument({
+        let uiContent = await queryPatternImplementation({
             databaseConnection: Application.rethinkdbConnection,
-            languageDocumentKey: language
+            languageDocumentKey: language,
+            dataTableName: 'ui'
         })
         self.frontend = { // Configurations passed to frontend 
             config: self.config,

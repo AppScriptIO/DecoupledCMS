@@ -12,6 +12,11 @@ let data = [
     {    key: 'relationshipx123', 'language': { documentKey: 'English' }, 'ui': { documentKey: 'd2' }    },
     {    key: 'relationshipx622z', 'language': { documentKey: 'Arabic' }, 'ui': { documentKey: 'd1' }    },
 
+    {    key: 'relationshas342235sdf', 'language': { documentKey: 'Arabic' }, 'personalInfo': { documentKey: 'ac2' }    },
+    {    key: 'relationsh245f', 'language': { documentKey: 'Arabic' }, 'personalInfo': { documentKey: 'ac6' }    },
+    {    key: 'relationsha543646', 'language': { documentKey: 'English' }, 'personalInfo': { documentKey: 'ac5' }    },
+    {    key: 'relation456asdf', 'language': { documentKey: 'English' }, 'personalInfo': { documentKey: 'ac1' }    },
+    
 ]
 
 module.exports = { //  many-to-many relationship between documents

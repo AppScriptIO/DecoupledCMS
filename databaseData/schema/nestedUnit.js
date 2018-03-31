@@ -24,6 +24,15 @@ let data = [
         ],
     },
 
+    {
+        label: { name: 'personalInfo' }, key: 'personalInfo', unitKey: 'personalInfo',
+        insertionPoint: [
+            { key: 'de45db35-5e0d-49b1-82bc-659fc787b0c1', order: 1, executionType: 'allPromise' },
+        ],
+        children: [
+        ],
+    },
+
 
     {
         label: { name: 'person' }, key: '0c01c061-92d4-44ad-8cda-098352c107ea', unitKey: '',

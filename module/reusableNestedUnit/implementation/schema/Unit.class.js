@@ -26,17 +26,28 @@ export default ({ Superclass }) => {
                 })
             }
 
-            async resolveDataset({ parentResult = null }) {
+            async resolveDataset({ 
+                parentResult = null,
+                // this.args - nestedUnit args field.
+            }) {
                 // [2] require & check condition
                 let dataset;
-                let filePath = this.file.filePath
-                let module = require(filePath)
-                if(typeof module !== 'function') module = module.default // case es6 module loaded with require function (will load it as an object)
-                dataset = await module({
-                    portClassInstance: this.portAppInstance, // contains also portClassInstance.context of the request. 
-                    args: this.args,
-                    parentResult, // parent dataset result.
-                })
+                const algorithm = this.file.algorithm // resolver for dataset
+                switch (algorithm.type) { // in order to choose how to handle the algorithm (as a module ? a file to be imported ?...)
+                    case 'file':
+                    default: {
+                        let module = require(algorithm.path)
+                        if(typeof module !== 'function') module = module.default // case es6 module loaded with require function (will load it as an object)
+                        let resolver = module() /*initial execute for setting parameter context.*/
+                        let resolverArgument = Object.assign(...[this.args, algorithm.argument].filter(Boolean)) // remove undefined/null/false objects before merging.
+                        dataset = await resolver({
+                            portClassInstance: this.portAppInstance, // contains also portClassInstance.context of the request. 
+                            args: resolverArgument,
+                            parentResult, // parent dataset result.
+                        })
+                    } break;
+                }
+
                 return dataset
             }
 

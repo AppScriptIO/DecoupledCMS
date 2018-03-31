@@ -23,9 +23,25 @@ export function aggregation({
     return version
 }
 
+/** Version aggregation pattern - Get all version documents of a specific aggregation.
+ * 
+ */
+export async function documentRelatedToAggregation({ // all documents of an article
+    databaseConnection,
+    dataAggregatedKey,
+    dataTableName
+}) {
+    let dataTable = r.db('webappContent').table(dataTableName);
+    let version = 
+        aggregation({ table: dataTable, aggregatedDocumentKey: dataAggregatedKey })
+        .coerceTo('array')
+        .run(databaseConnection);
+    return version
+}
+
 /**
  * relationship table matching two documents from different tables to create multiple-to-multiple relationship
- *  
+ * the pattern relied on a schema structure of a relationship that includes - relationship key, table1 object, table2 object
  */
 export function multipleRelationship({ 
     relationshipTable,
@@ -52,3 +68,83 @@ export function multipleRelationship({
     }
     return relationshipSequence
 }
+
+
+/** aggregation of versions pattern - extract single version of an aggregation that compiles with a specific language relationship
+ * 
+ */
+export async function getSingleDocumentOfSpecificLanguage ({
+    languageDocumentKey,
+    dataTableName,
+    dataAggregatedKey,
+    databaseConnection
+}) {
+    const contentDatabase = r.db('webappContent')
+    let languageTable = contentDatabase.table('language');
+    let relationshipTable = contentDatabase.table('relationship')  
+    let dataTable = contentDatabase.table(dataTableName);
+    let version = aggregation({ table: dataTable, aggregatedDocumentKey: dataAggregatedKey })
+
+    return await multipleRelationship({
+        relationshipTable, 
+        tableArray: [ { name: dataTableName, table: dataTable }, { name: 'language', table: languageTable } ]
+      })
+      .filter((document) => { return document('language')('key').eq(languageDocumentKey) })
+      .filter((document) => {
+        return version.contains((version) => {
+          return document(dataTableName)('key').eq(version('key'))
+        })
+      })
+      .getField(dataTableName) // extract relationship field of the concerning table.
+      // .coerceTo('array')
+      .nth(0) // select first array item
+      .run(databaseConnection);
+}
+
+/** Aggregation of versions pattern - extract all document of a specific language and merge them to a single object.
+ * 
+ */
+export async function getMergedMultipleDocumentOfSpecificLanguage({
+    languageDocumentKey,
+    dataTableName,
+    databaseConnection
+}) {
+    const contentDatabase = r.db('webappContent')
+    var dataTable = contentDatabase.table(dataTableName);
+    let languageTable = contentDatabase.table('language');
+    let relationshipTable = contentDatabase.table('relationship')
+  
+    let tableArray = [ { name: dataTableName, table: dataTable }, { name: 'language', table: languageTable } ]
+    let result = await
+        multipleRelationship({ relationshipTable, tableArray })
+        .filter(function(document) { return document('language')('key').eq(languageDocumentKey) })
+        .getField(dataTableName) // from each sequence unit.
+        .reduce((previous, current) => { return previous.merge(current) })
+        // .coerceTo('array')
+        .run(databaseConnection);
+    return result  
+}
+
+
+/** aggregation of versions pattern - extract multiple version document of an aggregation that compiles with a specific language relationship
+ * 
+ */
+export async function getMultipleDocumentVersionOfSpecificLanguage({
+    databaseConnection,
+    languageDocumentKey,
+    dataTableName
+  }) {
+    const contentDatabase = r.db('webappContent')
+    var article = contentDatabase.table(dataTableName);
+    let language = contentDatabase.table('language');
+    let relationshipTable = contentDatabase.table('relationship')
+  
+    let tableArray = [ { name: dataTableName, table: article }, { name: 'language', table: language } ]
+    let result = await
+        multipleRelationship({ relationshipTable, tableArray })
+        .filter(function(document) { return document('language')('key').eq(languageDocumentKey) })
+        .getField(dataTableName)
+        .coerceTo('array')
+        .run(databaseConnection);
+    return result
+  }
