@@ -113,12 +113,12 @@ class Application extends EventEmitter { /* Core event emitter module, different
         }
         getTableDocument.instance['template_documentFrontend'] = await getTableDocument.generate('webappSetting', 'template_documentFrontend')
         const documentFrontendData = await getTableDocument.instance['template_documentFrontend'](self.rethinkdbConnection)
-        let language = 'English'
-        let uiContent = await queryPatternImplementation({
-            databaseConnection: Application.rethinkdbConnection,
-            languageDocumentKey: language,
-            dataTableName: 'ui'
-        })
+        let defaultLanguage = 'English'
+        // let uiContent = await queryPatternImplementation({
+        //     databaseConnection: Application.rethinkdbConnection,
+        //     languageDocumentKey: defaultLanguage,
+        //     dataTableName: 'ui'
+        // })
         self.frontend = { // Configurations passed to frontend 
             config: self.config,
             setting: {
@@ -127,12 +127,12 @@ class Application extends EventEmitter { /* Core event emitter module, different
                     cdnBasePath: self.extendedSubclass.static['StaticContent'].url
                 },
                 mode: { // version / mode of app
-                    language: language
+                    language: defaultLanguage // default language
                 }
             },
             route: 'route',
             document: documentFrontendData, 
-            uiContent: uiContent
+            // uiContent: uiContent
         }
     }
 

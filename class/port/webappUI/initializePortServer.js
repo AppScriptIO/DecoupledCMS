@@ -7,6 +7,7 @@ import createStaticInstanceClasses from 'appscript/module/reusableNestedUnit'
 import createClassInstancePerRequest from 'appscript/utilityFunction/middleware/createClassInstancePerRequest.middleware.js'
 import implementMiddlewareOnModuleUsingJson from 'appscript/utilityFunction/middleware/implementMiddlewareOnModuleUsingJson.js' // Middleware extending server functionality
 import implementConditionActionOnModuleUsingJson from 'appscript/utilityFunction/middleware/implementConditionActionOnModuleUsingJson.js'
+import languageContent from 'appscript/utilityFunction/middleware/languageContent.middleware.js'
 
 let MiddlewareController = createStaticInstanceClasses({ 
     Superclass: Application, 
@@ -32,20 +33,7 @@ export default ({entrypointConditionKey} = {}) => async () => {
             context.set('connection', 'keep-alive')
             await next()
         },
-        async (context, next) => { // TODO: Transfer to separate middleware file and add to nested unit system.
-            let urlQuery = context.request.query
-            let queryLanguage = (urlQuery.language) ?
-                urlQuery.language.replace(/\b\w/g, l => l.toUpperCase()) // Capitalize first letter.
-                : null ;
-            context.frontendPerContext = {
-                setting: { 
-                    mode: { 
-                        language: queryLanguage || Application.frontend.setting.mode.language 
-                    } 
-                } 
-            }
-            await next()
-        },
+        languageContent(),
         async (context, next) => { // add middleware sequence for fast testing.
             // debugLogMiddleNestedUnitStructure('91140de5-9ab6-43cd-91fd-9eae5843c74c') 
             let middlewareSequence = [
