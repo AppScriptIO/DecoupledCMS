@@ -7,7 +7,7 @@ export default function () {
             // context.request.body = await parse({
             //     req: context.request
             // })
-            await bodyParser()(context, next) // skips co-body parser unsupported content-type.
+            await bodyParser()(context, next) // same as co-body but skips co-body parser for unsupported content-type, which prevents co-body from throwing error.
         } else {
             await next()
         }

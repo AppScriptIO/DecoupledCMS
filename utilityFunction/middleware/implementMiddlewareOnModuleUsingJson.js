@@ -11,23 +11,37 @@ import { default as Application } from '../../class/Application.class.js'
 /**
  * @param {array} staticMiddlewareSetting holds the json middle configurations. Where each json is composed of executionType, filePath, arguments.
  */
-export default (staticMiddlewareSetting) => {
+export default (
+    staticMiddlewareSetting // middleware nested units array.
+) => {
     let middlewareArray = []
-
+    
     staticMiddlewareSetting.forEach((setting) => {
+        // TODO: create an options extractor function.
+        let filePath = setting.file.filePath // nested unit file's properties.
+        let argument = setting.arguments // nested unit unit's properties.
+        let executionType = setting.executionType // nested unit unit's properties.
+        let importModuleName = setting.importModuleName
+
+        // import/load module
+        let exportedModule = (!importModuleName || importModuleName == 'default') ? 
+            require(filePath) : // import default export from the module
+            require(filePath)[importModuleName]; // import the export using it's name.
+
+        // execute module
         let middleware;
-        switch (setting.executionType) {
+        switch (executionType) {
             case 'middleware':
-                middleware = require(`${setting.file.filePath}`)
-                middlewareArray.push(middleware) 
+                middleware = exportedModule
             break;
-            case 'regularFunction':
+            case 'functionWrappedMiddleware':
             default:
-                middleware = setting.arguments ? require(`${setting.file.filePath}`)(setting.arguments) : require(`${setting.file.filePath}`)();
-                middlewareArray.push(middleware) 
+                middleware = (argument) ? 
+                    exportedModule(argument) :
+                    exportedModule();
             break;
         }
+        middlewareArray.push(middleware)
     }, this);
-
     return compose(middlewareArray)
 }

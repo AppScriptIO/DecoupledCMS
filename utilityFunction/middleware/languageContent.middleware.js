@@ -2,9 +2,9 @@ import parse from 'co-body' // throws on unsupported content type.
 import bodyParser from 'koa-bodyparser' // Brings extra option for handling error and unsupported content-types.
 import { default as Application } from '../../class/Application.class.js'
 import { getMergedMultipleDocumentOfSpecificLanguage as queryPatternImplementation} from "appscript/utilityFunction/database/query/patternImplementation.js";
+import {functionWrappedMiddlewareDecorator} from '../middlewarePatternDecorator.js'
 
-export default function () {
-    return async (context, next) => { // parse request body
+export default functionWrappedMiddlewareDecorator(async function (context, next, option) {
         let urlQuery = context.request.query
         let queryLanguage = (urlQuery.language) ?
             urlQuery.language.replace(/\b\w/g, l => l.toUpperCase()) // Capitalize first letter.
@@ -30,5 +30,4 @@ export default function () {
             uiContent
         }
         await next()
-    }
-}
+})

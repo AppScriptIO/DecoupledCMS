@@ -1,5 +1,4 @@
 import { default as Application } from '../../class/Application.class.js'
-import renderTemplateDocument from 'appscript/utilityFunction/middleware/renderTemplateDocument.middleware.js'
 import implementMiddlewareOnModuleUsingJson from 'appscript/utilityFunction/middleware/implementMiddlewareOnModuleUsingJson.js' // Middleware extending server functionality
 import createStaticInstanceClasses from 'appscript/module/reusableNestedUnit'
 let MiddlewareController = createStaticInstanceClasses({ 
@@ -11,11 +10,14 @@ let MiddlewareController = createStaticInstanceClasses({
 /**
  * @param {object} Setting holds the json configurations. Where each json is composed of setting.type, setting.name.
  */
-export default ({setting}) => {
+export default ({
+    setting // condition nested unit callback properties's options.
+}) => {
+    let executionType = setting.type // condition callback property
     return async (context, next) => {
         let isCalledNext = false
         // console.log(setting)
-        switch(setting.type) {
+        switch(executionType) {
             case 'middlewareNestedUnit':
                 // await context.instance.handleMiddlewareNestedUnit(setting.name) // another way is to create a method in the instance class.        
                 const nestedUnitKey = setting.name
@@ -23,6 +25,13 @@ export default ({setting}) => {
                 let middlewareArray;
                 let middlewareController = await MiddlewareController.createContext({ portAppInstance: portAppInstance })
                 middlewareArray = await middlewareController.initializeNestedUnit({ nestedUnitKey: nestedUnitKey })
+                if(process.env.SZN_DEBUG == 'true' && context.header.debug == 'true') { // print middleware file paths 
+                    console.group(`🍊 Middleware Array:`)
+                    middlewareArray.map(middlewareNode => {
+                        console.log(middlewareNode.file.filePath)
+                    })
+                    console.groupEnd()
+                }
                 await implementMiddlewareOnModuleUsingJson(middlewareArray)(context, next)
                 isCalledNext = true
             break;
@@ -37,10 +46,6 @@ export default ({setting}) => {
                 let methodName = setting.name
                 let token = await context.instance[methodName](context.request, context.response)
                 context.body = token
-            break;
-            case 'document':
-                const documentKey = setting.name
-                await renderTemplateDocument({documentKey})(context, next)
             break;
             case 'consoleLogMessage': 
                 console.log(setting.name)

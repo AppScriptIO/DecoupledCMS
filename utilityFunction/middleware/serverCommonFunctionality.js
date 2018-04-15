@@ -17,12 +17,12 @@ import { handleConnection, createDatabase, createTable } from 'appscript/utility
 let middlewareArray = [
     responseTime(), // Response time x-response-time
     logger(), // Console logger
-    bodyParser(),
+    // bodyParser(),
     // cors(), // Cross-Origin Resource Sharing(CORS)
     error(), // Error handler for pure-JSON Koa apps
-    handleConnection(), // Open connection on middleware downstream, Close connection on upstream.
-    createDatabase(),
-    createTable(),
+    // handleConnection(), // Open connection on middleware downstream, Close connection on upstream.
+    // createDatabase(),
+    // createTable(),
 ]
 if(!serverConfig.ssl) { 
     // middleware.push(compress())  // Compress responses

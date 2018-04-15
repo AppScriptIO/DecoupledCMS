@@ -34,7 +34,9 @@ export default ({ Superclass }) => {
         async loopInsertionPoint({ type, argument = {} }) {
             this.children = this.children || [] // if children is not set, define it as empty array
             this.insertionPoint = this.insertionPoint || [] // if insertionPoint is not set, define it as empty array
-
+            
+            // let nodeType = this.__proto__.__proto__.__proto__.__proto__.constructor.meta.Class // type of nested unit - e.g. 'MiddlewareMixin', 'ConditionMixin'
+            
             switch (type) {
                 case 'aggregateIntoTemplateObject': {
                     let view = {}
@@ -107,6 +109,7 @@ export default ({ Superclass }) => {
                     console.log(`"${type}" type doesn\'t match any kind.`)
                 } break;
             }
+
         }
 
         /**
@@ -132,7 +135,8 @@ export default ({ Superclass }) => {
         async filterAndOrderChildren({ insertionPointKey, children = this.children }) {
             let ownFilteredChildren = await this.filterAndModifyChildrenArray(children, insertionPointKey, null)
             let additionalFilteredChildren = await this.filterAndModifyChildrenArray(this.additionalChildNestedUnit, insertionPointKey, this.pathPointerKey)
-            return await this.mergeAndOrderChildren(ownFilteredChildren, additionalFilteredChildren);
+            let merged = await this.mergeAndOrderChildren(ownFilteredChildren, additionalFilteredChildren);
+            return merged
         }
         /**
          * Get children corresponding to the current insertion point.
@@ -164,38 +168,42 @@ export default ({ Superclass }) => {
             await ownFilteredChildren.sort((prior, subsequent) => {
                 return (prior.order <= subsequent.order) ? 1 : -1;
             })
-            additionalFilteredChildren = additionalFilteredChildren.filter((child, index) => { // filter children that correspont to the current insertionpoint.
-                if (
-                    !child.insertionPosition.placement.pathPointer
-                    && child.insertionPosition.placement.type
-                ) {
+
+            // filter children that correspont to the current insertionpoint.
+            additionalFilteredChildren = additionalFilteredChildren.filter((child, index) => { 
+                // default fallback is to add the child to the beginning/end of the array, in case no pathPointerKey is specified (pathPointerKey decides which node to place the child relative to).
+                if ( !child.insertionPosition.placement.pathPointer && child.insertionPosition.placement.type ) {
                     switch (child.insertionPosition.placement.type) {
                         case 'before':
                             firstChildren.push(child)
-                            break;
+                        break;
                         case 'after':
                         default:
                             lastChildren.push(child)
-                            break;
+                        break;
                     }
-                    additionalFilteredChildren.splice(index, 1);
+                    return false
+                    // additionalFilteredChildren.splice(index, 1);
                 }
-                return result
+                return true
             })
+
+            // insert additional child if it matches current child path pointer key.
             ownFilteredChildren.map((ownChild, ownChildIndex) => {
-                let lastKey = orderedChildren.push(ownChild) - 1
+                orderedChildren.push(ownChild) // add child to ordered array
+                let currentChildPosition =  orderedChildren.length - 1 // last array item index.
                 additionalFilteredChildren.map((additionalChild, additionalChildIndex) => {
                     if (additionalChild.insertionPosition.placement.type
                         && additionalChild.insertionPosition.placement.pathPointer
-                        && additionalChild.insertionPosition.placement.pathPointer == ownChild.insertionPosition.insertionPathPointer
+                        && additionalChild.insertionPosition.placement.pathPointer == ownChild.pathPointerKey
                     ) {
                         switch (additionalChild.insertionPosition.placement.type) {
                             case 'before':
-                                orderedChildren.splice(lastKey, 0, additionalChild)
+                                orderedChildren.splice(currentChildPosition, 0, additionalChild) // insert before currentPosition
                             break;
                             case 'after':
                             default:
-                                orderedChildren.splice(lastKey + 1, 0, additionalChild)
+                                orderedChildren.splice(currentChildPosition + 1, 0, additionalChild) // insert after currentPosition.
                             break;
                         }
                     }

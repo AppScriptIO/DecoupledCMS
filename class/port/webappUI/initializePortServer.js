@@ -1,5 +1,4 @@
 import views from 'koa-views'
-import bodyParser from 'appscript/utilityFunction/middleware/bodyParser.middleware.js'
 import { default as Application } from '../../Application.class.js'
 import WebappUIClass from 'appscript/class/port/webappUI/WebappUI.class.js'
 import debugLogMiddleNestedUnitStructure from 'appscript/utilityFunction/debugLogMiddlewareNestedUnitStructure.js'
@@ -26,31 +25,10 @@ export default ({entrypointConditionKey} = {}) => async () => {
     Class.serverKoa.use(views('/', { map: { html: 'underscore', js: 'underscore' } } ))
     let middlewareArray = [
         createClassInstancePerRequest(Class),
-        bodyParser(),
         async (context, next) => {
-            // await context.req.setTimeout(0);            
-            // instance.middlewareArray.push(middleware)
+            // debugLogMiddleNestedUnitStructure('91140de5-9ab6-43cd-91fd-9eae5843c74c') 
             context.set('connection', 'keep-alive')
             await next()
-        },
-        languageContent(),
-        async (context, next) => { // add middleware sequence for fast testing.
-            // debugLogMiddleNestedUnitStructure('91140de5-9ab6-43cd-91fd-9eae5843c74c') 
-            let middlewareSequence = [
-                    // {
-                    //     name: 'applyConditionCallback',
-                    //     entrypointConditionTreeKey: 'default',
-                    //     functionPath: ''
-                    // }
-            ]
-            await implementMiddlewareOnModuleUsingJson(middlewareSequence)
-            await next()
-        },            
-        async (context, next) => { // MIDDLEWARE
-            let middlewareArray;
-            let middlewareController = await MiddlewareController.createContext({ portAppInstance: context.instance })
-            middlewareArray = await middlewareController.initializeNestedUnit({ nestedUnitKey: '43d6e114-54b4-47d8-aa68-a2ae97b961d5' })
-            await implementMiddlewareOnModuleUsingJson(middlewareArray)(context, next)
         },
         async (context, next) => { // CONDITION
             let self = Class
@@ -59,11 +37,11 @@ export default ({entrypointConditionKey} = {}) => async () => {
             let conditionController = await ConditionController.createContext({ portAppInstance: context.instance })
             let entrypointConditionTree = entrypointConditionKey || self.entrypointSetting.defaultConditionTreeKey
             if(process.env.SZN_DEBUG == 'true' && context.header.debug == 'true') console.log(`🍊 Entrypoint Condition Key: ${entrypointConditionTree} \n \n`)
-            let callback = await conditionController.initializeNestedUnit({nestedUnitKey: entrypointConditionTree})
+            let callbackOption = await conditionController.initializeNestedUnit({nestedUnitKey: entrypointConditionTree})
             // if(process.env.SZN_DEBUG == 'true') console.log(`🍊 Callback object: ${callback.name}`)
             // [2] Use callback
-            if(process.env.SZN_DEBUG == 'true' && context.header.debug == 'true') console.log(`🔀✔️ Choosen callback is: %c ${callback.name}`, self.config.style.green)
-            await implementConditionActionOnModuleUsingJson({setting: callback})(context, next)
+            if(process.env.SZN_DEBUG == 'true' && context.header.debug == 'true') console.log(`🔀✔️ Choosen callback is: %c ${callbackOption.name}`, self.config.style.green)
+            await implementConditionActionOnModuleUsingJson({setting: callbackOption})(context, next)
         },
         async (context, next) => {
             // console.log('Last Middleware reached.')
