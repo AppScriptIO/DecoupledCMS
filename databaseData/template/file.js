@@ -7,6 +7,7 @@ let data = [
     { label: { name: 'entrypointJavascript' }, key: "21c988c6-28a9-4487-8927-9a0b51dc6aff", filePath: 'template/root/entrypoint.js.html' },
     { label: { name: 'serviceWorker.js.html' }, key: "sadfqw-28a9-4487-8927-9a0b51dc6aff", filePath: 'template/root/serviceWorker.js' },
     { label: { name: 'webScoket.js.html' }, key: "23casdf-28a9-4487-8927-9a0b51dc6aff", filePath: 'template/root/webScoket.js' },
+    { label: { name: 'babelTranspiler.js' }, key: "sdaf84-8927-9a0b51dc6aff", filePath: 'template/root/babelTranspiler.js' },
 
 ];
 

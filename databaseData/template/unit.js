@@ -7,6 +7,8 @@ let data = [
     { label: { name: 'entrypointJavascript' }, key: '4e485c9f-ad08-4117-b668-83aba51dac70', arguments: {}, executionType: 'underscoreRendering', fileKey: '21c988c6-28a9-4487-8927-9a0b51dc6aff' },
     { label: { name: 'serviceWorker' }, key: 'sda8f64-ad08-4117-b668-83aba51dac70', arguments: {}, executionType: 'underscoreRendering', processRenderedContent: 'wrapJsTag', fileKey: 'sadfqw-28a9-4487-8927-9a0b51dc6aff' },
     { label: { name: 'webScoket' }, key: '486jhkl-ad08-4117-b668-83aba51dac70', arguments: {}, executionType: 'underscoreRendering', processRenderedContent: 'wrapJsTag', fileKey: '23casdf-28a9-4487-8927-9a0b51dc6aff' },
+    { label: { name: 'babelTranspiler' }, key: 'q93b-4117-b668-83aba51dac70', arguments: {}, executionType: 'underscoreRendering', processRenderedContent: 'wrapJsTag', fileKey: 'sdaf84-8927-9a0b51dc6aff' },
+    
 ]
 
 export default data

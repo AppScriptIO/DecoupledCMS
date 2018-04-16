@@ -35,8 +35,12 @@ let data = [
       label: { name: 'map@PathToAbsolutePath.middleware.js' }, key: 'iopjh-41a1-a12d-e5d4446e85d9',
       filePath: 'appscript/utilityFunction/middleware/map@PathToAbsolutePath.middleware.js',
     },
+    {
+      label: { name: 'babelTranspiler.middleware.js' }, key: '33q33-41a1-a12d-e5d4446e85d9',
+      filePath: 'appscript/utilityFunction/middleware/babelTranspiler.middleware.js',
+    },
 
-
+    
     
   ];
   

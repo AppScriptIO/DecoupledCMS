@@ -18,6 +18,7 @@ export default function () {
             default:
             break;
         }
+        context.relativeAtPathName = relativeAtPathName
         // change path if @ path is mapped
         // if(mappedPath) context.path = context.path.replace(`@${relativeAtPathName}`, mappedPath)
         if(mappedPath) { // replace part to be mapped

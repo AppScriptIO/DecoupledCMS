@@ -66,6 +66,10 @@ let data = [
         label: { name: 'Map @ folder path' }, key: 'xyz12-a984-a17d741946c5', 
         importModuleName: 'default', executionType: 'functionWrappedMiddleware', fileKey: 'iopjh-41a1-a12d-e5d4446e85d9',
     },
+    {
+        label: { name: 'Transform ES named module to allowed path' }, key: '1882-q2f-a17d741946c5', 
+        importModuleName: 'transformNamedModule', executionType: 'functionWrappedMiddleware', fileKey: '33q33-41a1-a12d-e5d4446e85d9',
+    },
 
     
 ]

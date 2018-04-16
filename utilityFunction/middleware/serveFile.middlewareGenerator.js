@@ -93,6 +93,7 @@ async function serveServerSideRenderedFile(context, next, option) {
                             Application, view: {}, argument: { layoutElement: 'webapp-layout-list' }
                         })
                         context.response.type = path.extname(absoluteFilePath)
+                        await next()
                     } else {
                         await next()
                     }
