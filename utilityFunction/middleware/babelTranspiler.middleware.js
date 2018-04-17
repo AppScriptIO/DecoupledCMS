@@ -24,7 +24,12 @@ function transformNamedModuleToPath() {
 // babel.registerPlugin('lolizer', lolizer); 
 
 export let transformNamedModule = functionWrappedMiddlewareDecorator(async function (context, next, option) {
-    if(config.DEPLOYMENT == 'development' && context.response.type == 'application/javascript') {
+    let path = context.path
+    if(
+        config.DEPLOYMENT == 'development' && 
+        context.response.type == 'application/javascript' &&
+        path.includes('asset/webcomponent/component.package')
+    ) {
         let scriptCode = context.body
         context.body = babel.transformSync(scriptCode, { plugins: [ transformNamedModuleToPath ] } ).code
     }
