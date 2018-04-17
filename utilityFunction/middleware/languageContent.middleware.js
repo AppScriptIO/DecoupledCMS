@@ -3,6 +3,7 @@ import bodyParser from 'koa-bodyparser' // Brings extra option for handling erro
 import { default as Application } from '../../class/Application.class.js'
 import { getMergedMultipleDocumentOfSpecificLanguage as queryPatternImplementation} from "appscript/utilityFunction/database/query/patternImplementation.js";
 import {functionWrappedMiddlewareDecorator} from '../middlewarePatternDecorator.js'
+import { mergeDeep } from '../deepObjectMerge.js'
 
 export default functionWrappedMiddlewareDecorator(async function (context, next, option) {
         let urlQuery = context.request.query
@@ -10,7 +11,7 @@ export default functionWrappedMiddlewareDecorator(async function (context, next,
             urlQuery.language.replace(/\b\w/g, l => l.toUpperCase()) // Capitalize first letter.
             : null ;
         let uiContent = null;
-        let defaultLanguage = Application.frontend.setting.mode.language
+        let defaultLanguage = Application.frontendStatic.setting.mode.language
         try {
             uiContent = await queryPatternImplementation({
                 databaseConnection: Application.rethinkdbConnection,
@@ -21,7 +22,7 @@ export default functionWrappedMiddlewareDecorator(async function (context, next,
             console.log(error)
         }
     
-        context.frontendPerContext = {
+        let frontendPerContext = {
             setting: {
                 mode: {
                     language: queryLanguage || defaultLanguage // TODO: change setting default twice - fallback to prevent setting a null/undefined over the default value
@@ -29,5 +30,12 @@ export default functionWrappedMiddlewareDecorator(async function (context, next,
             },
             uiContent
         }
+
+        // TODO: separate frontend object creation from language middleware.
+
+        frontendPerContext.instance = context.instance // add instance object as it is used by client side.
+
+        context.frontend = mergeDeep(Application.frontendStatic, frontendPerContext)
+
         await next()
 })

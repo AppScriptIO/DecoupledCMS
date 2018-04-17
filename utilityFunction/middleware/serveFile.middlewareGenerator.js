@@ -47,24 +47,24 @@ async function serveServerSideRenderedFile(context, next, option) {
         let renderedContent; 
         switch (renderType) {
             case 'convertSharedStylesToJS':
-                renderedContent = await convertSharedStylesToJS({ filePath: absoluteFilePath })
+                renderedContent = await convertSharedStylesToJS({ filePath: absoluteFilePath, context })
                 context.body = renderedContent
                 context.response.type = 'application/javascript'        
                 await next()
             break;
             case 'covertTextFileToJSModule': 
-                renderedContent = await covertTextFileToJSModule({ filePath: absoluteFilePath })
+                renderedContent = await covertTextFileToJSModule({ filePath: absoluteFilePath, context })
                 context.body = renderedContent
                 context.response.type = 'application/javascript'        
                 await next()
             break;
             case 'renderHTMLImportWebcomponent':
-                renderedContent = renderHTMLImportWebcomponent({ filePath: absoluteFilePath })
+                renderedContent = renderHTMLImportWebcomponent({ filePath: absoluteFilePath, context })
                 context.body = renderedContent
                 await next()
             break;
             case 'renderJSImportWebcomponent':
-                renderedContent = renderJSImportWebcomponent({ filePath: absoluteFilePath })
+                renderedContent = renderJSImportWebcomponent({ filePath: absoluteFilePath, context })
                 context.response.type = 'application/javascript'        
                 context.body = renderedContent
                 await next()
@@ -75,8 +75,9 @@ async function serveServerSideRenderedFile(context, next, option) {
                     try {
                         // render template
                         renderedContent = filesystem.readFileSync(absoluteFilePath, 'utf8')
-                        context.body = underscore.template(renderedContent)({ 
+                        context.body = underscore.template(renderedContent)({
                             Application, 
+                            context,
                             view: {}, 
                             argument: {} 
                         })  // Koa handles the stream and send it to the client.
@@ -90,7 +91,7 @@ async function serveServerSideRenderedFile(context, next, option) {
                     if (filesystem.existsSync(absoluteFilePath) && filesystem.statSync(absoluteFilePath).isFile()) {
                         // serve rendered file. Implementation using render using underscore (framework like).
                         await context.render(absoluteFilePath, {
-                            Application, view: {}, argument: { layoutElement: 'webapp-layout-list' }
+                            context, Application, view: {}, argument: { layoutElement: 'webapp-layout-list' }
                         })
                         context.response.type = path.extname(absoluteFilePath)
                         await next()
@@ -110,7 +111,7 @@ export { serveServerSideRenderedFile }
 /** Wrap css style in a tag (created using javascript) - to support shared styles in Polymer 3 javascript imports 
  * Polyfill from https://github.com/Polymer/polymer-modulizer/blob/f1ef5dea3978a9601248d73f4d23dc033382286c/fixtures/packages/polymer/expected/test/unit/styling-import-shared-styles.js
 */
-async function convertSharedStylesToJS({ filePath  }) {
+async function convertSharedStylesToJS({ filePath, context  }) {
     let fileStream = filesystem.createReadStream(filePath)
     return await wrapStringStream({ 
         stream: fileStream, 
@@ -120,7 +121,7 @@ async function convertSharedStylesToJS({ filePath  }) {
 }
 
 /** Wrap text file with export default - converting it to js module */
-async function covertTextFileToJSModule({ filePath }) { 
+async function covertTextFileToJSModule({ filePath, context }) { 
     let fileStream = filesystem.createReadStream(filePath)
     return await wrapStringStream({ stream: fileStream, beforeString: 'export default \`', afterString: '\`' })
 }
@@ -128,7 +129,7 @@ async function covertTextFileToJSModule({ filePath }) {
 /**
  * Webcomponent using JS imports - Combine webcomponent files according to predefined component parts locations.
  */
-function renderJSImportWebcomponent({ filePath }) {
+function renderJSImportWebcomponent({ filePath, context }) {
     let fileDirectoryPath = filePath.substr(0, filePath.lastIndexOf('/'))
     let argument = { layoutElement: 'webapp-layout-list' }
     let view = {};
@@ -149,7 +150,7 @@ function renderJSImportWebcomponent({ filePath }) {
 /**
  * Webcomponent using HTML Imports - Combine webcomponent files according to predefined component parts locations.
  */
-function renderHTMLImportWebcomponent({ filePath }) {
+function renderHTMLImportWebcomponent({ filePath, context }) {
     let fileDirectoryPath = filePath.substr(0, filePath.lastIndexOf('/'))
     let argument = { layoutElement: 'webapp-layout-list' }
     let view = {};

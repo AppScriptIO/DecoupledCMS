@@ -25,7 +25,7 @@ class Application extends EventEmitter { /* Core event emitter module, different
     static rethinkdbConnection = {}
     static underscore;
     static config = configuration // Array
-    static frontend;
+    static frontendStatic;
     
     static async initialize(/*staticSubclass*/) { // One-time initialization of Applicaiton Class.
         console.info(`☕%c Running Application as ${self.config.DEPLOYMENT} - '${self.config.PROTOCOL}${self.config.HOST}'`, self.config.style.green)
@@ -119,7 +119,7 @@ class Application extends EventEmitter { /* Core event emitter module, different
         //     languageDocumentKey: defaultLanguage,
         //     dataTableName: 'ui'
         // })
-        self.frontend = { // Configurations passed to frontend 
+        self.frontendStatic = { // Configurations passed to frontend 
             config: self.config,
             setting: {
                 location: {
