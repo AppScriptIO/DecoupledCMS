@@ -8,7 +8,7 @@ export default function () {
         // let lastIndexPosition = (path.indexOf("/") == -1) ? path.length : path.indexOf("/");
         let relativeAtPathName = firstURLPart.substring(firstURLPart.indexOf("@") + 1, firstURLPart.length)
         let mappedPath;
-        switch (relativeAtPathName) {
+        switch (relativeAtPathName) {// example '/@webcomponent/package/x/x.js'
             case 'javascript':
                 mappedPath = 'asset/javascript'
             break;
@@ -18,6 +18,7 @@ export default function () {
             default:
             break;
         }
+        
         context.relativeAtPathName = relativeAtPathName
         // change path if @ path is mapped
         // if(mappedPath) context.path = context.path.replace(`@${relativeAtPathName}`, mappedPath)
