@@ -12,6 +12,7 @@ import {functionWrappedMiddlewareDecorator} from '../middlewarePatternDecorator.
 import createStaticInstanceClasses from 'appscript/module/reusableNestedUnit'
 import {default as getTableDocumentDefault} from "appscript/utilityFunction/database/query/getTableDocument.query.js";
 import { wrapStringStream } from '../wrapStringStream.js'
+import { streamToString } from '../streamToStringConvertion.js'
 
 /**
  * serve static file.

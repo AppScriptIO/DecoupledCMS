@@ -155,12 +155,12 @@ let data = [
             { nestedUnit: '22hh-4e44-a12b-b280f6331b71', pathPointerKey: 'x', insertionPosition: { insertionPathPointer: null, insertionPoint: 'IP', order: 2, /* placement: { type: 'after/before', pathPointer: 'KeyXXXX', } */ } },
             // rendered Asset files
             { nestedUnit: '2a18242e-792e-4e44-a12b-b280f6331b71', pathPointerKey: 'x', insertionPosition: { insertionPathPointer: null, insertionPoint: 'IP', order: 1, placement: { type: null, pathPointer: null, } } },
-            // Babel transform named modules paths
+            // Babel transform javascript - among the transformation - named modules paths
             { nestedUnit: 'oo2d-a12b-b280f6331b71', pathPointerKey: 'x', insertionPosition: { insertionPathPointer: null, insertionPoint: 'IP', order: 1, placement: { type: null, pathPointer: null, } } },
         ],
     },
     { label: { name: '@ directory folder map' }, key: '22hh-4e44-a12b-b280f6331b71', unitKey: 'xyz12-a984-a17d741946c5', },   
-    { label: { name: 'Babel transform named modules paths' }, key: 'oo2d-a12b-b280f6331b71', unitKey: '1882-q2f-a17d741946c5', },   
+    { label: { name: 'Babel transform javascript - named modules paths' }, key: 'oo2d-a12b-b280f6331b71', unitKey: '1882-q2f-a17d741946c5', },   
     
 ]
 
