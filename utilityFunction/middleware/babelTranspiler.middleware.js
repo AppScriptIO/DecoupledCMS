@@ -17,7 +17,7 @@ function transformNamedModuleToPath() {
                 let source = path.node.source
                 let newSourceValue;
                 if(source.value.startsWith('@')) {
-                    newSourceValue = `/@webcomponent/package/${source.value}`
+                    newSourceValue = `/@webcomponent/@package/${source.value}`
                     source.value = newSourceValue
                 }
             }
@@ -31,7 +31,7 @@ export let transformJavascript = functionWrappedMiddlewareDecorator(async functi
         let scriptCode = context.body
         let transformPlugin = []
         
-        if(path.includes('asset/webcomponent/package')) { // in case an npm package
+        if(path.includes('asset/webcomponent/@package')) { // in case an npm package
             transformPlugin.push(babelSyntaxImport, transformNamedModuleToPath)
         } else { // in case a custom project element
             transformPlugin.push(babelSyntaxImport, babelDecoratorsPlugin)
