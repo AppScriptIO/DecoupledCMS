@@ -8,7 +8,7 @@ export default function () {
         // let lastIndexPosition = (path.indexOf("/") == -1) ? path.length : path.indexOf("/");
         let relativeAtPathName = firstURLPart.substring(firstURLPart.indexOf("@") + 1, firstURLPart.length)
         let mappedPath;
-        switch (relativeAtPathName) {// example '/@webcomponent/package/x/x.js'
+        switch (relativeAtPathName) { // example '/@webcomponent/package/x/x.js'
             case 'javascript':
                 mappedPath = 'asset/javascript'
             break;

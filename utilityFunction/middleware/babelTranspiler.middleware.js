@@ -9,14 +9,24 @@ import * as babel from '@babel/core'
 const babelDecoratorsPlugin = require(path.normalize(`${config.appDeploymentLifecyclePath}/babel_javascriptTranspilation.js/node_modules/babel-plugin-transform-decorators-legacy`))
 const babelSyntaxImport = require(path.normalize(`${config.appDeploymentLifecyclePath}/babel_javascriptTranspilation.js/node_modules/@babel/plugin-syntax-dynamic-import`))
 
-// babel transform plugin converts name modules beginning with @ to their relative path counterparts.
+/**
+* Babel transform plugin converts name modules beginning with @ to their relative path counterparts or a named module (non-relative path).
+* transform example "@polymer/polymer/element.js" --> "/@webcomponent/@package/@polymer/polymer/element.js"
+* transform example "lit-html/lib/lit-extended.js" --> "/@webcomponent/@package/lit-html/lib/lit-extended.js"
+* https://astexplorer.net/
+*/
 function transformNamedModuleToPath() {
     return {
         visitor: {
-            ImportDeclaration(path) {
+            "ImportDeclaration|ExportNamedDeclaration"(path) {
                 let source = path.node.source
+                if(!source) return
+
                 let newSourceValue;
-                if(source.value.startsWith('@')) {
+                if( 
+                    source.value.startsWith('@') || 
+                    !source.value.startsWith('/') && !source.value.startsWith('.')
+                ) { // if not relative/absolute or starts with @ - basically could be sufficient to check for non relative&absolute path, but for clarity withh keep both conditions.
                     newSourceValue = `/@webcomponent/@package/${source.value}`
                     source.value = newSourceValue
                 }
@@ -29,19 +39,26 @@ export let transformJavascript = functionWrappedMiddlewareDecorator(async functi
     if(config.DEPLOYMENT == 'development' && context.response.type == 'application/javascript') {
         let path = context.path
         let scriptCode = context.body
-        let transformPlugin = []
+        let transformPlugin = [babelSyntaxImport]
         
         if(path.includes('asset/webcomponent/@package')) { // in case an npm package
-            transformPlugin.push(babelSyntaxImport, transformNamedModuleToPath)
+            transformPlugin.push(transformNamedModuleToPath)
         } else { // in case a custom project element
-            transformPlugin.push(babelSyntaxImport, babelDecoratorsPlugin)
+            transformPlugin.push(babelDecoratorsPlugin)
         }
         
         if(transformPlugin.length) {        
             // convert stream into string
             if(scriptCode instanceof stream.Stream) scriptCode = await streamToString(scriptCode)
             // transform code using array of plugins.
-            context.body = babel.transformSync(scriptCode, { plugins: transformPlugin } ).code
+            let transformedObject = babel.transformSync(
+                scriptCode,
+                { 
+                    plugins: transformPlugin 
+                } 
+            )
+
+            context.body = transformedObject.code
         }
         await next()
     }
