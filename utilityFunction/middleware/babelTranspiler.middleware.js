@@ -5,9 +5,9 @@ import stream from 'stream'
 import { default as Application } from '../../class/Application.class.js'
 import {functionWrappedMiddlewareDecorator} from '../middlewarePatternDecorator.js'
 import { streamToString } from '../streamToStringConvertion.js'
-import * as babel from '@babel/core'
-const babelDecoratorsPlugin = require(path.normalize(`${config.appDeploymentLifecyclePath}/babel_javascriptTranspilation.js/node_modules/babel-plugin-transform-decorators-legacy`))
-const babelSyntaxImport = require(path.normalize(`${config.appDeploymentLifecyclePath}/babel_javascriptTranspilation.js/node_modules/@babel/plugin-syntax-dynamic-import`))
+import * as babel from '@babel/core' // TODO: move babel dependency to babelTranspile folder. import from dependency.
+const babelDecoratorsPlugin = require(path.normalize(`${config.directory.appDeploymentLifecyclePath}/babel_javascriptTranspilation.js/node_modules/babel-plugin-transform-decorators-legacy`))
+const babelSyntaxImport = require(path.normalize(`${config.directory.appDeploymentLifecyclePath}/babel_javascriptTranspilation.js/node_modules/@babel/plugin-syntax-dynamic-import`))
 
 /**
 * Babel transform plugin converts name modules beginning with @ to their relative path counterparts or a named module (non-relative path).
@@ -47,7 +47,7 @@ export let transformJavascript = functionWrappedMiddlewareDecorator(async functi
             transformPlugin.push(babelDecoratorsPlugin)
         }
         
-        if(transformPlugin.length) {        
+        if(transformPlugin.length) {
             // convert stream into string
             if(scriptCode instanceof stream.Stream) scriptCode = await streamToString(scriptCode)
             // transform code using array of plugins.
