@@ -1,8 +1,9 @@
 import { default as Application } from '../../Application.class.js'
 import rethinkDB from 'rethinkdb' 
+import getTableDocumentAndFilter from 'appscript/utilityFunction/database/query/getTableDocumentAndFilter.query.js'
 
 let getTableDocument = {
-    generate: require('appscript/utilityFunction/database/query/getTableDocumentAndFilter.query.js'),
+    generate: getTableDocumentAndFilter,
     instance: []
 }
 getTableDocument.instance['oAuth_token'] = getTableDocument.generate('oAuth_token')

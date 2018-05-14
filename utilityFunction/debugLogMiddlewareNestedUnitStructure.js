@@ -1,9 +1,11 @@
+import getTableDocumentAndFilter from 'appscript/utilityFunction/database/query/getTableDocumentAndFilter.query.js'
+
 async function debugLogMiddleNestedUnitStructure(nestedUnitKeyMiddleware) {
     const connection = Application.rethinkdbConnection            
     let counter = 1
     async function getMiddlewareAndNestedMiddleware(key) {
         let getTableDocument = {
-            generate: require('appscript/utilityFunction/database/query/getTableDocumentAndFilter.query.js'),
+            generate: getTableDocumentAndFilter,
             instance: []
         }
         getTableDocument.instance['middleware_nestedUnit'] = getTableDocument.generate('middleware_nestedUnit')

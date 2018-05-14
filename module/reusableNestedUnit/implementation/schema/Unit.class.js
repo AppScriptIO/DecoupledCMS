@@ -36,7 +36,7 @@ export default ({ Superclass }) => {
                 switch (algorithm.type) { // in order to choose how to handle the algorithm (as a module ? a file to be imported ?...)
                     case 'file':
                     default: {
-                        let module = require(algorithm.path)
+                        let module = require(algorithm.path).default
                         if(typeof module !== 'function') module = module.default // case es6 module loaded with require function (will load it as an object)
                         let resolver = module() /*initial execute for setting parameter context.*/
                         let resolverArgument = Object.assign(...[this.args, algorithm.argument].filter(Boolean)) // remove undefined/null/false objects before merging.

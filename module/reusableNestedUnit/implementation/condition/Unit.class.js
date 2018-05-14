@@ -32,7 +32,7 @@ export default ({ Superclass }) => {
                 if(!this.conditionResult) {
                     let expectedReturn = this.expectedReturn
                     let filePath = this.file.filePath
-                    let returnedValue = await require(filePath)(this.portAppInstance)
+                    let returnedValue = await require(filePath).default(this.portAppInstance)
                     if(process.env.SZN_DEBUG == 'true' && this.portAppInstance.context.headers.debug == 'true') console.log(`🔀 Comparing conditionKey: ${this.key} ${filePath}. \n • expected: ${expectedReturn} == ${returnedValue}. \n • compare result: ${(returnedValue == expectedReturn)} \n \n`)
                     this.conditionResult = (returnedValue == expectedReturn) ? true : false;            
                 }

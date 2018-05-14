@@ -1,4 +1,4 @@
-const EventEmitter = require('events');
+import EventEmitter from 'events'
 import assert from 'assert'
 import { mix } from 'mixwith'
 import commonMethod from './commonMethod.mixin'
@@ -18,9 +18,9 @@ export function ControllerFunction({
     methodInstanceName,
     Superclass = EventEmitter, // defaulting to EventEmitter and not Object / Function because extending Object/Function manipulates this prototype in new calls for some reason.
     mixin, 
-    rethinkdbConnection = Superclass.rethinkdbConnection
+    rethinkdbConnection = (!!Superclass) && Superclass.rethinkdbConnection
 } = {}) {
-    Superclass.rethinkdbConnection = rethinkdbConnection // Setting this variable on Controller class below causes issues, which maybe related to the way rethinkdb is called or the proxies encapsulating the class.
+    if(Superclass) Superclass.rethinkdbConnection = rethinkdbConnection // Setting this variable on Controller class below causes issues, which maybe related to the way rethinkdb is called or the proxies encapsulating the class.
     let mixinArray = [/*commonMethod*/]
     let self = 
         @add({ to: 'static'}, { 

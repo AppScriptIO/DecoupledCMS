@@ -1,3 +1,5 @@
+import consoleLogStyleConfig from "../../configuration/consoleLogStyleConfig";
+
 /**
  * Adds prototype information on static classes, prototypes, and instances.
  * Returns a proxy with traps to add meta information.
@@ -16,16 +18,16 @@ function prototypeChainDebug(Class) {
         Type: 'prototype'
     }
 
-    // Instance
+    // // Instance
     Class = new Proxy(Class, {
-        construct: function(target, argumentsList, newTarget) {
-            let instance = new target(...argumentsList)
-            instance.meta = {
-                Class: `${Class.name}`,
-                Type: 'instance'
-            }
-            return instance 
-        },
+        // construct: function(target, argumentsList, newTarget) { // not working causes errors - because the original subclass is not being used to create the instance i.e. superclass creates the isntance & newTarget isn't always pointing to the original class called.
+        //     let instance = new target(...argumentsList)
+        //     instance.meta = {
+        //         Class: `${Class.name}`,
+        //         Type: 'instance'
+        //     }
+        //     return instance 
+        // },
         // apply is called, when 'new' is invoked, because of the ES5 transpilation mimicking class feature. 
         // apply: function(target, thisArg, argumentsList) {
         //     console.log(target)

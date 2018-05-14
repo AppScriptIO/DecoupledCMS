@@ -33,6 +33,7 @@ function Superclass() {
             })
         }
 
+        // create instance from subclass
         Class.callSubclass = (name, args) => {
             return Reflect.construct(Class.extendedSubclass.static[name], args)
         }

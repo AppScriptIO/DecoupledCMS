@@ -25,7 +25,7 @@ export default (
 
         // import/load module
         let exportedModule = (!importModuleName || importModuleName == 'default') ? 
-            require(filePath) : // import default export from the module
+            require(filePath).default : // import default export from the module
             require(filePath)[importModuleName]; // import the export using it's name.
 
         // execute module

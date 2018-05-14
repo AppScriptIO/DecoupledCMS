@@ -8,7 +8,7 @@ let data = [
 
 ]
 
-module.exports = {
+export default {
     databaseTableName: 'country',
     data: data
 }

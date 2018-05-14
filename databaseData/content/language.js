@@ -18,7 +18,7 @@ let data = [
 
 ]
 
-module.exports = {
+export default {
     databaseTableName: 'language',
     data: data,
     index: ['key']

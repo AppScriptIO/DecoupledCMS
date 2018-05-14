@@ -38,7 +38,7 @@ export default ({
             case 'functionMiddleware':
                 // await context.instance.handleFunctionMiddleware(setting.name)
                 let filePath = setting.name
-                let middleware = await require(`${filePath}`)
+                let middleware = await require(`${filePath}`).default
                 await middleware(context, next)
                 isCalledNext = true
             break;

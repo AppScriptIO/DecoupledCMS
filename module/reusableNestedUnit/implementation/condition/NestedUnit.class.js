@@ -3,12 +3,12 @@ import { classDecorator as prototypeChainDebug} from 'appscript/module/prototype
 import { add, execute, applyMixin, conditional } from 'appscript/utilityFunction/decoratorUtility.js'
 import { extendedSubclassPattern } from 'appscript/utilityFunction/extendedSubclassPattern.js'
 import { curried as getTableDocumentCurried } from "appscript/utilityFunction/database/query/getTableDocument.query.js";
+import promiseProperRace from 'appscript/utilityFunction/promiseProperRace.js'
 
 let databasePrefix = 'condition_'
 let getDocument = {
     NestedUnit: getTableDocumentCurried({ databaseName: 'webappSetting', tableName: `${databasePrefix}nestedUnit` }),
 }
-import promiseProperRace from 'appscript/utilityFunction/promiseProperRace.js'
 
 export default ({ Superclass }) => {
     let self = 
@@ -21,6 +21,5 @@ export default ({ Superclass }) => {
         class NestedUnit extends Superclass {
 
         }
-            
     return self
 }

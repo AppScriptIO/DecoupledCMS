@@ -29,7 +29,7 @@ let data = [
 
 ]
 
-module.exports = { //  many-to-many relationship between documents
+export default { //  many-to-many relationship between documents
     databaseTableName: 'relationship',
     data: data
 }

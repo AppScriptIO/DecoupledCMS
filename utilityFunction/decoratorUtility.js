@@ -28,9 +28,9 @@ export function execute({ staticMethod, self = true, args = [] }) {
 export function applyMixin({ mixin = null }) {
     return Class => {
         // add controller methods for the specific module that uses them.
-            Class = (mixin) ?
-                mixin({ Superclass: Class }) /* return Specific implementation Controller */ : 
-                Class /* return Reusable nested unit */;
+        if(mixin) {
+            Class = mixin({ Superclass: Class }) /* return Specific implementation Controller */
+        } // else return Reusable nested unit 
         return Class
     }
 }

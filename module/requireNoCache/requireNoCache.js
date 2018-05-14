@@ -3,7 +3,7 @@ let _invalidateRequireCacheForFile = function(filePath){
 };
 let requireNoCache =  function(filePath){
 	_invalidateRequireCacheForFile(filePath);
-	return require(filePath);
+	return require(filePath).default;
 };
 
 

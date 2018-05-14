@@ -7,7 +7,7 @@
 
 const list = {} // ModuleContext Instances
 
-export default new Proxy(()=>{}, {
+export default new Proxy(function(){}, {
     apply: (target, thisArg, argumentsList) => {
         return contextReference(...argumentsList)
     }, 

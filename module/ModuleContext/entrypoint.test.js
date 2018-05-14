@@ -26,7 +26,7 @@ describe('Module Cacher', () => {
         it('should be a function as target', () => {
             assert.equal(typeof MCDirectObject, typeof func)
         })
-        console.log(typeof MCDirectObject)
+        // console.log(typeof MCDirectObject)
     })
 
     describe('Caching module in different instances', () => {

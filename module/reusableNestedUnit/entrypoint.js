@@ -1,4 +1,4 @@
-const ModuleContext = require('appscript/module/ModuleContext')
+import ModuleContext from 'appscript/module/ModuleContext'
 import { ControllerFunction } from './Controller.class.js'
 import NestedUnitFunction from './NestedUnit.class.js' // Tree
 import UnitFunction from './Unit.class.js' // Unit
@@ -39,19 +39,19 @@ function createStaticInstanceClasses({
     let implementationConfig;
     switch (implementationType) {
         case 'Middleware':
-            implementationConfig = require('./implementation/middleware')
+            implementationConfig = require('./implementation/middleware').default
         break;
         case 'Condition':
-            implementationConfig = require('./implementation/condition')
+            implementationConfig = require('./implementation/condition').default
         break;
         case 'Template':
-            implementationConfig = require('./implementation/template')
+            implementationConfig = require('./implementation/template').default
         break;
         case 'Shellscript':
-            implementationConfig = require('./implementation/shellscript')
+            implementationConfig = require('./implementation/shellscript').default
         break;
         case 'Schema':
-            implementationConfig = require('./implementation/schema')
+            implementationConfig = require('./implementation/schema').default
         break;
 
         default:
