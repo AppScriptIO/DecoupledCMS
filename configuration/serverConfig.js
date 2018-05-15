@@ -8,7 +8,7 @@ export let
     DISTRIBUTION = process.env.DISTRIBUTION || false,
     PORT = (DEPLOYMENT == 'development') ? '9903' : process.env.PORT || 80,
     SSL = (DEPLOYMENT == 'development') ? true : false,
-    HOST = (DEPLOYMENT == 'development') ? 'localhost' : process.env.HOST,
+    HOST = process.env.HOST || 'localhost',
     PROTOCOL = (DEPLOYMENT == 'development') ? 'http://' : 'https://',
     SOCKET_PROTOCOL = (DEPLOYMENT == 'development') ? 'ws://' : 'wss://';
 
