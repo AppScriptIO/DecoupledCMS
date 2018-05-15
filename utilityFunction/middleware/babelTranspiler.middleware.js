@@ -5,10 +5,12 @@ import stream from 'stream'
 import { default as Application } from '../../class/Application.class.js'
 import {functionWrappedMiddlewareDecorator} from '../middlewarePatternDecorator.js'
 import { streamToString } from '../streamToStringConvertion.js'
-// const babel1 = require(path.normalize(`${config.directory.appDeploymentLifecyclePath}/babel_javascriptTranspilation.js/node_modules/@babel/core`))
-// import * as babel from '/project/application/dependency/appDeploymentLifecycle/babel_javascriptTranspilation.js/node_modules/@babel/core' // doesn't work
-import * as babel from '/project/application/dependency/appDeploymentLifecycle/babel_javascriptTranspilation.js/node_modules/@babel/core'
-const nativeClientSideRuntimeCompilerConfig = require(path.normalize(`${config.directory.appDeploymentLifecyclePath}/babel_javascriptTranspilation.js/compilerConfiguration/nativeClientSideRuntime.BabelConfig.js`))
+
+let babel, nativeClientSideRuntimeCompilerConfig
+if(Application.config.DEPLOYMENT == 'development') { // as in production appDeploymentLifecycle dependency doesn't exist.
+    babel = require('/project/application/dependency/appDeploymentLifecycle/babel_javascriptTranspilation.js/node_modules/@babel/core')
+    nativeClientSideRuntimeCompilerConfig = require(path.normalize(`${config.directory.appDeploymentLifecyclePath}/babel_javascriptTranspilation.js/compilerConfiguration/nativeClientSideRuntime.BabelConfig.js`))
+}
 
 export let transformJavascript = functionWrappedMiddlewareDecorator(async function (context, next, option) {
     // transpile only on development and non-distribution folders, i.e. on-the-fly transpilation is executed only in development, while production and distribution should be already transpiled.
@@ -37,6 +39,6 @@ export let transformJavascript = functionWrappedMiddlewareDecorator(async functi
             )
             context.body = transformedObject.code
         }
-        await next()
     }
+    await next()
 })
