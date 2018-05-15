@@ -9,3 +9,4 @@ privateRepository
 bower_components
 jspm_packages
 setup/build/gulp_buildTool/npm-debug.log
+yarn-error.log
