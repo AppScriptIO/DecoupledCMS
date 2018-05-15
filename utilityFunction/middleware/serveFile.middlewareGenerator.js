@@ -4,9 +4,9 @@ import filesystem from 'fs'
 import Stream from 'stream'
 import multistream from 'multistream'
 import underscore from 'underscore'
-import serverStatic from 'koa-static' // Static files.
+// import serverStatic from 'koa-static' // Static files.
 import send from 'koa-sendfile' // Static files.
-import mount from 'koa-mount'
+// import mount from 'koa-mount'
 import { default as Application } from '../../class/Application.class.js'
 import {functionWrappedMiddlewareDecorator} from '../middlewarePatternDecorator.js'
 import createStaticInstanceClasses from 'appscript/module/reusableNestedUnit'
