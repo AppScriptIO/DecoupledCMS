@@ -29,11 +29,38 @@ function isES5(agent) {
 // This module defines context.instance.config.clientBasePath to be later used in template composition.
 export default async (context, next) => {
     let agent = useragentParser.lookup(context.request.headers['user-agent']);
-    if(isES5(agent)) {
-        context.instance.distribution = 'es5'
-        context.instance.config.clientBasePath = await path.resolve(path.normalize(`${Application.config.serverBasePath}/../clientSide-es5`)) 
+    if(process.env.DISTRIBUTION) {
+        
+        if(isES5(agent)) { 
+            context.instance.distribution = 'polyfill' 
+        } else {
+            context.instance.distribution = 'native' 
+        }
+        
+        let basePath;
+        if(process.env.DEPLOYMENT == 'production')  {
+            basePath = Application.config.clientBasePath
+        } else if (process.env.DEPLOYMENT == 'development') {
+            basePath = Application.config.distributionPath
+        }
+        
+        let clientSideFolderName;
+        switch (context.instance.distribution) {
+            case 'polyfill':
+                clientSideFolderName = Application.config.distribution.clientSide.polyfill.prefix
+                context.instance.config.clientBasePath = path.join(basePath, clientSideFolderName)
+            break;
+            case 'native':
+                clientSideFolderName = Application.config.distribution.clientSide.native.prefix
+                context.instance.config.clientBasePath = path.join(basePath, clientSideFolderName)
+            break;
+            default: 
+                context.instance.config.clientBasePath = Application.config.clientBasePath
+            break;
+        }
     } else {
-        context.instance.config.clientBasePath = await Application.config.clientBasePath
+        context.instance.config.clientBasePath = Application.config.clientBasePath
     }
+
     await next()
 }

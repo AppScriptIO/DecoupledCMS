@@ -1,4 +1,16 @@
 
+const namedImportMap = [
+    {
+        namedImport: 'webcomponent', // @webcomponent
+        path: 'asset/webcomponent'
+    },
+    {
+        namedImport: 'javascript', // @javascript
+        path: 'asset/javascript'
+    }        
+]
+
+
 export default function () {
     return async (context, next) => {
         let path = context.path
@@ -7,17 +19,9 @@ export default function () {
         let firstURLPart = pathArray[0]
         // let lastIndexPosition = (path.indexOf("/") == -1) ? path.length : path.indexOf("/");
         let relativeAtPathName = firstURLPart.substring(firstURLPart.indexOf("@") + 1, firstURLPart.length)
-        let mappedPath;
-        switch (relativeAtPathName) { // example '/@webcomponent/package/x/x.js'
-            case 'javascript':
-                mappedPath = 'asset/javascript'
-            break;
-            case 'webcomponent':
-                mappedPath = 'asset/webcomponent'
-            break;
-            default:
-            break;
-        }
+        
+        let namedImportObject = namedImportMap.filter(item => item.namedImport == relativeAtPathName)[0] // example '/@webcomponent/package/x/x.js'
+        let mappedPath = namedImportObject.path
         
         context.relativeAtPathName = relativeAtPathName
         // change path if @ path is mapped
