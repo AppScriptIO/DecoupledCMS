@@ -11,12 +11,13 @@ import * as babel from '/project/application/dependency/appDeploymentLifecycle/b
 const nativeClientSideRuntimeCompilerConfig = require(path.normalize(`${config.directory.appDeploymentLifecyclePath}/babel_javascriptTranspilation.js/compilerConfiguration/nativeClientSideRuntime.BabelConfig.js`))
 
 export let transformJavascript = functionWrappedMiddlewareDecorator(async function (context, next, option) {
-    if(config.DEPLOYMENT == 'development' && context.response.type == 'application/javascript') {
+    // transpile only on development and non-distribution folders, i.e. on-the-fly transpilation is executed only in development, while production and distribution should be already transpiled.
+    if(Application.config.DEPLOYMENT == 'development' && !Application.config.DISTRIBUTION && context.response.type == 'application/javascript') {
         let path = context.path
         let scriptCode = context.body
         let transformBabelPlugin = [ ]
         
-        if(path.includes('asset/webcomponent/@package')) {  // in case an npm package
+        if(path.includes('webcomponent/@package')) {  // in case an npm webcomponent package
             transformBabelPlugin = nativeClientSideRuntimeCompilerConfig.plugins
         } else { // in case a custom project element
             transformBabelPlugin = nativeClientSideRuntimeCompilerConfig.plugins

@@ -6,6 +6,7 @@ export let
     // clientBasePath = path.resolve(path.normalize(`${serverBasePath}/../clientSide`)),
     clientBasePath = configuration.directory.clientSidePath,
     DEPLOYMENT = process.env.DEPLOYMENT || 'development',
+    DISTRIBUTION = process.env.DISTRIBUTION || false,
     PORT = (DEPLOYMENT == 'development') ? '9903' : process.env.PORT || 80,
     SSL = (DEPLOYMENT == 'development') ? true : false,
     HOST = (DEPLOYMENT == 'development') ? 'localhost' : process.env.HOST,
@@ -21,6 +22,7 @@ export default {
   port: PORT,
   ssl: SSL,
   DEPLOYMENT,
+  DISTRIBUTION,
   HOST,
   PROTOCOL,
   SOCKET_PROTOCOL

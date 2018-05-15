@@ -29,7 +29,7 @@ function isES5(agent) {
 // This module defines context.instance.config.clientBasePath to be later used in template composition.
 export default async (context, next) => {
     let agent = useragentParser.lookup(context.request.headers['user-agent']);
-    if(process.env.DISTRIBUTION) {
+    if(Application.config.DISTRIBUTION) {
         
         if(isES5(agent)) { 
             context.instance.distribution = 'polyfill' 
@@ -38,9 +38,9 @@ export default async (context, next) => {
         }
         
         let basePath;
-        if(process.env.DEPLOYMENT == 'production')  {
+        if(Application.config.DEPLOYMENT == 'production')  {
             basePath = Application.config.clientBasePath
-        } else if (process.env.DEPLOYMENT == 'development') {
+        } else if (Application.config.DEPLOYMENT == 'development') {
             basePath = Application.config.distributionPath
         }
         
@@ -61,6 +61,5 @@ export default async (context, next) => {
     } else {
         context.instance.config.clientBasePath = Application.config.clientBasePath
     }
-
     await next()
 }
