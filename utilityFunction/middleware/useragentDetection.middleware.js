@@ -42,7 +42,7 @@ export default async (context, next) => {
     }
 
     if(Application.config.DEPLOYMENT == 'production')  {
-        clientBasePath = Application.config.sourceCodePath
+        clientBasePath = Application.config.distributionPath
     } else if (Application.config.DEPLOYMENT == 'development') {
         if(Application.config.DISTRIBUTION) {
             clientBasePath = Application.config.distributionPath
