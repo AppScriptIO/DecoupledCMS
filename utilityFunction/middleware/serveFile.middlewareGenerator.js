@@ -21,8 +21,8 @@ import { streamToString } from '../streamToStringConvertion.js'
 export let serveStaticFile = functionWrappedMiddlewareDecorator(async function (context, next, option) {
     let relativeFilePath = option.filePath || context.path // a predefined path or an extracted url path
     let baseFolderRelativePath = option.directoryRelativePath || '' // additional folder path.
-    let clientBasePath = context.instance.config.clientBasePath
-    let absoluteFilePath = path.normalize(path.join(clientBasePath, baseFolderRelativePath, relativeFilePath))
+    let clientSidePath = context.instance.config.clientSidePath
+    let absoluteFilePath = path.normalize(path.join(clientSidePath, baseFolderRelativePath, relativeFilePath))
     let fileStats = await send(context, absoluteFilePath);
     if(!fileStats || !fileStats.isFile()) { // if file doesn't exist then pass to the next middleware.
         await next()
@@ -35,7 +35,7 @@ export let serveStaticFile = functionWrappedMiddlewareDecorator(async function (
 // read streams and send them using koa - https://github.com/koajs/koa/issues/944 http://book.mixu.net/node/ch9.html
 // TODO: change file name to something like 'render serverside javascript' & convert function to be used for other files not only web components.
 async function serveServerSideRenderedFile(context, next, option) {
-        let clientBasePath = context.instance.config.clientBasePath
+        let clientSidePath = context.instance.config.clientSidePath
         let baseFolderRelativePath = option.directoryRelativePath || '' // additional folder path.
         let filePath = option.filePath || context.path // a predefined path or an extracted url path
         let renderType = (option.renderType) ? // check if renderType is in nested unit options/arguments if not use the $ in filePath (as all paths should contain $ sign from url because the condition claims it, can be overridden using option argument)
@@ -43,7 +43,7 @@ async function serveServerSideRenderedFile(context, next, option) {
             filePath.substr(filePath.lastIndexOf('$') + 1, filePath.length); // $function extracted from url after '$' signature
         let lastIndexPosition = (filePath.lastIndexOf('$') == -1) ? filePath.length : filePath.lastIndexOf('$');
         let relativeFilePath = (option.renderType) ? filePath : filePath.substr(0, lastIndexPosition); // remove function name
-        let absoluteFilePath = path.normalize(path.join(clientBasePath, baseFolderRelativePath, relativeFilePath))
+        let absoluteFilePath = path.normalize(path.join(clientSidePath, baseFolderRelativePath, relativeFilePath))
 
         let renderedContent; 
         switch (renderType) {

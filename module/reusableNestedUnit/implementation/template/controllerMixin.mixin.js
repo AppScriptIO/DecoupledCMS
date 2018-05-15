@@ -5,6 +5,7 @@ import filesystem from 'fs'
 import { classDecorator as prototypeChainDebug} from 'appscript/module/prototypeChainDebug'
 import { add, execute, applyMixin, conditional } from 'appscript/utilityFunction/decoratorUtility.js'
 import assert from "assert"
+import path from 'path'
 
 /**
  * @description Extends a class by super class and adds some common functionality.
@@ -32,7 +33,8 @@ export default Mixin(({ Superclass }) => {
             // loop through template and create rendered view content.
             let view = await nestedUnitInstance.loopInsertionPoint({ type: 'aggregateIntoTemplateObject' })
             
-            let templatePath = `${this.portAppInstance.config.clientBasePath}/${unitInstance.file.filePath}`
+            assert(this.portAppInstance.config.clientSidePath, '• clientSidePath cannot be undefined. i.e. previous middlewares should\'ve set it')
+            let templatePath = path.join(this.portAppInstance.config.clientSidePath, unitInstance.file.filePath)
             let renderedContent;
             switch (unitInstance.executionType) {
                 default:

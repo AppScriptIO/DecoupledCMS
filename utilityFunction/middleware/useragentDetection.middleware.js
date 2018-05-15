@@ -28,38 +28,31 @@ function isES5(agent) {
 
 // This module defines context.instance.config.clientBasePath to be later used in template composition.
 export default async (context, next) => {
+    let clientBasePath, clientSideFolderName;
     let agent = useragentParser.lookup(context.request.headers['user-agent']);
-    if(Application.config.DISTRIBUTION) {
-        
-        if(isES5(agent)) { 
-            context.instance.distribution = 'polyfill' 
-        } else {
-            context.instance.distribution = 'native' 
-        }
-        
-        let basePath;
-        if(Application.config.DEPLOYMENT == 'production')  {
-            basePath = Application.config.clientBasePath
-        } else if (Application.config.DEPLOYMENT == 'development') {
-            basePath = Application.config.distributionPath
-        }
-        
-        let clientSideFolderName;
-        switch (context.instance.distribution) {
-            case 'polyfill':
-                clientSideFolderName = Application.config.distribution.clientSide.polyfill.prefix
-                context.instance.config.clientBasePath = path.join(basePath, clientSideFolderName)
-            break;
-            case 'native':
-                clientSideFolderName = Application.config.distribution.clientSide.native.prefix
-                context.instance.config.clientBasePath = path.join(basePath, clientSideFolderName)
-            break;
-            default: 
-                context.instance.config.clientBasePath = Application.config.clientBasePath
-            break;
-        }
-    } else {
-        context.instance.config.clientBasePath = Application.config.clientBasePath
+
+    context.instance.distribution = (isES5(agent)) ? 'polyfill' : 'native'
+    switch (context.instance.distribution) {
+        case 'polyfill':
+            clientSideFolderName = Application.config.distribution.clientSide.polyfill.prefix
+        break;
+        case 'native':
+            clientSideFolderName = Application.config.distribution.clientSide.native.prefix
+        break;
     }
+
+    if(Application.config.DEPLOYMENT == 'production')  {
+        clientBasePath = Application.config.sourceCodePath
+    } else if (Application.config.DEPLOYMENT == 'development') {
+        if(Application.config.DISTRIBUTION) {
+            clientBasePath = Application.config.distributionPath
+        } else {
+            clientBasePath = Application.config.sourceCodePath
+            clientSideFolderName = Application.config.directory.clientSide.folderName
+        }
+    }
+    
+    // set resolved clientSide directory path.
+    context.instance.config.clientSidePath = path.join(clientBasePath, clientSideFolderName)
     await next()
 }

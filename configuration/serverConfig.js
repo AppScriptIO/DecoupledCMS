@@ -3,8 +3,7 @@ import configuration from '../../../../../setup/configuration/configuration.js'
 
 export let 
     serverBasePath = path.resolve(path.normalize(`${__dirname}/../../../`)),
-    // clientBasePath = path.resolve(path.normalize(`${serverBasePath}/../clientSide`)),
-    clientBasePath = configuration.directory.clientSidePath,
+    sourceCodePath = configuration.directory.SourceCodePath,
     DEPLOYMENT = process.env.DEPLOYMENT || 'development',
     DISTRIBUTION = process.env.DISTRIBUTION || false,
     PORT = (DEPLOYMENT == 'development') ? '9903' : process.env.PORT || 80,
@@ -16,7 +15,8 @@ export let
 export default { 
   deployment: DEPLOYMENT,
   serverBasePath,
-  clientBasePath,
+  sourceCodePath,
+  directory: configuration.directory,
   distributionPath: configuration.directory.distributionPath,
   distribution: configuration.distribution,
   port: PORT,
