@@ -5,6 +5,8 @@ import createClassInstancePerRequest from 'appscript/utilityFunction/middleware/
 import createStaticInstanceClasses from 'appscript/module/reusableNestedUnit'
 import implementMiddlewareOnModuleUsingJson from 'appscript/utilityFunction/middleware/implementMiddlewareOnModuleUsingJson.js' // Middleware extending server functionality
 import implementConditionActionOnModuleUsingJson from 'appscript/utilityFunction/middleware/implementConditionActionOnModuleUsingJson.js'
+import koaCompress from 'koa-compress'
+import zlib from 'zlib'
 
 let MiddlewareController = createStaticInstanceClasses({
     Superclass: Application,
@@ -48,7 +50,11 @@ export default ({entrypointConditionKey} = {}) => async () => {
         async (context, next) => {
             // console.log('Last Middleware reached.')
             await next()
+            context.compress = true
         },
+        koaCompress({
+            flush: zlib.Z_SYNC_FLUSH
+        })
     ]
     Class.applyKoaMiddleware(middlewareArray)
     Class.createHttpServer()

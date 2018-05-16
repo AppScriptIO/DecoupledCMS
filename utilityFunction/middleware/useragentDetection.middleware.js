@@ -5,23 +5,22 @@ import serverConfig from 'appscript/configuration/serverConfig.js'
 import { default as Application } from '../../class/Application.class.js'
 
 function isES5(agent) {
-    switch (agent.family) {
-        case 'Chrome':
-            return agent.satisfies('<50.0.0') ? true : false;
-        break;
+    switch (agent.family) { // Polymer serve https://github.com/Polymer/tools/blob/707ae99d2c0fd6e3edd7894d98a45ce574b39e6d/packages/browser-capabilities/src/browser-capabilities.ts
+        case 'Chrome': case 'Chromium': case 'Chrome Headless':
+            return agent.satisfies('<49.0.0') ? true : false;
+        case 'Opera': case 'OPR':
+            return agent.satisfies('<36.0.0') ? true : false;
+        case 'Vivaldi':
+            return agent.satisfies('<1') ? true : false;
+        case 'Safari': case 'Mobile Safari':
+            return agent.satisfies('<10.0.0') ? true : false;
         case 'Firefox': 
-            return agent.satisfies('<45.0.0') ? true : false;
-        case 'Opera': 
-            return agent.satisfies('<37.0.0') ? true : false;
+            return agent.satisfies('<51.0.0') ? true : false;
         case 'Edge': 
-            return agent.satisfies('<14.0.0') ? true : false;
-        case 'Safari': 
-            return agent.satisfies('<10.0.0') ? true : false;
-        case 'Safari': 
-            return agent.satisfies('<10.0.0') ? true : false;
+            return agent.satisfies('<15.0.63') ? true : false;
         case 'Other':
         default:
-            return (agent.source.toLowerCase().includes('postman')) ? false : true;
+            return (agent.source.toLowerCase().includes('postman')) ? false : false; // default for native version rather than previous choice of polyfill as defalult
         break;
     }
 }
