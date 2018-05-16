@@ -25,13 +25,9 @@ let middlewareArray = [
     // handleConnection(), // Open connection on middleware downstream, Close connection on upstream.
     // createDatabase(),
     // createTable(),
-    // async (context, next) => {
-    //     await next()
-    //     await koaCompress({
-    //         flush: zlib.Z_SYNC_FLUSH
-    //     })(context, next)
-    //     console.log('reached upward middleware')
-    // },
+    koaCompress({
+        flush: zlib.Z_SYNC_FLUSH
+    })
 ]
 if(!serverConfig.ssl) { 
     // middleware.push(compress())  // Compress responses
