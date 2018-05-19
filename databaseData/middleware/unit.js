@@ -70,6 +70,10 @@ let data = [
         label: { name: 'Transform ES javascript -  named module to allowed path' }, key: '1882-q2f-a17d741946c5', 
         importModuleName: 'transformJavascript', executionType: 'functionWrappedMiddleware', fileKey: '33q33-41a1-a12d-e5d4446e85d9',
     },
+    {
+        label: { name: 'Add header cacheControl.middleware.js' }, key: '5yuk3-sadf9-a17d741946c5', 
+        importModuleName: 'default', executionType: 'functionWrappedMiddleware', fileKey: '8asf95-9sdaf5-e5d4446e85d9',
+    },
 
     
 ]

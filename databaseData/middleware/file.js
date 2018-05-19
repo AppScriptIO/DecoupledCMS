@@ -39,6 +39,10 @@ let data = [
       label: { name: 'babelTranspiler.middleware.js' }, key: '33q33-41a1-a12d-e5d4446e85d9',
       filePath: 'appscript/utilityFunction/middleware/babelTranspiler.middleware.js',
     },
+    {
+      label: { name: 'cacheControl.middleware.js' }, key: '8asf95-9sdaf5-e5d4446e85d9',
+      filePath: 'appscript/utilityFunction/middleware/cacheControl.middleware.js',
+    },
 
     
     

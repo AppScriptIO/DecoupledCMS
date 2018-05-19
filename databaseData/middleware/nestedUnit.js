@@ -36,18 +36,22 @@ let data = [
     },
     { label: { name: 'languageContent' }, key: '963ad5-ol23l-a5c9-a21679a45beb', unitKey: '8av2-4dd0-aae8-4796bbe0581f', },
     {
-        label: { name: 'set response headers + Common functions + language content' }, key: 'q632g2-2bh5sdfag-098352c107ea', unitKey: 'empty',
+        label: { name: 'set response headers + Common functions + language content + cache' }, key: 'q632g2-2bh5sdfag-098352c107ea', unitKey: 'empty',
         insertionPoint: [
             { key: 'de45db35-5e0d-49b1-82bc-659fc787b0c1', order: 1, executionType: 'chronological' },
         ],
         children: [
+            
             // set response headers
             { nestedUnit: '231weg-ol23l-a5c9-a21679a45beb', pathPointerKey: '9460ba3c-e9f4-415b-b7c3-96eef0c6382e', insertionPosition: { insertionPathPointer: null,  insertionPoint: 'de45db35-5e0d-49b1-82bc-659fc787b0c1', order: 1, /* placement: { type: 'after/before', pathPointer: 'KeyXXXX', } */ } },
             // Common functions + language content
             { nestedUnit: 'x8q2-8cda-098352c107ea', pathPointerKey: '9460ba3c-e9f4-415b-b7c3-96eef0c6382e', insertionPosition: { insertionPathPointer: null, insertionPoint: 'de45db35-5e0d-49b1-82bc-659fc787b0c1', order: 2, /* placement: { type: 'after/before', pathPointer: 'KeyXXXX', } */ } },
+            // cache control
+            { nestedUnit: '1k2s6-9t5-a21679a45beb', pathPointerKey: '9460ba3c-e9f4-415b-b7c3-96eef0c6382e', insertionPosition: { insertionPathPointer: null, insertionPoint: 'de45db35-5e0d-49b1-82bc-659fc787b0c1', order: 3, /* placement: { type: 'after/before', pathPointer: 'KeyXXXX', } */ } },
         ],
     },
     { label: { name: 'set response headers' }, key: '231weg-ol23l-a5c9-a21679a45beb', unitKey: '8f8f8f-3asa3-6d66-4796bbe0581f', },
+    { label: { name: 'set response headers for cache control' }, key: '1k2s6-9t5-a21679a45beb', unitKey: '5yuk3-sadf9-a17d741946c5', },
 
     /**
      * WebappUI Port:
@@ -106,7 +110,7 @@ let data = [
             { key: 'IP', order: 1, executionType: 'chronological' },
         ],
         children: [
-            // set response headers + Common functions + language content
+            // set response headers + Common functions + language content + cache
             { nestedUnit: 'q632g2-2bh5sdfag-098352c107ea', pathPointerKey: 'templatePPKey', insertionPosition: { insertionPathPointer: null, insertionPoint: 'IP', order: 1, /* placement: { type: 'after/before', pathPointer: 'KeyXXXX', } */ } },
             // Static upload files
             {
@@ -122,7 +126,7 @@ let data = [
             { key: 'IP', order: 1, executionType: 'chronological' },
         ],
         children: [
-            // set response headers + Common functions + language content
+            // set response headers + Common functions + language content + cache
             { nestedUnit: 'q632g2-2bh5sdfag-098352c107ea', pathPointerKey: 'templatePPKey', insertionPosition: { insertionPathPointer: null, insertionPoint: 'IP', order: 1, /* placement: { type: 'after/before', pathPointer: 'KeyXXXX', } */ } },
             // Static Asset files
             { nestedUnit: 'da18242e-792e-4e44-a12b-b280f6331b7c', pathPointerKey: 'x',  insertionPosition: { insertionPathPointer: null, insertionPoint: 'IP', order: 1, placement: { type: null, pathPointer: null, } } },
@@ -135,7 +139,7 @@ let data = [
             { key: 'IP', order: 1, executionType: 'chronological' },
         ],
         children: [
-            // set response headers + Common functions + language content
+            // set response headers + Common functions + language content + cache
             { nestedUnit: 'q632g2-2bh5sdfag-098352c107ea', pathPointerKey: 'templatePPKey', insertionPosition: { insertionPathPointer: null, insertionPoint: 'IP', order: 1, /* placement: { type: 'after/before', pathPointer: 'KeyXXXX', } */ } },
             // rendered Asset files
             { nestedUnit: '2a18242e-792e-4e44-a12b-b280f6331b71', pathPointerKey: 'x', insertionPosition: { insertionPathPointer: null, insertionPoint: 'IP', order: 1, placement: { type: null, pathPointer: null, } } },
@@ -149,7 +153,7 @@ let data = [
             { key: 'IP', order: 1, executionType: 'chronological' },
         ],
         children: [
-            // set response headers + Common functions + language content
+            // set response headers + Common functions + language content + cache
             { nestedUnit: 'q632g2-2bh5sdfag-098352c107ea', pathPointerKey: 'templatePPKey', insertionPosition: { insertionPathPointer: null, insertionPoint: 'IP', order: 1, /* placement: { type: 'after/before', pathPointer: 'KeyXXXX', } */ } },
             // middleware for mapping '@' directory path and applying new path to request object (for next middlewares to use)
             { nestedUnit: '22hh-4e44-a12b-b280f6331b71', pathPointerKey: 'x', insertionPosition: { insertionPathPointer: null, insertionPoint: 'IP', order: 2, /* placement: { type: 'after/before', pathPointer: 'KeyXXXX', } */ } },
