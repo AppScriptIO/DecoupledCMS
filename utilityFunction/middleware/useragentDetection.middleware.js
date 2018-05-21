@@ -24,7 +24,7 @@ function isES5(agent) {
         break;
     }
 }
-
+// USAGE: localhost/?distribution="<clientSide folder name"
 // This module defines context.instance.config.clientBasePath to be later used in template composition.
 export default async (context, next) => {
     let clientBasePath, clientSideFolderName;
@@ -51,6 +51,11 @@ export default async (context, next) => {
         }
     }
     
+    if(context.request.query.distribution) {
+        clientBasePath = Application.config.distributionPath
+        clientSideFolderName = context.request.query.distribution
+    }
+
     // set resolved clientSide directory path.
     context.instance.config.clientSidePath = path.join(clientBasePath, clientSideFolderName)
     await next()

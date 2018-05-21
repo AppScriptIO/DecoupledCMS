@@ -32,7 +32,7 @@ export let transformJavascript = functionWrappedMiddlewareDecorator(async functi
             // transform code using array of plugins.
             let transformedObject = babel.transformSync(
                 scriptCode,
-                { 
+                {
                     presets: transformBabelPreset,
                     plugins: transformBabelPlugin
                 } 

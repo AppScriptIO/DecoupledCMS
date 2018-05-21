@@ -35,10 +35,6 @@ let data = [
                 insertionPosition: { insertionPathPointer: null, insertionPoint: '6b087d33-58df-4edd-aa41-1ffb33af16cf', order: 1, }
             },
             {
-                nestedUnit: 'fasdf-64cf-4903-84da-e6ac06350a1f', pathPointerKey: '06e58b5b-6ca3-469b-b85c-a3954df24741',
-                insertionPosition: { insertionPathPointer: null, insertionPoint: '6b087d33-58df-4edd-aa41-1ffb33af16cf', order: 1, }
-            },
-            {
                 nestedUnit: 'q9d284da-e6ac06350a1f', pathPointerKey: 'x',
                 insertionPosition: { insertionPathPointer: null, insertionPoint: '6b087d33-58df-4edd-aa41-1ffb33af16cf', order: 1, }
             },
@@ -49,6 +45,10 @@ let data = [
             {
                 nestedUnit: '558062b7-64cf-4903-84da-e6ac06350a1f', pathPointerKey: '06e58b5b-6ca3-469b-b85c-a3954df24741',
                 insertionPosition: { insertionPathPointer: null, insertionPoint: '6b087d33-58df-4edd-aa41-1ffb33af16cf', order: 1, }
+            },
+            {
+                nestedUnit: 'fasdf-64cf-4903-84da-e6ac06350a1f', pathPointerKey: '06e58b5b-6ca3-469b-b85c-a3954df24741',
+                insertionPosition: { insertionPathPointer: null, insertionPoint: '1afwe6f1-5ef4-4a3d-8096-9baeeb31c81d', order: 1, }
             },
             {
                 nestedUnit: '684wef-64cf-4903-84da-e6ac06350a1f', pathPointerKey: 'x',
