@@ -2,6 +2,7 @@
 import { default as Application } from '../class/Application.class.js'
 import initializeDatabaseData from 'appscript/utilityFunction/database/initializeDatabaseData.js'
 import oAuthInitializePortServer from 'appscript/class/port/oAuth/initializePortServer.js'
+import openIdConnectInitializePortServer from 'appscript/class/port/openIdConnect/initializePortServer.js'
 import webappUIInitializePortServer from 'appscript/class/port/webappUI/initializePortServer.js'
 import staticContentInitializePortServer from 'appscript/class/port/staticContent/initializePortServer.js'
 import apiInitializePortServer from 'appscript/class/port/api/initializePortServer.js'
@@ -18,7 +19,8 @@ async function microservice({
             databaseData
         })()
         console.groupCollapsed('Port classes initialization:')
-        await oAuthInitializePortServer()()
+        // await oAuthInitializePortServer()()
+        await openIdConnectInitializePortServer()()
         await webappUIInitializePortServer()()
         await staticContentInitializePortServer({ entrypointConditionKey})()
         await apiInitializePortServer()()

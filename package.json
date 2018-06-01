@@ -13,17 +13,18 @@
     "koa-response-time": "*",
     "koa-router": "*",
     "koa-sendfile": "*",
+    "koa-mount": "*",
     "koa-views": "*",
     "mixwith": "*",
     "moment": "*",
     "multistream": "*",
     "oauth2-server": "^3.0.0",
+    "oidc-provider": "^3.0.3",
     "promise-events": "*",
     "rethinkdb": "*",
     "underscore": "*",
     "useragent": "*",
     "ws": "*"
   },
-  "devDependencies": {
-  }
+  "devDependencies": {}
 }
