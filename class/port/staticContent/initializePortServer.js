@@ -1,4 +1,4 @@
-import views from 'koa-views'
+import koaViews from 'koa-views'
 import { default as Application } from '../../Application.class.js'
 import StaticContentClass from 'appscript/class/port/staticContent/StaticContent.class.js'
 import createClassInstancePerRequest from 'appscript/utilityFunction/middleware/createClassInstancePerRequest.middleware.js'
@@ -20,8 +20,9 @@ let ConditionController = createStaticInstanceClasses({
 export default ({entrypointConditionKey} = {}) => async () => {
     let Class = StaticContentClass
     // Templating engine & associated extention.
-    Class.serverKoa.use(views('/', { map: { html: 'underscore', js: 'underscore' } } ))
+    // Class.serverKoa.use()
     let middlewareArray = [
+        koaViews('/', { map: { html: 'underscore', js: 'underscore' } } ),
         createClassInstancePerRequest(Class),
         // async (context, next) => {
         //     // // Authorization access example:

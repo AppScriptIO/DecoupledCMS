@@ -8,7 +8,7 @@ import { extendedSubclassPattern } from 'appscript/utilityFunction/extendedSubcl
 import OpenIdConnectServer from 'oidc-provider'
 import rethinkdbOIDCAdapter from './rethinkdbOIDCAdapter.js'
 import memoryAdapter from 'oidc-provider/lib/adapters/memory_adapter.js' // for development only
-import { oidcConfiguration, exampleConfiguration } from './oidcConfiguration.js'
+import { oidcConfiguration } from './oidcConfiguration.js'
 import { clientArray } from './clientApplication.js'
 import keystore from './key/keystore.json'
 
@@ -39,13 +39,13 @@ class OpenIdConnect extends Application {
         self.OpenIdConnectServer = OpenIdConnectServer
         self.openIdConnectServer = new OpenIdConnectServer(
             `${Application.config.PROTOCOL}${Application.config.HOST}:${self.port}`, // issuer address
-            exampleConfiguration // oidcConfiguration,            
+            oidcConfiguration,            
         )
         await self.openIdConnectServer.initialize({ // initialize server.
             clients: clientArray,
-            adapter: memoryAdapter, // databse adapter
+            adapter: memoryAdapter, // databse adapter TODO: implement https://github.com/panva/node-oidc-provider/blob/master/example/my_adapter.js
             keystore, // encryption keys / certificates. TODO: create keystore for production
-        })
+        }).catch(error => { throw error })
         const oidcKoaServer = self.openIdConnectServer.app
         
         // cookie signing keys // TODO: add encryption keys for cookies to prevent tampering & add interval rotation for keys.

@@ -1,4 +1,4 @@
-import views from 'koa-views'
+import koaViews from 'koa-views'
 import { default as Application } from '../../Application.class.js'
 import WebappUIClass from 'appscript/class/port/webappUI/WebappUI.class.js'
 import debugLogMiddleNestedUnitStructure from 'appscript/utilityFunction/debugLogMiddlewareNestedUnitStructure.js'
@@ -22,8 +22,9 @@ let ConditionController = createStaticInstanceClasses({
 export default ({entrypointConditionKey} = {}) => async () => {
     let Class = WebappUIClass
     // Templating engine & associated extention.
-    Class.serverKoa.use(views('/', { map: { html: 'underscore', js: 'underscore' } } ))
+    // Class.serverKoa.use()
     let middlewareArray = [
+        koaViews('/', { map: { html: 'underscore', js: 'underscore' } } ),
         createClassInstancePerRequest(Class),
         async (context, next) => {
             // debugLogMiddleNestedUnitStructure('91140de5-9ab6-43cd-91fd-9eae5843c74c') 
