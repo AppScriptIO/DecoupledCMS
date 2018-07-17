@@ -26,13 +26,5 @@ export const clientArray = [
         redirect_uris: ['https://lvh.me/cb'],
         token_endpoint_auth_method: 'none' // authorization method for requests, one of either - client_secret_post, client_secret_basic, client_secret_jwt, private_key_jwt, or none. default is "client_secret_basic" https://openid.net/specs/openid-connect-registration-1_0.html#ClientMetadata
     },
-    {
-        client_id: 'foo',
-        redirect_uris: ['https://example.com'],
-        response_types: ['id_token token'],
-        grant_types: ['implicit'],
-        scopes: ['openid', 'offline_access'],
-        token_endpoint_auth_method: 'none',
-    },
   
 ]

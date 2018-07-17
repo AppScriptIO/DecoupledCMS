@@ -1,6 +1,9 @@
 import rethinkDB from 'rethinkdb' 
 
-export async function deleteAllDatabase(connection) {
+export async function deleteAllDatabase(
+    connection,
+    rethinkDB = rethinkDB
+) {
     let databaseList = await rethinkDB.dbList().run(connection);
     databaseList = await databaseList.filter(item => item != 'rethinkdb') // remove default 'rethinkdb' database.
     for (let databaseName of databaseList) {
@@ -8,8 +11,12 @@ export async function deleteAllDatabase(connection) {
     }
 }
 
-export async function createDatabase(databaseName, connection) {
-    let databaseExists = await rethinkDB.dbList().contains(databaseName).run(connection);
+export async function createDatabase(
+    databaseName,
+    connection,
+    rethinkDB = rethinkDB
+) {
+    let databaseExists = await rethinkDB.dbList().contains(databaseName).run(connection)
     if(!databaseExists) {
         let dbCreationResponse = await rethinkDB.dbCreate(databaseName).run(connection)
         
@@ -27,7 +34,12 @@ export async function createDatabase(databaseName, connection) {
     }
 }
 
-export async function createTableAndInsertData(databaseName, databaseData, connection) {
+export async function createTableAndInsertData(
+    databaseName, 
+    databaseData, 
+    connection,
+    rethinkDB = rethinkDB
+) {
     for (let tableData of databaseData) {
         await rethinkDB.db(databaseName).tableCreate(tableData.databaseTableName).run(connection)
             .then(async tableCreationResponse => {

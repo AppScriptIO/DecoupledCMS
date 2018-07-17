@@ -17,7 +17,7 @@ export default Mixin(({ Superclass }) => {
          * @param {any} {nestedUnitKey} 
          * @returns { Object || False } Object containing instruction settings to be used through an implementing module.
          */
-        async initializeNestedUnit({ nestedUnitKey, additionalChildNestedUnit = [], pathPointerKey = null}) { // Entrypoint Instance         
+        async initializeNestedUnit({ nestedUnitKey, additionalChildNestedUnit = [], pathPointerKey = null }) { // Entrypoint Instance         
             assert(nestedUnitKey, '• Key should be present. The passed value is either undefined, null, or empty string.')
 
             // [1] get nestedUnit
@@ -32,7 +32,7 @@ export default Mixin(({ Superclass }) => {
             
             // [3] Iterate over insertion points
             await nestedUnitInstance.loopInsertionPoint({ type: 'executeScript' })
-        }        
+        }
     }
     
     return self

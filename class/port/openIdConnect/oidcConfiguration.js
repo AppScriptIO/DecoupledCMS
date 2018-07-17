@@ -53,7 +53,11 @@ export const oidcConfiguration = {
     async findById(context, id) { // Adapter for user / account id & claims https://github.com/panva/node-oidc-provider/blob/master/docs/configuration.md#accounts
         return { // temporarly for develoopment - return request id directly.
             accountId: id,
-            async claims(use, scope) { return { sub: id }; },
+            async claims(use, scope) { 
+                return { 
+                    sub: id 
+                } 
+            },
         };
     },      
     interactionUrl: function interactionUrl(ctx, interaction) { // devInteractions must be turned off

@@ -22,12 +22,12 @@ export function oidcInteractionEntrypoint({ // interaction entrypoint
                 interaction: querystring.stringify(details.interaction, ',<br/>', ' = ', {
                     encodeURIComponent: value => value,
                 }),
-                      })
+            })
         } else { // serve confirm html screen
             await context.render(`${__dirname}/../htmlView/oidcInteractionConfirm.html`, {
                 client,
                 details,
-                title: 'Sign-in',
+                title: 'confirm consent',
                 debug: querystring.stringify(details.params, ',<br/>', ' = ', {
                     encodeURIComponent: value => value,
                 }),
@@ -86,7 +86,8 @@ export function oidcInteractionLogin({
             //     error_description: 'Insufficient permissions: scope out of reach for this Account',
             // }
 
-            consent: {}, // consent was given by the user to the client for this session
+            consent: {
+            }, // consent was given by the user to the client for this session
         }
     
         await openIdConnectServer.interactionFinished(context.req, context.res, result);
@@ -98,11 +99,12 @@ export function oidcInteractionLogin({
 }}
 
 
-export function oidcInteractionConfirm({
+export function oidcInteractionConfirm({ // TODO: FIX not calling confirm consent !!
     openIdConnectServer
 }) { return async (context, next) => { // after completing interaction return the results to finish the interaction, and then as a result /authorize is called again.
     const pathArray = context.path.split( '/' ).filter(item => item)
     if(pathArray[0] == 'interaction' && pathArray[2] == 'confirm') {
+        console.log('confirm middleware called')
         const result = { consent: {} };
         await openIdConnectServer.interactionFinished(context.req, context.res, result);
         await next();

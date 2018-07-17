@@ -24,7 +24,8 @@ let counter = [] // allows to have a unique set of relations among different nes
  */
 function createStaticInstanceClasses({
     Superclass, /* Usually the higher Application class */
-    implementationType,
+    /* When defined the exported classes include the specific implementation for node initialization (class tree of ReusableNestedUnit will include a specific implementation class), i.e. all subsequent nodes are executed using the speicifc algorithm of the implementaiton. */
+    implementationType, // Specific node class implementation for node instance initialization.
     cacheName = false, /* {Boolean || String} */
     rethinkdbConnection
 } = {}) {
@@ -53,9 +54,9 @@ function createStaticInstanceClasses({
         case 'Schema':
             implementationConfig = require('./implementation/schema').default
         break;
-
         default:
-            console.log('⚠️ No implementation chosen for building class tree in ReusableNestedUnit.')
+            // Dynamic implementation - not restricted to specific initialization algorithm, rather choosen from setting of each node in the traversed graph.
+            
         break;
     }
 

@@ -7,6 +7,7 @@ import createClassInstancePerRequest from 'appscript/utilityFunction/middleware/
 import implementMiddlewareOnModuleUsingJson from 'appscript/utilityFunction/middleware/implementMiddlewareOnModuleUsingJson.js' // Middleware extending server functionality
 import implementConditionActionOnModuleUsingJson from 'appscript/utilityFunction/middleware/implementConditionActionOnModuleUsingJson.js'
 import languageContent from 'appscript/utilityFunction/middleware/languageContent.middleware.js'
+const { Issuer } = require('openid-client');
 
 let MiddlewareController = createStaticInstanceClasses({ 
     Superclass: Application, 
@@ -20,6 +21,20 @@ let ConditionController = createStaticInstanceClasses({
 })
 
 export default ({entrypointConditionKey} = {}) => async () => {
+
+    const oidcPort = 8084
+    const issuer = await Issuer.discover(`http://localhost:${oidcPort}`)
+    const oidcClient = new issuer.Client({
+        client_id: 'privateClientApplication',
+        client_secret: 'secret',
+        id_token_signed_response_alg: 'RS256', // defaults to RS256
+        token_endpoint_auth_method: 'client_secret_basic', // defaults to client_secret_basic
+    }, /*[ keystore ]*/) // keystore is an optional argument for instantiating a client with configured asymmetrical ID Token or UserInfo response encryption
+    let authURL = oidcClient.authorizationUrl({
+        redirect_uri: 'https://lvh.me/cb',
+        scope: 'openid',
+    })
+
     let Class = WebappUIClass
     // Templating engine & associated extention.
     // Class.serverKoa.use()
@@ -45,7 +60,19 @@ export default ({entrypointConditionKey} = {}) => async () => {
             await implementConditionActionOnModuleUsingJson({setting: callbackOption})(context, next)
         },
         async (context, next) => {
-            // console.log('Last Middleware reached.')
+
+            if(context.path == '/oidcClient'){
+                console.log(authURL)
+                let introspection = await oidcClient.introspect('token') // => Promise
+                .then(function (response) {
+                    return response
+                })
+                context.body = introspection
+            }
+            await next()
+        },
+        async (context, next) => {
+            console.log('Last Middleware reached.')
             await next()
         }, 
     ]
