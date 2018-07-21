@@ -1,0 +1,4 @@
+[submodule "dependency/multiplePrototypeChain"]
+	path = dependency/multiplePrototypeChain
+	url = https://github.com/AppScriptIO/multiplePrototypeChain
+	branch = build
