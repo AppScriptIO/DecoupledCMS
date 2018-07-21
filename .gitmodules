@@ -1,0 +1,3 @@
+[submodule "dependency/build"]
+	path = dependency/build
+	url = https://github.com/AppScriptIO/multiplePrototypeChain/tree/build
