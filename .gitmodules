@@ -1,6 +1,6 @@
-[submodule "dependency/appDeploymentLifecycle"]
-	path = dependency/appDeploymentLifecycle
-	url = https://github.com/myuseringithub/appDeploymentLifecycle
-[submodule "dependency/multiplePrototypeChain"]
-	path = dependency/multiplePrototypeChain
+[submodule "dependency/gitSubmodule/multiplePrototypeChain"]
+	path = dependency/gitSubmodule/multiplePrototypeChain
 	url = https://github.com/AppScriptIO/multiplePrototypeChain
+[submodule "dependency/gitSubmodule/appDeploymentLifecycle"]
+	path = dependency/gitSubmodule/appDeploymentLifecycle
+	url = https://github.com/myuseringithub/appDeploymentLifecycle
