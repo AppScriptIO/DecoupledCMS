@@ -2,3 +2,6 @@
 	path = dependency/multiplePrototypeChain
 	url = https://github.com/AppScriptIO/multiplePrototypeChain
 	branch = build
+[submodule "dependecy/appDeploymentLifecycle"]
+	path = dependecy/appDeploymentLifecycle
+	url = https://github.com/myuseringithub/appDeploymentLifecycle
