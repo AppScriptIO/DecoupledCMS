@@ -1,4 +1,10 @@
 {
   "main": "./source/entrypoint.js",
-  "name": "appscript"
+  "name": "appscript",
+  "version": "1.0.0",
+  "workspaces": [
+      "dependency/gitSubmodule/*",
+      "dependency/nodePackage"
+  ],
+  "private": true
 }
