@@ -3,17 +3,17 @@ import assert from 'assert'
 import path from 'path'
 import filesystem from 'fs'
 import EventEmitter from 'events'
-import configuration from '../configuration/configuration.export.js' // Load configuration settings.
+import configuration from '../../setup/configuration/configuration.export.js' // Load configuration settings.
 import Koa from 'koa' // Koa applicaiton server
 import compose from 'koa-compose'
-import rethinkdbConfig from '../configuration/rethinkdbConfig.js'
-import { connect } from 'appscript/utilityFunction/middleware/commonDatabaseFunctionality.js'
-import { add, execute, applyMixin } from 'appscript/utilityFunction/decoratorUtility.js'
-import addStaticSubclassToClassArray from 'appscript/module/addStaticSubclassToClassArray.staticMethod'
-import { extendedSubclassPattern } from 'appscript/utilityFunction/extendedSubclassPattern.js'
+import rethinkdbConfig from '../../setup/configuration/rethinkdbConfig.js'
+import { connect } from '../utilityFunction/middleware/commonDatabaseFunctionality.js'
+import { add, execute, applyMixin } from '@dependency/commonPattern/source/decoratorUtility.js'
+import addStaticSubclassToClassArray from '@dependency/commonPattern/source/addStaticSubclassToClassArray.staticMethod'
+import { extendedSubclassPattern } from '@dependency/commonPattern/source/extendedSubclassPattern.js'
 import underscore from 'underscore'
-import {default as getTableDocumentDefault} from "appscript/utilityFunction/database/query/getTableDocument.query.js";
-import { getMergedMultipleDocumentOfSpecificLanguage as queryPatternImplementation} from "appscript/utilityFunction/database/query/patternImplementation.js";
+import {default as getTableDocumentDefault} from "@dependency/databaseUtility/source/getTableDocument.query.js";
+import { getMergedMultipleDocumentOfSpecificLanguage as queryPatternImplementation} from "@dependency/databaseUtility/source/patternImplementation.js";
 
 const self = 
 @add({ to: 'static'}, {

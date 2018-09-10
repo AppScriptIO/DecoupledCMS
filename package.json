@@ -1,10 +1,42 @@
 {
   "main": "./source/entrypoint.js",
-  "name": "appscript",
+  "name": "@dependency/appscript",
   "version": "1.0.0",
-  "workspaces": [
-      "dependency/gitSubmodule/*",
-      "dependency/nodePackage"
-  ],
-  "private": true
+  "workspaces": {
+    "packages": [
+    ], 
+    "nohoist": [
+    ]
+  },
+  "private": true,
+  "dependencies": {
+    "@babel/core": "^7.0.0-beta.55",
+    "co-body": "*",
+    "koa": "*",
+    "koa-bodyparser": "*",
+    "koa-compose": "*",
+    "koa-compress": "*",
+    "koa-json-error": "*",
+    "koa-logger": "*",
+    "koa-mount": "*",
+    "koa-response-time": "*",
+    "koa-router": "*",
+    "koa-sendfile": "*",
+    "koa-views": "*",
+    "mixwith": "*",
+    "moment": "*",
+    "multistream": "*",
+    "oidc-provider": "^3.0.3",
+    "openid-client": "*",
+    "promise-events": "*",
+    "rethinkdb": "*",
+    "underscore": "*",
+    "useragent": "*",
+    "ws": "*",
+    "@dependency/appDeploymentLifecycle": "https://github.com/AppScriptIO/appDeploymentLifecycle",
+    "@dependency/nodeRelationshipGraph": "https://github.com/AppScriptIO/nodeRelationshipGraph",
+    "@dependency/multiplePrototypeChain": "https://github.com/AppScriptIO/multiplePrototypeChain",
+    "@dependency/populateObjectPropertyFromObject": "https://github.com/AppScriptIO/populateObjectPropertyFromObject"
+    
+  }
 }

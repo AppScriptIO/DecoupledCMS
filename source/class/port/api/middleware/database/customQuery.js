@@ -1,4 +1,4 @@
-import serverConfig from 'appscript/configuration/serverConfig.js'
+import serverConfig from '../../../../../../setup/configuration/serverConfig.js'
 import r from 'rethinkdb'
 
 export async function test(context, next) {

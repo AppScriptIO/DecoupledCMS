@@ -1,4 +1,4 @@
-import serverConfig from 'appscript/configuration/serverConfig.js'
+import serverConfig from '../../../setup/configuration/serverConfig.js'
 import compose from 'koa-compose'
 import responseTime from 'koa-response-time'
 import logger from 'koa-logger'
@@ -12,9 +12,9 @@ import koaCompress from 'koa-compress'
 import zlib from 'zlib'
 
 // Database
-import rethinkdbConfig from 'appscript/configuration/rethinkdbConfig.js'
+import rethinkdbConfig from '../../../setup/configuration/rethinkdbConfig.js'
 import r from 'rethinkdb'
-import { handleConnection, createDatabase, createTable } from 'appscript/utilityFunction/middleware/commonDatabaseFunctionality.js'
+import { handleConnection, createDatabase, createTable } from './commonDatabaseFunctionality.js'
 
 let middlewareArray = [
     responseTime(), // Response time x-response-time

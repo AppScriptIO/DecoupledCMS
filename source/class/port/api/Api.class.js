@@ -1,8 +1,8 @@
 // API server
 import Koa from 'koa' // Koa applicaiton server
 import {default as Application} from '../../Application.class.js'
-import { add, execute, applyMixin } from 'appscript/utilityFunction/decoratorUtility.js'
-import { extendedSubclassPattern } from 'appscript/utilityFunction/extendedSubclassPattern.js';
+import { add, execute, applyMixin } from '@dependency/commonPattern/source/decoratorUtility.js'
+import { extendedSubclassPattern } from '@dependency/commonPattern/source/extendedSubclassPattern.js';
 
 const self = 
 @execute({ staticMethod: 'initializeStaticClass' })

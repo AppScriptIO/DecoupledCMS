@@ -1,4 +1,4 @@
-import config from 'appscript/configuration/configuration.export.js'
+import config from '../../../setup/configuration/configuration.export.js'
 import path from 'path'
 import filesystem from 'fs'
 import stream from 'stream'

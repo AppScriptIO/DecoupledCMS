@@ -1,4 +1,4 @@
-import getUrlPathAsArray from 'appscript/utilityFunction/conditionCheck/getUrlPathAsArray.js'
+import getUrlPathAsArray from './getUrlPathAsArray.js'
 
 export default async (self) => {
     let context = self.context

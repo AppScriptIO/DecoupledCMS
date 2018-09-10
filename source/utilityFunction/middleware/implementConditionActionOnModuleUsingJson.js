@@ -1,6 +1,6 @@
 import { default as Application } from '../../class/Application.class.js'
-import implementMiddlewareOnModuleUsingJson from 'appscript/utilityFunction/middleware/implementMiddlewareOnModuleUsingJson.js' // Middleware extending server functionality
-import createStaticInstanceClasses from 'appscript/module/reusableNestedUnit'
+import implementMiddlewareOnModuleUsingJson from './implementMiddlewareOnModuleUsingJson.js' // Middleware extending server functionality
+import createStaticInstanceClasses from '@dependency/nodeRelationshipGraph'
 let MiddlewareController = createStaticInstanceClasses({ 
     Superclass: Application, 
     implementationType: 'Middleware',

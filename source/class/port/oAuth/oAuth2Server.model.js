@@ -1,6 +1,6 @@
 import { default as Application } from '../../Application.class.js'
 import rethinkDB from 'rethinkdb' 
-import getTableDocumentAndFilter from 'appscript/utilityFunction/database/query/getTableDocumentAndFilter.query.js'
+import getTableDocumentAndFilter from '@dependency/databaseUtility/source/getTableDocumentAndFilter.query.js'
 
 let getTableDocument = {
     generate: getTableDocumentAndFilter,

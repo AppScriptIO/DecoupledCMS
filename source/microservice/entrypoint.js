@@ -1,12 +1,12 @@
 
 import { default as Application } from '../class/Application.class.js'
-import initializeDatabaseData from 'appscript/utilityFunction/database/initializeDatabaseData.js'
-import oAuthInitializePortServer from 'appscript/class/port/oAuth/initializePortServer.js'
-import openIdConnectInitializePortServer from 'appscript/class/port/openIdConnect/initializePortServer.js'
-import webappUIInitializePortServer from 'appscript/class/port/webappUI/initializePortServer.js'
-import staticContentInitializePortServer from 'appscript/class/port/staticContent/initializePortServer.js'
-import apiInitializePortServer from 'appscript/class/port/api/initializePortServer.js'
-import websocketInitializePortServer from 'appscript/class/port/webSocket/initializePortServer.js'
+import initializeDatabaseData from '../utilityFunction/database/initializeDatabaseData.js'
+import oAuthInitializePortServer from '../class/port/oAuth/initializePortServer.js'
+import openIdConnectInitializePortServer from '../class/port/openIdConnect/initializePortServer.js'
+import webappUIInitializePortServer from '../class/port/webappUI/initializePortServer.js'
+import staticContentInitializePortServer from '../class/port/staticContent/initializePortServer.js'
+import apiInitializePortServer from '../class/port/api/initializePortServer.js'
+import websocketInitializePortServer from '../class/port/webSocket/initializePortServer.js'
 
 async function microservice({
     configuration,

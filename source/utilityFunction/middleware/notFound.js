@@ -1,5 +1,5 @@
 import path from 'path'
-import config from 'appscript/configuration/configuration.export.js' // Load configuration settings.
+import config from '../../../setup/configuration/configuration.export.js' // Load configuration settings.
 import send from 'koa-sendfile'
 import { default as Application } from '../../class/Application.class.js'
 

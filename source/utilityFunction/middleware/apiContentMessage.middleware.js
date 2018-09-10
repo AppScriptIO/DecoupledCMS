@@ -1,5 +1,5 @@
 import { default as Application } from '../../class/Application.class.js'
-import createStaticInstanceClasses from 'appscript/module/reusableNestedUnit'
+import createStaticInstanceClasses from '@dependency/nodeRelationshipGraph'
 
 export default async (context, next) => {
     let connection = Application.rethinkdbConnection

@@ -8,6 +8,7 @@ applicationHostPath="`pwd`/$currentRelativeFilePath/.."
 echo host path: $applicationHostPath
 
 docker run \
+    --name appscript \
     --volume $applicationHostPath:/project/application \
     --volume $HOME/.ssh:/project/.ssh \
     --volume /var/run/docker.sock:/var/run/docker.sock \

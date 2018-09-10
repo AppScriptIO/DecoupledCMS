@@ -3,8 +3,8 @@ import _ from 'underscore'
 import filesystem from 'fs'
 import https from 'https'
 import http from 'http'
-import { add, execute, applyMixin } from 'appscript/utilityFunction/decoratorUtility.js'
-import { extendedSubclassPattern } from 'appscript/utilityFunction/extendedSubclassPattern.js';
+import { add, execute, applyMixin } from '@dependency/commonPattern/source/decoratorUtility.js'
+import { extendedSubclassPattern } from '@dependency/commonPattern/source/extendedSubclassPattern.js';
 import OpenIdConnectServer from 'oidc-provider'
 import rethinkdbOIDCAdapter from './rethinkdbOIDCAdapter.js'
 import memoryAdapter from 'oidc-provider/lib/adapters/memory_adapter.js' // for development only

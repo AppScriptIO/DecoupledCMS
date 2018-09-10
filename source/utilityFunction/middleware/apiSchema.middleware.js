@@ -1,6 +1,6 @@
 import { default as Application } from '../../class/Application.class.js'
-import createStaticInstanceClasses from 'appscript/module/reusableNestedUnit'
-import getUrlPathAsArray from 'appscript/utilityFunction/conditionCheck/getUrlPathAsArray.js'
+import createStaticInstanceClasses from '@dependency/nodeRelationshipGraph'
+import getUrlPathAsArray from '../conditionCheck/getUrlPathAsArray.js'
 
 let SchemaController = createStaticInstanceClasses({
     Superclass: Application, 

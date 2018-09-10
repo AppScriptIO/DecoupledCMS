@@ -1,6 +1,6 @@
 
 import WebSocketModule from 'ws'
-import WebSocketClass from 'appscript/class/port/webSocket/WebSocket.class.js'
+import WebSocketClass from './WebSocket.class.js'
 
 export default ({} = {}) => async () => {
     let Class = WebSocketClass

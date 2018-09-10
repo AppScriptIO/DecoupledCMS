@@ -1,9 +1,9 @@
 import parse from 'co-body' // throws on unsupported content type.
 import bodyParser from 'koa-bodyparser' // Brings extra option for handling error and unsupported content-types.
 import { default as Application } from '../../class/Application.class.js'
-import { getMergedMultipleDocumentOfSpecificLanguage as queryPatternImplementation} from "appscript/utilityFunction/database/query/patternImplementation.js";
-import {functionWrappedMiddlewareDecorator} from '../middlewarePatternDecorator.js'
-import { mergeDeep } from '../deepObjectMerge.js'
+import { getMergedMultipleDocumentOfSpecificLanguage as queryPatternImplementation} from "@dependency/databaseUtility/source/patternImplementation.js";
+import {functionWrappedMiddlewareDecorator} from '@dependency/commonPattern/source/middlewarePatternDecorator.js'
+import { mergeDeep } from '@dependency/deepObjectMerge'
 
 export default functionWrappedMiddlewareDecorator(async function (context, next, option) {
         let urlQuery = context.request.query

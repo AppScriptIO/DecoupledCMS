@@ -4,8 +4,8 @@ import _ from 'underscore'
 import filesystem from 'fs'
 import https from 'https'
 import http from 'http'
-import { add, execute, applyMixin } from 'appscript/utilityFunction/decoratorUtility.js'
-import { extendedSubclassPattern } from 'appscript/utilityFunction/extendedSubclassPattern.js'
+import { add, execute, applyMixin } from '@dependency/commonPattern/source/decoratorUtility.js'
+import { extendedSubclassPattern } from '@dependency/commonPattern/source/extendedSubclassPattern.js'
 
 const self = 
 @execute({ staticMethod: 'initializeStaticClass' })

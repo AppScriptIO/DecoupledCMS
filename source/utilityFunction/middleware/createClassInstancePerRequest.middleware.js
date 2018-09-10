@@ -1,5 +1,5 @@
 import path from 'path'
-import serverConfig from 'appscript/configuration/serverConfig.js'
+import serverConfig from '../../../setup/configuration/serverConfig.js'
 import { default as Application } from '../../class/Application.class.js'
 
 export default (Class) => {

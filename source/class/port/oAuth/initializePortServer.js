@@ -1,11 +1,11 @@
 import views from 'koa-views'
 import bodyParser from 'koa-bodyparser'
 import { default as Application } from '../../Application.class.js'
-import OAuthClass from 'appscript/class/port/oAuth/OAuth.class.js'
-import implementMiddlewareOnModuleUsingJson from 'appscript/utilityFunction/middleware/implementMiddlewareOnModuleUsingJson.js' // Middleware extending server functionality
-import implementConditionActionOnModuleUsingJson from 'appscript/utilityFunction/middleware/implementConditionActionOnModuleUsingJson.js'
-import createStaticInstanceClasses from 'appscript/module/reusableNestedUnit'
-import createClassInstancePerRequest from 'appscript/utilityFunction/middleware/createClassInstancePerRequest.middleware.js'
+import OAuthClass from './OAuth.class.js'
+import implementMiddlewareOnModuleUsingJson from '../../../utilityFunction/middleware/implementMiddlewareOnModuleUsingJson.js' // Middleware extending server functionality
+import implementConditionActionOnModuleUsingJson from '../../../utilityFunction/middleware/implementConditionActionOnModuleUsingJson.js'
+import createStaticInstanceClasses from '../../../module/reusableNestedUnit'
+import createClassInstancePerRequest from '../../../utilityFunction/middleware/createClassInstancePerRequest.middleware.js'
 
 let MiddlewareController = createStaticInstanceClasses({
     Superclass: Application, 

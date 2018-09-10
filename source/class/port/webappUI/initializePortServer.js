@@ -1,12 +1,12 @@
 import koaViews from 'koa-views'
 import { default as Application } from '../../Application.class.js'
-import WebappUIClass from 'appscript/class/port/webappUI/WebappUI.class.js'
-import debugLogMiddleNestedUnitStructure from 'appscript/utilityFunction/debugLogMiddlewareNestedUnitStructure.js'
-import createStaticInstanceClasses from 'appscript/module/reusableNestedUnit'
-import createClassInstancePerRequest from 'appscript/utilityFunction/middleware/createClassInstancePerRequest.middleware.js'
-import implementMiddlewareOnModuleUsingJson from 'appscript/utilityFunction/middleware/implementMiddlewareOnModuleUsingJson.js' // Middleware extending server functionality
-import implementConditionActionOnModuleUsingJson from 'appscript/utilityFunction/middleware/implementConditionActionOnModuleUsingJson.js'
-import languageContent from 'appscript/utilityFunction/middleware/languageContent.middleware.js'
+import WebappUIClass from './WebappUI.class.js'
+import debugLogMiddleNestedUnitStructure from '../../../utilityFunction/debugLogMiddlewareNestedUnitStructure.js'
+import createStaticInstanceClasses from '@dependency/nodeRelationshipGraph'
+import createClassInstancePerRequest from '../../../utilityFunction/middleware/createClassInstancePerRequest.middleware.js'
+import implementMiddlewareOnModuleUsingJson from '../../../utilityFunction/middleware/implementMiddlewareOnModuleUsingJson.js' // Middleware extending server functionality
+import implementConditionActionOnModuleUsingJson from '../../../utilityFunction/middleware/implementConditionActionOnModuleUsingJson.js'
+import languageContent from '../../../utilityFunction/middleware/languageContent.middleware.js'
 const { Issuer } = require('openid-client');
 
 let MiddlewareController = createStaticInstanceClasses({ 

@@ -1,4 +1,4 @@
-import config from 'appscript/configuration/configuration.export.js'
+import config from '../../../setup/configuration/configuration.export.js'
 import path from 'path'
 import filesystem from 'fs'
 import Stream from 'stream'
@@ -8,11 +8,11 @@ import underscore from 'underscore'
 import send from 'koa-sendfile' // Static files.
 // import mount from 'koa-mount'
 import { default as Application } from '../../class/Application.class.js'
-import {functionWrappedMiddlewareDecorator} from '../middlewarePatternDecorator.js'
-import createStaticInstanceClasses from 'appscript/module/reusableNestedUnit'
-import {default as getTableDocumentDefault} from "appscript/utilityFunction/database/query/getTableDocument.query.js";
-import { wrapStringStream } from '../wrapStringStream.js'
-import { streamToString } from '../streamToStringConvertion.js'
+import {functionWrappedMiddlewareDecorator} from '@dependency/commonPattern/source/middlewarePatternDecorator.js'
+import createStaticInstanceClasses from '../../module/reusableNestedUnit'
+import {default as getTableDocumentDefault} from "@dependency/databaseUtility/source/getTableDocument.query.js";
+import { wrapStringStream } from '@dependency/wrapStringStream'
+import { streamToString } from '@dependency/streamToStringConvertion'
 
 /**
  * serve static file.

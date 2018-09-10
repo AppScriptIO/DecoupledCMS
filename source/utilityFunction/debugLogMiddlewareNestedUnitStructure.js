@@ -1,4 +1,4 @@
-import getTableDocumentAndFilter from 'appscript/utilityFunction/database/query/getTableDocumentAndFilter.query.js'
+import getTableDocumentAndFilter from '@dependency/databaseUtility/source/getTableDocumentAndFilter.query.js'
 
 async function debugLogMiddleNestedUnitStructure(nestedUnitKeyMiddleware) {
     const connection = Application.rethinkdbConnection            
