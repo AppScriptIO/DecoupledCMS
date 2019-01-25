@@ -1,8 +1,16 @@
 {
-  "main": "entrypoint.js",
-  "name": "appscript",
+  "main": "./source/entrypoint.js",
+  "name": "@dependency/appscript",
+  "version": "1.0.0",
+  "workspaces": {
+    "packages": [
+    ], 
+    "nohoist": [
+    ]
+  },
+  "private": true,
   "dependencies": {
-    "@babel/core": "^7.0.0-beta.47",
+    "@babel/core": "^7.0.0-beta.55",
     "co-body": "*",
     "koa": "*",
     "koa-bodyparser": "*",
@@ -10,10 +18,10 @@
     "koa-compress": "*",
     "koa-json-error": "*",
     "koa-logger": "*",
+    "koa-mount": "*",
     "koa-response-time": "*",
     "koa-router": "*",
     "koa-sendfile": "*",
-    "koa-mount": "*",
     "koa-views": "*",
     "mixwith": "*",
     "moment": "*",
@@ -24,7 +32,11 @@
     "rethinkdb": "*",
     "underscore": "*",
     "useragent": "*",
-    "ws": "*"
-  },
-  "devDependencies": {}
+    "ws": "*",
+    "@dependency/appDeploymentLifecycle": "https://github.com/AppScriptIO/appDeploymentLifecycle",
+    "@dependency/nodeRelationshipGraph": "https://github.com/AppScriptIO/nodeRelationshipGraph",
+    "@dependency/multiplePrototypeChain": "https://github.com/AppScriptIO/multiplePrototypeChain",
+    "@dependency/populateObjectPropertyFromObject": "https://github.com/AppScriptIO/populateObjectPropertyFromObject"
+    
+  }
 }

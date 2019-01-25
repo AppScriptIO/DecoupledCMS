@@ -1,9 +1,0 @@
-import { default as Application } from '../../class/Application.class.js'
-import createStaticInstanceClasses from 'appscript/module/reusableNestedUnit'
-
-export default async (context, next) => {
-    let connection = Application.rethinkdbConnection
-    context.set('Access-Control-Allow-Methods', '*' /* 'POST, GET, OPTIONS, DELETE' */)
-    context.set('Access-Control-Allow-Headers', '*' /* 'Content-Type' */) // used as a response to preflight, indicating which headers can be used in the request.
-    context.body = 'OK' // previous middlewares should have already defined cross origin all *.
-}
