@@ -1,5 +1,5 @@
 {
-  "main": "./source/entrypoint.js",
+  "main": "./source/module.js",
   "name": "@dependency/appscript",
   "version": "1.0.0",
   "workspaces": {
