@@ -3,5 +3,5 @@ A framework for developing webapps using implementations of [nodeRelationshipGra
 
 ## Features: 
 - New perspective on building apps from highly reusable components. 
-- Realtime visual interface for programming server middlewares. Using different implementations of node relationship graphs where each node holds database reference data controlling some functionality.
+- Realtime visual interface (GUI) for programming server middlewares. Using different implementations of node relationship graphs where each node holds database reference data controlling some functionality.
 - Decoupled CMS. 
