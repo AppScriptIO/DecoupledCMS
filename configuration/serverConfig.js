@@ -1,5 +1,5 @@
 import path from 'path'
-import configuration from '../../../../../setup/configuration/configuration.js'
+import configuration from '../../../../../setup/configuration/configuration.js' // target project
 
 export let 
     serverBasePath = path.resolve(path.normalize(`${__dirname}/../../../`)),

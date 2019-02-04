@@ -1,4 +1,4 @@
-import {DEPLOYMENT as development} from '../configuration/serverConfig.js'
+import {DEPLOYMENT as development} from './serverConfig.js'
 
 let host = 'rethinkdb',
     port = 28015,

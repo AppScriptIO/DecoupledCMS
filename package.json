@@ -1,5 +1,5 @@
 {
-  "main": "./source/module.js",
+  "main": "./source/script.js",
   "name": "@dependency/appscript",
   "version": "1.0.0",
   "workspaces": {
@@ -33,10 +33,15 @@
     "underscore": "*",
     "useragent": "*",
     "ws": "*",
-    "@dependency/appDeploymentLifecycle": "https://github.com/AppScriptIO/appDeploymentLifecycle",
     "@dependency/nodeRelationshipGraph": "https://github.com/AppScriptIO/nodeRelationshipGraph",
     "@dependency/multiplePrototypeChain": "https://github.com/AppScriptIO/multiplePrototypeChain",
     "@dependency/populateObjectPropertyFromObject": "https://github.com/AppScriptIO/populateObjectPropertyFromObject"
     
+  }, 
+  "devDependencies": {
+    "@dependency/scriptManager": "https://github.com/AppScriptIO/scriptManager",
+    "@dependency/deploymentScript": "https://github.com/AppScriptIO/deploymentScript",
+    "@dependency/javascriptTranspilation": "https://github.com/AppScriptIO/javascriptTranspilation"
   }
+
 }
