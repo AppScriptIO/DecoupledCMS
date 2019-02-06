@@ -1,1 +1,0 @@
-./doumentation/information.md

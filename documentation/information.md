@@ -5,3 +5,7 @@ A framework for developing webapps using implementations of [nodeRelationshipGra
 - New perspective on building apps from highly reusable components. 
 - Realtime visual interface (GUI) for programming server middlewares. Using different implementations of node relationship graphs where each node holds database reference data controlling some functionality.
 - Decoupled CMS. 
+
+___
+
+### 🔑 License: [MIT](/.github/LICENSE)
