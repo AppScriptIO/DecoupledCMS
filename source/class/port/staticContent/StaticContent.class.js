@@ -1,30 +1,35 @@
-// Static content server - could be upgraded to Content Delivery Network
-import Koa from 'koa' // Koa applicaiton server
-import {default as Application} from '../../Application.class.js'
-import { add, execute, applyMixin } from '@dependency/commonPattern/source/decoratorUtility.js'
-import { extendedSubclassPattern } from '@dependency/commonPattern/source/extendedSubclassPattern.js';
+"use strict";
 
-const self =
-@execute({ staticMethod: 'initializeStaticClass' })
-@extendedSubclassPattern.Subclass()
-class StaticContent extends Application {
+var _interopRequireDefault = require("@babel/runtime/helpers/interopRequireDefault");
 
-    static serverKoa;
-    static port;
-    static url;
-    static middlewareArray = []
-    middlewareArray = []
-    
-    static initializeStaticClass(self) {
-        super.initializeStaticClass()
-        self.port = 8081
-        self.url = `${self.config.PROTOCOL}cdn.${self.config.HOST}`
-    }
-    constructor() {
-        super(true)
-        this.config = {} // populated by useragentDetection module.
-    }
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.default = void 0;
 
-}
+var _ApplicationClass = _interopRequireDefault(require("../../Application.class.js"));
 
-export default self
+var _decoratorUtility = require("@dependency/commonPattern/source/decoratorUtility.js");
+
+var _extendedSubclassPattern = require("@dependency/commonPattern/source/extendedSubclassPattern.js");
+
+var _dec, _dec2, _class, _class2, _temp;
+
+const self = (_dec = (0, _decoratorUtility.execute)({
+  staticMethod: 'initializeStaticClass'
+}), _dec2 = _extendedSubclassPattern.extendedSubclassPattern.Subclass(), _dec(_class = _dec2(_class = (_temp = _class2 = class StaticContent extends _ApplicationClass.default {
+  static initializeStaticClass(self) {
+    super.initializeStaticClass();
+    self.port = 8081;
+    self.url = `${self.config.PROTOCOL}cdn.${self.config.HOST}`;
+  }
+
+  constructor() {
+    super(true);
+    this.middlewareArray = [];
+    this.config = {}; // populated by useragentDetection module.
+  }
+
+}, _class2.middlewareArray = [], _temp)) || _class) || _class);
+var _default = self;
+exports.default = _default;

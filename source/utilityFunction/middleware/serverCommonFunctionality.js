@@ -1,38 +1,44 @@
-import serverConfig from '../../../setup/configuration/serverConfig.js'
-import compose from 'koa-compose'
-import responseTime from 'koa-response-time'
-import logger from 'koa-logger'
-// import compress from 'koa-compress'
-import bodyParser from 'koa-bodyparser'
+"use strict";
+
+var _interopRequireDefault = require("@babel/runtime/helpers/interopRequireDefault");
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.default = void 0;
+
+var _serverConfig = _interopRequireDefault(require("../../../setup/configuration/serverConfig.js"));
+
+var _koaCompose = _interopRequireDefault(require("koa-compose"));
+
+var _koaResponseTime = _interopRequireDefault(require("koa-response-time"));
+
+var _koaLogger = _interopRequireDefault(require("koa-logger"));
+
+var _koaJsonError = _interopRequireDefault(require("koa-json-error"));
+
+var _koaCompress = _interopRequireDefault(require("koa-compress"));
+
+var _zlib = _interopRequireDefault(require("zlib"));
+
 // import cors from 'kcors'
 // import helmet from 'koa-helmet'
-import error from 'koa-json-error'
 // import enforceHTTPS from 'koa-sslify'
-import koaCompress from 'koa-compress'
-import zlib from 'zlib'
+let middlewareArray = [(0, _koaResponseTime.default)(), // Response time x-response-time
+(0, _koaLogger.default)(), // Console logger
+// bodyParser(),
+(0, _koaJsonError.default)(), // Error handler for pure-JSON Koa apps
+// handleConnection(), // Open connection on middleware downstream, Close connection on upstream.
+// createDatabase(),
+(0, _koaCompress.default)({
+  flush: _zlib.default.Z_SYNC_FLUSH
+})];
 
-// Database
-import rethinkdbConfig from '../../../setup/configuration/rethinkdbConfig.js'
-import r from 'rethinkdb'
-import { handleConnection, createDatabase, createTable } from './commonDatabaseFunctionality.js'
-
-let middlewareArray = [
-    responseTime(), // Response time x-response-time
-    logger(), // Console logger
-    // bodyParser(),
-    // cors(), // Cross-Origin Resource Sharing(CORS)
-    error(), // Error handler for pure-JSON Koa apps
-    // handleConnection(), // Open connection on middleware downstream, Close connection on upstream.
-    // createDatabase(),
-    // createTable(),
-    koaCompress({
-        flush: zlib.Z_SYNC_FLUSH
-    })
-]
-if(!serverConfig.ssl) { 
-    // middleware.push(compress())  // Compress responses
-    // middleware.push(enforceHTTPS())
-    // middleware.push(helmet()) // Security header middleware collection
+if (!_serverConfig.default.ssl) {// middleware.push(compress())  // Compress responses
+  // middleware.push(enforceHTTPS())
+  // middleware.push(helmet()) // Security header middleware collection
 }
 
-export default () => compose(middlewareArray)
+var _default = () => (0, _koaCompose.default)(middlewareArray);
+
+exports.default = _default;

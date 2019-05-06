@@ -1,11 +1,23 @@
-import getUrlPathAsArray from './getUrlPathAsArray.js'
+"use strict";
 
-export default async (self) => {
-    let context = self.context
-    let pathArray = await getUrlPathAsArray(self)
-    if(pathArray[1] == null) {
-        return false
-    } else {
-        return pathArray[1]
-    }
-}
+var _interopRequireDefault = require("@babel/runtime/helpers/interopRequireDefault");
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.default = void 0;
+
+var _getUrlPathAsArray = _interopRequireDefault(require("./getUrlPathAsArray.js"));
+
+var _default = async self => {
+  let context = self.context;
+  let pathArray = await (0, _getUrlPathAsArray.default)(self);
+
+  if (pathArray[1] == null) {
+    return false;
+  } else {
+    return pathArray[1];
+  }
+};
+
+exports.default = _default;
