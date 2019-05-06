@@ -1,18 +1,17 @@
 import path from 'path'
 import configuration from '../../../../../setup/configuration/configuration.js' // target project
 
-export let 
-    serverBasePath = path.resolve(path.normalize(`${__dirname}/../../../`)),
-    sourceCodePath = configuration.directory.SourceCodePath,
-    DEPLOYMENT = process.env.DEPLOYMENT || 'development',
-    DISTRIBUTION = process.env.DISTRIBUTION || false,
-    PORT = (DEPLOYMENT == 'development') ? '9903' : process.env.PORT || 80,
-    SSL = (DEPLOYMENT == 'development') ? true : false,
-    HOST = process.env.HOST || 'localhost',
-    PROTOCOL = (DEPLOYMENT == 'development') ? 'http://' : 'https://',
-    SOCKET_PROTOCOL = (DEPLOYMENT == 'development') ? 'ws://' : 'wss://';
+export let serverBasePath = path.resolve(path.normalize(`${__dirname}/../../../`)),
+  sourceCodePath = configuration.directory.SourceCodePath,
+  DEPLOYMENT = process.env.DEPLOYMENT || 'development',
+  DISTRIBUTION = process.env.DISTRIBUTION || false,
+  PORT = DEPLOYMENT == 'development' ? '9903' : process.env.PORT || 80,
+  SSL = DEPLOYMENT == 'development' ? true : false,
+  HOST = process.env.HOST || 'localhost',
+  PROTOCOL = DEPLOYMENT == 'development' ? 'http://' : 'https://',
+  SOCKET_PROTOCOL = DEPLOYMENT == 'development' ? 'ws://' : 'wss://'
 
-export default { 
+export default {
   deployment: DEPLOYMENT,
   serverBasePath,
   sourceCodePath,
@@ -25,8 +24,8 @@ export default {
   DISTRIBUTION,
   HOST,
   PROTOCOL,
-  SOCKET_PROTOCOL
- }
+  SOCKET_PROTOCOL,
+}
 
 // export default {
 //   development: {

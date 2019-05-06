@@ -1,6 +1,6 @@
 {
-  "main": "./source/script.js",
   "name": "@dependency/appscript",
+  "main": "./entrypoint/programmaticAPI",
   "version": "1.0.0",
   "workspaces": {
     "packages": [],
@@ -37,8 +37,8 @@
   },
   "devDependencies": {
     "@dependency/deploymentScript": "https://github.com/AppScriptIO/deploymentScript",
-    "@dependency/javascriptStaticAnalysis": "https://github.com/AppScriptIO/javascriptStaticAnalysis",
-    "@dependency/javascriptTranspilation": "https://github.com/AppScriptIO/javascriptTranspilation",
+    "@dependency/javascriptStaticAnalysis": "https://github.com/AppScriptIO/javascriptStaticAnalysis#semver:^1.x.x",
+    "@dependency/javascriptTranspilation": "https://github.com/AppScriptIO/javascriptTranspilation#semver:^1.x.x",
     "@dependency/scriptManager": "https://github.com/AppScriptIO/scriptManager",
     "typescript": "^3.3.3333"
   }
