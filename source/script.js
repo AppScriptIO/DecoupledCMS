@@ -1,13 +1,31 @@
-import path from 'path'
-import { default as Application } from './class/Application.class.js'
-import { microservice } from './microservice'
-import localUnderscore from 'underscore'
+"use strict";
 
-// Important: Exporting Application and another module that imports 'appscript' would could infinite loop. e.g. exporting also microservice.
-//            To prevent such behavior all modules in 'appscript' module should call each other using relative paths.
-export { Application as default, microservice, localUnderscore as underscore }
-// __________________________________
+var _interopRequireDefault = require("@babel/runtime/helpers/interopRequireDefault");
 
-// // Conneciton ports:
-// if (!module.parent || module.parent) { // Dummy for future use // if loaded as a standart script.
-// }
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+Object.defineProperty(exports, "default", {
+  enumerable: true,
+  get: function () {
+    return _ApplicationClass.default;
+  }
+});
+Object.defineProperty(exports, "microservice", {
+  enumerable: true,
+  get: function () {
+    return _microservice.microservice;
+  }
+});
+Object.defineProperty(exports, "underscore", {
+  enumerable: true,
+  get: function () {
+    return _underscore.default;
+  }
+});
+
+var _ApplicationClass = _interopRequireDefault(require("./class/Application.class.js"));
+
+var _microservice = require("./microservice");
+
+var _underscore = _interopRequireDefault(require("underscore"));

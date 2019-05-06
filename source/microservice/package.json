@@ -1,7 +1,0 @@
-{
-    "main": "entrypoint.js",
-    "name": "microservice",
-    "optionalDependencies": {},
-    "version": "1.0.0"
-}
-  

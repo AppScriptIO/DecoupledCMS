@@ -1,41 +1,53 @@
-import parse from 'co-body' // throws on unsupported content type.
-import bodyParser from 'koa-bodyparser' // Brings extra option for handling error and unsupported content-types.
-import { default as Application } from '../../class/Application.class.js'
-import { getMergedMultipleDocumentOfSpecificLanguage as queryPatternImplementation} from "@dependency/databaseUtility/source/patternImplementation.js";
-import {functionWrappedMiddlewareDecorator} from '@dependency/commonPattern/source/middlewarePatternDecorator.js'
-import { mergeDeep } from '@dependency/deepObjectMerge'
+"use strict";
 
-export default functionWrappedMiddlewareDecorator(async function (context, next, option) {
-        let urlQuery = context.request.query
-        let queryLanguage = (urlQuery.language) ?
-            urlQuery.language.replace(/\b\w/g, l => l.toUpperCase()) // Capitalize first letter.
-            : null ;
-        let uiContent = null;
-        let defaultLanguage = Application.frontendStatic.setting.mode.language
-        try {
-            uiContent = await queryPatternImplementation({
-                databaseConnection: Application.rethinkdbConnection,
-                languageDocumentKey: queryLanguage || defaultLanguage,
-                dataTableName: 'ui'
-            })
-        } catch (error) {
-            console.log(error)
-        }
-    
-        let frontendPerContext = {
-            setting: {
-                mode: {
-                    language: queryLanguage || defaultLanguage // TODO: change setting default twice - fallback to prevent setting a null/undefined over the default value
-                }
-            },
-            uiContent
-        }
+var _interopRequireDefault = require("@babel/runtime/helpers/interopRequireDefault");
 
-        // TODO: separate frontend object creation from language middleware.
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.default = void 0;
 
-        frontendPerContext.instance = context.instance // add instance object as it is used by client side.
+var _ApplicationClass = _interopRequireDefault(require("../../class/Application.class.js"));
 
-        context.frontend = mergeDeep(Application.frontendStatic, frontendPerContext)
+var _patternImplementation = require("@dependency/databaseUtility/source/patternImplementation.js");
 
-        await next()
-})
+var _middlewarePatternDecorator = require("@dependency/commonPattern/source/middlewarePatternDecorator.js");
+
+var _deepObjectMerge = require("@dependency/deepObjectMerge");
+
+// throws on unsupported content type.
+// Brings extra option for handling error and unsupported content-types.
+var _default = (0, _middlewarePatternDecorator.functionWrappedMiddlewareDecorator)(async function (context, next, option) {
+  let urlQuery = context.request.query;
+  let queryLanguage = urlQuery.language ? urlQuery.language.replace(/\b\w/g, l => l.toUpperCase()) // Capitalize first letter.
+  : null;
+  let uiContent = null;
+  let defaultLanguage = _ApplicationClass.default.frontendStatic.setting.mode.language;
+
+  try {
+    uiContent = await (0, _patternImplementation.getMergedMultipleDocumentOfSpecificLanguage)({
+      databaseConnection: _ApplicationClass.default.rethinkdbConnection,
+      languageDocumentKey: queryLanguage || defaultLanguage,
+      dataTableName: 'ui'
+    });
+  } catch (error) {
+    console.log(error);
+  }
+
+  let frontendPerContext = {
+    setting: {
+      mode: {
+        language: queryLanguage || defaultLanguage // TODO: change setting default twice - fallback to prevent setting a null/undefined over the default value
+
+      }
+    },
+    uiContent // TODO: separate frontend object creation from language middleware.
+
+  };
+  frontendPerContext.instance = context.instance; // add instance object as it is used by client side.
+
+  context.frontend = (0, _deepObjectMerge.mergeDeep)(_ApplicationClass.default.frontendStatic, frontendPerContext);
+  await next();
+});
+
+exports.default = _default;

@@ -1,28 +1,37 @@
+"use strict";
+
+var _interopRequireDefault = require("@babel/runtime/helpers/interopRequireDefault");
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.default = void 0;
+
+var _koa = _interopRequireDefault(require("koa"));
+
+var _WebappUIClass = _interopRequireDefault(require("class/WebappUI.class.js"));
+
 // API server
-import Koa from 'koa' // Koa applicaiton server
-import WebappUIClass from 'class/WebappUI.class.js'
-import ConditionTreeClass from 'class/ConditionTree.class.js'
+// Koa applicaiton server
+class Test extends _WebappUIClass.default {
+  constructor() {
+    super(true);
+    this.middlewareArray = [];
+    this.port = 8083;
+    this.createKoaServer();
+  }
 
-class Test extends WebappUIClass {
+  createKoaServer() {
+    this.serverKoa = new _koa.default(); // export if script is required.
+  }
 
-    middlewareArray = []
-
-    constructor() {
-        super(true)
-        this.port = 8083
-        this.createKoaServer()
-    }
-
-    createKoaServer() {
-        this.serverKoa = new Koa() // export if script is required.
-    }
-
-    applyKoaMiddleware() {
-        this.middlewareArray.forEach((middleware) => {
-            this.serverKoa.use(middleware)
-        }, this);
-    }
+  applyKoaMiddleware() {
+    this.middlewareArray.forEach(middleware => {
+      this.serverKoa.use(middleware);
+    }, this);
+  }
 
 }
 
-export default Test
+var _default = Test;
+exports.default = _default;

@@ -1,68 +1,70 @@
-import { default as Application } from '../../Application.class.js'
-import WebSocketModule from 'ws'
-import { add, execute, applyMixin } from '@dependency/commonPattern/source/decoratorUtility.js'
-import { extendedSubclassPattern } from '@dependency/commonPattern/source/extendedSubclassPattern.js';
+"use strict";
 
-const self = 
-@execute({ staticMethod: 'initializeStaticClass' })
-@extendedSubclassPattern.Subclass()
-class WebSocket extends Application {
+var _interopRequireDefault = require("@babel/runtime/helpers/interopRequireDefault");
 
-    static port;
-    static webSocketServer;
-    static url; 
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.default = void 0;
 
-    static initializeStaticClass(self) {
-        self.port = 8087
-        self.url = `${self.config.SOCKET_PROTOCOL}websocket.${self.config.HOST}`        
-    }
+var _ApplicationClass = _interopRequireDefault(require("../../Application.class.js"));
 
-    constructor(skipConstructor = false) {
-        super(true)
-        if(skipConstructor) return;
-    }
+var _ws = _interopRequireDefault(require("ws"));
 
-    static createWebsocketServer() {
-       return new Promise((resolve, reject) => {
-           // WebSocket - ws package.
-           const websocketPort = self.port;
-           self.webSocketServer = new WebSocketModule.Server(
-               { port: websocketPort  }, 
-               () => { 
-                   console.log(`☕%c ${self.name} listening on port ${websocketPort}`, Application.config.style.green)
-                   resolve()
-               }
-           )
-       })
+var _decoratorUtility = require("@dependency/commonPattern/source/decoratorUtility.js");
 
+var _extendedSubclassPattern = require("@dependency/commonPattern/source/extendedSubclassPattern.js");
 
-        // Socket.io - npm package
-        // var server = require('http').createServer();
-        // var io = require('socket.io')(server);
-        // io.on('connection', function(client){
-        //     console.log('client connected !')
-        //     var i = 0
-        //     setInterval(function() {
-        //         i++
-        //         client.emit('event',{name: 'safi', requestNumber: i}) 
-        //     }, 500);
-        //   client.on('event', function(data){});
-        //   client.on('disconnect', function(){});
-        // });
-        // server.listen(8087);
+var _dec, _dec2, _class;
 
-        // Engine.io - engine.io package and client package JSPM.
-        // var engine = require('engine.io');
-        // var http = require('http').createServer().listen(8087);
-        // var server = engine.attach(http);
-        // server.on('connection', function (socket) {
-        //     console.log('Client connected !')
-        //     socket.on('message', function(data){ });
-        //     socket.on('close', function(){ });
-        // });
+const self = (_dec = (0, _decoratorUtility.execute)({
+  staticMethod: 'initializeStaticClass'
+}), _dec2 = _extendedSubclassPattern.extendedSubclassPattern.Subclass(), _dec(_class = _dec2(_class = class WebSocket extends _ApplicationClass.default {
+  static initializeStaticClass(self) {
+    self.port = 8087;
+    self.url = `${self.config.SOCKET_PROTOCOL}websocket.${self.config.HOST}`;
+  }
 
-    }
+  constructor(skipConstructor = false) {
+    super(true);
+    if (skipConstructor) return;
+  }
 
-}
+  static createWebsocketServer() {
+    return new Promise((resolve, reject) => {
+      // WebSocket - ws package.
+      const websocketPort = self.port;
+      self.webSocketServer = new _ws.default.Server({
+        port: websocketPort
+      }, () => {
+        console.log(`☕%c ${self.name} listening on port ${websocketPort}`, _ApplicationClass.default.config.style.green);
+        resolve();
+      });
+    }); // Socket.io - npm package
+    // var server = require('http').createServer();
+    // var io = require('socket.io')(server);
+    // io.on('connection', function(client){
+    //     console.log('client connected !')
+    //     var i = 0
+    //     setInterval(function() {
+    //         i++
+    //         client.emit('event',{name: 'safi', requestNumber: i}) 
+    //     }, 500);
+    //   client.on('event', function(data){});
+    //   client.on('disconnect', function(){});
+    // });
+    // server.listen(8087);
+    // Engine.io - engine.io package and client package JSPM.
+    // var engine = require('engine.io');
+    // var http = require('http').createServer().listen(8087);
+    // var server = engine.attach(http);
+    // server.on('connection', function (socket) {
+    //     console.log('Client connected !')
+    //     socket.on('message', function(data){ });
+    //     socket.on('close', function(){ });
+    // });
+  }
 
-export default self
+}) || _class) || _class);
+var _default = self;
+exports.default = _default;
