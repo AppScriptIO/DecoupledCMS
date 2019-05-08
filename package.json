@@ -1,17 +1,11 @@
 {
   "name": "@dependency/appscript",
   "main": "./entrypoint/programmaticAPI",
-  "version": "1.1.0",
-  "workspaces": {
-    "packages": [],
-    "nohoist": []
-  },
-  "private": true,
+  "version": "1.1.1",
   "dependencies": {
-    "@babel/core": "^7.0.0-beta.55",
-    "@dependency/multiplePrototypeChain": "https://github.com/AppScriptIO/multiplePrototypeChain",
-    "@dependency/nodeRelationshipGraph": "https://github.com/AppScriptIO/nodeRelationshipGraph",
-    "@dependency/populateObjectPropertyFromObject": "https://github.com/AppScriptIO/populateObjectPropertyFromObject",
+    "@babel/core": "^7.x.x",
+    "@dependency/multiplePrototypeChain": "https://github.com/AppScriptIO/multiplePrototypeChain#semver:^1.x.x",
+    "@dependency/nodeRelationshipGraph": "https://github.com/AppScriptIO/nodeRelationshipGraph#semver:^1.x.x",
     "co-body": "*",
     "koa": "*",
     "koa-bodyparser": "*",
@@ -36,10 +30,10 @@
     "ws": "*"
   },
   "devDependencies": {
-    "@dependency/deploymentScript": "https://github.com/AppScriptIO/deploymentScript",
+    "@dependency/deploymentScript": "https://github.com/AppScriptIO/deploymentScript#semver:^1.x.x",
     "@dependency/javascriptStaticAnalysis": "https://github.com/AppScriptIO/javascriptStaticAnalysis#semver:^1.x.x",
     "@dependency/javascriptTranspilation": "https://github.com/AppScriptIO/javascriptTranspilation#semver:^1.x.x",
-    "@dependency/scriptManager": "https://github.com/AppScriptIO/scriptManager",
+    "@dependency/scriptManager": "https://github.com/AppScriptIO/scriptManager#semver:^1.x.x",
     "typescript": "^3.3.3333"
   }
 }
