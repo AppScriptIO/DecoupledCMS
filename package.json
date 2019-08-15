@@ -1,42 +1,42 @@
 {
-  "name": "@dependency/appscript",
-  "main": "./entrypoint/programmaticAPI",
-  "version": "1.1.1",
-  "scripts": {
-    "buildAndRelease": "yarn run scriptManager shouldCompileScript=true JSProject/buildAndRelease \".moduleProject({})\""
-  },
-  "dependencies": {
-    "@babel/core": "^7.x.x",
-    "@dependency/graph": "https://github.com/AppScriptIO/graph#semver:^1.x.x",
-    "@dependency/multiplePrototypeChain": "https://github.com/AppScriptIO/multiplePrototypeChain#semver:^1.x.x",
-    "co-body": "*",
-    "koa": "*",
-    "koa-bodyparser": "*",
-    "koa-compose": "*",
-    "koa-compress": "*",
-    "koa-json-error": "*",
-    "koa-logger": "*",
-    "koa-mount": "*",
-    "koa-response-time": "*",
-    "koa-router": "*",
-    "koa-sendfile": "*",
-    "koa-views": "*",
-    "mixwith": "*",
-    "moment": "*",
-    "multistream": "*",
-    "oidc-provider": "^3.0.3",
-    "openid-client": "*",
-    "promise-events": "*",
-    "rethinkdb": "*",
-    "underscore": "*",
-    "useragent": "*",
-    "ws": "*"
-  },
-  "devDependencies": {
-    "@dependency/deploymentScript": "https://github.com/AppScriptIO/deploymentScript#semver:^1.x.x",
-    "@dependency/javascriptStaticAnalysis": "https://github.com/AppScriptIO/javascriptStaticAnalysis#semver:^1.x.x",
-    "@dependency/javascriptTranspilation": "https://github.com/AppScriptIO/javascriptTranspilation#semver:^1.x.x",
-    "@dependency/scriptManager": "https://github.com/AppScriptIO/scriptManager#semver:^1.x.x",
-    "typescript": "^3.3.3333"
-  }
+	"name": "@dependency/appscript",
+	"main": "./entrypoint/programmaticAPI",
+	"version": "1.1.2",
+	"scripts": {
+		"buildAndRelease": "yarn run scriptManager shouldCompileScript=true JSProject/buildAndRelease \".moduleProject({})\""
+	},
+	"dependencies": {
+		"@babel/core": "^7.x.x",
+		"@dependency/graph": "https://github.com/AppScriptIO/graph#semver:^1.x.x",
+		"@dependency/multiplePrototypeChain": "https://github.com/AppScriptIO/multiplePrototypeChain#semver:^1.x.x",
+		"co-body": "*",
+		"koa": "*",
+		"koa-bodyparser": "*",
+		"koa-compose": "*",
+		"koa-compress": "*",
+		"koa-json-error": "*",
+		"koa-logger": "*",
+		"koa-mount": "*",
+		"koa-response-time": "*",
+		"koa-router": "*",
+		"koa-sendfile": "*",
+		"koa-views": "*",
+		"mixwith": "*",
+		"moment": "*",
+		"multistream": "*",
+		"oidc-provider": "^3.0.3",
+		"openid-client": "*",
+		"promise-events": "*",
+		"rethinkdb": "*",
+		"underscore": "*",
+		"useragent": "*",
+		"ws": "*"
+	},
+	"devDependencies": {
+		"@dependency/deploymentScript": "https://github.com/AppScriptIO/deploymentScript#semver:^1.x.x",
+		"@dependency/javascriptStaticAnalysis": "https://github.com/AppScriptIO/javascriptStaticAnalysis#semver:^1.x.x",
+		"@dependency/javascriptTranspilation": "https://github.com/AppScriptIO/javascriptTranspilation#semver:^1.x.x",
+		"@dependency/scriptManager": "https://github.com/AppScriptIO/scriptManager#semver:^1.x.x",
+		"typescript": "^3.3.3333"
+	}
 }
