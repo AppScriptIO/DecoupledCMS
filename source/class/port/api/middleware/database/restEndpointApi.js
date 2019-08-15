@@ -1,73 +1,73 @@
-import serverConfig from '../../../../../../setup/configuration/serverConfig.js'
-import r from 'rethinkdb'
-import compose from 'koa-compose'
-import { default as Application } from '../../../../Application.class.js'
-import { handleConnection, createDatabase, createTable } from '../../../../../utilityFunction/middleware/commonDatabaseFunctionality.js'
+"use strict";var _interopRequireDefault = require("@babel/runtime/helpers/interopRequireDefault");Object.defineProperty(exports, "__esModule", { value: true });exports.default = void 0;
+var _rethinkdb = _interopRequireDefault(require("rethinkdb"));
+var _koaCompose = _interopRequireDefault(require("koa-compose"));
 
-// NOTE: host/api/v1/<tableName>/<havingField>/<subfield-recursive>.json 
+var _commonDatabaseFunctionality = require("../../../../../utilityFunction/middleware/commonDatabaseFunctionality.js");
 
-export default class RestApi {
-    constructor(urlPrefix) {
-        if (!(this instanceof RestApi)) {
-            return new RestApi(urlPrefix);
-        }
 
-        this.urlPrefix = urlPrefix
+
+class RestApi {
+  constructor(urlPrefix) {
+    if (!(this instanceof RestApi)) {
+      return new RestApi(urlPrefix);
     }
 
-    getRequest() {
-        return async (context, next) => {
-            if(context.request.method != "GET") return await next() // if not GET
-            console.log('SZN - Inside GET <REST API>/*')
-            let url = context.request.url // url path with parameters
-            url = url.replace(this.urlPrefix,'') // remove prefix
-            url = url.substring(url).split("?")[0] // remove query parameters
-            let pathArray = url.split( '/' ).filter(x => x); // path sections array
-            let lastPath = pathArray.slice(-1)[0] // get last array element
-            pathArray[pathArray.length - 1] = lastPath.slice(0, lastPath.indexOf(".")) // remove .json ending
-            if(lastPath.substr(lastPath.indexOf('.')+1) != "json") return await next() // if without .json ending
+    this.urlPrefix = urlPrefix;
+  }
 
-            context.status = 200
-            
-            // .withFields('domains')('domains')('xcom')('path')
+  getRequest() {
+    return async (context, next) => {
+      if (context.request.method != "GET") return await next();
+      console.log('SZN - Inside GET <REST API>/*');
+      let url = context.request.url;
+      url = url.replace(this.urlPrefix, '');
+      url = url.substring(url).split("?")[0];
+      let pathArray = url.split('/').filter(x => x);
+      let lastPath = pathArray.slice(-1)[0];
+      pathArray[pathArray.length - 1] = lastPath.slice(0, lastPath.indexOf("."));
+      if (lastPath.substr(lastPath.indexOf('.') + 1) != "json") return await next();
 
-            let query = r
-                .table(pathArray[0]) // first field assigns name of table
+      context.status = 200;
 
-            pathArray.shift()
 
-            // if(pathArray[1]) query = query.get(pathArray[1])
-            
-            if(pathArray[0]) query = query.withFields(pathArray[0])(pathArray[0])
-            pathArray.shift()
-            pathArray.forEach(pathSection => query = query(pathSection))
 
-            query = query
-                .run(context.rethinkdbConnection)
-            
-            if(!pathArray[1] || true) {
-                query = query
-                    .then((cursor) => {
-                        return cursor.toArray()
-                    })
-            }
+      let query = _rethinkdb.default.
+      table(pathArray[0]);
 
-            await query
-                .then((result) => {
-                    context.body = result
-                })
-                .catch((error) => {
-                    throw(error)
-                })
+      pathArray.shift();
 
-            return
-        }
-    }
 
-    route() {
-        return compose([
-            handleConnection(),
-            this.getRequest()
-        ])
-    }
-}
+
+      if (pathArray[0]) query = query.withFields(pathArray[0])(pathArray[0]);
+      pathArray.shift();
+      pathArray.forEach(pathSection => query = query(pathSection));
+
+      query = query.
+      run(context.rethinkdbConnection);
+
+      if (!pathArray[1] || true) {
+        query = query.
+        then(cursor => {
+          return cursor.toArray();
+        });
+      }
+
+      await query.
+      then(result => {
+        context.body = result;
+      }).
+      catch(error => {
+        throw error;
+      });
+
+      return;
+    };
+  }
+
+  route() {
+    return (0, _koaCompose.default)([
+    (0, _commonDatabaseFunctionality.handleConnection)(),
+    this.getRequest()]);
+
+  }}exports.default = RestApi;
+//# sourceMappingURL=data:application/json;charset=utf-8;base64,eyJ2ZXJzaW9uIjozLCJzb3VyY2VzIjpbIi4uLy4uLy4uLy4uLy4uLy4uLy4uL3NvdXJjZS9jbGFzcy9wb3J0L2FwaS9taWRkbGV3YXJlL2RhdGFiYXNlL3Jlc3RFbmRwb2ludEFwaS5qcyJdLCJuYW1lcyI6WyJSZXN0QXBpIiwiY29uc3RydWN0b3IiLCJ1cmxQcmVmaXgiLCJnZXRSZXF1ZXN0IiwiY29udGV4dCIsIm5leHQiLCJyZXF1ZXN0IiwibWV0aG9kIiwiY29uc29sZSIsImxvZyIsInVybCIsInJlcGxhY2UiLCJzdWJzdHJpbmciLCJzcGxpdCIsInBhdGhBcnJheSIsImZpbHRlciIsIngiLCJsYXN0UGF0aCIsInNsaWNlIiwibGVuZ3RoIiwiaW5kZXhPZiIsInN1YnN0ciIsInN0YXR1cyIsInF1ZXJ5IiwiciIsInRhYmxlIiwic2hpZnQiLCJ3aXRoRmllbGRzIiwiZm9yRWFjaCIsInBhdGhTZWN0aW9uIiwicnVuIiwicmV0aGlua2RiQ29ubmVjdGlvbiIsInRoZW4iLCJjdXJzb3IiLCJ0b0FycmF5IiwicmVzdWx0IiwiYm9keSIsImNhdGNoIiwiZXJyb3IiLCJyb3V0ZSJdLCJtYXBwaW5ncyI6IjtBQUNBO0FBQ0E7O0FBRUE7Ozs7QUFJZSxNQUFNQSxPQUFOLENBQWM7QUFDekJDLEVBQUFBLFdBQVcsQ0FBQ0MsU0FBRCxFQUFZO0FBQ25CLFFBQUksRUFBRSxnQkFBZ0JGLE9BQWxCLENBQUosRUFBZ0M7QUFDNUIsYUFBTyxJQUFJQSxPQUFKLENBQVlFLFNBQVosQ0FBUDtBQUNIOztBQUVELFNBQUtBLFNBQUwsR0FBaUJBLFNBQWpCO0FBQ0g7O0FBRURDLEVBQUFBLFVBQVUsR0FBRztBQUNULFdBQU8sT0FBT0MsT0FBUCxFQUFnQkMsSUFBaEIsS0FBeUI7QUFDNUIsVUFBR0QsT0FBTyxDQUFDRSxPQUFSLENBQWdCQyxNQUFoQixJQUEwQixLQUE3QixFQUFvQyxPQUFPLE1BQU1GLElBQUksRUFBakI7QUFDcENHLE1BQUFBLE9BQU8sQ0FBQ0MsR0FBUixDQUFZLCtCQUFaO0FBQ0EsVUFBSUMsR0FBRyxHQUFHTixPQUFPLENBQUNFLE9BQVIsQ0FBZ0JJLEdBQTFCO0FBQ0FBLE1BQUFBLEdBQUcsR0FBR0EsR0FBRyxDQUFDQyxPQUFKLENBQVksS0FBS1QsU0FBakIsRUFBMkIsRUFBM0IsQ0FBTjtBQUNBUSxNQUFBQSxHQUFHLEdBQUdBLEdBQUcsQ0FBQ0UsU0FBSixDQUFjRixHQUFkLEVBQW1CRyxLQUFuQixDQUF5QixHQUF6QixFQUE4QixDQUE5QixDQUFOO0FBQ0EsVUFBSUMsU0FBUyxHQUFHSixHQUFHLENBQUNHLEtBQUosQ0FBVyxHQUFYLEVBQWlCRSxNQUFqQixDQUF3QkMsQ0FBQyxJQUFJQSxDQUE3QixDQUFoQjtBQUNBLFVBQUlDLFFBQVEsR0FBR0gsU0FBUyxDQUFDSSxLQUFWLENBQWdCLENBQUMsQ0FBakIsRUFBb0IsQ0FBcEIsQ0FBZjtBQUNBSixNQUFBQSxTQUFTLENBQUNBLFNBQVMsQ0FBQ0ssTUFBVixHQUFtQixDQUFwQixDQUFULEdBQWtDRixRQUFRLENBQUNDLEtBQVQsQ0FBZSxDQUFmLEVBQWtCRCxRQUFRLENBQUNHLE9BQVQsQ0FBaUIsR0FBakIsQ0FBbEIsQ0FBbEM7QUFDQSxVQUFHSCxRQUFRLENBQUNJLE1BQVQsQ0FBZ0JKLFFBQVEsQ0FBQ0csT0FBVCxDQUFpQixHQUFqQixJQUFzQixDQUF0QyxLQUE0QyxNQUEvQyxFQUF1RCxPQUFPLE1BQU1mLElBQUksRUFBakI7O0FBRXZERCxNQUFBQSxPQUFPLENBQUNrQixNQUFSLEdBQWlCLEdBQWpCOzs7O0FBSUEsVUFBSUMsS0FBSyxHQUFHQztBQUNQQyxNQUFBQSxLQURPLENBQ0RYLFNBQVMsQ0FBQyxDQUFELENBRFIsQ0FBWjs7QUFHQUEsTUFBQUEsU0FBUyxDQUFDWSxLQUFWOzs7O0FBSUEsVUFBR1osU0FBUyxDQUFDLENBQUQsQ0FBWixFQUFpQlMsS0FBSyxHQUFHQSxLQUFLLENBQUNJLFVBQU4sQ0FBaUJiLFNBQVMsQ0FBQyxDQUFELENBQTFCLEVBQStCQSxTQUFTLENBQUMsQ0FBRCxDQUF4QyxDQUFSO0FBQ2pCQSxNQUFBQSxTQUFTLENBQUNZLEtBQVY7QUFDQVosTUFBQUEsU0FBUyxDQUFDYyxPQUFWLENBQWtCQyxXQUFXLElBQUlOLEtBQUssR0FBR0EsS0FBSyxDQUFDTSxXQUFELENBQTlDOztBQUVBTixNQUFBQSxLQUFLLEdBQUdBLEtBQUs7QUFDUk8sTUFBQUEsR0FERyxDQUNDMUIsT0FBTyxDQUFDMkIsbUJBRFQsQ0FBUjs7QUFHQSxVQUFHLENBQUNqQixTQUFTLENBQUMsQ0FBRCxDQUFWLElBQWlCLElBQXBCLEVBQTBCO0FBQ3RCUyxRQUFBQSxLQUFLLEdBQUdBLEtBQUs7QUFDUlMsUUFBQUEsSUFERyxDQUNHQyxNQUFELElBQVk7QUFDZCxpQkFBT0EsTUFBTSxDQUFDQyxPQUFQLEVBQVA7QUFDSCxTQUhHLENBQVI7QUFJSDs7QUFFRCxZQUFNWCxLQUFLO0FBQ05TLE1BQUFBLElBREMsQ0FDS0csTUFBRCxJQUFZO0FBQ2QvQixRQUFBQSxPQUFPLENBQUNnQyxJQUFSLEdBQWVELE1BQWY7QUFDSCxPQUhDO0FBSURFLE1BQUFBLEtBSkMsQ0FJTUMsS0FBRCxJQUFXO0FBQ2QsY0FBTUEsS0FBTjtBQUNILE9BTkMsQ0FBTjs7QUFRQTtBQUNILEtBN0NEO0FBOENIOztBQUVEQyxFQUFBQSxLQUFLLEdBQUc7QUFDSixXQUFPLHlCQUFRO0FBQ1gsd0RBRFc7QUFFWCxTQUFLcEMsVUFBTCxFQUZXLENBQVIsQ0FBUDs7QUFJSCxHQS9Ed0IsQyIsInNvdXJjZXNDb250ZW50IjpbImltcG9ydCBzZXJ2ZXJDb25maWcgZnJvbSAnLi4vLi4vLi4vLi4vLi4vLi4vc2V0dXAvY29uZmlndXJhdGlvbi9zZXJ2ZXJDb25maWcuanMnXG5pbXBvcnQgciBmcm9tICdyZXRoaW5rZGInXG5pbXBvcnQgY29tcG9zZSBmcm9tICdrb2EtY29tcG9zZSdcbmltcG9ydCB7IGRlZmF1bHQgYXMgQXBwbGljYXRpb24gfSBmcm9tICcuLi8uLi8uLi8uLi9BcHBsaWNhdGlvbi5jbGFzcy5qcydcbmltcG9ydCB7IGhhbmRsZUNvbm5lY3Rpb24sIGNyZWF0ZURhdGFiYXNlLCBjcmVhdGVUYWJsZSB9IGZyb20gJy4uLy4uLy4uLy4uLy4uL3V0aWxpdHlGdW5jdGlvbi9taWRkbGV3YXJlL2NvbW1vbkRhdGFiYXNlRnVuY3Rpb25hbGl0eS5qcydcblxuLy8gTk9URTogaG9zdC9hcGkvdjEvPHRhYmxlTmFtZT4vPGhhdmluZ0ZpZWxkPi88c3ViZmllbGQtcmVjdXJzaXZlPi5qc29uIFxuXG5leHBvcnQgZGVmYXVsdCBjbGFzcyBSZXN0QXBpIHtcbiAgICBjb25zdHJ1Y3Rvcih1cmxQcmVmaXgpIHtcbiAgICAgICAgaWYgKCEodGhpcyBpbnN0YW5jZW9mIFJlc3RBcGkpKSB7XG4gICAgICAgICAgICByZXR1cm4gbmV3IFJlc3RBcGkodXJsUHJlZml4KTtcbiAgICAgICAgfVxuXG4gICAgICAgIHRoaXMudXJsUHJlZml4ID0gdXJsUHJlZml4XG4gICAgfVxuXG4gICAgZ2V0UmVxdWVzdCgpIHtcbiAgICAgICAgcmV0dXJuIGFzeW5jIChjb250ZXh0LCBuZXh0KSA9PiB7XG4gICAgICAgICAgICBpZihjb250ZXh0LnJlcXVlc3QubWV0aG9kICE9IFwiR0VUXCIpIHJldHVybiBhd2FpdCBuZXh0KCkgLy8gaWYgbm90IEdFVFxuICAgICAgICAgICAgY29uc29sZS5sb2coJ1NaTiAtIEluc2lkZSBHRVQgPFJFU1QgQVBJPi8qJylcbiAgICAgICAgICAgIGxldCB1cmwgPSBjb250ZXh0LnJlcXVlc3QudXJsIC8vIHVybCBwYXRoIHdpdGggcGFyYW1ldGVyc1xuICAgICAgICAgICAgdXJsID0gdXJsLnJlcGxhY2UodGhpcy51cmxQcmVmaXgsJycpIC8vIHJlbW92ZSBwcmVmaXhcbiAgICAgICAgICAgIHVybCA9IHVybC5zdWJzdHJpbmcodXJsKS5zcGxpdChcIj9cIilbMF0gLy8gcmVtb3ZlIHF1ZXJ5IHBhcmFtZXRlcnNcbiAgICAgICAgICAgIGxldCBwYXRoQXJyYXkgPSB1cmwuc3BsaXQoICcvJyApLmZpbHRlcih4ID0+IHgpOyAvLyBwYXRoIHNlY3Rpb25zIGFycmF5XG4gICAgICAgICAgICBsZXQgbGFzdFBhdGggPSBwYXRoQXJyYXkuc2xpY2UoLTEpWzBdIC8vIGdldCBsYXN0IGFycmF5IGVsZW1lbnRcbiAgICAgICAgICAgIHBhdGhBcnJheVtwYXRoQXJyYXkubGVuZ3RoIC0gMV0gPSBsYXN0UGF0aC5zbGljZSgwLCBsYXN0UGF0aC5pbmRleE9mKFwiLlwiKSkgLy8gcmVtb3ZlIC5qc29uIGVuZGluZ1xuICAgICAgICAgICAgaWYobGFzdFBhdGguc3Vic3RyKGxhc3RQYXRoLmluZGV4T2YoJy4nKSsxKSAhPSBcImpzb25cIikgcmV0dXJuIGF3YWl0IG5leHQoKSAvLyBpZiB3aXRob3V0IC5qc29uIGVuZGluZ1xuXG4gICAgICAgICAgICBjb250ZXh0LnN0YXR1cyA9IDIwMFxuICAgICAgICAgICAgXG4gICAgICAgICAgICAvLyAud2l0aEZpZWxkcygnZG9tYWlucycpKCdkb21haW5zJykoJ3hjb20nKSgncGF0aCcpXG5cbiAgICAgICAgICAgIGxldCBxdWVyeSA9IHJcbiAgICAgICAgICAgICAgICAudGFibGUocGF0aEFycmF5WzBdKSAvLyBmaXJzdCBmaWVsZCBhc3NpZ25zIG5hbWUgb2YgdGFibGVcblxuICAgICAgICAgICAgcGF0aEFycmF5LnNoaWZ0KClcblxuICAgICAgICAgICAgLy8gaWYocGF0aEFycmF5WzFdKSBxdWVyeSA9IHF1ZXJ5LmdldChwYXRoQXJyYXlbMV0pXG4gICAgICAgICAgICBcbiAgICAgICAgICAgIGlmKHBhdGhBcnJheVswXSkgcXVlcnkgPSBxdWVyeS53aXRoRmllbGRzKHBhdGhBcnJheVswXSkocGF0aEFycmF5WzBdKVxuICAgICAgICAgICAgcGF0aEFycmF5LnNoaWZ0KClcbiAgICAgICAgICAgIHBhdGhBcnJheS5mb3JFYWNoKHBhdGhTZWN0aW9uID0+IHF1ZXJ5ID0gcXVlcnkocGF0aFNlY3Rpb24pKVxuXG4gICAgICAgICAgICBxdWVyeSA9IHF1ZXJ5XG4gICAgICAgICAgICAgICAgLnJ1bihjb250ZXh0LnJldGhpbmtkYkNvbm5lY3Rpb24pXG4gICAgICAgICAgICBcbiAgICAgICAgICAgIGlmKCFwYXRoQXJyYXlbMV0gfHwgdHJ1ZSkge1xuICAgICAgICAgICAgICAgIHF1ZXJ5ID0gcXVlcnlcbiAgICAgICAgICAgICAgICAgICAgLnRoZW4oKGN1cnNvcikgPT4ge1xuICAgICAgICAgICAgICAgICAgICAgICAgcmV0dXJuIGN1cnNvci50b0FycmF5KClcbiAgICAgICAgICAgICAgICAgICAgfSlcbiAgICAgICAgICAgIH1cblxuICAgICAgICAgICAgYXdhaXQgcXVlcnlcbiAgICAgICAgICAgICAgICAudGhlbigocmVzdWx0KSA9PiB7XG4gICAgICAgICAgICAgICAgICAgIGNvbnRleHQuYm9keSA9IHJlc3VsdFxuICAgICAgICAgICAgICAgIH0pXG4gICAgICAgICAgICAgICAgLmNhdGNoKChlcnJvcikgPT4ge1xuICAgICAgICAgICAgICAgICAgICB0aHJvdyhlcnJvcilcbiAgICAgICAgICAgICAgICB9KVxuXG4gICAgICAgICAgICByZXR1cm5cbiAgICAgICAgfVxuICAgIH1cblxuICAgIHJvdXRlKCkge1xuICAgICAgICByZXR1cm4gY29tcG9zZShbXG4gICAgICAgICAgICBoYW5kbGVDb25uZWN0aW9uKCksXG4gICAgICAgICAgICB0aGlzLmdldFJlcXVlc3QoKVxuICAgICAgICBdKVxuICAgIH1cbn1cbiJdfQ==

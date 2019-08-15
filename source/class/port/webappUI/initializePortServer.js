@@ -1,83 +1,84 @@
-import koaViews from 'koa-views'
-import { default as Application } from '../../Application.class.js'
-import WebappUIClass from './WebappUI.class.js'
-import debugLogMiddleNestedUnitStructure from '../../../utilityFunction/debugLogMiddlewareNestedUnitStructure.js'
-import createStaticInstanceClasses from '@dependency/graph'
-import createClassInstancePerRequest from '../../../utilityFunction/middleware/createClassInstancePerRequest.middleware.js'
-import implementMiddlewareOnModuleUsingJson from '../../../utilityFunction/middleware/implementMiddlewareOnModuleUsingJson.js' // Middleware extending server functionality
-import implementConditionActionOnModuleUsingJson from '../../../utilityFunction/middleware/implementConditionActionOnModuleUsingJson.js'
-import languageContent from '../../../utilityFunction/middleware/languageContent.middleware.js'
-const { Issuer } = require('openid-client')
+"use strict";var _interopRequireDefault = require("@babel/runtime/helpers/interopRequireDefault");Object.defineProperty(exports, "__esModule", { value: true });exports.default = void 0;var _koaViews = _interopRequireDefault(require("koa-views"));
+var _ApplicationClass = _interopRequireDefault(require("../../Application.class.js"));
+var _WebappUIClass = _interopRequireDefault(require("./WebappUI.class.js"));
 
-let MiddlewareController = createStaticInstanceClasses({
-  Superclass: Application,
+var _graph = _interopRequireDefault(require("@dependency/graph"));
+var _createClassInstancePerRequestMiddleware = _interopRequireDefault(require("../../../utilityFunction/middleware/createClassInstancePerRequest.middleware.js"));
+
+var _implementConditionActionOnModuleUsingJson = _interopRequireDefault(require("../../../utilityFunction/middleware/implementConditionActionOnModuleUsingJson.js"));
+
+const { Issuer } = require('openid-client');
+
+let MiddlewareController = (0, _graph.default)({
+  Superclass: _ApplicationClass.default,
   implementationType: 'Middleware',
-  cacheName: true,
-})
-let ConditionController = createStaticInstanceClasses({
-  Superclass: Application,
-  implementationType: 'Condition',
-  cacheName: true,
-})
+  cacheName: true });
 
-export default ({ entrypointConditionKey } = {}) => async () => {
-  const oidcPort = 8084
-  const issuer = await Issuer.discover(`http://localhost:${oidcPort}`)
+let ConditionController = (0, _graph.default)({
+  Superclass: _ApplicationClass.default,
+  implementationType: 'Condition',
+  cacheName: true });var _default =
+
+
+({ entrypointConditionKey } = {}) => async () => {
+  const oidcPort = 8084;
+  const issuer = await Issuer.discover(`http://localhost:${oidcPort}`);
   const oidcClient = new issuer.Client(
-    {
-      client_id: 'privateClientApplication',
-      client_secret: 'secret',
-      id_token_signed_response_alg: 'RS256', // defaults to RS256
-      token_endpoint_auth_method: 'client_secret_basic', // defaults to client_secret_basic
-    } /*[ keystore ]*/,
-  ) // keystore is an optional argument for instantiating a client with configured asymmetrical ID Token or UserInfo response encryption
+  {
+    client_id: 'privateClientApplication',
+    client_secret: 'secret',
+    id_token_signed_response_alg: 'RS256',
+    token_endpoint_auth_method: 'client_secret_basic' });
+
+
   let authURL = oidcClient.authorizationUrl({
     redirect_uri: 'https://lvh.me/cb',
-    scope: 'openid',
-  })
+    scope: 'openid' });
 
-  let Class = WebappUIClass
-  // Templating engine & associated extention.
-  // Class.serverKoa.use()
+
+  let Class = _WebappUIClass.default;
+
+
   let middlewareArray = [
-    koaViews('/', { map: { html: 'underscore', js: 'underscore' } }),
-    createClassInstancePerRequest(Class),
-    async (context, next) => {
-      // debugLogMiddleNestedUnitStructure('91140de5-9ab6-43cd-91fd-9eae5843c74c')
-      context.set('connection', 'keep-alive')
-      await next()
-    },
-    async (context, next) => {
-      // CONDITION
-      let self = Class
-      // [1] Create instances and check conditions. Get callback either a function or document
-      // The instance responsible for rquests of specific port.
-      let conditionController = await ConditionController.createContext({ portAppInstance: context.instance })
-      let entrypointConditionTree = entrypointConditionKey || self.entrypointSetting.defaultConditionTreeKey
-      if (process.env.SZN_DEBUG == 'true' && context.header.debug == 'true') console.log(`🍊 Entrypoint Condition Key: ${entrypointConditionTree} \n \n`)
-      let callbackOption = await conditionController.initializeNestedUnit({ nestedUnitKey: entrypointConditionTree })
-      // if(process.env.SZN_DEBUG == 'true') console.log(`🍊 Callback object: ${callback.name}`)
-      // [2] Use callback
-      if (process.env.SZN_DEBUG == 'true' && context.header.debug == 'true') console.log(`🔀✔️ Choosen callback is: %c ${callbackOption.name}`, self.config.style.green)
-      await implementConditionActionOnModuleUsingJson({ setting: callbackOption })(context, next)
-    },
-    async (context, next) => {
-      if (context.path == '/oidcClient') {
-        console.log(authURL)
-        let introspection = await oidcClient
-          .introspect('token') // => Promise
-          .then(function(response) {
-            return response
-          })
-        context.body = introspection
-      }
-      await next()
-    },
-    async (context, next) => {
-      console.log('Last Middleware reached.')
-      await next()
-    },
-  ]
-  Class.applyKoaMiddleware(middlewareArray)
-  Class.createHttpServer()
-}
+  (0, _koaViews.default)('/', { map: { html: 'underscore', js: 'underscore' } }),
+  (0, _createClassInstancePerRequestMiddleware.default)(Class),
+  async (context, next) => {
+
+    context.set('connection', 'keep-alive');
+    await next();
+  },
+  async (context, next) => {
+
+    let self = Class;
+
+
+    let conditionController = await ConditionController.createContext({ portAppInstance: context.instance });
+    let entrypointConditionTree = entrypointConditionKey || self.entrypointSetting.defaultConditionTreeKey;
+    if (process.env.SZN_DEBUG == 'true' && context.header.debug == 'true') console.log(`🍊 Entrypoint Condition Key: ${entrypointConditionTree} \n \n`);
+    let callbackOption = await conditionController.initializeNestedUnit({ nestedUnitKey: entrypointConditionTree });
+
+
+    if (process.env.SZN_DEBUG == 'true' && context.header.debug == 'true') console.log(`🔀✔️ Choosen callback is: %c ${callbackOption.name}`, self.config.style.green);
+    await (0, _implementConditionActionOnModuleUsingJson.default)({ setting: callbackOption })(context, next);
+  },
+  async (context, next) => {
+    if (context.path == '/oidcClient') {
+      console.log(authURL);
+      let introspection = await oidcClient.
+      introspect('token').
+      then(function (response) {
+        return response;
+      });
+      context.body = introspection;
+    }
+    await next();
+  },
+  async (context, next) => {
+    console.log('Last Middleware reached.');
+    await next();
+  }];
+
+  Class.applyKoaMiddleware(middlewareArray);
+  Class.createHttpServer();
+};exports.default = _default;
+//# sourceMappingURL=data:application/json;charset=utf-8;base64,eyJ2ZXJzaW9uIjozLCJzb3VyY2VzIjpbIi4uLy4uLy4uLy4uLy4uL3NvdXJjZS9jbGFzcy9wb3J0L3dlYmFwcFVJL2luaXRpYWxpemVQb3J0U2VydmVyLmpzIl0sIm5hbWVzIjpbIklzc3VlciIsInJlcXVpcmUiLCJNaWRkbGV3YXJlQ29udHJvbGxlciIsIlN1cGVyY2xhc3MiLCJBcHBsaWNhdGlvbiIsImltcGxlbWVudGF0aW9uVHlwZSIsImNhY2hlTmFtZSIsIkNvbmRpdGlvbkNvbnRyb2xsZXIiLCJlbnRyeXBvaW50Q29uZGl0aW9uS2V5Iiwib2lkY1BvcnQiLCJpc3N1ZXIiLCJkaXNjb3ZlciIsIm9pZGNDbGllbnQiLCJDbGllbnQiLCJjbGllbnRfaWQiLCJjbGllbnRfc2VjcmV0IiwiaWRfdG9rZW5fc2lnbmVkX3Jlc3BvbnNlX2FsZyIsInRva2VuX2VuZHBvaW50X2F1dGhfbWV0aG9kIiwiYXV0aFVSTCIsImF1dGhvcml6YXRpb25VcmwiLCJyZWRpcmVjdF91cmkiLCJzY29wZSIsIkNsYXNzIiwiV2ViYXBwVUlDbGFzcyIsIm1pZGRsZXdhcmVBcnJheSIsIm1hcCIsImh0bWwiLCJqcyIsImNvbnRleHQiLCJuZXh0Iiwic2V0Iiwic2VsZiIsImNvbmRpdGlvbkNvbnRyb2xsZXIiLCJjcmVhdGVDb250ZXh0IiwicG9ydEFwcEluc3RhbmNlIiwiaW5zdGFuY2UiLCJlbnRyeXBvaW50Q29uZGl0aW9uVHJlZSIsImVudHJ5cG9pbnRTZXR0aW5nIiwiZGVmYXVsdENvbmRpdGlvblRyZWVLZXkiLCJwcm9jZXNzIiwiZW52IiwiU1pOX0RFQlVHIiwiaGVhZGVyIiwiZGVidWciLCJjb25zb2xlIiwibG9nIiwiY2FsbGJhY2tPcHRpb24iLCJpbml0aWFsaXplTmVzdGVkVW5pdCIsIm5lc3RlZFVuaXRLZXkiLCJuYW1lIiwiY29uZmlnIiwic3R5bGUiLCJncmVlbiIsInNldHRpbmciLCJwYXRoIiwiaW50cm9zcGVjdGlvbiIsImludHJvc3BlY3QiLCJ0aGVuIiwicmVzcG9uc2UiLCJib2R5IiwiYXBwbHlL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S0FBWixDQUFrQkMsS0FBckY7QUFDdkUsVUFBTSx3REFBMEMsRUFBRUMsT0FBTyxFQUFFUCxjQUFYLEVBQTFDLEVBQXVFbEIsT0FBdkUsRUFBZ0ZDLElBQWhGLENBQU47QUFDRCxHQXJCbUI7QUFzQnBCLFNBQU9ELE9BQVAsRUFBZ0JDLElBQWhCLEtBQXlCO0FBQ3ZCLFFBQUlELE9BQU8sQ0FBQzBCLElBQVIsSUFBZ0IsYUFBcEIsRUFBbUM7QUFDakNWLE1BQUFBLE9BQU8sQ0FBQ0MsR0FBUixDQUFZM0IsT0FBWjtBQUNBLFVBQUlxQyxhQUFhLEdBQUcsTUFBTTNDLFVBQVU7QUFDakM0QyxNQUFBQSxVQUR1QixDQUNaLE9BRFk7QUFFdkJDLE1BQUFBLElBRnVCLENBRWxCLFVBQVNDLFFBQVQsRUFBbUI7QUFDdkIsZUFBT0EsUUFBUDtBQUNELE9BSnVCLENBQTFCO0FBS0E5QixNQUFBQSxPQUFPLENBQUMrQixJQUFSLEdBQWVKLGFBQWY7QUFDRDtBQUNELFVBQU0xQixJQUFJLEVBQVY7QUFDRCxHQWpDbUI7QUFrQ3BCLFNBQU9ELE9BQVAsRUFBZ0JDLElBQWhCLEtBQXlCO0FBQ3ZCZSxJQUFBQSxPQUFPLENBQUNDLEdBQVIsQ0FBWSwwQkFBWjtBQUNBLFVBQU1oQixJQUFJLEVBQVY7QUFDRCxHQXJDbUIsQ0FBdEI7O0FBdUNBUCxFQUFBQSxLQUFLLENBQUNzQyxrQkFBTixDQUF5QnBDLGVBQXpCO0FBQ0FGLEVBQUFBLEtBQUssQ0FBQ3VDLGdCQUFOO0FBQ0QsQyIsInNvdXJjZXNDb250ZW50IjpbImltcG9ydCBrb2FWaWV3cyBmcm9tICdrb2Etdmlld3MnXG5pbXBvcnQgeyBkZWZhdWx0IGFzIEFwcGxpY2F0aW9uIH0gZnJvbSAnLi4vLi4vQXBwbGljYXRpb24uY2xhc3MuanMnXG5pbXBvcnQgV2ViYXBwVUlDbGFzcyBmcm9tICcuL1dlYmFwcFVJLmNsYXNzLmpzJ1xuaW1wb3J0IGRlYnVnTG9nTWlkZGxlTmVzdGVkVW5pdFN0cnVjdHVyZSBmcm9tICcuLi8uLi8uLi91dGlsaXR5RnVuY3Rpb24vZGVidWdMb2dNaWRkbGV3YXJlTmVzdGVkVW5pdFN0cnVjdHVyZS5qcydcbmltcG9ydCBjcmVhdGVTdGF0aWNJbnN0YW5jZUNsYXNzZXMgZnJvbSAnQGRlcGVuZGVuY3kvZ3JhcGgnXG5pbXBvcnQgY3JlYXRlQ2xhc3NJbnN0YW5jZVBlclJlcXVlc3QgZnJvbSAnLi4vLi4vLi4vdXRpbGl0eUZ1bmN0aW9uL21pZGRsZXdhcmUvY3JlYXRlQ2xhc3NJbnN0YW5jZVBlclJlcXVlc3QubWlkZGxld2FyZS5qcydcbmltcG9ydCBpbXBsZW1lbnRNaWRkbGV3YXJlT25Nb2R1bGVVc2luZ0pzb24gZnJvbSAnLi4vLi4vLi4vdXRpbGl0eUZ1bmN0aW9uL21pZGRsZXdhcmUvaW1wbGVtZW50TWlkZGxld2FyZU9uTW9kdWxlVXNpbmdKc29uLmpzJyAvLyBNaWRkbGV3YXJlIGV4dGVuZGluZyBzZXJ2ZXIgZnVuY3Rpb25hbGl0eVxuaW1wb3J0IGltcGxlbWVudENvbmRpdGlvbkFjdGlvbk9uTW9kdWxlVXNpbmdKc29uIGZyb20gJy4uLy4uLy4uL3V0aWxpdHlGdW5jdGlvbi9taWRkbGV3YXJlL2ltcGxlbWVudENvbmRpdGlvbkFjdGlvbk9uTW9kdWxlVXNpbmdKc29uLmpzJ1xuaW1wb3J0IGxhbmd1YWdlQ29udGVudCBmcm9tICcuLi8uLi8uLi91dGlsaXR5RnVuY3Rpb24vbWlkZGxld2FyZS9sYW5ndWFnZUNvbnRlbnQubWlkZGxld2FyZS5qcydcbmNvbnN0IHsgSXNzdWVyIH0gPSByZXF1aXJlKCdvcGVuaWQtY2xpZW50JylcblxubGV0IE1pZGRsZXdhcmVDb250cm9sbGVyID0gY3JlYXRlU3RhdGljSW5zdGFuY2VDbGFzc2VzKHtcbiAgU3VwZXJjbGFzczogQXBwbGljYXRpb24sXG4gIGltcGxlbWVudGF0aW9uVHlwZTogJ01pZGRsZXdhcmUnLFxuICBjYWNoZU5hbWU6IHRydWUsXG59KVxubGV0IENvbmRpdGlvbkNvbnRyb2xsZXIgPSBjcmVhdGVTdGF0aWNJbnN0YW5jZUNsYXNzZXMoe1xuICBTdXBlcmNsYXNzOiBBcHBsaWNhdGlvbixcbiAgaW1wbGVtZW50YXRpb25UeXBlOiAnQ29uZGl0aW9uJyxcbiAgY2FjaGVOYW1lOiB0cnVlLFxufSlcblxuZXhwb3J0IGRlZmF1bHQgKHsgZW50cnlwb2ludENvbmRpdGlvbktleSB9ID0ge30pID0+IGFzeW5jICgpID0+IHtcbiAgY29uc3Qgb2lkY1BvcnQgPSA4MDg0XG4gIGNvbnN0IGlzc3VlciA9IGF3YWl0IElzc3Vlci5kaXNjb3ZlcihgaHR0cDovL2xvY2FsaG9zdDoke29pZGNQb3J0fWApXG4gIGNvbnN0IG9pZGNDbGllbnQgPSBuZXcgaXNzdWVyLkNsaWVudChcbiAgICB7XG4gICAgICBjbGllbnRfaWQ6ICdwcml2YXRlQ2xpZW50QXBwbGljYXRpb24nLFxuICAgICAgY2xpZW50X3NlY3JldDogJ3NlY3JldCcsXG4gICAgICBpZF90b2tlbl9zaWduZWRfcmVzcG9uc2VfYWxnOiAnUlMyNTYnLCAvLyBkZWZhdWx0cyB0byBSUzI1NlxuICAgICAgdG9rZW5fZW5kcG9pbnRfYXV0aF9tZXRob2Q6ICdjbGllbnRfc2VjcmV0X2Jhc2ljJywgLy8gZGVmYXVsdHMgdG8gY2xpZW50X3NlY3JldF9iYXNpY1xuICAgIH0gLypbIGtleXN0b3JlIF0qLyxcbiAgKSAvLyBrZXlzdG9yZSBpcyBhbiBvcHRpb25hbCBhcmd1bWVudCBmb3IgaW5zdGFudGlhdGluZyBhIGNsaWVudCB3aXRoIGNvbmZpZ3VyZWQgYXN5bW1ldHJpY2FsIElEIFRva2VuIG9yIFVzZXJJbmZvIHJlc3BvbnNlIGVuY3J5cHRpb25cbiAgbGV0IGF1dGhVUkwgPSBvaWRjQ2xpZW50LmF1dGhvcml6YXRpb25Vcmwoe1xuICAgIHJlZGlyZWN0X3VyaTogJ2h0dHBzOi8vbHZoLm1lL2NiJyxcbiAgICBzY29wZTogJ29wZW5pZCcsXG4gIH0pXG5cbiAgbGV0IENsYXNzID0gV2ViYXBwVUlDbGFzc1xuICAvLyBUZW1wbGF0aW5nIGVuZ2luZSAmIGFzc29jaWF0ZWQgZXh0ZW50aW9uLlxuICAvLyBDbGFzcy5zZXJ2ZXJLb2EudXNlKClcbiAgbGV0IG1pZGRsZXdhcmVBcnJheSA9IFtcbiAgICBrb2FWaWV3cygnLycsIHsgbWFwOiB7IGh0bWw6ICd1bmRlcnNjb3JlJywganM6ICd1bmRlcnNjb3JlJyB9IH0pLFxuICAgIGNyZWF0ZUNsYXNzSW5zdGFuY2VQZXJSZXF1ZXN0KENsYXNzKSxcbiAgICBhc3luYyAoY29udGV4dCwgbmV4dCkgPT4ge1xuICAgICAgLy8gZGVidWdMb2dNaWRkbGVOZXN0ZWRVbml0U3RydWN0dXJlKCc5MTE0MGRlNS05YWI2LTQzY2QtOTFmZC05ZWFlNTg0M2M3NGMnKVxuICAgICAgY29udGV4dC5zZXQoJ2Nvbm5lY3Rpb24nLCAna2VlcC1hbGl2ZScpXG4gICAgICBhd2FpdCBuZXh0KClcbiAgICB9LFxuICAgIGFzeW5jIChjb250ZXh0LCBuZXh0KSA9PiB7XG4gICAgICAvLyBDT05ESVRJT05cbiAgICAgIGxldCBzZWxmID0gQ2xhc3NcbiAgICAgIC8vIFsxXSBDcmVhdGUgaW5zdGFuY2VzIGFuZCBjaGVjayBjb25kaXRpb25zLiBHZXQgY2FsbGJhY2sgZWl0aGVyIGEgZnVuY3Rpb24gb3IgZG9jdW1lbnRcbiAgICAgIC8vIFRoZSBpbnN0YW5jZSByZXNwb25zaWJsZSBmb3IgcnF1ZXN0cyBvZiBzcGVjaWZpYyBwb3J0LlxuICAgICAgbGV0IGNvbmRpdGlvbkNvbnRyb2xsZXIgPSBhd2FpdCBDb25kaXRpb25Db250cm9sbGVyLmNyZWF0ZUNvbnRleHQoeyBwb3J0QXBwSW5zdGFuY2U6IGNvbnRleHQuaW5zdGFuY2UgfSlcbiAgICAgIGxldCBlbnRyeXBvaW50Q29uZGl0aW9uVHJlZSA9IGVudHJ5cG9pbnRDb25kaXRpb25LZXkgfHwgc2VsZi5lbnRyeXBvaW50U2V0dGluZy5kZWZhdWx0Q29uZGl0aW9uVHJlZUtleVxuICAgICAgaWYgKHByb2Nlc3MuZW52LlNaTl9ERUJVRyA9PSAndHJ1ZScgJiYgY29udGV4dC5oZWFkZXIuZGVidWcgPT0gJ3RydWUnKSBjb25zb2xlLmxvZyhg8J+NiiBFbnRyeXBvaW50IENvbmRpdGlvbiBLZXk6ICR7ZW50cnlwb2ludENvbmRpdGlvblRyZWV9IFxcbiBcXG5gKVxuICAgICAgbGV0IGNhbGxiYWNrT3B0aW9uID0gYXdhaXQgY29uZGl0aW9uQ29udHJvbGxlci5pbml0aWFsaXplTmVzdGVkVW5pdCh7IG5lc3RlZFVuaXRLZXk6IGVudHJ5cG9pbnRDb25kaXRpb25UcmVlIH0pXG4gICAgICAvLyBpZihwcm9jZXNzLmVudi5TWk5fREVCVUcgPT0gJ3RydWUnKSBjb25zb2xlLmxvZyhg8J+NiiBDYWxsYmFjayBvYmplY3Q6ICR7Y2FsbGJhY2submFtZX1gKVxuICAgICAgLy8gWzJdIFVzZSBjYWxsYmFja1xuICAgICAgaWYgKHByb2Nlc3MuZW52LlNaTl9ERUJVRyA9PSAndHJ1ZScgJiYgY29udGV4dC5oZWFkZXIuZGVidWcgPT0gJ3RydWUnKSBjb25zb2xlLmxvZyhg8J+UgOKclO+4jyBDaG9vc2VuIGNhbGxiYWNrIGlzOiAlYyAke2NhbGxiYWNrT3B0aW9uLm5hbWV9YCwgc2VsZi5jb25maWcuc3R5bGUuZ3JlZW4pXG4gICAgICBhd2FpdCBpbXBsZW1lbnRDb25kaXRpb25BY3Rpb25Pbk1vZHVsZVVzaW5nSnNvbih7IHNldHRpbmc6IGNhbGxiYWNrT3B0aW9uIH0pKGNvbnRleHQsIG5leHQpXG4gICAgfSxcbiAgICBhc3luYyAoY29udGV4dCwgbmV4dCkgPT4ge1xuICAgICAgaWYgKGNvbnRleHQucGF0aCA9PSAnL29pZGNDbGllbnQnKSB7XG4gICAgICAgIGNvbnNvbGUubG9nKGF1dGhVUkwpXG4gICAgICAgIGxldCBpbnRyb3NwZWN0aW9uID0gYXdhaXQgb2lkY0NsaWVudFxuICAgICAgICAgIC5pbnRyb3NwZWN0KCd0b2tlbicpIC8vID0+IFByb21pc2VcbiAgICAgICAgICAudGhlbihmdW5jdGlvbihyZXNwb25zZSkge1xuICAgICAgICAgICAgcmV0dXJuIHJlc3BvbnNlXG4gICAgICAgICAgfSlcbiAgICAgICAgY29udGV4dC5ib2R5ID0gaW50cm9zcGVjdGlvblxuICAgICAgfVxuICAgICAgYXdhaXQgbmV4dCgpXG4gICAgfSxcbiAgICBhc3luYyAoY29udGV4dCwgbmV4dCkgPT4ge1xuICAgICAgY29uc29sZS5sb2coJ0xhc3QgTWlkZGxld2FyZSByZWFjaGVkLicpXG4gICAgICBhd2FpdCBuZXh0KClcbiAgICB9LFxuICBdXG4gIENsYXNzLmFwcGx5S29hTWlkZGxld2FyZShtaWRkbGV3YXJlQXJyYXkpXG4gIENsYXNzLmNyZWF0ZUh0dHBTZXJ2ZXIoKVxufVxuIl19

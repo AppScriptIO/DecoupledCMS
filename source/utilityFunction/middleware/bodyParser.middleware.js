@@ -1,15 +1,16 @@
-import parse from 'co-body' // throws on unsupported content type.
-import bodyParser from 'koa-bodyparser' // Brings extra option for handling error and unsupported content-types.
+"use strict";var _interopRequireDefault = require("@babel/runtime/helpers/interopRequireDefault");Object.defineProperty(exports, "__esModule", { value: true });exports.default = _default;
+var _koaBodyparser = _interopRequireDefault(require("koa-bodyparser"));
 
-export default function () {
-    return async (context, next) => { // parse request body
-        if(context.request.method !== 'OPTIONS') {
-            // context.request.body = await parse({
-            //     req: context.request
-            // })
-            await bodyParser()(context, next) // same as co-body but skips co-body parser for unsupported content-type, which prevents co-body from throwing error.
-        } else {
-            await next()
-        }
+function _default() {
+  return async (context, next) => {
+    if (context.request.method !== 'OPTIONS') {
+
+
+
+      await (0, _koaBodyparser.default)()(context, next);
+    } else {
+      await next();
     }
+  };
 }
+//# sourceMappingURL=data:application/json;charset=utf-8;base64,eyJ2ZXJzaW9uIjozLCJzb3VyY2VzIjpbIi4uLy4uLy4uLy4uL3NvdXJjZS91dGlsaXR5RnVuY3Rpb24vbWlkZGxld2FyZS9ib2R5UGFyc2VyLm1pZGRsZXdhcmUuanMiXSwibmFtZXMiOlsiY29udGV4dCIsIm5leHQiLCJyZXF1ZXN0IiwibWV0aG9kIl0sIm1hcHBpbmdzIjoiO0FBQ0E7O0FBRWUsb0JBQVk7QUFDdkIsU0FBTyxPQUFPQSxPQUFQLEVBQWdCQyxJQUFoQixLQUF5QjtBQUM1QixRQUFHRCxPQUFPLENBQUNFLE9BQVIsQ0FBZ0JDLE1BQWhCLEtBQTJCLFNBQTlCLEVBQXlDOzs7O0FBSXJDLFlBQU0sOEJBQWFILE9BQWIsRUFBc0JDLElBQXRCLENBQU47QUFDSCxLQUxELE1BS087QUFDSCxZQUFNQSxJQUFJLEVBQVY7QUFDSDtBQUNKLEdBVEQ7QUFVSCIsInNvdXJjZXNDb250ZW50IjpbImltcG9ydCBwYXJzZSBmcm9tICdjby1ib2R5JyAvLyB0aHJvd3Mgb24gdW5zdXBwb3J0ZWQgY29udGVudCB0eXBlLlxuaW1wb3J0IGJvZHlQYXJzZXIgZnJvbSAna29hLWJvZHlwYXJzZXInIC8vIEJyaW5ncyBleHRyYSBvcHRpb24gZm9yIGhhbmRsaW5nIGVycm9yIGFuZCB1bnN1cHBvcnRlZCBjb250ZW50LXR5cGVzLlxuXG5leHBvcnQgZGVmYXVsdCBmdW5jdGlvbiAoKSB7XG4gICAgcmV0dXJuIGFzeW5jIChjb250ZXh0LCBuZXh0KSA9PiB7IC8vIHBhcnNlIHJlcXVlc3QgYm9keVxuICAgICAgICBpZihjb250ZXh0LnJlcXVlc3QubWV0aG9kICE9PSAnT1BUSU9OUycpIHtcbiAgICAgICAgICAgIC8vIGNvbnRleHQucmVxdWVzdC5ib2R5ID0gYXdhaXQgcGFyc2Uoe1xuICAgICAgICAgICAgLy8gICAgIHJlcTogY29udGV4dC5yZXF1ZXN0XG4gICAgICAgICAgICAvLyB9KVxuICAgICAgICAgICAgYXdhaXQgYm9keVBhcnNlcigpKGNvbnRleHQsIG5leHQpIC8vIHNhbWUgYXMgY28tYm9keSBidXQgc2tpcHMgY28tYm9keSBwYXJzZXIgZm9yIHVuc3VwcG9ydGVkIGNvbnRlbnQtdHlwZSwgd2hpY2ggcHJldmVudHMgY28tYm9keSBmcm9tIHRocm93aW5nIGVycm9yLlxuICAgICAgICB9IGVsc2Uge1xuICAgICAgICAgICAgYXdhaXQgbmV4dCgpXG4gICAgICAgIH1cbiAgICB9XG59XG4iXX0=

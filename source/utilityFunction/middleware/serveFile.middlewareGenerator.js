@@ -1,199 +1,200 @@
-import config from '../../../setup/configuration/configuration.export.js'
-import path from 'path'
-import filesystem from 'fs'
-import Stream from 'stream'
-import multistream from 'multistream'
-import underscore from 'underscore'
-// import serverStatic from 'koa-static' // Static files.
-import send from 'koa-sendfile' // Static files.
-// import mount from 'koa-mount'
-import { default as Application } from '../../class/Application.class.js'
-import {functionWrappedMiddlewareDecorator} from '@dependency/commonPattern/source/middlewarePatternDecorator.js'
-import createStaticInstanceClasses from '../../module/reusableNestedUnit'
-import {default as getTableDocumentDefault} from "@dependency/databaseUtility/source/getTableDocument.query.js";
-import { wrapStringStream } from '@dependency/wrapStringStream'
-import { streamToString } from '@dependency/streamToStringConvertion'
+"use strict";var _interopRequireDefault = require("@babel/runtime/helpers/interopRequireDefault");Object.defineProperty(exports, "__esModule", { value: true });exports.serveServerSideRenderedFile = serveServerSideRenderedFile;exports.renderTemplateDocument = renderTemplateDocument;exports.serveStaticFile = void 0;
+var _path = _interopRequireDefault(require("path"));
+var _fs = _interopRequireDefault(require("fs"));
 
-/**
- * serve static file.
- * @dependence userAgent middleware
- */
-export let serveStaticFile = functionWrappedMiddlewareDecorator(async function (context, next, option) {
-    let relativeFilePath = option.filePath || context.path // a predefined path or an extracted url path
-    let baseFolderRelativePath = option.directoryRelativePath || '' // additional folder path.
-    let clientSidePath = context.instance.config.clientSidePath
-    let absoluteFilePath = path.normalize(path.join(clientSidePath, baseFolderRelativePath, relativeFilePath))
-    let fileStats = await send(context, absoluteFilePath);
-    if(!fileStats || !fileStats.isFile()) { // if file doesn't exist then pass to the next middleware.
-        await next()
-    }
-    // Previously used - serving directoryPath:
-    // let directoryPath = await path.resolve(path.normalize(`${context.instance.config.clientBasePath}${setting.directoryPath}`)) 
-    // let mountMiddleware = mount(setting.urlPath, serverStatic(`${directoryPath}`, setting.options))
-})
 
-// read streams and send them using koa - https://github.com/koajs/koa/issues/944 http://book.mixu.net/node/ch9.html
-// TODO: change file name to something like 'render serverside javascript' & convert function to be used for other files not only web components.
+var _underscore = _interopRequireDefault(require("underscore"));
+
+var _koaSendfile = _interopRequireDefault(require("koa-sendfile"));
+
+var _ApplicationClass = _interopRequireDefault(require("../../class/Application.class.js"));
+var _middlewarePatternDecorator = require("@dependency/commonPattern/source/middlewarePatternDecorator.js");
+var _reusableNestedUnit = _interopRequireDefault(require("../../module/reusableNestedUnit"));
+var _getTableDocumentQuery = _interopRequireDefault(require("@dependency/databaseUtility/source/getTableDocument.query.js"));
+var _wrapStringStream = require("@dependency/wrapStringStream");
+
+
+
+
+
+
+let serveStaticFile = (0, _middlewarePatternDecorator.functionWrappedMiddlewareDecorator)(async function (context, next, option) {
+  let relativeFilePath = option.filePath || context.path;
+  let baseFolderRelativePath = option.directoryRelativePath || '';
+  let clientSidePath = context.instance.config.clientSidePath;
+  let absoluteFilePath = _path.default.normalize(_path.default.join(clientSidePath, baseFolderRelativePath, relativeFilePath));
+  let fileStats = await (0, _koaSendfile.default)(context, absoluteFilePath);
+  if (!fileStats || !fileStats.isFile()) {
+    await next();
+  }
+
+
+
+});exports.serveStaticFile = serveStaticFile;
+
+
+
 async function serveServerSideRenderedFile(context, next, option) {
-        let clientSidePath = context.instance.config.clientSidePath
-        let baseFolderRelativePath = option.directoryRelativePath || '' // additional folder path.
-        let filePath = option.filePath || context.path // a predefined path or an extracted url path
-        let renderType = (option.renderType) ? // check if renderType is in nested unit options/arguments if not use the $ in filePath (as all paths should contain $ sign from url because the condition claims it, can be overridden using option argument)
-            option.renderType : 
-            filePath.substr(filePath.lastIndexOf('$') + 1, filePath.length); // $function extracted from url after '$' signature
-        let lastIndexPosition = (filePath.lastIndexOf('$') == -1) ? filePath.length : filePath.lastIndexOf('$');
-        let relativeFilePath = (option.renderType) ? filePath : filePath.substr(0, lastIndexPosition); // remove function name
-        let absoluteFilePath = path.normalize(path.join(clientSidePath, baseFolderRelativePath, relativeFilePath))
+  let clientSidePath = context.instance.config.clientSidePath;
+  let baseFolderRelativePath = option.directoryRelativePath || '';
+  let filePath = option.filePath || context.path;
+  let renderType = option.renderType ?
+  option.renderType :
+  filePath.substr(filePath.lastIndexOf('$') + 1, filePath.length);
+  let lastIndexPosition = filePath.lastIndexOf('$') == -1 ? filePath.length : filePath.lastIndexOf('$');
+  let relativeFilePath = option.renderType ? filePath : filePath.substr(0, lastIndexPosition);
+  let absoluteFilePath = _path.default.normalize(_path.default.join(clientSidePath, baseFolderRelativePath, relativeFilePath));
 
-        let renderedContent; 
-        switch (renderType) {
-            case 'convertSharedStylesToJS':
-                renderedContent = await convertSharedStylesToJS({ filePath: absoluteFilePath, context })
-                context.body = renderedContent
-                context.response.type = 'application/javascript'        
-                await next()
-            break;
-            case 'covertTextFileToJSModule': 
-                renderedContent = await covertTextFileToJSModule({ filePath: absoluteFilePath, context })
-                context.body = renderedContent
-                context.response.type = 'application/javascript'        
-                await next()
-            break;
-            case 'renderHTMLImportWebcomponent':
-                renderedContent = renderHTMLImportWebcomponent({ filePath: absoluteFilePath, context })
-                context.body = renderedContent
-                await next()
-            break;
-            case 'renderJSImportWebcomponent':
-                renderedContent = renderJSImportWebcomponent({ filePath: absoluteFilePath, context })
-                context.response.type = 'application/javascript'        
-                context.body = renderedContent
-                await next()
-            break;
-            default:
-                if(option.mimeType) {
-                    // Implementation using filesystem read and underscore template, with a mime type e.g. `application/javascript`
-                    try {
-                        // render template
-                        renderedContent = filesystem.readFileSync(absoluteFilePath, 'utf8')
-                        context.body = underscore.template(renderedContent)({
-                            Application, 
-                            context,
-                            view: {}, 
-                            argument: {} 
-                        })  // Koa handles the stream and send it to the client.
-                        // TODO: detect MIME type automatically and support other mimes. 
-                        context.response.type = option.mimeType
-                    } catch (error) {
-                        console.log(error)
-                        await next()
-                    }     
-                } else {
-                    if (filesystem.existsSync(absoluteFilePath) && filesystem.statSync(absoluteFilePath).isFile()) {
-                        // serve rendered file. Implementation using render using underscore (framework like).
-                        await context.render(absoluteFilePath, {
-                            context, Application, view: {}, argument: { layoutElement: 'webapp-layout-list' }
-                        })
-                        context.response.type = path.extname(absoluteFilePath)
-                        await next()
-                    } else {
-                        await next()
-                    }
-                }
-            break;
+  let renderedContent;
+  switch (renderType) {
+    case 'convertSharedStylesToJS':
+      renderedContent = await convertSharedStylesToJS({ filePath: absoluteFilePath, context });
+      context.body = renderedContent;
+      context.response.type = 'application/javascript';
+      await next();
+      break;
+    case 'covertTextFileToJSModule':
+      renderedContent = await covertTextFileToJSModule({ filePath: absoluteFilePath, context });
+      context.body = renderedContent;
+      context.response.type = 'application/javascript';
+      await next();
+      break;
+    case 'renderHTMLImportWebcomponent':
+      renderedContent = renderHTMLImportWebcomponent({ filePath: absoluteFilePath, context });
+      context.body = renderedContent;
+      await next();
+      break;
+    case 'renderJSImportWebcomponent':
+      renderedContent = renderJSImportWebcomponent({ filePath: absoluteFilePath, context });
+      context.response.type = 'application/javascript';
+      context.body = renderedContent;
+      await next();
+      break;
+    default:
+      if (option.mimeType) {
+
+        try {
+
+          renderedContent = _fs.default.readFileSync(absoluteFilePath, 'utf8');
+          context.body = _underscore.default.template(renderedContent)({
+            Application: _ApplicationClass.default,
+            context,
+            view: {},
+            argument: {} });
+
+
+          context.response.type = option.mimeType;
+        } catch (error) {
+          console.log(error);
+          await next();
         }
-        
-        // let directoryPath = await path.resolve(path.normalize(`${context.instance.config.clientBasePath}${option.directoryPath}`)) 
-        // let mountMiddleware = mount(option.urlPath, serverStatic(`${directoryPath}`, option.options))
-}
-serveServerSideRenderedFile = functionWrappedMiddlewareDecorator(serveServerSideRenderedFile)
-export { serveServerSideRenderedFile }
+      } else {
+        if (_fs.default.existsSync(absoluteFilePath) && _fs.default.statSync(absoluteFilePath).isFile()) {
 
-/** Wrap css style in a tag (created using javascript) - to support shared styles in Polymer 3 javascript imports 
- * Polyfill from https://github.com/Polymer/polymer-modulizer/blob/f1ef5dea3978a9601248d73f4d23dc033382286c/fixtures/packages/polymer/expected/test/unit/styling-import-shared-styles.js
-*/
-async function convertSharedStylesToJS({ filePath, context  }) {
-    let fileStream = filesystem.createReadStream(filePath)
-    return await wrapStringStream({ 
-        stream: fileStream, 
-        beforeString: "const $_documentContainer = document.createElement('div'); $_documentContainer.setAttribute('style', 'display: none;'); $_documentContainer.innerHTML = \`", 
-        afterString: '\`;document.head.appendChild($_documentContainer);'
-    })
+          await context.render(absoluteFilePath, {
+            context, Application: _ApplicationClass.default, view: {}, argument: { layoutElement: 'webapp-layout-list' } });
+
+          context.response.type = _path.default.extname(absoluteFilePath);
+          await next();
+        } else {
+          await next();
+        }
+      }
+      break;}
+
+
+
+
+}
+exports.serveServerSideRenderedFile = serveServerSideRenderedFile = (0, _middlewarePatternDecorator.functionWrappedMiddlewareDecorator)(serveServerSideRenderedFile);
+
+
+
+
+
+async function convertSharedStylesToJS({ filePath, context }) {
+  let fileStream = _fs.default.createReadStream(filePath);
+  return await (0, _wrapStringStream.wrapStringStream)({
+    stream: fileStream,
+    beforeString: "const $_documentContainer = document.createElement('div'); $_documentContainer.setAttribute('style', 'display: none;'); $_documentContainer.innerHTML = \`",
+    afterString: '\`;document.head.appendChild($_documentContainer);' });
+
 }
 
-/** Wrap text file with export default - converting it to js module */
-async function covertTextFileToJSModule({ filePath, context }) { 
-    let fileStream = filesystem.createReadStream(filePath)
-    return await wrapStringStream({ stream: fileStream, beforeString: 'export default \`', afterString: '\`' })
+
+async function covertTextFileToJSModule({ filePath, context }) {
+  let fileStream = _fs.default.createReadStream(filePath);
+  return await (0, _wrapStringStream.wrapStringStream)({ stream: fileStream, beforeString: 'export default \`', afterString: '\`' });
 }
 
-/**
- * Webcomponent using JS imports - Combine webcomponent files according to predefined component parts locations.
- */
+
+
+
 function renderJSImportWebcomponent({ filePath, context }) {
-    let fileDirectoryPath = filePath.substr(0, filePath.lastIndexOf('/'))
-    let argument = { layoutElement: 'webapp-layout-list' }
-    let view = {};
+  let fileDirectoryPath = filePath.substr(0, filePath.lastIndexOf('/'));
+  let argument = { layoutElement: 'webapp-layout-list' };
+  let view = {};
 
-    let templatePart = {
-        css: underscore.template(filesystem.readFileSync(`${fileDirectoryPath}/component.css`, 'utf8'))({ Application, argument}),
-        html: underscore.template(filesystem.readFileSync(`${fileDirectoryPath}/component.html`, 'utf8'))({ Application, argument}),
-    }
-    try {
-        let content = filesystem.readFileSync(filePath, 'utf8')
-        let rendered = underscore.template(content)({ Application, view, argument: Object.assign(argument, templatePart)})
-        return rendered // Koa handles the stream and send it to the client.
-    } catch (error) {
-        console.log(error)
-    }
+  let templatePart = {
+    css: _underscore.default.template(_fs.default.readFileSync(`${fileDirectoryPath}/component.css`, 'utf8'))({ Application: _ApplicationClass.default, argument }),
+    html: _underscore.default.template(_fs.default.readFileSync(`${fileDirectoryPath}/component.html`, 'utf8'))({ Application: _ApplicationClass.default, argument }) };
+
+  try {
+    let content = _fs.default.readFileSync(filePath, 'utf8');
+    let rendered = _underscore.default.template(content)({ Application: _ApplicationClass.default, view, argument: Object.assign(argument, templatePart) });
+    return rendered;
+  } catch (error) {
+    console.log(error);
+  }
 }
 
-/**
- * Webcomponent using HTML Imports - Combine webcomponent files according to predefined component parts locations.
- */
+
+
+
 function renderHTMLImportWebcomponent({ filePath, context }) {
-    let fileDirectoryPath = filePath.substr(0, filePath.lastIndexOf('/'))
-    let argument = { layoutElement: 'webapp-layout-list' }
-    let view = {};
+  let fileDirectoryPath = filePath.substr(0, filePath.lastIndexOf('/'));
+  let argument = { layoutElement: 'webapp-layout-list' };
+  let view = {};
 
-    let templatePart = {
-        css: underscore.template(filesystem.readFileSync(`${fileDirectoryPath}/component.css`, 'utf8'))({ Application, argument}),
-        js: underscore.template(filesystem.readFileSync(`${fileDirectoryPath}/component.js`, 'utf8'))({ Application, argument}),
-        html: underscore.template(filesystem.readFileSync(`${fileDirectoryPath}/component.html`, 'utf8'))({ Application, argument}),
-    }
-    try {
-        let content = filesystem.readFileSync(filePath, 'utf8')
-        let rendered = underscore.template(content)({ Application, view, argument: Object.assign(argument, templatePart)})
-        return rendered // Koa handles the stream and send it to the client.
-    } catch (error) {
-        console.log(error)
-    }
+  let templatePart = {
+    css: _underscore.default.template(_fs.default.readFileSync(`${fileDirectoryPath}/component.css`, 'utf8'))({ Application: _ApplicationClass.default, argument }),
+    js: _underscore.default.template(_fs.default.readFileSync(`${fileDirectoryPath}/component.js`, 'utf8'))({ Application: _ApplicationClass.default, argument }),
+    html: _underscore.default.template(_fs.default.readFileSync(`${fileDirectoryPath}/component.html`, 'utf8'))({ Application: _ApplicationClass.default, argument }) };
+
+  try {
+    let content = _fs.default.readFileSync(filePath, 'utf8');
+    let rendered = _underscore.default.template(content)({ Application: _ApplicationClass.default, view, argument: Object.assign(argument, templatePart) });
+    return rendered;
+  } catch (error) {
+    console.log(error);
+  }
 }
 
-/**
- * Render document using template nested unit tree.
- */
+
+
+
 let getTableDocument = {
-    generate: getTableDocumentDefault,
-    instance: []
+  generate: _getTableDocumentQuery.default,
+  instance: [] };
+
+getTableDocument.instance['template_documentBackend'] = getTableDocument.generate('webappSetting', 'template_documentBackend');
+function renderTemplateDocument({ documentKey }) {
+  let TemplateController = (0, _reusableNestedUnit.default)({
+    Superclass: _ApplicationClass.default,
+    implementationType: 'Template' });
+
+  return async (context, next) => {
+    let connection = _ApplicationClass.default.rethinkdbConnection;
+    let documentObject = await getTableDocument.instance['template_documentBackend'](connection, documentKey);
+
+
+
+    let templateController = await TemplateController.createContext({ portAppInstance: context.instance });
+
+    let renderedContent = await templateController.initializeNestedUnit({ nestedUnitKey: documentObject.templateNestedUnit });
+    context.body = renderedContent;
+
+    await next();
+  };
 }
-getTableDocument.instance['template_documentBackend'] = getTableDocument.generate('webappSetting', 'template_documentBackend')
-export function renderTemplateDocument({ documentKey }) {
-    let TemplateController = createStaticInstanceClasses({
-        Superclass: Application, 
-        implementationType: 'Template'
-    })
-    return async (context, next) => {
-        let connection = Application.rethinkdbConnection
-        let documentObject = await getTableDocument.instance['template_documentBackend'](connection, documentKey)
-        // context.instance.config.clientBasePath should be defined using useragentDetection module.
-        // NOTE:  documentKey should be received from database and nested unit key retreived from there too.
-        // document could have different rules for users etc.. access previlages
-        let templateController = await TemplateController.createContext({ portAppInstance: context.instance })
-        
-        let renderedContent = await templateController.initializeNestedUnit({ nestedUnitKey: documentObject.templateNestedUnit })
-        context.body = renderedContent;
-    
-        await next()
-    }
-}
+//# sourceMappingURL=data:application/json;charset=utf-8;base64,eyJ2ZXJzaW9uIjozLCJzb3VyY2VzIjpbIi4uLy4uLy4uLy4uL3NvdXJjZS91dGlsaXR5RnVuY3Rpb24vbWlkZGxld2FyZS9zZXJ2ZUZpbGUubWlkZGxld2FyZUdlbmVyYXRvci5qcyJdLCJuYW1lcyI6WyJzZXJ2ZVN0YXRpY0ZpbGUiLCJjb250ZXh0IiwibmV4dCIsIm9wdGlvbiIsInJlbGF0aXZlRmlsZVBhdGgiLCJmaWxlUGF0aCIsInBhdGgiLCJiYXNlRm9sZGVyUmVsYXRpdmVQYXRoIiwiZGlyZWN0b3J5UmVsYXRpdmVQYXRoIiwiY2xpZW50U2lkZVBhdGgiLCJpbnN0YW5jZSIsImNvbmZpZyIsImFic29sdXRlRmlsZVBhdGgiLCJub3JtYWxpemUiLCJqb2luIiwiZmlsZVN0YXRzIiwiaXNGaWxlIiwic2VydmVTZXJ2ZXJTaWRlUmVuZGVyZWRGaWxlIiwicmVuZGVyVHlwZSIsInN1YnN0ciIsImxhc3RJbmRleE9mIiwibGVuZ3RoIiwibGFzdEluZGV4UG9zaXRpb24iLCJyZW5kZXJlZENvbnRlbnQiLCJjb252ZXJ0U2hhcmVkU3R5bGVzVG9KUyIsImJvZHkiLCJyZXNwb25zZSIsInR5cGUiLCJjb3ZlcnRUZXh0RmlsZVRvSlNNb2R1bGUiLCJyZW5kZXJIVE1MSW1wb3J0V2ViY29tcG9uZW50IiwicmVuZGVySlNJbXBvcnRXZWJjb21wb25lbnQiLCJtaW1lVHlwZSIsImZpbGVzeXN0ZW0iLCJyZWFkRmlsZVN5bmMiLCJ1bmRlcnNjb3JlIiwidGVtcGxhdGUiLCJBcHBsaWNhdGlvbiIsInZpZXciLCJhcmd1bWVudCIsImVycm9yIiwiY29uc29sZSIsImxvZyIsImV4aXN0c1N5bmMiLCJzdGF0U3luYyIsInJlbmRlciIsImxheW91dEVsZW1lbnQiLCJleHRuYW1lIiwiZmlsZVN0cmVhbSIsImNyZWF0ZVJlYWRTdHJlYW0iLCJzdHJlYW0iLCJiZWZvcmVTdHJpbmciLCJhZnRlclN0cmluZyIsImZpbGVEaXJlY3RvcnlQYXRoIiwidGVtcGxhdGVQYXJ0IiwiY3NzIiwiaHRtbCIsImNvbnRlbnQiLCJyZW5kZXJlZCIsIk9iamVjdCIsImFzc2lnbiIsImpzIiwiZ2V0VGFibGVEb2N1bWVudCIsImdlbmVyYXRlIiwiZ2V0VGFibGVEb2N1bWVudERlZmF1bHQiLCJyZW5kZXJUZW1wbGF0ZURvY3VtZW50IiwiZG9jdW1lbnRLZXkiLCJUZW1wbGF0ZUNvbnRyb2xsZXIiLCJTdXBlcmNsYXNzIiwiaW1wbGVtZW50YXRpb25UeXBlIiwiY29ubmVjdGlvbiIsInJldGhpbmtkYkNvbm5lY3Rpb24iLCJkb2N1bWVudE9iamVjdCIsInRlbXBsYXRlQ29udHJvbGxlciIsImNyZWF0ZUNvbnRleHQiLCJwb3J0QXBwSW5zdGFuY2UiLCJpbml0aWFsaXplTmVzdGVkVW5pdCIsIm5lc3RlZFVuaXRLZXkiLCJ0ZW1wbGF0ZU5lc3RlZFVuaXQiXSwibWFwcGluZ3MiOiI7QUFDQTtBQUNBOzs7QUFHQTs7QUFFQTs7QUFFQTtBQUNBO0FBQ0E7QUFDQTtBQUNBOzs7Ozs7O0FBT08sSUFBSUEsZUFBZSxHQUFHLG9FQUFtQyxnQkFBZ0JDLE9BQWhCLEVBQXlCQyxJQUF6QixFQUErQkMsTUFBL0IsRUFBdUM7QUFDbkcsTUFBSUMsZ0JBQWdCLEdBQUdELE1BQU0sQ0FBQ0UsUUFBUCxJQUFtQkosT0FBTyxDQUFDSyxJQUFsRDtBQUNBLE1BQUlDLHNCQUFzQixHQUFHSixNQUFNLENBQUNLLHFCQUFQLElBQWdDLEVBQTdEO0FBQ0EsTUFBSUMsY0FBYyxHQUFHUixPQUFPLENBQUNTLFFBQVIsQ0FBaUJDLE1BQWpCLENBQXdCRixjQUE3QztBQUNBLE1BQUlHLGdCQUFnQixHQUFHTixjQUFLTyxTQUFMLENBQWVQLGNBQUtRLElBQUwsQ0FBVUwsY0FBVixFQUEwQkYsc0JBQTFCLEVBQWtESCxnQkFBbEQsQ0FBZixDQUF2QjtBQUNBLE1BQUlXLFNBQVMsR0FBRyxNQUFNLDBCQUFLZCxPQUFMLEVBQWNXLGdCQUFkLENBQXRCO0FBQ0EsTUFBRyxDQUFDRyxTQUFELElBQWMsQ0FBQ0EsU0FBUyxDQUFDQyxNQUFWLEVBQWxCLEVBQXNDO0FBQ2xDLFVB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VUFBVSxFQUFFL0IseUJBRHFDO0FBRWpEZ0MsSUFBQUEsa0JBQWtCLEVBQUUsVUFGNkIsRUFBNUIsQ0FBekI7O0FBSUEsU0FBTyxPQUFPbkUsT0FBUCxFQUFnQkMsSUFBaEIsS0FBeUI7QUFDNUIsUUFBSW1FLFVBQVUsR0FBR2pDLDBCQUFZa0MsbUJBQTdCO0FBQ0EsUUFBSUMsY0FBYyxHQUFHLE1BQU1WLGdCQUFnQixDQUFDbkQsUUFBakIsQ0FBMEIsMEJBQTFCLEVBQXNEMkQsVUFBdEQsRUFBa0VKLFdBQWxFLENBQTNCOzs7O0FBSUEsUUFBSU8sa0JBQWtCLEdBQUcsTUFBTU4sa0JBQWtCLENBQUNPLGFBQW5CLENBQWlDLEVBQUVDLGVBQWUsRUFBRXpFLE9BQU8sQ0FBQ1MsUUFBM0IsRUFBakMsQ0FBL0I7O0FBRUEsUUFBSWEsZUFBZSxHQUFHLE1BQU1pRCxrQkFBa0IsQ0FBQ0csb0JBQW5CLENBQXdDLEVBQUVDLGFBQWEsRUFBRUwsY0FBYyxDQUFDTSxrQkFBaEMsRUFBeEMsQ0FBNUI7QUFDQTVFLElBQUFBLE9BQU8sQ0FBQ3dCLElBQVIsR0FBZUYsZUFBZjs7QUFFQSxVQUFNckIsSUFBSSxFQUFWO0FBQ0gsR0FaRDtBQWFIIiwic291cmNlc0NvbnRlbnQiOlsiaW1wb3J0IGNvbmZpZyBmcm9tICcuLi8uLi8uLi9zZXR1cC9jb25maWd1cmF0aW9uL2NvbmZpZ3VyYXRpb24uZXhwb3J0LmpzJ1xuaW1wb3J0IHBhdGggZnJvbSAncGF0aCdcbmltcG9ydCBmaWxlc3lzdGVtIGZyb20gJ2ZzJ1xuaW1wb3J0IFN0cmVhbSBmcm9tICdzdHJlYW0nXG5pbXBvcnQgbXVsdGlzdHJlYW0gZnJvbSAnbXVsdGlzdHJlYW0nXG5pbXBvcnQgdW5kZXJzY29yZSBmcm9tICd1bmRlcnNjb3JlJ1xuLy8gaW1wb3J0IHNlcnZlclN0YXRpYyBmcm9tICdrb2Etc3RhdGljJyAvLyBTdGF0aWMgZmlsZXMuXG5pbXBvcnQgc2VuZCBmcm9tICdrb2Etc2VuZGZpbGUnIC8vIFN0YXRpYyBmaWxlcy5cbi8vIGltcG9ydCBtb3VudCBmcm9tICdrb2EtbW91bnQnXG5pbXBvcnQgeyBkZWZhdWx0IGFzIEFwcGxpY2F0aW9uIH0gZnJvbSAnLi4vLi4vY2xhc3MvQXBwbGljYXRpb24uY2xhc3MuanMnXG5pbXBvcnQge2Z1bmN0aW9uV3JhcHBlZE1pZGRsZXdhcmVEZWNvcmF0b3J9IGZyb20gJ0BkZXBlbmRlbmN5L2NvbW1vblBhdHRlcm4vc291cmNlL21pZGRsZXdhcmVQYXR0ZXJuRGVjb3JhdG9yLmpzJ1xuaW1wb3J0IGNyZWF0ZVN0YXRpY0luc3RhbmNlQ2xhc3NlcyBmcm9tICcuLi8uLi9tb2R1bGUvcmV1c2FibGVOZXN0ZWRVbml0J1xuaW1wb3J0IHtkZWZhdWx0IGFzIGdldFRhYmxlRG9jdW1lbnREZWZhdWx0fSBmcm9tIFwiQGRlcGVuZGVuY3kvZGF0YWJhc2VVdGlsaXR5L3NvdXJjZS9nZXRUYWJsZURvY3VtZW50LnF1ZXJ5LmpzXCI7XG5pbXBvcnQgeyB3cmFwU3RyaW5nU3RyZWFtIH0gZnJvbSAnQGRlcGVuZGVuY3kvd3JhcFN0cmluZ1N0cmVhbSdcbmltcG9ydCB7IHN0cmVhbVRvU3RyaW5nIH0gZnJvbSAnQGRlcGVuZGVuY3kvc3RyZWFtVG9TdHJpbmdDb252ZXJ0aW9uJ1xuXG4vKipcbiAqIHNlcnZlIHN0YXRpYyBmaWxlLlxuICogQGRlcGVuZGVuY2UgdXNlckFnZW50IG1pZGRsZXdhcmVcbiAqL1xuZXhwb3J0IGxldCBzZXJ2ZVN0YXRpY0ZpbGUgPSBmdW5jdGlvbldyYXBwZWRNaWRkbGV3YXJlRGVjb3JhdG9yKGFzeW5jIGZ1bmN0aW9uIChjb250ZXh0LCBuZXh0LCBvcHRpb24pIHtcbiAgICBsZXQgcmVsYXRpdmVGaWxlUGF0aCA9IG9wdGlvbi5maWxlUGF0aCB8fCBjb250ZXh0LnBhdGggLy8gYSBwcmVkZWZpbmVkIHBhdGggb3IgYW4gZXh0cmFjdGVkIHVybCBwYXRoXG4gICAgbGV0IGJhc2VGb2xkZXJSZWxhdGl2ZVBhdGggPSBvcHRpb24uZGlyZWN0b3J5UmVsYXRpdmVQYXRoIHx8ICcnIC8vIGFkZGl0aW9uYWwgZm9sZGVyIHBhdGguXG4gICAgbGV0IGNsaWVudFNpZGVQYXRoID0gY29udGV4dC5pbnN0YW5jZS5jb25maWcuY2xpZW50U2lkZVBhdGhcbiAgICBsZXQgYWJzb2x1dGVGaWxlUGF0aCA9IHBhdGgubm9ybWFsaXplKHBhdGguam9pbihjbGllbnRTaWRlUGF0aCwgYmFzZUZvbGRlclJlbGF0aXZlUGF0aCwgcmVsYXRpdmVGaWxlUGF0aCkpXG4gICAgbGV0IGZpbGVTdGF0cyA9IGF3YWl0IHNlbmQoY29udGV4dCwgYWJzb2x1dGVGaWxlUGF0aCk7XG4gICAgaWYoIWZpbGVTdGF0cyB8fCAhZmlsZVN0YXRzLmlzRmlsZSgpKSB7IC8vIGlmIGZpbGUgZG9lc24ndCBleGlzdCB0aGVuIHBhc3MgdG8gdGhlIG5leHQgbWlkZGxld2FyZS5cbiAgICAgICAgYXdhaXQgbmV4dCgpXG4gICAgfVxuICAgIC8vIFByZXZpb3VzbHkgdXNlZCAtIHNlcnZpbmcgZGlyZWN0b3J5UGF0aDpcbiAgICAvLyBsZXQgZGlyZWN0b3J5UGF0aCA9IGF3YWl0IHBhdGgucmVzb2x2ZShwYXRoLm5vcm1hbGl6ZShgJHtjb250ZXh0Lmluc3RhbmNlLmNvbmZpZy5jbGllbnRCYXNlUGF0aH0ke3NldHRpbmcuZGlyZWN0b3J5UGF0aH1gKSkgXG4gICAgLy8gbGV0IG1vdW50TWlkZGxld2FyZSA9IG1vdW50KHNldHRpbmcudXJsUGF0aCwgc2VydmVyU3RhdGljKGAke2RpcmVjdG9yeVBhdGh9YCwgc2V0dGluZy5vcHRpb25zKSlcbn0pXG5cbi8vIHJlYWQgc3RyZWFtcyBhbmQgc2VuZCB0aGVtIHVzaW5nIGtvYSAtIGh0dHBzOi8vZ2l0aHViLmNvbS9rb2Fqcy9rb2EvaXNzdWVzLzk0NCBodHRwOi8vYm9vay5taXh1Lm5ldC9ub2RlL2NoOS5odG1sXG4vLyBUT0RPOiBjaGFuZ2UgZmlsZSBuYW1lIHRvIHNvbWV0aGluZyBsaWtlICdyZW5kZXIgc2VydmVyc2lkZSBqYXZhc2NyaXB0JyAmIGNvbnZlcnQgZnVuY3Rpb24gdG8gYmUgdXNlZCBmb3Igb3RoZXIgZmlsZXMgbm90IG9ubHkgd2ViIGNvbXBvbmVudHMuXG5hc3luYyBmdW5jdGlvbiBzZXJ2ZVNlcnZlclNpZGVSZW5kZXJlZEZpbGUoY29udGV4dCwgbmV4dCwgb3B0aW9uKSB7XG4gICAgICAgIGxldCBjbGllbnRTaWRlUGF0aCA9IGNvbnRleHQuaW5zdGFuY2UuY29uZmlnLmNsaWVudFNpZGVQYXRoXG4gICAgICAgIGxldCBiYXNlRm9sZGVyUmVsYXRpdmVQYXRoID0gb3B0aW9uLmRpcmVjdG9yeVJlbGF0aXZlUGF0aCB8fCAnJyAvLyBhZGRpdGlvbmFsIGZvbGRlciBwYXRoLlxuICAgICAgICBsZXQgZmlsZVBhdGggPSBvcHRpb24uZmlsZVBhdGggfHwgY29udGV4dC5wYXRoIC8vIGEgcHJlZGVmaW5lZCBwYXRoIG9yIGFuIGV4dHJhY3RlZCB1cmwgcGF0aFxuICAgICAgICBsZXQgcmVuZGVyVHlwZSA9IChvcHRpb24ucmVuZGVyVHlwZSkgPyAvLyBjaGVjayBpZiByZW5kZXJUeXBlIGlzIGluIG5lc3RlZCB1bml0IG9wdGlvbnMvYXJndW1lbnRzIGlmIG5vdCB1c2UgdGhlICQgaW4gZmlsZVBhdGggKGFzIGFsbCBwYXRocyBzaG91bGQgY29udGFpbiAkIHNpZ24gZnJvbSB1cmwgYmVjYXVzZSB0aGUgY29uZGl0aW9uIGNsYWltcyBpdCwgY2FuIGJlIG92ZXJyaWRkZW4gdXNpbmcgb3B0aW9uIGFyZ3VtZW50KVxuICAgICAgICAgICAgb3B0aW9uLnJlbmRlclR5cGUgOiBcbiAgICAgICAgICAgIGZpbGVQYXRoLnN1YnN0cihmaWxlUGF0aC5sYXN0SW5kZXhPZignJCcpICsgMSwgZmlsZVBhdGgubGVuZ3RoKTsgLy8gJGZ1bmN0aW9uIGV4dHJhY3RlZCBmcm9tIHVybCBhZnRlciAnJCcgc2lnbmF0dXJlXG4gICAgICAgIGxldCBsYXN0SW5kZXhQb3NpdGlvbiA9IChmaWxlUGF0aC5sYXN0SW5kZXhPZignJCcpID09IC0xKSA/IGZpbGVQYXRoLmxlbmd0aCA6IGZpbGVQYXRoLmxhc3RJbmRleE9mKCckJyk7XG4gICAgICAgIGxldCByZWxhdGl2ZUZpbGVQYXRoID0gKG9wdGlvbi5yZW5kZXJUeXBlKSA/IGZpbGVQYXRoIDogZmlsZVBhdGguc3Vic3RyKDAsIGxhc3RJbmRleFBvc2l0aW9uKTsgLy8gcmVtb3ZlIGZ1bmN0aW9uIG5hbWVcbiAgICAgICAgbGV0IGFic29sdXRlRmlsZVBhdGggPSBwYXRoLm5vcm1hbGl6ZShwYXRoLmpvaW4oY2xpZW50U2lkZVBhdGgsIGJhc2VGb2xkZXJSZWxhdGl2ZVBhdGgsIHJlbGF0aXZlRmlsZVBhdGgpKVxuXG4gICAgICAgIGxldCByZW5kZXJlZENvbnRlbnQ7IFxuICAgICAgICBzd2l0Y2ggKHJlbmRlclR5cGUpIHtcbiAgICAgICAgICAgIGNhc2UgJ2NvbnZlcnRTaGFyZWRTdHlsZXNUb0pTJzpcbiAgICAgICAgICAgICAgICByZW5kZXJlZENvbnRlbnQgPSBhd2FpdCBjb252ZXJ0U2hhcmVkU3R5bGVzVG9KUyh7IGZpbGVQYXRoOiBhYnNvbHV0ZUZpbGVQYXRoLCBjb250ZXh0IH0pXG4gICAgICAgICAgICAgICAgY29udGV4dC5ib2R5ID0gcmVuZGVyZWRDb250ZW50XG4gICAgICAgICAgICAgICAgY29udGV4dC5yZXNwb25zZS50eXBlID0gJ2FwcGxpY2F0aW9uL2phdmFzY3JpcHQnICAgICAgICBcbiAgICAgICAgICAgICAgICBhd2FpdCBuZXh0KClcbiAgICAgICAgICAgIGJyZWFrO1xuICAgICAgICAgICAgY2FzZSAnY292ZXJ0VGV4dEZpbGVUb0pTTW9kdWxlJzogXG4gICAgICAgICAgICAgICAgcmVuZGVyZWRDb250ZW50ID0gYXdhaXQgY292ZXJ0VGV4dEZpbGVUb0pTTW9kdWxlKHsgZmlsZVBhdGg6IGFic29sdXRlRmlsZVBhdGgsIGNvbnRleHQgfSlcbiAgICAgICAgICAgICAgICBjb250ZXh0LmJvZHkgPSByZW5kZXJlZENvbnRlbnRcbiAgICAgICAgICAgICAgICBjb250ZXh0LnJlc3BvbnNlLnR5cGUgPSAnYXBwbGljYXRpb24vamF2YXNjcmlwdCcgICAgICAgIFxuICAgICAgICAgICAgICAgIGF3YWl0IG5leHQoKVxuICAgICAgICAgICAgYnJlYWs7XG4gICAgICAgICAgICBjYXNlICdyZW5kZXJIVE1MSW1wb3J0V2ViY29tcG9uZW50JzpcbiAgICAgICAgICAgICAgICByZW5kZXJlZENvbnRlbnQgPSByZW5kZXJIVE1MSW1wb3J0V2ViY29tcG9uZW50KHsgZmlsZVBhdGg6IGFic29sdXRlRmlsZVBhdGgsIGNvbnRleHQgfSlcbiAgICAgICAgICAgICAgICBjb250ZXh0LmJvZHkgPSByZW5kZXJlZENvbnRlbnRcbiAgICAgICAgICAgICAgICBhd2FpdCBuZXh0KClcbiAgICAgICAgICAgIGJyZWFrO1xuICAgICAgICAgICAgY2FzZSAncmVuZGVySlNJbXBvcnRXZWJjb21wb25lbnQnOlxuICAgICAgICAgICAgICAgIHJlbmRlcmVkQ29udGVudCA9IHJlbmRlckpTSW1wb3J0V2ViY29tcG9uZW50KHsgZmlsZVBhdGg6IGFic29sdXRlRmlsZVBhdGgsIGNvbnRleHQgfSlcbiAgICAgICAgICAgICAgICBjb250ZXh0LnJlc3BvbnNlLnR5cGUgPSAnYXBwbGljYXRpb24vamF2YXNjcmlwdCcgICAgICAgIFxuICAgICAgICAgICAgICAgIGNvbnRleHQuYm9keSA9IHJlbmRlcmVkQ29udGVudFxuICAgICAgICAgICAgICAgIGF3YWl0IG5leHQoKVxuICAgICAgICAgICAgYnJlYWs7XG4gICAgICAgICAgICBkZWZhdWx0OlxuICAgICAgICAgICAgICAgIGlmKG9wdGlvbi5taW1lVHlwZSkge1xuICAgICAgICAgICAgICAgICAgICAvLyBJbXBsZW1lbnRhdGlvbiB1c2luZyBmaWxlc3lzdGVtIHJlYWQgYW5kIHVuZGVyc2NvcmUgdGVtcGxhdGUsIHdpdGggYSBtaW1lIHR5cGUgZS5nLiBgYXBwbGljYXRpb24vamF2YXNjcmlwdGBcbiAgICAgICAgICAgICAgICAgICAgdHJ5IHtcbiAgICAgICAgICAgICAgICAgICAgICAgIC8vIHJlbmRlciB0ZW1wbGF0ZVxuICAgICAgICAgICAgICAgICAgICAgICAgcmVuZGVyZWRDb250ZW50ID0gZmlsZXN5c3RlbS5yZWFkRmlsZVN5bmMoYWJzb2x1dGVGaWxlUGF0aCwgJ3V0ZjgnKVxuICAgICAgICAgICAgICAgICAgICAgICAgY29udGV4dC5ib2R5ID0gdW5kZXJzY29yZS50ZW1wbGF0ZShyZW5kZXJlZENvbnRlbnQpKHtcbiAgICAgICAgICAgICAgICAgICAgICAgICAgICBBcHBsaWNhdGlvbiwgXG4gICAgICAgICAgICAgICAgICAgICAgICAgICAgY29udGV4dCxcbiAgICAgICAgICAgICAgICAgICAgICAgICAgICB2aWV3OiB7fSwgXG4gICAgICAgICAgICAgICAgICAgICAgICAgICAgYXJndW1lbnQ6IHt9IFxuICAgICAgICAgICAgICAgICAgICAgICAgfSkgIC8vIEtvYSBoYW5kbGVzIHRoZSBzdHJlYW0gYW5kIHNlbmQgaXQgdG8gdGhlIGNsaWVudC5cbiAgICAgICAgICAgICAgICAgICAgICAgIC8vIFRPRE86IGRldGVjdCBNSU1FIHR5cGUgYXV0b21hdGljYWxseSBhbmQgc3VwcG9ydCBvdGhlciBtaW1lcy4gXG4gICAgICAgICAgICAgICAgICAgICAgICBjb250ZXh0LnJlc3BvbnNlLnR5cGUgPSBvcHRpb24ubWltZVR5cGVcbiAgICAgICAgICAgICAgICAgICAgfSBjYXRjaCAoZXJyb3IpIHtcbiAgICAgICAgICAgICAgICAgICAgICAgIGNvbnNvbGUubG9nKGVycm9yKVxuICAgICAgICAgICAgICAgICAgICAgICAgYXdhaXQgbmV4dCgpXG4gICAgICAgICAgICAgICAgICAgIH0gICAgIFxuICAgICAgICAgICAgICAgIH0gZWxzZSB7XG4gICAgICAgICAgICAgICAgICAgIGlmIChmaWxlc3lzdGVtLmV4aXN0c1N5bmMoYWJzb2x1dGVGaWxlUGF0aCkgJiYgZmlsZXN5c3RlbS5zdGF0U3luYyhhYnNvbHV0ZUZpbGVQYXRoKS5pc0ZpbGUoKSkge1xuICAgICAgICAgICAgICAgICAgICAgICAgLy8gc2VydmUgcmVuZGVyZWQgZmlsZS4gSW1wbGVtZW50YXRpb24gdXNpbmcgcmVuZGVyIHVzaW5nIHVuZGVyc2NvcmUgKGZyYW1ld29yayBsaWtlKS5cbiAgICAgICAgICAgICAgICAgICAgICAgIGF3YWl0IGNvbnRleHQucmVuZGVyKGFic29sdXRlRmlsZVBhdGgsIHtcbiAgICAgICAgICAgICAgICAgICAgICAgICAgICBjb250ZXh0LCBBcHBsaWNhdGlvbiwgdmlldzoge30sIGFyZ3VtZW50OiB7IGxheW91dEVsZW1lbnQ6ICd3ZWJhcHAtbGF5b3V0LWxpc3QnIH1cbiAgICAgICAgICAgICAgICAgICAgICAgIH0pXG4gICAgICAgICAgICAgICAgICAgICAgICBjb250ZXh0LnJlc3BvbnNlLnR5cGUgPSBwYXRoLmV4dG5hbWUoYWJzb2x1dGVGaWxlUGF0aClcbiAgICAgICAgICAgICAgICAgICAgICAgIGF3YWl0IG5leHQoKVxuICAgICAgICAgICAgICAgICAgICB9IGVsc2Uge1xuICAgICAgICAgICAgICAgICAgICAgICAgYXdhaXQgbmV4dCgpXG4gICAgICAgICAgICAgICAgICAgIH1cbiAgICAgICAgICAgICAgICB9XG4gICAgICAgICAgICBicmVhaztcbiAgICAgICAgfVxuICAgICAgICBcbiAgICAgICAgLy8gbGV0IGRpcmVjdG9yeVBhdGggPSBhd2FpdCBwYXRoLnJlc29sdmUocGF0aC5ub3JtYWxpemUoYCR7Y29udGV4dC5pbnN0YW5jZS5jb25maWcuY2xpZW50QmFzZVBhdGh9JHtvcHRpb24uZGlyZWN0b3J5UGF0aH1gKSkgXG4gICAgICAgIC8vIGxldCBtb3VudE1pZGRsZXdhcmUgPSBtb3VudChvcHRpb24udXJsUGF0aCwgc2VydmVyU3RhdGljKGAke2RpcmVjdG9yeVBhdGh9YCwgb3B0aW9uLm9wdGlvbnMpKVxufVxuc2VydmVTZXJ2ZXJTaWRlUmVuZGVyZWRGaWxlID0gZnVuY3Rpb25XcmFwcGVkTWlkZGxld2FyZURlY29yYXRvcihzZXJ2ZVNlcnZlclNpZGVSZW5kZXJlZEZpbGUpXG5leHBvcnQgeyBzZXJ2ZVNlcnZlclNpZGVSZW5kZXJlZEZpbGUgfVxuXG4vKiogV3JhcCBjc3Mgc3R5bGUgaW4gYSB0YWcgKGNyZWF0ZWQgdXNpbmcgamF2YXNjcmlwdCkgLSB0byBzdXBwb3J0IHNoYXJlZCBzdHlsZXMgaW4gUG9seW1lciAzIGphdmFzY3JpcHQgaW1wb3J0cyBcbiAqIFBvbHlmaWxsIGZyb20gaHR0cHM6Ly9naXRodWIuY29tL1BvbHltZXIvcG9seW1lci1tb2R1bGl6ZXIvYmxvYi9mMWVmNWRlYTM5NzhhOTYwMTI0OGQ3M2Y0ZDIzZGMwMzMzODIyODZjL2ZpeHR1cmVzL3BhY2thZ2VzL3BvbHltZXIvZXhwZWN0ZWQvdGVzdC91bml0L3N0eWxpbmctaW1wb3J0LXNoYXJlZC1zdHlsZXMuanNcbiovXG5hc3luYyBmdW5jdGlvbiBjb252ZXJ0U2hhcmVkU3R5bGVzVG9KUyh7IGZpbGVQYXRoLCBjb250ZXh0ICB9KSB7XG4gICAgbGV0IGZpbGVTdHJlYW0gPSBmaWxlc3lzdGVtLmNyZWF0ZVJlYWRTdHJlYW0oZmlsZVBhdGgpXG4gICAgcmV0dXJuIGF3YWl0IHdyYXBTdHJpbmdTdHJlYW0oeyBcbiAgICAgICAgc3RyZWFtOiBmaWxlU3RyZWFtLCBcbiAgICAgICAgYmVmb3JlU3RyaW5nOiBcImNvbnN0ICRfZG9jdW1lbnRDb250YWluZXIgPSBkb2N1bWVudC5jcmVhdGVFbGVtZW50KCdkaXYnKTsgJF9kb2N1bWVudENvbnRhaW5lci5zZXRBdHRyaWJ1dGUoJ3N0eWxlJywgJ2Rpc3BsYXk6IG5vbmU7Jyk7ICRfZG9jdW1lbnRDb250YWluZXIuaW5uZXJIVE1MID0gXFxgXCIsIFxuICAgICAgICBhZnRlclN0cmluZzogJ1xcYDtkb2N1bWVudC5oZWFkLmFwcGVuZENoaWxkKCRfZG9jdW1lbnRDb250YWluZXIpOydcbiAgICB9KVxufVxuXG4vKiogV3JhcCB0ZXh0IGZpbGUgd2l0aCBleHBvcnQgZGVmYXVsdCAtIGNvbnZlcnRpbmcgaXQgdG8ganMgbW9kdWxlICovXG5hc3luYyBmdW5jdGlvbiBjb3ZlcnRUZXh0RmlsZVRvSlNNb2R1bGUoeyBmaWxlUGF0aCwgY29udGV4dCB9KSB7IFxuICAgIGxldCBmaWxlU3RyZWFtID0gZmlsZXN5c3RlbS5jcmVhdGVSZWFkU3RyZWFtKGZpbGVQYXRoKVxuICAgIHJldHVybiBhd2FpdCB3cmFwU3RyaW5nU3RyZWFtKHsgc3RyZWFtOiBmaWxlU3RyZWFtLCBiZWZvcmVTdHJpbmc6ICdleHBvcnQgZGVmYXVsdCBcXGAnLCBhZnRlclN0cmluZzogJ1xcYCcgfSlcbn1cblxuLyoqXG4gKiBXZWJjb21wb25lbnQgdXNpbmcgSlMgaW1wb3J0cyAtIENvbWJpbmUgd2ViY29tcG9uZW50IGZpbGVzIGFjY29yZGluZyB0byBwcmVkZWZpbmVkIGNvbXBvbmVudCBwYXJ0cyBsb2NhdGlvbnMuXG4gKi9cbmZ1bmN0aW9uIHJlbmRlckpTSW1wb3J0V2ViY29tcG9uZW50KHsgZmlsZVBhdGgsIGNvbnRleHQgfSkge1xuICAgIGxldCBmaWxlRGlyZWN0b3J5UGF0aCA9IGZpbGVQYXRoLnN1YnN0cigwLCBmaWxlUGF0aC5sYXN0SW5kZXhPZignLycpKVxuICAgIGxldCBhcmd1bWVudCA9IHsgbGF5b3V0RWxlbWVudDogJ3dlYmFwcC1sYXlvdXQtbGlzdCcgfVxuICAgIGxldCB2aWV3ID0ge307XG5cbiAgICBsZXQgdGVtcGxhdGVQYXJ0ID0ge1xuICAgICAgICBjc3M6IHVuZGVyc2NvcmUudGVtcGxhdGUoZmlsZXN5c3RlbS5yZWFkRmlsZVN5bmMoYCR7ZmlsZURpcmVjdG9yeVBhdGh9L2NvbXBvbmVudC5jc3NgLCAndXRmOCcpKSh7IEFwcGxpY2F0aW9uLCBhcmd1bWVudH0pLFxuICAgICAgICBodG1sOiB1bmRlcnNjb3JlLnRlbXBsYXRlKGZpbGVzeXN0ZW0ucmVhZEZpbGVTeW5jKGAke2ZpbGVEaXJlY3RvcnlQYXRofS9jb21wb25lbnQuaHRtbGAsICd1dGY4JykpKHsgQXBwbGljYXRpb24sIGFyZ3VtZW50fSksXG4gICAgfVxuICAgIHRyeSB7XG4gICAgICAgIGxldCBjb250ZW50ID0gZmlsZXN5c3RlbS5yZWFkRmlsZVN5bmMoZmlsZVBhdGgsICd1dGY4JylcbiAgICAgICAgbGV0IHJlbmRlcmVkID0gdW5kZXJzY29yZS50ZW1wbGF0ZShjb250ZW50KSh7IEFwcGxpY2F0aW9uLCB2aWV3LCBhcmd1bWVudDogT2JqZWN0LmFzc2lnbihhcmd1bWVudCwgdGVtcGxhdGVQYXJ0KX0pXG4gICAgICAgIHJldHVybiByZW5kZXJlZCAvLyBLb2EgaGFuZGxlcyB0aGUgc3RyZWFtIGFuZCBzZW5kIGl0IHRvIHRoZSBjbGllbnQuXG4gICAgfSBjYXRjaCAoZXJyb3IpIHtcbiAgICAgICAgY29uc29sZS5sb2coZXJyb3IpXG4gICAgfVxufVxuXG4vKipcbiAqIFdlYmNvbXBvbmVudCB1c2luZyBIVE1MIEltcG9ydHMgLSBDb21iaW5lIHdlYmNvbXBvbmVudCBmaWxlcyBhY2NvcmRpbmcgdG8gcHJlZGVmaW5lZCBjb21wb25lbnQgcGFydHMgbG9jYXRpb25zLlxuICovXG5mdW5jdGlvbiByZW5kZXJIVE1MSW1wb3J0V2ViY29tcG9uZW50KHsgZmlsZVBhdGgsIGNvbnRleHQgfSkge1xuICAgIGxldCBmaWxlRGlyZWN0b3J5UGF0aCA9IGZpbGVQYXRoLnN1YnN0cigwLCBmaWxlUGF0aC5sYXN0SW5kZXhPZignLycpKVxuICAgIGxldCBhcmd1bWVudCA9IHsgbGF5b3V0RWxlbWVudDogJ3dlYmFwcC1sYXlvdXQtbGlzdCcgfVxuICAgIGxldCB2aWV3ID0ge307XG5cbiAgICBsZXQgdGVtcGxhdGVQYXJ0ID0ge1xuICAgICAgICBjc3M6IHVuZGVyc2NvcmUudGVtcGxhdGUoZmlsZXN5c3RlbS5yZWFkRmlsZVN5bmMoYCR7ZmlsZURpcmVjdG9yeVBhdGh9L2NvbXBvbmVudC5jc3NgLCAndXRmOCcpKSh7IEFwcGxpY2F0aW9uLCBhcmd1bWVudH0pLFxuICAgICAgICBqczogdW5kZXJzY29yZS50ZW1wbGF0ZShmaWxlc3lzdGVtLnJlYWRGaWxlU3luYyhgJHtmaWxlRGlyZWN0b3J5UGF0aH0vY29tcG9uZW50LmpzYCwgJ3V0ZjgnKSkoeyBBcHBsaWNhdGlvbiwgYXJndW1lbnR9KSxcbiAgICAgICAgaHRtbDogdW5kZXJzY29yZS50ZW1wbGF0ZShmaWxlc3lzdGVtLnJlYWRGaWxlU3luYyhgJHtmaWxlRGlyZWN0b3J5UGF0aH0vY29tcG9uZW50Lmh0bWxgLCAndXRmOCcpKSh7IEFwcGxpY2F0aW9uLCBhcmd1bWVudH0pLFxuICAgIH1cbiAgICB0cnkge1xuICAgICAgICBsZXQgY29udGVudCA9IGZpbGVzeXN0ZW0ucmVhZEZpbGVTeW5jKGZpbGVQYXRoLCAndXRmOCcpXG4gICAgICAgIGxldCByZW5kZXJlZCA9IHVuZGVyc2NvcmUudGVtcGxhdGUoY29udGVudCkoeyBBcHBsaWNhdGlvbiwgdmlldywgYXJndW1lbnQ6IE9iamVjdC5hc3NpZ24oYXJndW1lbnQsIHRlbXBsYXRlUGFydCl9KVxuICAgICAgICByZXR1cm4gcmVuZGVyZWQgLy8gS29hIGhhbmRsZXMgdGhlIHN0cmVhbSBhbmQgc2VuZCBpdCB0byB0aGUgY2xpZW50LlxuICAgIH0gY2F0Y2ggKGVycm9yKSB7XG4gICAgICAgIGNvbnNvbGUubG9nKGVycm9yKVxuICAgIH1cbn1cblxuLyoqXG4gKiBSZW5kZXIgZG9jdW1lbnQgdXNpbmcgdGVtcGxhdGUgbmVzdGVkIHVuaXQgdHJlZS5cbiAqL1xubGV0IGdldFRhYmxlRG9jdW1lbnQgPSB7XG4gICAgZ2VuZXJhdGU6IGdldFRhYmxlRG9jdW1lbnREZWZhdWx0LFxuICAgIGluc3RhbmNlOiBbXVxufVxuZ2V0VGFibGVEb2N1bWVudC5pbnN0YW5jZVsndGVtcGxhdGVfZG9jdW1lbnRCYWNrZW5kJ10gPSBnZXRUYWJsZURvY3VtZW50LmdlbmVyYXRlKCd3ZWJhcHBTZXR0aW5nJywgJ3RlbXBsYXRlX2RvY3VtZW50QmFja2VuZCcpXG5leHBvcnQgZnVuY3Rpb24gcmVuZGVyVGVtcGxhdGVEb2N1bWVudCh7IGRvY3VtZW50S2V5IH0pIHtcbiAgICBsZXQgVGVtcGxhdGVDb250cm9sbGVyID0gY3JlYXRlU3RhdGljSW5zdGFuY2VDbGFzc2VzKHtcbiAgICAgICAgU3VwZXJjbGFzczogQXBwbGljYXRpb24sIFxuICAgICAgICBpbXBsZW1lbnRhdGlvblR5cGU6ICdUZW1wbGF0ZSdcbiAgICB9KVxuICAgIHJldHVybiBhc3luYyAoY29udGV4dCwgbmV4dCkgPT4ge1xuICAgICAgICBsZXQgY29ubmVjdGlvbiA9IEFwcGxpY2F0aW9uLnJldGhpbmtkYkNvbm5lY3Rpb25cbiAgICAgICAgbGV0IGRvY3VtZW50T2JqZWN0ID0gYXdhaXQgZ2V0VGFibGVEb2N1bWVudC5pbnN0YW5jZVsndGVtcGxhdGVfZG9jdW1lbnRCYWNrZW5kJ10oY29ubmVjdGlvbiwgZG9jdW1lbnRLZXkpXG4gICAgICAgIC8vIGNvbnRleHQuaW5zdGFuY2UuY29uZmlnLmNsaWVudEJhc2VQYXRoIHNob3VsZCBiZSBkZWZpbmVkIHVzaW5nIHVzZXJhZ2VudERldGVjdGlvbiBtb2R1bGUuXG4gICAgICAgIC8vIE5PVEU6ICBkb2N1bWVudEtleSBzaG91bGQgYmUgcmVjZWl2ZWQgZnJvbSBkYXRhYmFzZSBhbmQgbmVzdGVkIHVuaXQga2V5IHJldHJlaXZlZCBmcm9tIHRoZXJlIHRvby5cbiAgICAgICAgLy8gZG9jdW1lbnQgY291bGQgaGF2ZSBkaWZmZXJlbnQgcnVsZXMgZm9yIHVzZXJzIGV0Yy4uIGFjY2VzcyBwcmV2aWxhZ2VzXG4gICAgICAgIGxldCB0ZW1wbGF0ZUNvbnRyb2xsZXIgPSBhd2FpdCBUZW1wbGF0ZUNvbnRyb2xsZXIuY3JlYXRlQ29udGV4dCh7IHBvcnRBcHBJbnN0YW5jZTogY29udGV4dC5pbnN0YW5jZSB9KVxuICAgICAgICBcbiAgICAgICAgbGV0IHJlbmRlcmVkQ29udGVudCA9IGF3YWl0IHRlbXBsYXRlQ29udHJvbGxlci5pbml0aWFsaXplTmVzdGVkVW5pdCh7IG5lc3RlZFVuaXRLZXk6IGRvY3VtZW50T2JqZWN0LnRlbXBsYXRlTmVzdGVkVW5pdCB9KVxuICAgICAgICBjb250ZXh0LmJvZHkgPSByZW5kZXJlZENvbnRlbnQ7XG4gICAgXG4gICAgICAgIGF3YWl0IG5leHQoKVxuICAgIH1cbn1cbiJdfQ==

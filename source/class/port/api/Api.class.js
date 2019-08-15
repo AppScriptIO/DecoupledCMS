@@ -1,29 +1,30 @@
-// API server
-import Koa from 'koa' // Koa applicaiton server
-import {default as Application} from '../../Application.class.js'
-import { add, execute, applyMixin } from '@dependency/commonPattern/source/decoratorUtility.js'
-import { extendedSubclassPattern } from '@dependency/commonPattern/source/extendedSubclassPattern.js';
+"use strict";var _interopRequireDefault = require("@babel/runtime/helpers/interopRequireDefault");Object.defineProperty(exports, "__esModule", { value: true });exports.default = void 0;
 
-const self = 
-@execute({ staticMethod: 'initializeStaticClass' })
-@extendedSubclassPattern.Subclass()
-class Api extends Application {
+var _ApplicationClass = _interopRequireDefault(require("../../Application.class.js"));
+var _decoratorUtility = require("@dependency/commonPattern/source/decoratorUtility.js");
+var _extendedSubclassPattern = require("@dependency/commonPattern/source/extendedSubclassPattern.js");var _dec, _dec2, _class, _class2, _temp;
 
-    static serverKoa;
-    static port;
-    static url;
-    static middlewareArray = []
-    middlewareArray = []
+const self = (_dec =
+(0, _decoratorUtility.execute)({ staticMethod: 'initializeStaticClass' }), _dec2 =
+_extendedSubclassPattern.extendedSubclassPattern.Subclass(), _dec(_class = _dec2(_class = (_temp = _class2 = class
+Api extends _ApplicationClass.default {
 
-    static initializeStaticClass(self) {
-        super.initializeStaticClass()
-        self.port = 8082
-        self.url = `${self.config.PROTOCOL}api.${self.config.HOST}/`
-    }
-    constructor() {
-        super(true)
-    }
 
-}
 
-export default self
+
+
+
+
+  static initializeStaticClass(self) {
+    super.initializeStaticClass();
+    self.port = 8082;
+    self.url = `${self.config.PROTOCOL}api.${self.config.HOST}/`;
+  }
+  constructor() {
+    super(true);this.middlewareArray = [];
+  }}, _class2.middlewareArray = [], _temp)) || _class) || _class);var _default =
+
+
+
+self;exports.default = _default;
+//# sourceMappingURL=data:application/json;charset=utf-8;base64,eyJ2ZXJzaW9uIjozLCJzb3VyY2VzIjpbIi4uLy4uLy4uLy4uLy4uL3NvdXJjZS9jbGFzcy9wb3J0L2FwaS9BcGkuY2xhc3MuanMiXSwibmFtZXMiOlsic2VsZiIsInN0YXRpY01ldGhvZCIsImV4dGVuZGVkU3ViY2xhc3NQYXR0ZXJuIiwiU3ViY2xhc3MiLCJBcGkiLCJBcHBsaWNhdGlvbiIsImluaXRpYWxpemVTdGF0aWNDbGFzcyIsInBvcnQiLCJ1cmwiLCJjb25maWciLCJQUk9UT0NPTCIsIkhPU1QiLCJjb25zdHJ1Y3RvciIsIm1pZGRsZXdhcmVBcnJheSJdLCJtYXBwaW5ncyI6Ijs7QUFFQTtBQUNBO0FBQ0Esc0c7O0FBRUEsTUFBTUEsSUFBSTtBQUNULCtCQUFRLEVBQUVDLFlBQVksRUFBRSx1QkFBaEIsRUFBUixDQURTO0FBRVRDLGlEQUF3QkMsUUFBeEIsRUFGUyxrREFDVjtBQUVNQyxHQUZOLFNBRWtCQyx5QkFGbEIsQ0FFOEI7Ozs7Ozs7O0FBUTFCLFNBQU9DLHFCQUFQLENBQTZCTixJQUE3QixFQUFtQztBQUMvQixVQUFNTSxxQkFBTjtBQUNBTixJQUFBQSxJQUFJLENBQUNPLElBQUwsR0FBWSxJQUFaO0FBQ0FQLElBQUFBLElBQUksQ0FBQ1EsR0FBTCxHQUFZLEdBQUVSLElBQUksQ0FBQ1MsTUFBTCxDQUFZQyxRQUFTLE9BQU1WLElBQUksQ0FBQ1MsTUFBTCxDQUFZRSxJQUFLLEdBQTFEO0FBQ0g7QUFDREMsRUFBQUEsV0FBVyxHQUFHO0FBQ1YsVUFBTSxJQUFOLEVBRFUsS0FQZEMsZUFPYyxHQVBJLEVBT0o7QUFFYixHQWZ5QixDQUhwQixVQVFDQSxlQVJELEdBUW1CLEVBUm5CLCtCQUFWLEM7Ozs7QUFzQmViLEkiLCJzb3VyY2VzQ29udGVudCI6WyIvLyBBUEkgc2VydmVyXG5pbXBvcnQgS29hIGZyb20gJ2tvYScgLy8gS29hIGFwcGxpY2FpdG9uIHNlcnZlclxuaW1wb3J0IHtkZWZhdWx0IGFzIEFwcGxpY2F0aW9ufSBmcm9tICcuLi8uLi9BcHBsaWNhdGlvbi5jbGFzcy5qcydcbmltcG9ydCB7IGFkZCwgZXhlY3V0ZSwgYXBwbHlNaXhpbiB9IGZyb20gJ0BkZXBlbmRlbmN5L2NvbW1vblBhdHRlcm4vc291cmNlL2RlY29yYXRvclV0aWxpdHkuanMnXG5pbXBvcnQgeyBleHRlbmRlZFN1YmNsYXNzUGF0dGVybiB9IGZyb20gJ0BkZXBlbmRlbmN5L2NvbW1vblBhdHRlcm4vc291cmNlL2V4dGVuZGVkU3ViY2xhc3NQYXR0ZXJuLmpzJztcblxuY29uc3Qgc2VsZiA9IFxuQGV4ZWN1dGUoeyBzdGF0aWNNZXRob2Q6ICdpbml0aWFsaXplU3RhdGljQ2xhc3MnIH0pXG5AZXh0ZW5kZWRTdWJjbGFzc1BhdHRlcm4uU3ViY2xhc3MoKVxuY2xhc3MgQXBpIGV4dGVuZHMgQXBwbGljYXRpb24ge1xuXG4gICAgc3RhdGljIHNlcnZlcktvYTtcbiAgICBzdGF0aWMgcG9ydDtcbiAgICBzdGF0aWMgdXJsO1xuICAgIHN0YXRpYyBtaWRkbGV3YXJlQXJyYXkgPSBbXVxuICAgIG1pZGRsZXdhcmVBcnJheSA9IFtdXG5cbiAgICBzdGF0aWMgaW5pdGlhbGl6ZVN0YXRpY0NsYXNzKHNlbGYpIHtcbiAgICAgICAgc3VwZXIuaW5pdGlhbGl6ZVN0YXRpY0NsYXNzKClcbiAgICAgICAgc2VsZi5wb3J0ID0gODA4MlxuICAgICAgICBzZWxmLnVybCA9IGAke3NlbGYuY29uZmlnLlBST1RPQ09MfWFwaS4ke3NlbGYuY29uZmlnLkhPU1R9L2BcbiAgICB9XG4gICAgY29uc3RydWN0b3IoKSB7XG4gICAgICAgIHN1cGVyKHRydWUpXG4gICAgfVxuXG59XG5cbmV4cG9ydCBkZWZhdWx0IHNlbGYiXX0=

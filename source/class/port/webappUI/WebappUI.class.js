@@ -1,113 +1,114 @@
-import { default as Application } from '../../Application.class.js'
-import path from 'path'
-import _ from 'underscore'
-import filesystem from 'fs'
-import https from 'https'
-import http from 'http'
-import { add, execute, applyMixin } from '@dependency/commonPattern/source/decoratorUtility.js'
-import { extendedSubclassPattern } from '@dependency/commonPattern/source/extendedSubclassPattern.js'
+"use strict";var _interopRequireDefault = require("@babel/runtime/helpers/interopRequireDefault");Object.defineProperty(exports, "__esModule", { value: true });exports.default = void 0;var _ApplicationClass = _interopRequireDefault(require("../../Application.class.js"));
+var _path = _interopRequireDefault(require("path"));
 
-const self = 
-@execute({ staticMethod: 'initializeStaticClass' })
-@extendedSubclassPattern.Subclass()
-class WebappUI extends Application {
-    
-    static serverKoa;
-    static createdHttpServer;
-    static port;
-    static entrypointSetting = {
-        defaultConditionTreeKey: 'default'
+var _fs = _interopRequireDefault(require("fs"));
+var _https = _interopRequireDefault(require("https"));
+var _http = _interopRequireDefault(require("http"));
+var _decoratorUtility = require("@dependency/commonPattern/source/decoratorUtility.js");
+var _extendedSubclassPattern = require("@dependency/commonPattern/source/extendedSubclassPattern.js");var _dec, _dec2, _class, _class2, _temp;
+
+const self = (_dec =
+(0, _decoratorUtility.execute)({ staticMethod: 'initializeStaticClass' }), _dec2 =
+_extendedSubclassPattern.extendedSubclassPattern.Subclass(), _dec(_class = _dec2(_class = (_temp = _class2 = class
+WebappUI extends _ApplicationClass.default {
+
+
+
+
+
+
+
+
+
+
+
+  static initializeStaticClass(self) {
+    super.initializeStaticClass();
+    self.port = 80;
+  }
+  constructor(skipConstructor = false) {
+    super(true);this.middlewareArray = [];
+    this.config = {};
+    if (skipConstructor) return;
+
+
+  }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  static createHttpServer() {
+    const self = this;
+    self.createdHttpServer = _http.default.createServer(self.serverKoa.callback()).
+    listen(self.port, () => {
+      console.log(`☕%c ${self.name} listening on port ${self.port}`, self.config.style.green);
+
+
+      if (process.send !== undefined) {
+        if (self.config.DEPLOYMENT == 'development') process.send({ message: 'Server listening' });
+      }
+    });
+
+
+    if (self.config.ssl) {
+      let options = {
+        key: _fs.default.readFileSync(_path.default.join(__dirname, '/sampleSSL/server.key')),
+        cert: _fs.default.readFileSync(_path.default.join(__dirname, './sampleSSL/server.crt')) };
+
+      self.createdHttpServer = _https.default.createServer(options, self.serverKoa.callback()).
+      on('connection', socket => {
+        socket.setTimeout(120);
+      }).
+      listen(443, () => {
+        console.log(`☕%c ${self.name} listening on port 443`, self.config.style.green);
+      });
     }
-    static middlewareArray = []
-    middlewareArray = []
-    next;
-
-    static initializeStaticClass(self) {
-        super.initializeStaticClass()
-        self.port = 80
-    }
-    constructor(skipConstructor = false) {
-        super(true)
-        this.config = {} // populated by useragentDetection module.
-        if(skipConstructor) return;
-        // if (!new.target) console.log(new.target) // not supported by babel
-        // if (!(this instanceof WebappUI)) return new WebappUI() // This is used in factory functions not classes.
-    }
-
-    // async handleTemplateDocument(documentKey) {
-        
-    //     let documentObject = await getTableDocument.instance['template_documentBackend'](self.rethinkdbConnection, documentKey)
-    //     // context.instance.config.clientBasePath should be defined using useragentDetection module.
-    //     // NOTE:  documentKey should be received from database and nested unit key retreived from there too.
-    //     // document could have different rules for users etc.. access previlages
-    //     let templateController = await new TemplateController(false, { portAppInstance: this.context.instance })
-    //     let renderedContent = await templateController.initializeNestedUnit({ nestedUnitKey: documentObject.viewNestedUnit })
-    //     this.context.body = renderedContent;
-
-    //     // // let argument = {
-    //     // //     layoutElement: 'webapp-layout-list'
-    //     // // }
-    //     // // let mainDocumentElement = await filesystem.readFileSync(`${this.context.instance.config.clientBasePath}/template/root/document-element/document-element.html`, 'utf-8')
-    //     // // let mainDocumentElementImport = await filesystem.readFileSync(`${this.context.instance.config.clientBasePath}/template/root/document-element/document-element.import.html`, 'utf-8')
-        
-    //     // // Shared arguments between all templates being rendered
-    //     // const templateArgument = {
-    //     //      templateController,
-    //     //     context: this.context,
-    //     //     Application,
-    //     //     argument: {}
-    //     // }
-        
-    //     // const view = {
-    //     //     metadata: _.template(await filesystem.readFileSync(`${this.context.instance.config.clientBasePath}/asset/metadata/metadata.html`, 'utf-8')),
-    //     //     header: _.template(await filesystem.readFileSync(`${this.context.instance.config.clientBasePath}/template/root/entrypoint.js.html`, 'utf-8')),
-    //     //     // body: _.template(mainDocumentElement, {Application, argument})
-    //     // }
-    //     // let template = _.template(await filesystem.readFileSync(`${this.context.instance.config.clientBasePath}/template/root/entrypoint.html`, 'utf-8'))
-    //     // this.context.body = template( 
-    //     //     Object.assign(
-    //     //         {}, 
-    //     //         templateArgument, 
-    //     //         { view, templateArgument }
-    //     //     )
-    //     // )
+  }}, _class2.entrypointSetting = { defaultConditionTreeKey: 'default' }, _class2.middlewareArray = [], _temp)) || _class) || _class);var _default =
 
 
-    //     // // Using 'context.render' using koa-views that uses consolidate.js as an underlying module.
-    //     // // await this.context.render(
-    //     // //     `${this.context.instance.config.clientBasePath}/template/root/entrypoint.html`, 
-    //     // //     Object.assign({}, templateArgument, { view, templateArgument })
-    //     // // );
-    // }
 
-    static createHttpServer() {
-        const self = this
-        self.createdHttpServer = http.createServer(self.serverKoa.callback())
-            .listen(self.port, ()=> {
-                console.log(`☕%c ${self.name} listening on port ${self.port}`, self.config.style.green)
-                // eventEmitter.emit('listening')
-                // process.emit('listening')
-                if (process.send !== undefined) { // if process is a forked child process.
-                    if(self.config.DEPLOYMENT == 'development') process.send({ message: 'Server listening'});
-                }
-            })
-        // eventEmitter.on("listening", function () { console.log("catched listening on same script file"); })
-        // TODO: The below should work, but for some reason the paths stopped working 'no suck file', - relative paths don't work
-        if(self.config.ssl) {
-            let options = {
-                key: filesystem.readFileSync(path.join(__dirname, '/sampleSSL/server.key')),
-                cert: filesystem.readFileSync(path.join(__dirname, './sampleSSL/server.crt'))
-            }
-            self.createdHttpServer = https.createServer(options, self.serverKoa.callback())
-                .on('connection', (socket) => {
-                    socket.setTimeout(120);
-                })
-                .listen(443, () => {
-                    console.log(`☕%c ${self.name} listening on port 443`, self.config.style.green)
-                })
-        }
-    }
-
-}
-
-export default self
+self;exports.default = _default;
+//# sourceMappingURL=data:application/json;charset=utf-8;base64,eyJ2ZXJzaW9uIjozLCJzb3VyY2VzIjpbIi4uLy4uLy4uLy4uLy4uL3NvdXJjZS9jbGFzcy9wb3J0L3dlYmFwcFVJL1dlYmFwcFVJLmNsYXNzLmpzIl0sIm5hbWVzIjpbInNlbGYiLCJzdGF0aWNNZXRob2QiLCJleHRlbmRlZFN1YmNsYXNzUGF0dGVybiIsIlN1YmNsYXNzIiwiV2ViYXBwVUkiLCJBcHBsaWNhdGlvbiIsImluaXRpYWxpemVTdGF0aWNDbGFzcyIsInBvcnQiLCJjb25zdHJ1Y3RvciIsInNraXBDb25zdHJ1Y3RvciIsIm1pZGRsZXdhcmVBcnJheSIsImNvbmZpZyIsImNyZWF0ZUh0dHBTZXJ2ZXIiLCJjcmVhdGVkSHR0cFNlcnZlciIsImh0dHAiLCJjcmVhdGVTZXJ2ZXIiLCJzZXJ2ZXJLb2EiLCJjYWxsYmFjayIsImxpc3RlbiIsImNvbnNvbGUiLCJsb2ciLCJuYW1lIiwic3R5bGUiLCJncmVlbiIsInByb2Nlc3MiLCJzZW5kIiwidW5kZWZpbmVkIiwiREVQTE9ZTUVOVCIsIm1lc3NhZ2UiLCJzc2wiLCJvcHRpb25zIiwia2V5IiwiZmlsZXN5c3RlbSIsInJlYWRGaWxlU3luYyIsInBhdGgiLCJqb2luIiwiX19kaXJuYW1lIiwiY2VydCIsImh0dHBzIiwib24iLCJzb2NrZXQiLCJzZXRUaW1lb3V0IiwiZW50cnlwb2ludFNldHRpbmciLCJkZWZhdWx0Q29uZGl0aW9uVHJlZUtleSJdLCJtYXBwaW5ncyI6InlMQUFBO0FBQ0E7O0FBRUE7QUFDQTtBQUNBO0FBQ0E7QUFDQSxzRzs7QUFFQSxNQUFNQSxJQUFJO0FBQ1QsK0JBQVEsRUFBRUMsWUFBWSxFQUFFLHVCQUFoQixFQUFSLENBRFM7QUFFVEMsaURBQXdCQyxRQUF4QixFQUZTLGtEQUNWO0FBRU1DLFFBRk4sU0FFdUJDLHlCQUZ2QixDQUVtQzs7Ozs7Ozs7Ozs7O0FBWS9CLFNBQU9DLHFCQUFQLENBQTZCTixJQUE3QixFQUFtQztBQUMvQixVQUFNTSxxQkFBTjtBQUNBTixJQUFBQSxJQUFJLENBQUNPLElBQUwsR0FBWSxFQUFaO0FBQ0g7QUFDREMsRUFBQUEsV0FBVyxDQUFDQyxlQUFlLEdBQUcsS0FBbkIsRUFBMEI7QUFDakMsVUFBTSxJQUFOLEVBRGlDLEtBUHJDQyxlQU9xQyxHQVBuQixFQU9tQjtBQUVqQyxTQUFLQyxNQUFMLEdBQWMsRUFBZDtBQUNBLFFBQUdGLGVBQUgsRUFBb0I7OztBQUd2Qjs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7O0FBZ0RELFNBQU9HLGdCQUFQLEdBQTBCO0FBQ3RCLFVBQU1aLElBQUksR0FBRyxJQUFiO0FBQ0FBLElBQUFBLElBQUksQ0FBQ2EsaUJBQUwsR0FBeUJDLGNBQUtDLFlBQUwsQ0FBa0JmLElBQUksQ0FBQ2dCLFNBQUwsQ0FBZUMsUUFBZixFQUFsQjtBQUNwQkMsSUFBQUEsTUFEb0IsQ0FDYmxCLElBQUksQ0FBQ08sSUFEUSxFQUNGLE1BQUs7QUFDcEJZLE1BQUFBLE9BQU8sQ0FBQ0MsR0FBUixDQUFhLE9BQU1wQixJQUFJLENBQUNxQixJQUFLLHNCQUFxQnJCLElBQUksQ0FBQ08sSUFBSyxFQUE1RCxFQUErRFAsSUFBSSxDQUFDVyxNQUFMLENBQVlXLEtBQVosQ0FBa0JDLEtBQWpGOzs7QUFHQSxVQUFJQyxPQUFPLENBQUNDLElBQVIsS0FBaUJDLFNBQXJCLEVBQWdDO0FBQzVCLFlBQUcxQixJQUFJLENBQUNXLE1BQUwsQ0FBWWdCLFVBQVosSUFBMEIsYUFBN0IsRUFBNENILE9BQU8sQ0FBQ0MsSUFBUixDQUFhLEVBQUVHLE9BQU8sRUFBRSxrQkFBWCxFQUFiO0FBQy9DO0FBQ0osS0FSb0IsQ0FBekI7OztBQVdBLFFBQUc1QixJQUFJLENBQUNXLE1BQUwsQ0FBWWtCLEdBQWYsRUFBb0I7QUFDaEIsVUFBSUMsT0FBTyxHQUFHO0FBQ1ZDLFFBQUFBLEdBQUcsRUFBRUMsWUFBV0MsWUFBWCxDQUF3QkMsY0FBS0MsSUFBTCxDQUFVQyxTQUFWLEVBQXFCLHVCQUFyQixDQUF4QixDQURLO0FBRVZDLFFBQUFBLElBQUksRUFBRUwsWUFBV0MsWUFBWCxDQUF3QkMsY0FBS0MsSUFBTCxDQUFVQyxTQUFWLEVBQXFCLHdCQUFyQixDQUF4QixDQUZJLEVBQWQ7O0FBSUFwQyxNQUFBQSxJQUFJLENBQUNhLGlCQUFMLEdBQXlCeUIsZUFBTXZCLFlBQU4sQ0FBbUJlLE9BQW5CLEVBQTRCOUIsSUFBSSxDQUFDZ0IsU0FBTCxDQUFlQyxRQUFmLEVBQTVCO0FBQ3BCc0IsTUFBQUEsRUFEb0IsQ0FDakIsWUFEaUIsRUFDRkMsTUFBRCxJQUFZO0FBQzFCQSxRQUFBQSxNQUFNLENBQUNDLFVBQVAsQ0FBa0IsR0FBbEI7QUFDSCxPQUhvQjtBQUlwQnZCLE1BQUFBLE1BSm9CLENBSWIsR0FKYSxFQUlSLE1BQU07QUFDZkMsUUFBQUEsT0FBTyxDQUFDQyxHQUFSLENBQWEsT0FBTXBCLElBQUksQ0FBQ3FCLElBQUssd0JBQTdCLEVBQXNEckIsSUFBSSxDQUFDVyxNQUFMLENBQVlXLEtBQVosQ0FBa0JDLEtBQXhFO0FBQ0gsT0FOb0IsQ0FBekI7QUFPSDtBQUNKLEdBaEc4QixDQUh6QixVQVFDbUIsaUJBUkQsR0FRcUIsRUFDdkJDLHVCQUF1QixFQUFFLFNBREYsRUFSckIsVUFXQ2pDLGVBWEQsR0FXbUIsRUFYbkIsK0JBQVYsQzs7OztBQXVHZVYsSSIsInNvdXJjZXNDb250ZW50IjpbImltcG9ydCB7IGRlZmF1bHQgYXMgQXBwbGljYXRpb24gfSBmcm9tICcuLi8uLi9BcHBsaWNhdGlvbi5jbGFzcy5qcydcbmltcG9ydCBwYXRoIGZyb20gJ3BhdGgnXG5pbXBvcnQgXyBmcm9tICd1bmRlcnNjb3JlJ1xuaW1wb3J0IGZpbGVzeXN0ZW0gZnJvbSAnZnMnXG5pbXBvcnQgaHR0cHMgZnJvbSAnaHR0cHMnXG5pbXBvcnQgaHR0cCBmcm9tICdodHRwJ1xuaW1wb3J0IHsgYWRkLCBleGVjdXRlLCBhcHBseU1peGluIH0gZnJvbSAnQGRlcGVuZGVuY3kvY29tbW9uUGF0dGVybi9zb3VyY2UvZGVjb3JhdG9yVXRpbGl0eS5qcydcbmltcG9ydCB7IGV4dGVuZGVkU3ViY2xhc3NQYXR0ZXJuIH0gZnJvbSAnQGRlcGVuZGVuY3kvY29tbW9uUGF0dGVybi9zb3VyY2UvZXh0ZW5kZWRTdWJjbGFzc1BhdHRlcm4uanMnXG5cbmNvbnN0IHNlbGYgPSBcbkBleGVjdXRlKHsgc3RhdGljTWV0aG9kOiAnaW5pdGlhbGl6ZVN0YXRpY0NsYXNzJyB9KVxuQGV4dGVuZGVkU3ViY2xhc3NQYXR0ZXJuLlN1YmNsYXNzKClcbmNsYXNzIFdlYmFwcFVJIGV4dGVuZHMgQXBwbGljYXRpb24ge1xuICAgIFxuICAgIHN0YXRpYyBzZXJ2ZXJLb2E7XG4gICAgc3RhdGljIGNyZWF0ZWRIdHRwU2VydmVyO1xuICAgIHN0YXRpYyBwb3J0O1xuICAgIHN0YXRpYyBlbnRyeXBvaW50U2V0dGluZyA9IHtcbiAgICAgICAgZGVmYXVsdENvbmRpdGlvblRyZWVLZXk6ICdkZWZhdWx0J1xuICAgIH1cbiAgICBzdGF0aWMgbWlkZGxld2FyZUFycmF5ID0gW11cbiAgICBtaWRkbGV3YXJlQXJyYXkgPSBbXVxuICAgIG5leHQ7XG5cbiAgICBzdGF0aWMgaW5pdGlhbGl6ZVN0YXRpY0NsYXNzKHNlbGYpIHtcbiAgICAgICAgc3VwZXIuaW5pdGlhbGl6ZVN0YXRpY0NsYXNzKClcbiAgICAgICAgc2VsZi5wb3J0ID0gODBcbiAgICB9XG4gICAgY29uc3RydWN0b3Ioc2tpcENvbnN0cnVjdG9yID0gZmFsc2UpIHtcbiAgICAgICAgc3VwZXIodHJ1ZSlcbiAgICAgICAgdGhpcy5jb25maWcgPSB7fSAvLyBwb3B1bGF0ZWQgYnkgdXNlcmFnZW50RGV0ZWN0aW9uIG1vZHVsZS5cbiAgICAgICAgaWYoc2tpcENvbnN0cnVjdG9yKSByZXR1cm47XG4gICAgICAgIC8vIGlmICghbmV3LnRhcmdldCkgY29uc29sZS5sb2cobmV3LnRhcmdldCkgLy8gbm90IHN1cHBvcnRlZCBieSBiYWJlbFxuICAgICAgICAvLyBpZiAoISh0aGlzIGluc3RhbmNlb2YgV2ViYXBwVUkpKSByZXR1cm4gbmV3IFdlYmFwcFVJKCkgLy8gVGhpcyBpcyB1c2VkIGluIGZhY3RvcnkgZnVuY3Rpb25zIG5vdCBjbGFzc2VzLlxuICAgIH1cblxuICAgIC8vIGFzeW5jIGhhbmRsZVRlbXBsYXRlRG9jdW1lbnQoZG9jdW1lbnRLZXkpIHtcbiAgICAgICAgXG4gICAgLy8gICAgIGxldCBkb2N1bWVudE9iamVjdCA9IGF3YWl0IGdldFRhYmxlRG9jdW1lbnQuaW5zdGFuY2VbJ3RlbXBsYXRlX2RvY3VtZW50QmFja2VuZCddKHNlbGYucmV0aGlua2RiQ29ubmVjdGlvbiwgZG9jdW1lbnRLZXkpXG4gICAgLy8gICAgIC8vIGNvbnRleHQuaW5zdGFuY2UuY29uZmlnLmNsaWVudEJhc2VQYXRoIHNob3VsZCBiZSBkZWZpbmVkIHVzaW5nIHVzZXJhZ2VudERldGVjdGlvbiBtb2R1bGUuXG4gICAgLy8gICAgIC8vIE5PVEU6ICBkb2N1bWVudEtleSBzaG91bGQgYmUgcmVjZWl2ZWQgZnJvbSBkYXRhYmFzZSBhbmQgbmVzdGVkIHVuaXQga2V5IHJldHJlaXZlZCBmcm9tIHRoZXJlIHRvby5cbiAgICAvLyAgICAgLy8gZG9jdW1lbnQgY291bGQgaGF2ZSBkaWZmZXJlbnQgcnVsZXMgZm9yIHVzZXJzIGV0Yy4uIGFjY2VzcyBwcmV2aWxhZ2VzXG4gICAgLy8gICAgIGxldCB0ZW1wbGF0ZUNvbnRyb2xsZXIgPSBhd2FpdCBuZXcgVGVtcGxhdGVDb250cm9sbGVyKGZhbHNlLCB7IHBvcnRBcHBJbnN0YW5jZTogdGhpcy5jb250ZXh0Lmluc3RhbmNlIH0pXG4gICAgLy8gICAgIGxldCByZW5kZXJlZENvbnRlbnQgPSBhd2FpdCB0ZW1wbGF0ZUNvbnRyb2xsZXIuaW5pdGlhbGl6ZU5lc3RlZFVuaXQoeyBuZXN0ZWRVbml0S2V5OiBkb2N1bWVudE9iamVjdC52aWV3TmVzdGVkVW5pdCB9KVxuICAgIC8vICAgICB0aGlzLmNvbnRleHQuYm9keSA9IHJlbmRlcmVkQ29udGVudDtcblxuICAgIC8vICAgICAvLyAvLyBsZXQgYXJndW1lbnQgPSB7XG4gICAgLy8gICAgIC8vIC8vICAgICBsYXlvdXRFbGVtZW50OiAnd2ViYXBwLWxheW91dC1saXN0J1xuICAgIC8vICAgICAvLyAvLyB9XG4gICAgLy8gICAgIC8vIC8vIGxldCBtYWluRG9jdW1lbnRFbGVtZW50ID0gYXdhaXQgZmlsZXN5c3RlbS5yZWFkRmlsZVN5bmMoYCR7dGhpcy5jb250ZXh0Lmluc3RhbmNlLmNvbmZpZy5jbGllbnRCYXNlUGF0aH0vdGVtcGxhdGUvcm9vdC9kb2N1bWVudC1lbGVtZW50L2RvY3VtZW50LWVsZW1lbnQuaHRtbGAsICd1dGYtOCcpXG4gICAgLy8gICAgIC8vIC8vIGxldCBtYWluRG9jdW1lbnRFbGVtZW50SW1wb3J0ID0gYXdhaXQgZmlsZXN5c3RlbS5yZWFkRmlsZVN5bmMoYCR7dGhpcy5jb250ZXh0Lmluc3RhbmNlLmNvbmZpZy5jbGllbnRCYXNlUGF0aH0vdGVtcGxhdGUvcm9vdC9kb2N1bWVudC1lbGVtZW50L2RvY3VtZW50LWVsZW1lbnQuaW1wb3J0Lmh0bWxgLCAndXRmLTgnKVxuICAgICAgICBcbiAgICAvLyAgICAgLy8gLy8gU2hhcmVkIGFyZ3VtZW50cyBiZXR3ZWVuIGFsbCB0ZW1wbGF0ZXMgYmVpbmcgcmVuZGVyZWRcbiAgICAvLyAgICAgLy8gY29uc3QgdGVtcGxhdGVBcmd1bWVudCA9IHtcbiAgICAvLyAgICAgLy8gICAgICB0ZW1wbGF0ZUNvbnRyb2xsZXIsXG4gICAgLy8gICAgIC8vICAgICBjb250ZXh0OiB0aGlzLmNvbnRleHQsXG4gICAgLy8gICAgIC8vICAgICBBcHBsaWNhdGlvbixcbiAgICAvLyAgICAgLy8gICAgIGFyZ3VtZW50OiB7fVxuICAgIC8vICAgICAvLyB9XG4gICAgICAgIFxuICAgIC8vICAgICAvLyBjb25zdCB2aWV3ID0ge1xuICAgIC8vICAgICAvLyAgICAgbWV0YWRhdGE6IF8udGVtcGxhdGUoYXdhaXQgZmlsZXN5c3RlbS5yZWFkRmlsZVN5bmMoYCR7dGhpcy5jb250ZXh0Lmluc3RhbmNlLmNvbmZpZy5jbGllbnRCYXNlUGF0aH0vYXNzZXQvbWV0YWRhdGEvbWV0YWRhdGEuaHRtbGAsICd1dGYtOCcpKSxcbiAgICAvLyAgICAgLy8gICAgIGhlYWRlcjogXy50ZW1wbGF0ZShhd2FpdCBmaWxlc3lzdGVtLnJlYWRGaWxlU3luYyhgJHt0aGlzLmNvbnRleHQuaW5zdGFuY2UuY29uZmlnLmNsaWVudEJhc2VQYXRofS90ZW1wbGF0ZS9yb290L2VudHJ5cG9pbnQuanMuaHRtbGAsICd1dGYtOCcpKSxcbiAgICAvLyAgICAgLy8gICAgIC8vIGJvZHk6IF8udGVtcGxhdGUobWFpbkRvY3VtZW50RWxlbWVudCwge0FwcGxpY2F0aW9uLCBhcmd1bWVudH0pXG4gICAgLy8gICAgIC8vIH1cbiAgICAvLyAgICAgLy8gbGV0IHRlbXBsYXRlID0gXy50ZW1wbGF0ZShhd2FpdCBmaWxlc3lzdGVtLnJlYWRGaWxlU3luYyhgJHt0aGlzLmNvbnRleHQuaW5zdGFuY2UuY29uZmlnLmNsaWVudEJhc2VQYXRofS90ZW1wbGF0ZS9yb290L2VudHJ5cG9pbnQuaHRtbGAsICd1dGYtOCcpKVxuICAgIC8vICAgICAvLyB0aGlzLmNvbnRleHQuYm9keSA9IHRlbXBsYXRlKCBcbiAgICAvLyAgICAgLy8gICAgIE9iamVjdC5hc3NpZ24oXG4gICAgLy8gICAgIC8vICAgICAgICAge30sIFxuICAgIC8vICAgICAvLyAgICAgICAgIHRlbXBsYXRlQXJndW1lbnQsIFxuICAgIC8vICAgICAvLyAgICAgICAgIHsgdmlldywgdGVtcGxhdGVBcmd1bWVudCB9XG4gICAgLy8gICAgIC8vICAgICApXG4gICAgLy8gICAgIC8vIClcblxuXG4gICAgLy8gICAgIC8vIC8vIFVzaW5nICdjb250ZXh0LnJlbmRlcicgdXNpbmcga29hLXZpZXdzIHRoYXQgdXNlcyBjb25zb2xpZGF0ZS5qcyBhcyBhbiB1bmRlcmx5aW5nIG1vZHVsZS5cbiAgICAvLyAgICAgLy8gLy8gYXdhaXQgdGhpcy5jb250ZXh0LnJlbmRlcihcbiAgICAvLyAgICAgLy8gLy8gICAgIGAke3RoaXMuY29udGV4dC5pbnN0YW5jZS5jb25maWcuY2xpZW50QmFzZVBhdGh9L3RlbXBsYXRlL3Jvb3QvZW50cnlwb2ludC5odG1sYCwgXG4gICAgLy8gICAgIC8vIC8vICAgICBPYmplY3QuYXNzaWduKHt9LCB0ZW1wbGF0ZUFyZ3VtZW50LCB7IHZpZXcsIHRlbXBsYXRlQXJndW1lbnQgfSlcbiAgICAvLyAgICAgLy8gLy8gKTtcbiAgICAvLyB9XG5cbiAgICBzdGF0aWMgY3JlYXRlSHR0cFNlcnZlcigpIHtcbiAgICAgICAgY29uc3Qgc2VsZiA9IHRoaXNcbiAgICAgICAgc2VsZi5jcmVhdGVkSHR0cFNlcnZlciA9IGh0dHAuY3JlYXRlU2VydmVyKHNlbGYuc2VydmVyS29hLmNhbGxiYWNrKCkpXG4gICAgICAgICAgICAubGlzdGVuKHNlbGYucG9ydCwgKCk9PiB7XG4gICAgICAgICAgICAgICAgY29uc29sZS5sb2coYOKYlSVjICR7c2VsZi5uYW1lfSBsaXN0ZW5pbmcgb24gcG9ydCAke3NlbGYucG9ydH1gLCBzZWxmLmNvbmZpZy5zdHlsZS5ncmVlbilcbiAgICAgICAgICAgICAgICAvLyBldmVudEVtaXR0ZXIuZW1pdCgnbGlzdGVuaW5nJylcbiAgICAgICAgICAgICAgICAvLyBwcm9jZXNzLmVtaXQoJ2xpc3RlbmluZycpXG4gICAgICAgICAgICAgICAgaWYgKHByb2Nlc3Muc2VuZCAhPT0gdW5kZWZpbmVkKSB7IC8vIGlmIHByb2Nlc3MgaXMgYSBmb3JrZWQgY2hpbGQgcHJvY2Vzcy5cbiAgICAgICAgICAgICAgICAgICAgaWYoc2VsZi5jb25maWcuREVQTE9ZTUVOVCA9PSAnZGV2ZWxvcG1lbnQnKSBwcm9jZXNzLnNlbmQoeyBtZXNzYWdlOiAnU2VydmVyIGxpc3RlbmluZyd9KTtcbiAgICAgICAgICAgICAgICB9XG4gICAgICAgICAgICB9KVxuICAgICAgICAvLyBldmVudEVtaXR0ZXIub24oXCJsaXN0ZW5pbmdcIiwgZnVuY3Rpb24gKCkgeyBjb25zb2xlLmxvZyhcImNhdGNoZWQgbGlzdGVuaW5nIG9uIHNhbWUgc2NyaXB0IGZpbGVcIik7IH0pXG4gICAgICAgIC8vIFRPRE86IFRoZSBiZWxvdyBzaG91bGQgd29yaywgYnV0IGZvciBzb21lIHJlYXNvbiB0aGUgcGF0aHMgc3RvcHBlZCB3b3JraW5nICdubyBzdWNrIGZpbGUnLCAtIHJlbGF0aXZlIHBhdGhzIGRvbid0IHdvcmtcbiAgICAgICAgaWYoc2VsZi5jb25maWcuc3NsKSB7XG4gICAgICAgICAgICBsZXQgb3B0aW9ucyA9IHtcbiAgICAgICAgICAgICAgICBrZXk6IGZpbGVzeXN0ZW0ucmVhZEZpbGVTeW5jKHBhdGguam9pbihfX2Rpcm5hbWUsICcvc2FtcGxlU1NML3NlcnZlci5rZXknKSksXG4gICAgICAgICAgICAgICAgY2VydDogZmlsZXN5c3RlbS5yZWFkRmlsZVN5bmMocGF0aC5qb2luKF9fZGlybmFtZSwgJy4vc2FtcGxlU1NML3NlcnZlci5jcnQnKSlcbiAgICAgICAgICAgIH1cbiAgICAgICAgICAgIHNlbGYuY3JlYXRlZEh0dHBTZXJ2ZXIgPSBodHRwcy5jcmVhdGVTZXJ2ZXIob3B0aW9ucywgc2VsZi5zZXJ2ZXJLb2EuY2FsbGJhY2soKSlcbiAgICAgICAgICAgICAgICAub24oJ2Nvbm5lY3Rpb24nLCAoc29ja2V0KSA9PiB7XG4gICAgICAgICAgICAgICAgICAgIHNvY2tldC5zZXRUaW1lb3V0KDEyMCk7XG4gICAgICAgICAgICAgICAgfSlcbiAgICAgICAgICAgICAgICAubGlzdGVuKDQ0MywgKCkgPT4ge1xuICAgICAgICAgICAgICAgICAgICBjb25zb2xlLmxvZyhg4piVJWMgJHtzZWxmLm5hbWV9IGxpc3RlbmluZyBvbiBwb3J0IDQ0M2AsIHNlbGYuY29uZmlnLnN0eWxlLmdyZWVuKVxuICAgICAgICAgICAgICAgIH0pXG4gICAgICAgIH1cbiAgICB9XG5cbn1cblxuZXhwb3J0IGRlZmF1bHQgc2VsZiJdfQ==

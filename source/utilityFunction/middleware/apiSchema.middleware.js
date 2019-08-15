@@ -1,19 +1,20 @@
-import { default as Application } from '../../class/Application.class.js'
-import createStaticInstanceClasses from '@dependency/graph'
-import getUrlPathAsArray from '../conditionCheck/getUrlPathAsArray.js'
+"use strict";var _interopRequireDefault = require("@babel/runtime/helpers/interopRequireDefault");Object.defineProperty(exports, "__esModule", { value: true });exports.default = void 0;var _ApplicationClass = _interopRequireDefault(require("../../class/Application.class.js"));
+var _graph = _interopRequireDefault(require("@dependency/graph"));
+var _getUrlPathAsArray = _interopRequireDefault(require("../conditionCheck/getUrlPathAsArray.js"));
 
-let SchemaController = createStaticInstanceClasses({
-  Superclass: Application,
+let SchemaController = (0, _graph.default)({
+  Superclass: _ApplicationClass.default,
   implementationType: 'Schema',
-  cacheName: true,
-})
+  cacheName: true });var _default =
 
-export default async (context, next) => {
-  let connection = Application.rethinkdbConnection
-  let schemaController = await SchemaController.createContext({ portAppInstance: context.instance })
-  let urlPathArray = await getUrlPathAsArray(context.instance)
-  let apiSchemaEntrypoint = urlPathArray.pop()
-  let data = await schemaController.initializeNestedUnit({ nestedUnitKey: apiSchemaEntrypoint })
-  context.body = data
-  await next()
-}
+
+async (context, next) => {
+  let connection = _ApplicationClass.default.rethinkdbConnection;
+  let schemaController = await SchemaController.createContext({ portAppInstance: context.instance });
+  let urlPathArray = await (0, _getUrlPathAsArray.default)(context.instance);
+  let apiSchemaEntrypoint = urlPathArray.pop();
+  let data = await schemaController.initializeNestedUnit({ nestedUnitKey: apiSchemaEntrypoint });
+  context.body = data;
+  await next();
+};exports.default = _default;
+//# sourceMappingURL=data:application/json;charset=utf-8;base64,eyJ2ZXJzaW9uIjozLCJzb3VyY2VzIjpbIi4uLy4uLy4uLy4uL3NvdXJjZS91dGlsaXR5RnVuY3Rpb24vbWlkZGxld2FyZS9hcGlTY2hlbWEubWlkZGxld2FyZS5qcyJdLCJuYW1lcyI6WyJTY2hlbWFDb250cm9sbGVyIiwiU3VwZXJjbGFzcyIsIkFwcGxpY2F0aW9uIiwiaW1wbGVtZW50YXRpb25UeXBlIiwiY2FjaGVOYW1lIiwiY29udGV4dCIsIm5leHQiLCJjb25uZWN0aW9uIiwicmV0aGlua2RiQ29ubmVjdGlvbiIsInNjaGVtYUNvbnRyb2xsZXIiLCJjcmVhdGVDb250ZXh0IiwicG9ydEFwcEluc3RhbmNlIiwiaW5zdGFuY2UiLCJ1cmxQYXRoQXJyYXkiLCJhcGlTY2hlbWFFbnRyeXBvaW50IiwicG9wIiwiZGF0YSIsImluaXRpYWxpemVOZXN0ZWRVbml0IiwibmVzdGVkVW5pdEtleSIsImJvZHkiXSwibWFwcGluZ3MiOiJ5TEFBQTtBQUNBO0FBQ0E7O0FBRUEsSUFBSUEsZ0JBQWdCLEdBQUcsb0JBQTRCO0FBQ2pEQyxFQUFBQSxVQUFVLEVBQUVDLHlCQURxQztBQUVqREMsRUFBQUEsa0JBQWtCLEVBQUUsUUFGNkI7QUFHakRDLEVBQUFBLFNBQVMsRUFBRSxJQUhzQyxFQUE1QixDQUF2QixDOzs7QUFNZSxPQUFPQyxPQUFQLEVBQWdCQyxJQUFoQixLQUF5QjtBQUN0QyxNQUFJQyxVQUFVLEdBQUdMLDBCQUFZTSxtQkFBN0I7QUFDQSxNQUFJQyxnQkFBZ0IsR0FBRyxNQUFNVCxnQkFBZ0IsQ0FBQ1UsYUFBakIsQ0FBK0IsRUFBRUMsZUFBZSxFQUFFTixPQUFPLENBQUNPLFFBQTNCLEVBQS9CLENBQTdCO0FBQ0EsTUFBSUMsWUFBWSxHQUFHLE1BQU0sZ0NBQWtCUixPQUFPLENBQUNPLFFBQTFCLENBQXpCO0FBQ0EsTUFBSUUsbUJBQW1CLEdBQUdELFlBQVksQ0FBQ0UsR0FBYixFQUExQjtBQUNBLE1BQUlDLElBQUksR0FBRyxNQUFNUCxnQkFBZ0IsQ0FBQ1Esb0JBQWpCLENBQXNDLEVBQUVDLGFBQWEsRUFBRUosbUJBQWpCLEVBQXRDLENBQWpCO0FBQ0FULEVBQUFBLE9BQU8sQ0FBQ2MsSUFBUixHQUFlSCxJQUFmO0FBQ0EsUUFBTVYsSUFBSSxFQUFWO0FBQ0QsQyIsInNvdXJjZXNDb250ZW50IjpbImltcG9ydCB7IGRlZmF1bHQgYXMgQXBwbGljYXRpb24gfSBmcm9tICcuLi8uLi9jbGFzcy9BcHBsaWNhdGlvbi5jbGFzcy5qcydcbmltcG9ydCBjcmVhdGVTdGF0aWNJbnN0YW5jZUNsYXNzZXMgZnJvbSAnQGRlcGVuZGVuY3kvZ3JhcGgnXG5pbXBvcnQgZ2V0VXJsUGF0aEFzQXJyYXkgZnJvbSAnLi4vY29uZGl0aW9uQ2hlY2svZ2V0VXJsUGF0aEFzQXJyYXkuanMnXG5cbmxldCBTY2hlbWFDb250cm9sbGVyID0gY3JlYXRlU3RhdGljSW5zdGFuY2VDbGFzc2VzKHtcbiAgU3VwZXJjbGFzczogQXBwbGljYXRpb24sXG4gIGltcGxlbWVudGF0aW9uVHlwZTogJ1NjaGVtYScsXG4gIGNhY2hlTmFtZTogdHJ1ZSxcbn0pXG5cbmV4cG9ydCBkZWZhdWx0IGFzeW5jIChjb250ZXh0LCBuZXh0KSA9PiB7XG4gIGxldCBjb25uZWN0aW9uID0gQXBwbGljYXRpb24ucmV0aGlua2RiQ29ubmVjdGlvblxuICBsZXQgc2NoZW1hQ29udHJvbGxlciA9IGF3YWl0IFNjaGVtYUNvbnRyb2xsZXIuY3JlYXRlQ29udGV4dCh7IHBvcnRBcHBJbnN0YW5jZTogY29udGV4dC5pbnN0YW5jZSB9KVxuICBsZXQgdXJsUGF0aEFycmF5ID0gYXdhaXQgZ2V0VXJsUGF0aEFzQXJyYXkoY29udGV4dC5pbnN0YW5jZSlcbiAgbGV0IGFwaVNjaGVtYUVudHJ5cG9pbnQgPSB1cmxQYXRoQXJyYXkucG9wKClcbiAgbGV0IGRhdGEgPSBhd2FpdCBzY2hlbWFDb250cm9sbGVyLmluaXRpYWxpemVOZXN0ZWRVbml0KHsgbmVzdGVkVW5pdEtleTogYXBpU2NoZW1hRW50cnlwb2ludCB9KVxuICBjb250ZXh0LmJvZHkgPSBkYXRhXG4gIGF3YWl0IG5leHQoKVxufVxuIl19

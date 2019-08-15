@@ -1,10 +1,11 @@
-import getUrlPathAsArray from './getUrlPathAsArray.js'
+"use strict";var _interopRequireDefault = require("@babel/runtime/helpers/interopRequireDefault");Object.defineProperty(exports, "__esModule", { value: true });exports.default = void 0;var _getUrlPathAsArray = _interopRequireDefault(require("./getUrlPathAsArray.js"));var _default =
 
-export default async (self) => {
-    let context = self.context
-    let pathArray = await getUrlPathAsArray(self)
-    let firstPath = pathArray.shift() // get url path
-    
-    // check if function sign exists
-    return (firstPath.includes('@')) ? true : false;
-}
+async self => {
+  let context = self.context;
+  let pathArray = await (0, _getUrlPathAsArray.default)(self);
+  let firstPath = pathArray.shift();
+
+
+  return firstPath.includes('@') ? true : false;
+};exports.default = _default;
+//# sourceMappingURL=data:application/json;charset=utf-8;base64,eyJ2ZXJzaW9uIjozLCJzb3VyY2VzIjpbIi4uLy4uLy4uLy4uL3NvdXJjZS91dGlsaXR5RnVuY3Rpb24vY29uZGl0aW9uQ2hlY2svaWZMZXZlbDFJbmNsdWRlc0AuanMiXSwibmFtZXMiOlsic2VsZiIsImNvbnRleHQiLCJwYXRoQXJyYXkiLCJmaXJzdFBhdGgiLCJzaGlmdCIsImluY2x1ZGVzIl0sIm1hcHBpbmdzIjoieUxBQUEsbUY7O0FBRWUsTUFBT0EsSUFBUCxJQUFnQjtBQUMzQixNQUFJQyxPQUFPLEdBQUdELElBQUksQ0FBQ0MsT0FBbkI7QUFDQSxNQUFJQyxTQUFTLEdBQUcsTUFBTSxnQ0FBa0JGLElBQWxCLENBQXRCO0FBQ0EsTUFBSUcsU0FBUyxHQUFHRCxTQUFTLENBQUNFLEtBQVYsRUFBaEI7OztBQUdBLFNBQVFELFNBQVMsQ0FBQ0UsUUFBVixDQUFtQixHQUFuQixDQUFELEdBQTRCLElBQTVCLEdBQW1DLEtBQTFDO0FBQ0gsQyIsInNvdXJjZXNDb250ZW50IjpbImltcG9ydCBnZXRVcmxQYXRoQXNBcnJheSBmcm9tICcuL2dldFVybFBhdGhBc0FycmF5LmpzJ1xuXG5leHBvcnQgZGVmYXVsdCBhc3luYyAoc2VsZikgPT4ge1xuICAgIGxldCBjb250ZXh0ID0gc2VsZi5jb250ZXh0XG4gICAgbGV0IHBhdGhBcnJheSA9IGF3YWl0IGdldFVybFBhdGhBc0FycmF5KHNlbGYpXG4gICAgbGV0IGZpcnN0UGF0aCA9IHBhdGhBcnJheS5zaGlmdCgpIC8vIGdldCB1cmwgcGF0aFxuICAgIFxuICAgIC8vIGNoZWNrIGlmIGZ1bmN0aW9uIHNpZ24gZXhpc3RzXG4gICAgcmV0dXJuIChmaXJzdFBhdGguaW5jbHVkZXMoJ0AnKSkgPyB0cnVlIDogZmFsc2U7XG59Il19

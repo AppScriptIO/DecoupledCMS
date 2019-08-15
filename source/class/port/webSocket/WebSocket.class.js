@@ -1,68 +1,69 @@
-import { default as Application } from '../../Application.class.js'
-import WebSocketModule from 'ws'
-import { add, execute, applyMixin } from '@dependency/commonPattern/source/decoratorUtility.js'
-import { extendedSubclassPattern } from '@dependency/commonPattern/source/extendedSubclassPattern.js';
+"use strict";var _interopRequireDefault = require("@babel/runtime/helpers/interopRequireDefault");Object.defineProperty(exports, "__esModule", { value: true });exports.default = void 0;var _ApplicationClass = _interopRequireDefault(require("../../Application.class.js"));
+var _ws = _interopRequireDefault(require("ws"));
+var _decoratorUtility = require("@dependency/commonPattern/source/decoratorUtility.js");
+var _extendedSubclassPattern = require("@dependency/commonPattern/source/extendedSubclassPattern.js");var _dec, _dec2, _class;
 
-const self = 
-@execute({ staticMethod: 'initializeStaticClass' })
-@extendedSubclassPattern.Subclass()
-class WebSocket extends Application {
-
-    static port;
-    static webSocketServer;
-    static url; 
-
-    static initializeStaticClass(self) {
-        self.port = 8087
-        self.url = `${self.config.SOCKET_PROTOCOL}websocket.${self.config.HOST}`        
-    }
-
-    constructor(skipConstructor = false) {
-        super(true)
-        if(skipConstructor) return;
-    }
-
-    static createWebsocketServer() {
-       return new Promise((resolve, reject) => {
-           // WebSocket - ws package.
-           const websocketPort = self.port;
-           self.webSocketServer = new WebSocketModule.Server(
-               { port: websocketPort  }, 
-               () => { 
-                   console.log(`☕%c ${self.name} listening on port ${websocketPort}`, Application.config.style.green)
-                   resolve()
-               }
-           )
-       })
+const self = (_dec =
+(0, _decoratorUtility.execute)({ staticMethod: 'initializeStaticClass' }), _dec2 =
+_extendedSubclassPattern.extendedSubclassPattern.Subclass(), _dec(_class = _dec2(_class = class
+WebSocket extends _ApplicationClass.default {
 
 
-        // Socket.io - npm package
-        // var server = require('http').createServer();
-        // var io = require('socket.io')(server);
-        // io.on('connection', function(client){
-        //     console.log('client connected !')
-        //     var i = 0
-        //     setInterval(function() {
-        //         i++
-        //         client.emit('event',{name: 'safi', requestNumber: i}) 
-        //     }, 500);
-        //   client.on('event', function(data){});
-        //   client.on('disconnect', function(){});
-        // });
-        // server.listen(8087);
 
-        // Engine.io - engine.io package and client package JSPM.
-        // var engine = require('engine.io');
-        // var http = require('http').createServer().listen(8087);
-        // var server = engine.attach(http);
-        // server.on('connection', function (socket) {
-        //     console.log('Client connected !')
-        //     socket.on('message', function(data){ });
-        //     socket.on('close', function(){ });
-        // });
 
-    }
 
-}
+  static initializeStaticClass(self) {
+    self.port = 8087;
+    self.url = `${self.config.SOCKET_PROTOCOL}websocket.${self.config.HOST}`;
+  }
 
-export default self
+  constructor(skipConstructor = false) {
+    super(true);
+    if (skipConstructor) return;
+  }
+
+  static createWebsocketServer() {
+    return new Promise((resolve, reject) => {
+
+      const websocketPort = self.port;
+      self.webSocketServer = new _ws.default.Server(
+      { port: websocketPort },
+      () => {
+        console.log(`☕%c ${self.name} listening on port ${websocketPort}`, _ApplicationClass.default.config.style.green);
+        resolve();
+      });
+
+    });
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  }}) || _class) || _class);var _default =
+
+
+
+self;exports.default = _default;
+//# sourceMappingURL=data:application/json;charset=utf-8;base64,eyJ2ZXJzaW9uIjozLCJzb3VyY2VzIjpbIi4uLy4uLy4uLy4uLy4uL3NvdXJjZS9jbGFzcy9wb3J0L3dlYlNvY2tldC9XZWJTb2NrZXQuY2xhc3MuanMiXSwibmFtZXMiOlsic2VsZiIsInN0YXRpY01ldGhvZCIsImV4dGVuZGVkU3ViY2xhc3NQYXR0ZXJuIiwiU3ViY2xhc3MiLCJXZWJTb2NrZXQiLCJBcHBsaWNhdGlvbiIsImluaXRpYWxpemVTdGF0aWNDbGFzcyIsInBvcnQiLCJ1cmwiLCJjb25maWciLCJTT0NLRVRfUFJPVE9DT0wiLCJIT1NUIiwiY29uc3RydWN0b3IiLCJza2lwQ29uc3RydWN0b3IiLCJjcmVhdGVXZWJzb2NrZXRTZXJ2ZXIiLCJQcm9taXNlIiwicmVzb2x2ZSIsInJlamVjdCIsIndlYnNvY2tldFBvcnQiLCJ3ZWJTb2NrZXRTZXJ2ZXIiLCJXZWJTb2NrZXRNb2R1bGUiLCJTZXJ2ZXIiLCJjb25zb2xlIiwibG9nIiwibmFtZSIsInN0eWxlIiwiZ3JlZW4iXSwibWFwcGluZ3MiOiJ5TEFBQTtBQUNBO0FBQ0E7QUFDQSxzRzs7QUFFQSxNQUFNQSxJQUFJO0FBQ1QsK0JBQVEsRUFBRUMsWUFBWSxFQUFFLHVCQUFoQixFQUFSLENBRFM7QUFFVEMsaURBQXdCQyxRQUF4QixFQUZTLCtCQUNWO0FBRU1DLFNBRk4sU0FFd0JDLHlCQUZ4QixDQUVvQzs7Ozs7O0FBTWhDLFNBQU9DLHFCQUFQLENBQTZCTixJQUE3QixFQUFtQztBQUMvQkEsSUFBQUEsSUFBSSxDQUFDTyxJQUFMLEdBQVksSUFBWjtBQUNBUCxJQUFBQSxJQUFJLENBQUNRLEdBQUwsR0FBWSxHQUFFUixJQUFJLENBQUNTLE1BQUwsQ0FBWUMsZUFBZ0IsYUFBWVYsSUFBSSxDQUFDUyxNQUFMLENBQVlFLElBQUssRUFBdkU7QUFDSDs7QUFFREMsRUFBQUEsV0FBVyxDQUFDQyxlQUFlLEdBQUcsS0FBbkIsRUFBMEI7QUFDakMsVUFBTSxJQUFOO0FBQ0EsUUFBR0EsZUFBSCxFQUFvQjtBQUN2Qjs7QUFFRCxTQUFPQyxxQkFBUCxHQUErQjtBQUM1QixXQUFPLElBQUlDLE9BQUosQ0FBWSxDQUFDQyxPQUFELEVBQVVDLE1BQVYsS0FBcUI7O0FBRXBDLFlBQU1DLGFBQWEsR0FBR2xCLElBQUksQ0FBQ08sSUFBM0I7QUFDQVAsTUFBQUEsSUFBSSxDQUFDbUIsZUFBTCxHQUF1QixJQUFJQyxZQUFnQkMsTUFBcEI7QUFDbkIsUUFBRWQsSUFBSSxFQUFFVyxhQUFSLEVBRG1CO0FBRW5CLFlBQU07QUFDRkksUUFBQUEsT0FBTyxDQUFDQyxHQUFSLENBQWEsT0FBTXZCLElBQUksQ0FBQ3dCLElBQUssc0JBQXFCTixhQUFjLEVBQWhFLEVBQW1FYiwwQkFBWUksTUFBWixDQUFtQmdCLEtBQW5CLENBQXlCQyxLQUE1RjtBQUNBVixRQUFBQSxPQUFPO0FBQ1YsT0FMa0IsQ0FBdkI7O0FBT0gsS0FWTSxDQUFQOzs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7O0FBc0NGLEdBdkQrQixDQUgxQix1QkFBVixDOzs7O0FBOERlaEIsSSIsInNvdXJjZXNDb250ZW50IjpbImltcG9ydCB7IGRlZmF1bHQgYXMgQXBwbGljYXRpb24gfSBmcm9tICcuLi8uLi9BcHBsaWNhdGlvbi5jbGFzcy5qcydcbmltcG9ydCBXZWJTb2NrZXRNb2R1bGUgZnJvbSAnd3MnXG5pbXBvcnQgeyBhZGQsIGV4ZWN1dGUsIGFwcGx5TWl4aW4gfSBmcm9tICdAZGVwZW5kZW5jeS9jb21tb25QYXR0ZXJuL3NvdXJjZS9kZWNvcmF0b3JVdGlsaXR5LmpzJ1xuaW1wb3J0IHsgZXh0ZW5kZWRTdWJjbGFzc1BhdHRlcm4gfSBmcm9tICdAZGVwZW5kZW5jeS9jb21tb25QYXR0ZXJuL3NvdXJjZS9leHRlbmRlZFN1YmNsYXNzUGF0dGVybi5qcyc7XG5cbmNvbnN0IHNlbGYgPSBcbkBleGVjdXRlKHsgc3RhdGljTWV0aG9kOiAnaW5pdGlhbGl6ZVN0YXRpY0NsYXNzJyB9KVxuQGV4dGVuZGVkU3ViY2xhc3NQYXR0ZXJuLlN1YmNsYXNzKClcbmNsYXNzIFdlYlNvY2tldCBleHRlbmRzIEFwcGxpY2F0aW9uIHtcblxuICAgIHN0YXRpYyBwb3J0O1xuICAgIHN0YXRpYyB3ZWJTb2NrZXRTZXJ2ZXI7XG4gICAgc3RhdGljIHVybDsgXG5cbiAgICBzdGF0aWMgaW5pdGlhbGl6ZVN0YXRpY0NsYXNzKHNlbGYpIHtcbiAgICAgICAgc2VsZi5wb3J0ID0gODA4N1xuICAgICAgICBzZWxmLnVybCA9IGAke3NlbGYuY29uZmlnLlNPQ0tFVF9QUk9UT0NPTH13ZWJzb2NrZXQuJHtzZWxmLmNvbmZpZy5IT1NUfWAgICAgICAgIFxuICAgIH1cblxuICAgIGNvbnN0cnVjdG9yKHNraXBDb25zdHJ1Y3RvciA9IGZhbHNlKSB7XG4gICAgICAgIHN1cGVyKHRydWUpXG4gICAgICAgIGlmKHNraXBDb25zdHJ1Y3RvcikgcmV0dXJuO1xuICAgIH1cblxuICAgIHN0YXRpYyBjcmVhdGVXZWJzb2NrZXRTZXJ2ZXIoKSB7XG4gICAgICAgcmV0dXJuIG5ldyBQcm9taXNlKChyZXNvbHZlLCByZWplY3QpID0+IHtcbiAgICAgICAgICAgLy8gV2ViU29ja2V0IC0gd3MgcGFja2FnZS5cbiAgICAgICAgICAgY29uc3Qgd2Vic29ja2V0UG9ydCA9IHNlbGYucG9ydDtcbiAgICAgICAgICAgc2VsZi53ZWJTb2NrZXRTZXJ2ZXIgPSBuZXcgV2ViU29ja2V0TW9kdWxlLlNlcnZlcihcbiAgICAgICAgICAgICAgIHsgcG9ydDogd2Vic29ja2V0UG9ydCAgfSwgXG4gICAgICAgICAgICAgICAoKSA9PiB7IFxuICAgICAgICAgICAgICAgICAgIGNvbnNvbGUubG9nKGDimJUlYyAke3NlbGYubmFtZX0gbGlzdGVuaW5nIG9uIHBvcnQgJHt3ZWJzb2NrZXRQb3J0fWAsIEFwcGxpY2F0aW9uLmNvbmZpZy5zdHlsZS5ncmVlbilcbiAgICAgICAgICAgICAgICAgICByZXNvbHZlKClcbiAgICAgICAgICAgICAgIH1cbiAgICAgICAgICAgKVxuICAgICAgIH0pXG5cblxuICAgICAgICAvLyBTb2NrZXQuaW8gLSBucG0gcGFja2FnZVxuICAgICAgICAvLyB2YXIgc2VydmVyID0gcmVxdWlyZSgnaHR0cCcpLmNyZWF0ZVNlcnZlcigpO1xuICAgICAgICAvLyB2YXIgaW8gPSByZXF1aXJlKCdzb2NrZXQuaW8nKShzZXJ2ZXIpO1xuICAgICAgICAvLyBpby5vbignY29ubmVjdGlvbicsIGZ1bmN0aW9uKGNsaWVudCl7XG4gICAgICAgIC8vICAgICBjb25zb2xlLmxvZygnY2xpZW50IGNvbm5lY3RlZCAhJylcbiAgICAgICAgLy8gICAgIHZhciBpID0gMFxuICAgICAgICAvLyAgICAgc2V0SW50ZXJ2YWwoZnVuY3Rpb24oKSB7XG4gICAgICAgIC8vICAgICAgICAgaSsrXG4gICAgICAgIC8vICAgICAgICAgY2xpZW50LmVtaXQoJ2V2ZW50Jyx7bmFtZTogJ3NhZmknLCByZXF1ZXN0TnVtYmVyOiBpfSkgXG4gICAgICAgIC8vICAgICB9LCA1MDApO1xuICAgICAgICAvLyAgIGNsaWVudC5vbignZXZlbnQnLCBmdW5jdGlvbihkYXRhKXt9KTtcbiAgICAgICAgLy8gICBjbGllbnQub24oJ2Rpc2Nvbm5lY3QnLCBmdW5jdGlvbigpe30pO1xuICAgICAgICAvLyB9KTtcbiAgICAgICAgLy8gc2VydmVyLmxpc3Rlbig4MDg3KTtcblxuICAgICAgICAvLyBFbmdpbmUuaW8gLSBlbmdpbmUuaW8gcGFja2FnZSBhbmQgY2xpZW50IHBhY2thZ2UgSlNQTS5cbiAgICAgICAgLy8gdmFyIGVuZ2luZSA9IHJlcXVpcmUoJ2VuZ2luZS5pbycpO1xuICAgICAgICAvLyB2YXIgaHR0cCA9IHJlcXVpcmUoJ2h0dHAnKS5jcmVhdGVTZXJ2ZXIoKS5saXN0ZW4oODA4Nyk7XG4gICAgICAgIC8vIHZhciBzZXJ2ZXIgPSBlbmdpbmUuYXR0YWNoKGh0dHApO1xuICAgICAgICAvLyBzZXJ2ZXIub24oJ2Nvbm5lY3Rpb24nLCBmdW5jdGlvbiAoc29ja2V0KSB7XG4gICAgICAgIC8vICAgICBjb25zb2xlLmxvZygnQ2xpZW50IGNvbm5lY3RlZCAhJylcbiAgICAgICAgLy8gICAgIHNvY2tldC5vbignbWVzc2FnZScsIGZ1bmN0aW9uKGRhdGEpeyB9KTtcbiAgICAgICAgLy8gICAgIHNvY2tldC5vbignY2xvc2UnLCBmdW5jdGlvbigpeyB9KTtcbiAgICAgICAgLy8gfSk7XG5cbiAgICB9XG5cbn1cblxuZXhwb3J0IGRlZmF1bHQgc2VsZiJdfQ==

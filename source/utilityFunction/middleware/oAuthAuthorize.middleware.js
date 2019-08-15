@@ -1,14 +1,15 @@
-import path from 'path'
-import { default as Application } from '../../class/Application.class.js'
+"use strict";Object.defineProperty(exports, "__esModule", { value: true });exports.default = void 0;
+
 let Request = require('oauth2-server').Request;
-let Response = require('oauth2-server').Response;
+let Response = require('oauth2-server').Response;var _default =
 
-export default async (context, next) => {
-    console.log(context.request.body)
-    var request = new Request(context.request)
-    var response = new Response(context.response)
-    let token = await oAuth2Server.authorize(request, response)
-    console.log(token)
+async (context, next) => {
+  console.log(context.request.body);
+  var request = new Request(context.request);
+  var response = new Response(context.response);
+  let token = await oAuth2Server.authorize(request, response);
+  console.log(token);
 
-    await next()
-}
+  await next();
+};exports.default = _default;
+//# sourceMappingURL=data:application/json;charset=utf-8;base64,eyJ2ZXJzaW9uIjozLCJzb3VyY2VzIjpbIi4uLy4uLy4uLy4uL3NvdXJjZS91dGlsaXR5RnVuY3Rpb24vbWlkZGxld2FyZS9vQXV0aEF1dGhvcml6ZS5taWRkbGV3YXJlLmpzIl0sIm5hbWVzIjpbIlJlcXVlc3QiLCJyZXF1aXJlIiwiUmVzcG9uc2UiLCJjb250ZXh0IiwibmV4dCIsImNvbnNvbGUiLCJsb2ciLCJyZXF1ZXN0IiwiYm9keSIsInJlc3BvbnNlIiwidG9rZW4iLCJvQXV0aDJTZXJ2ZXIiLCJhdXRob3JpemUiXSwibWFwcGluZ3MiOiI7O0FBRUEsSUFBSUEsT0FBTyxHQUFHQyxPQUFPLENBQUMsZUFBRCxDQUFQLENBQXlCRCxPQUF2QztBQUNBLElBQUlFLFFBQVEsR0FBR0QsT0FBTyxDQUFDLGVBQUQsQ0FBUCxDQUF5QkMsUUFBeEMsQzs7QUFFZSxPQUFPQyxPQUFQLEVBQWdCQyxJQUFoQixLQUF5QjtBQUNwQ0MsRUFBQUEsT0FBTyxDQUFDQyxHQUFSLENBQVlILE9BQU8sQ0FBQ0ksT0FBUixDQUFnQkMsSUFBNUI7QUFDQSxNQUFJRCxPQUFPLEdBQUcsSUFBSVAsT0FBSixDQUFZRyxPQUFPLENBQUNJLE9BQXBCLENBQWQ7QUFDQSxNQUFJRSxRQUFRLEdBQUcsSUFBSVAsUUFBSixDQUFhQyxPQUFPLENBQUNNLFFBQXJCLENBQWY7QUFDQSxNQUFJQyxLQUFLLEdBQUcsTUFBTUMsWUFBWSxDQUFDQyxTQUFiLENBQXVCTCxPQUF2QixFQUFnQ0UsUUFBaEMsQ0FBbEI7QUFDQUosRUFBQUEsT0FBTyxDQUFDQyxHQUFSLENBQVlJLEtBQVo7O0FBRUEsUUFBTU4sSUFBSSxFQUFWO0FBQ0gsQyIsInNvdXJjZXNDb250ZW50IjpbImltcG9ydCBwYXRoIGZyb20gJ3BhdGgnXG5pbXBvcnQgeyBkZWZhdWx0IGFzIEFwcGxpY2F0aW9uIH0gZnJvbSAnLi4vLi4vY2xhc3MvQXBwbGljYXRpb24uY2xhc3MuanMnXG5sZXQgUmVxdWVzdCA9IHJlcXVpcmUoJ29hdXRoMi1zZXJ2ZXInKS5SZXF1ZXN0O1xubGV0IFJlc3BvbnNlID0gcmVxdWlyZSgnb2F1dGgyLXNlcnZlcicpLlJlc3BvbnNlO1xuXG5leHBvcnQgZGVmYXVsdCBhc3luYyAoY29udGV4dCwgbmV4dCkgPT4ge1xuICAgIGNvbnNvbGUubG9nKGNvbnRleHQucmVxdWVzdC5ib2R5KVxuICAgIHZhciByZXF1ZXN0ID0gbmV3IFJlcXVlc3QoY29udGV4dC5yZXF1ZXN0KVxuICAgIHZhciByZXNwb25zZSA9IG5ldyBSZXNwb25zZShjb250ZXh0LnJlc3BvbnNlKVxuICAgIGxldCB0b2tlbiA9IGF3YWl0IG9BdXRoMlNlcnZlci5hdXRob3JpemUocmVxdWVzdCwgcmVzcG9uc2UpXG4gICAgY29uc29sZS5sb2codG9rZW4pXG5cbiAgICBhd2FpdCBuZXh0KClcbn0iXX0=

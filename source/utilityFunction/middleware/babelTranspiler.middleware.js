@@ -1,44 +1,45 @@
-import config from '../../../setup/configuration/configuration.export.js'
-import path from 'path'
-import filesystem from 'fs'
-import stream from 'stream'
-import { default as Application } from '../../class/Application.class.js'
-import {functionWrappedMiddlewareDecorator} from '../middlewarePatternDecorator.js'
-import { streamToString } from '../streamToStringConvertion.js'
+"use strict";var _interopRequireDefault = require("@babel/runtime/helpers/interopRequireDefault");Object.defineProperty(exports, "__esModule", { value: true });exports.transformJavascript = void 0;var _configurationExport = _interopRequireDefault(require("../../../setup/configuration/configuration.export.js"));
+var _path = _interopRequireDefault(require("path"));
 
-let babel, nativeClientSideRuntimeCompilerConfig
-if(Application.config.DEPLOYMENT == 'development') { // as in production appDeploymentLifecycle dependency doesn't exist.
-    babel = require('/project/application/dependency/appDeploymentLifecycle/babel_javascriptTranspilation.js/node_modules/@babel/core')
-    nativeClientSideRuntimeCompilerConfig = require(path.normalize(`${config.directory.appDeploymentLifecyclePath}/babel_javascriptTranspilation.js/compilerConfiguration/nativeClientSideRuntime.BabelConfig.js`))
+var _stream = _interopRequireDefault(require("stream"));
+var _ApplicationClass = _interopRequireDefault(require("../../class/Application.class.js"));
+var _middlewarePatternDecorator = require("../middlewarePatternDecorator.js");
+var _streamToStringConvertion = require("../streamToStringConvertion.js");
+
+let babel, nativeClientSideRuntimeCompilerConfig;
+if (_ApplicationClass.default.config.DEPLOYMENT == 'development') {
+  babel = require('/project/application/dependency/appDeploymentLifecycle/babel_javascriptTranspilation.js/node_modules/@babel/core');
+  nativeClientSideRuntimeCompilerConfig = require(_path.default.normalize(`${_configurationExport.default.directory.appDeploymentLifecyclePath}/babel_javascriptTranspilation.js/compilerConfiguration/nativeClientSideRuntime.BabelConfig.js`));
 }
 
-export let transformJavascript = functionWrappedMiddlewareDecorator(async function (context, next, option) {
-    // transpile only on development and non-distribution folders, i.e. on-the-fly transpilation is executed only in development, while production and distribution should be already transpiled.
-    if(Application.config.DEPLOYMENT == 'development' && !Application.config.DISTRIBUTION && context.response.type == 'application/javascript') {
-        let path = context.path
-        let scriptCode = context.body
-        let transformBabelPlugin = [ ]
-        
-        if(path.includes('webcomponent/@package')) {  // in case an npm webcomponent package
-            transformBabelPlugin = nativeClientSideRuntimeCompilerConfig.plugins
-        } else { // in case a custom project element
-            transformBabelPlugin = nativeClientSideRuntimeCompilerConfig.plugins
-        }
-        let transformBabelPreset = nativeClientSideRuntimeCompilerConfig.presets
-        
-        if(transformBabelPlugin.length) {
-            // convert stream into string
-            if(scriptCode instanceof stream.Stream) scriptCode = await streamToString(scriptCode)
-            // transform code using array of plugins.
-            let transformedObject = babel.transformSync(
-                scriptCode,
-                {
-                    presets: transformBabelPreset,
-                    plugins: transformBabelPlugin
-                } 
-            )
-            context.body = transformedObject.code
-        }
+let transformJavascript = (0, _middlewarePatternDecorator.functionWrappedMiddlewareDecorator)(async function (context, next, option) {
+
+  if (_ApplicationClass.default.config.DEPLOYMENT == 'development' && !_ApplicationClass.default.config.DISTRIBUTION && context.response.type == 'application/javascript') {
+    let path = context.path;
+    let scriptCode = context.body;
+    let transformBabelPlugin = [];
+
+    if (path.includes('webcomponent/@package')) {
+      transformBabelPlugin = nativeClientSideRuntimeCompilerConfig.plugins;
+    } else {
+      transformBabelPlugin = nativeClientSideRuntimeCompilerConfig.plugins;
     }
-    await next()
-})
+    let transformBabelPreset = nativeClientSideRuntimeCompilerConfig.presets;
+
+    if (transformBabelPlugin.length) {
+
+      if (scriptCode instanceof _stream.default.Stream) scriptCode = await (0, _streamToStringConvertion.streamToString)(scriptCode);
+
+      let transformedObject = babel.transformSync(
+      scriptCode,
+      {
+        presets: transformBabelPreset,
+        plugins: transformBabelPlugin });
+
+
+      context.body = transformedObject.code;
+    }
+  }
+  await next();
+});exports.transformJavascript = transformJavascript;
+//# sourceMappingURL=data:application/json;charset=utf-8;base64,eyJ2ZXJzaW9uIjozLCJzb3VyY2VzIjpbIi4uLy4uLy4uLy4uL3NvdXJjZS91dGlsaXR5RnVuY3Rpb24vbWlkZGxld2FyZS9iYWJlbFRyYW5zcGlsZXIubWlkZGxld2FyZS5qcyJdLCJuYW1lcyI6WyJiYWJlbCIsIm5hdGl2ZUNsaWVudFNpZGVSdW50aW1lQ29tcGlsZXJDb25maWciLCJBcHBsaWNhdGlvbiIsImNvbmZpZyIsIkRFUExPWU1FTlQiLCJyZXF1aXJlIiwicGF0aCIsIm5vcm1hbGl6ZSIsImRpcmVjdG9yeSIsImFwcERlcGxveW1lbnRMaWZlY3ljbGVQYXRoIiwidHJhbnNmb3JtSmF2YXNjcmlwdCIsImNvbnRleHQiLCJuZXh0Iiwib3B0aW9uIiwiRElTVFJJQlVUSU9OIiwicmVzcG9uc2UiLCJ0eXBlIiwic2NyaXB0Q29kZSIsImJvZHkiLCJ0cmFuc2Zvcm1CYWJlbFBsdWdpbiIsImluY2x1ZGVzIiwicGx1Z2lucyIsInRyYW5zZm9ybUJhYmVsUHJlc2V0IiwicHJlc2V0cyIsImxlbmd0aCIsInN0cmVhbSIsIlN0cmVhbSIsInRyYW5zZm9ybWVkT2JqZWN0IiwidHJhbnNmb3JtU3luYyIsImNvZGUiXSwibWFwcGluZ3MiOiJxTUFBQTtBQUNBOztBQUVBO0FBQ0E7QUFDQTtBQUNBOztBQUVBLElBQUlBLEtBQUosRUFBV0MscUNBQVg7QUFDQSxJQUFHQywwQkFBWUMsTUFBWixDQUFtQkMsVUFBbkIsSUFBaUMsYUFBcEMsRUFBbUQ7QUFDL0NKLEVBQUFBLEtBQUssR0FBR0ssT0FBTyxDQUFDLGtIQUFELENBQWY7QUFDQUosRUFBQUEscUNBQXFDLEdBQUdJLE9BQU8sQ0FBQ0MsY0FBS0MsU0FBTCxDQUFnQixHQUFFSiw2QkFBT0ssU0FBUCxDQUFpQkMsMEJBQTJCLGdHQUE5RCxDQUFELENBQS9DO0FBQ0g7O0FBRU0sSUFBSUMsbUJBQW1CLEdBQUcsb0VBQW1DLGdCQUFnQkMsT0FBaEIsRUFBeUJDLElBQXpCLEVBQStCQyxNQUEvQixFQUF1Qzs7QUFFdkcsTUFBR1gsMEJBQVlDLE1BQVosQ0FBbUJDLFVBQW5CLElBQWlDLGFBQWpDLElBQWtELENBQUNGLDBCQUFZQyxNQUFaLENBQW1CVyxZQUF0RSxJQUFzRkgsT0FBTyxDQUFDSSxRQUFSLENBQWlCQyxJQUFqQixJQUF5Qix3QkFBbEgsRUFBNEk7QUFDeEksUUFBSVYsSUFBSSxHQUFHSyxPQUFPLENBQUNMLElBQW5CO0FBQ0EsUUFBSVcsVUFBVSxHQUFHTixPQUFPLENBQUNPLElBQXpCO0FBQ0EsUUFBSUMsb0JBQW9CLEdBQUcsRUFBM0I7O0FBRUEsUUFBR2IsSUFBSSxDQUFDYyxRQUFMLENBQWMsdUJBQWQsQ0FBSCxFQUEyQztBQUN2Q0QsTUFBQUEsb0JBQW9CLEdBQUdsQixxQ0FBcUMsQ0FBQ29CLE9BQTdEO0FBQ0gsS0FGRCxNQUVPO0FBQ0hGLE1BQUFBLG9CQUFvQixHQUFHbEIscUNBQXFDLENBQUNvQixPQUE3RDtBQUNIO0FBQ0QsUUFBSUMsb0JBQW9CLEdBQUdyQixxQ0FBcUMsQ0FBQ3NCLE9BQWpFOztBQUVBLFFBQUdKLG9CQUFvQixDQUFDSyxNQUF4QixFQUFnQzs7QUFFNUIsVUFBR1AsVUFBVSxZQUFZUSxnQkFBT0MsTUFBaEMsRUFBd0NULFVBQVUsR0FBRyxNQUFNLDhDQUFlQSxVQUFmLENBQW5COztBQUV4QyxVQUFJVSxpQkFBaUIsR0FBRzNCLEtBQUssQ0FBQzRCLGFBQU47QUFDcEJYLE1BQUFBLFVBRG9CO0FBRXBCO0FBQ0lNLFFBQUFBLE9BQU8sRUFBRUQsb0JBRGI7QUFFSUQsUUFBQUEsT0FBTyxFQUFFRixvQkFGYixFQUZvQixDQUF4Qjs7O0FBT0FSLE1BQUFBLE9BQU8sQ0FBQ08sSUFBUixHQUFlUyxpQkFBaUIsQ0FBQ0UsSUFBakM7QUFDSDtBQUNKO0FBQ0QsUUFBTWpCLElBQUksRUFBVjtBQUNILENBN0JnQyxDQUExQixDIiwic291cmNlc0NvbnRlbnQiOlsiaW1wb3J0IGNvbmZpZyBmcm9tICcuLi8uLi8uLi9zZXR1cC9jb25maWd1cmF0aW9uL2NvbmZpZ3VyYXRpb24uZXhwb3J0LmpzJ1xuaW1wb3J0IHBhdGggZnJvbSAncGF0aCdcbmltcG9ydCBmaWxlc3lzdGVtIGZyb20gJ2ZzJ1xuaW1wb3J0IHN0cmVhbSBmcm9tICdzdHJlYW0nXG5pbXBvcnQgeyBkZWZhdWx0IGFzIEFwcGxpY2F0aW9uIH0gZnJvbSAnLi4vLi4vY2xhc3MvQXBwbGljYXRpb24uY2xhc3MuanMnXG5pbXBvcnQge2Z1bmN0aW9uV3JhcHBlZE1pZGRsZXdhcmVEZWNvcmF0b3J9IGZyb20gJy4uL21pZGRsZXdhcmVQYXR0ZXJuRGVjb3JhdG9yLmpzJ1xuaW1wb3J0IHsgc3RyZWFtVG9TdHJpbmcgfSBmcm9tICcuLi9zdHJlYW1Ub1N0cmluZ0NvbnZlcnRpb24uanMnXG5cbmxldCBiYWJlbCwgbmF0aXZlQ2xpZW50U2lkZVJ1bnRpbWVDb21waWxlckNvbmZpZ1xuaWYoQXBwbGljYXRpb24uY29uZmlnLkRFUExPWU1FTlQgPT0gJ2RldmVsb3BtZW50JykgeyAvLyBhcyBpbiBwcm9kdWN0aW9uIGFwcERlcGxveW1lbnRMaWZlY3ljbGUgZGVwZW5kZW5jeSBkb2Vzbid0IGV4aXN0LlxuICAgIGJhYmVsID0gcmVxdWlyZSgnL3Byb2plY3QvYXBwbGljYXRpb24vZGVwZW5kZW5jeS9hcHBEZXBsb3ltZW50TGlmZWN5Y2xlL2JhYmVsX2phdmFzY3JpcHRUcmFuc3BpbGF0aW9uLmpzL25vZGVfbW9kdWxlcy9AYmFiZWwvY29yZScpXG4gICAgbmF0aXZlQ2xpZW50U2lkZVJ1bnRpbWVDb21waWxlckNvbmZpZyA9IHJlcXVpcmUocGF0aC5ub3JtYWxpemUoYCR7Y29uZmlnLmRpcmVjdG9yeS5hcHBEZXBsb3ltZW50TGlmZWN5Y2xlUGF0aH0vYmFiZWxfamF2YXNjcmlwdFRyYW5zcGlsYXRpb24uanMvY29tcGlsZXJDb25maWd1cmF0aW9uL25hdGl2ZUNsaWVudFNpZGVSdW50aW1lLkJhYmVsQ29uZmlnLmpzYCkpXG59XG5cbmV4cG9ydCBsZXQgdHJhbnNmb3JtSmF2YXNjcmlwdCA9IGZ1bmN0aW9uV3JhcHBlZE1pZGRsZXdhcmVEZWNvcmF0b3IoYXN5bmMgZnVuY3Rpb24gKGNvbnRleHQsIG5leHQsIG9wdGlvbikge1xuICAgIC8vIHRyYW5zcGlsZSBvbmx5IG9uIGRldmVsb3BtZW50IGFuZCBub24tZGlzdHJpYnV0aW9uIGZvbGRlcnMsIGkuZS4gb24tdGhlLWZseSB0cmFuc3BpbGF0aW9uIGlzIGV4ZWN1dGVkIG9ubHkgaW4gZGV2ZWxvcG1lbnQsIHdoaWxlIHByb2R1Y3Rpb24gYW5kIGRpc3RyaWJ1dGlvbiBzaG91bGQgYmUgYWxyZWFkeSB0cmFuc3BpbGVkLlxuICAgIGlmKEFwcGxpY2F0aW9uLmNvbmZpZy5ERVBMT1lNRU5UID09ICdkZXZlbG9wbWVudCcgJiYgIUFwcGxpY2F0aW9uLmNvbmZpZy5ESVNUUklCVVRJT04gJiYgY29udGV4dC5yZXNwb25zZS50eXBlID09ICdhcHBsaWNhdGlvbi9qYXZhc2NyaXB0Jykge1xuICAgICAgICBsZXQgcGF0aCA9IGNvbnRleHQucGF0aFxuICAgICAgICBsZXQgc2NyaXB0Q29kZSA9IGNvbnRleHQuYm9keVxuICAgICAgICBsZXQgdHJhbnNmb3JtQmFiZWxQbHVnaW4gPSBbIF1cbiAgICAgICAgXG4gICAgICAgIGlmKHBhdGguaW5jbHVkZXMoJ3dlYmNvbXBvbmVudC9AcGFja2FnZScpKSB7ICAvLyBpbiBjYXNlIGFuIG5wbSB3ZWJjb21wb25lbnQgcGFja2FnZVxuICAgICAgICAgICAgdHJhbnNmb3JtQmFiZWxQbHVnaW4gPSBuYXRpdmVDbGllbnRTaWRlUnVudGltZUNvbXBpbGVyQ29uZmlnLnBsdWdpbnNcbiAgICAgICAgfSBlbHNlIHsgLy8gaW4gY2FzZSBhIGN1c3RvbSBwcm9qZWN0IGVsZW1lbnRcbiAgICAgICAgICAgIHRyYW5zZm9ybUJhYmVsUGx1Z2luID0gbmF0aXZlQ2xpZW50U2lkZVJ1bnRpbWVDb21waWxlckNvbmZpZy5wbHVnaW5zXG4gICAgICAgIH1cbiAgICAgICAgbGV0IHRyYW5zZm9ybUJhYmVsUHJlc2V0ID0gbmF0aXZlQ2xpZW50U2lkZVJ1bnRpbWVDb21waWxlckNvbmZpZy5wcmVzZXRzXG4gICAgICAgIFxuICAgICAgICBpZih0cmFuc2Zvcm1CYWJlbFBsdWdpbi5sZW5ndGgpIHtcbiAgICAgICAgICAgIC8vIGNvbnZlcnQgc3RyZWFtIGludG8gc3RyaW5nXG4gICAgICAgICAgICBpZihzY3JpcHRDb2RlIGluc3RhbmNlb2Ygc3RyZWFtLlN0cmVhbSkgc2NyaXB0Q29kZSA9IGF3YWl0IHN0cmVhbVRvU3RyaW5nKHNjcmlwdENvZGUpXG4gICAgICAgICAgICAvLyB0cmFuc2Zvcm0gY29kZSB1c2luZyBhcnJheSBvZiBwbHVnaW5zLlxuICAgICAgICAgICAgbGV0IHRyYW5zZm9ybWVkT2JqZWN0ID0gYmFiZWwudHJhbnNmb3JtU3luYyhcbiAgICAgICAgICAgICAgICBzY3JpcHRDb2RlLFxuICAgICAgICAgICAgICAgIHtcbiAgICAgICAgICAgICAgICAgICAgcHJlc2V0czogdHJhbnNmb3JtQmFiZWxQcmVzZXQsXG4gICAgICAgICAgICAgICAgICAgIHBsdWdpbnM6IHRyYW5zZm9ybUJhYmVsUGx1Z2luXG4gICAgICAgICAgICAgICAgfSBcbiAgICAgICAgICAgIClcbiAgICAgICAgICAgIGNvbnRleHQuYm9keSA9IHRyYW5zZm9ybWVkT2JqZWN0LmNvZGVcbiAgICAgICAgfVxuICAgIH1cbiAgICBhd2FpdCBuZXh0KClcbn0pXG4iXX0=

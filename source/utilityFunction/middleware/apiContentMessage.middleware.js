@@ -1,7 +1,8 @@
-import { default as Application } from '../../class/Application.class.js'
-import createStaticInstanceClasses from '@dependency/graph'
+"use strict";var _interopRequireDefault = require("@babel/runtime/helpers/interopRequireDefault");Object.defineProperty(exports, "__esModule", { value: true });exports.default = void 0;var _ApplicationClass = _interopRequireDefault(require("../../class/Application.class.js"));var _default =
 
-export default async (context, next) => {
-    let connection = Application.rethinkdbConnection
-    context.body = 'Provide an entrypoint for the api schema.'
-}
+
+async (context, next) => {
+  let connection = _ApplicationClass.default.rethinkdbConnection;
+  context.body = 'Provide an entrypoint for the api schema.';
+};exports.default = _default;
+//# sourceMappingURL=data:application/json;charset=utf-8;base64,eyJ2ZXJzaW9uIjozLCJzb3VyY2VzIjpbIi4uLy4uLy4uLy4uL3NvdXJjZS91dGlsaXR5RnVuY3Rpb24vbWlkZGxld2FyZS9hcGlDb250ZW50TWVzc2FnZS5taWRkbGV3YXJlLmpzIl0sIm5hbWVzIjpbImNvbnRleHQiLCJuZXh0IiwiY29ubmVjdGlvbiIsIkFwcGxpY2F0aW9uIiwicmV0aGlua2RiQ29ubmVjdGlvbiIsImJvZHkiXSwibWFwcGluZ3MiOiJ5TEFBQSw0Rjs7O0FBR2UsT0FBT0EsT0FBUCxFQUFnQkMsSUFBaEIsS0FBeUI7QUFDcEMsTUFBSUMsVUFBVSxHQUFHQywwQkFBWUMsbUJBQTdCO0FBQ0FKLEVBQUFBLE9BQU8sQ0FBQ0ssSUFBUixHQUFlLDJDQUFmO0FBQ0gsQyIsInNvdXJjZXNDb250ZW50IjpbImltcG9ydCB7IGRlZmF1bHQgYXMgQXBwbGljYXRpb24gfSBmcm9tICcuLi8uLi9jbGFzcy9BcHBsaWNhdGlvbi5jbGFzcy5qcydcbmltcG9ydCBjcmVhdGVTdGF0aWNJbnN0YW5jZUNsYXNzZXMgZnJvbSAnQGRlcGVuZGVuY3kvZ3JhcGgnXG5cbmV4cG9ydCBkZWZhdWx0IGFzeW5jIChjb250ZXh0LCBuZXh0KSA9PiB7XG4gICAgbGV0IGNvbm5lY3Rpb24gPSBBcHBsaWNhdGlvbi5yZXRoaW5rZGJDb25uZWN0aW9uXG4gICAgY29udGV4dC5ib2R5ID0gJ1Byb3ZpZGUgYW4gZW50cnlwb2ludCBmb3IgdGhlIGFwaSBzY2hlbWEuJ1xufVxuIl19

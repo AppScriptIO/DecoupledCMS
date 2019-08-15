@@ -1,86 +1,85 @@
-export const oidcConfiguration = {
-    // adapter: rethinkdbOIDCAdapter
-    features: { 
-        discovery: true, // Exposes /.well-known/webfinger and /.well-known/openid-configuration endpoints 
-        devInteractions: false, // dev only - creates interaction views for users. When turned off the custom provided interaction are used.
-        encryption: true,
-        revocation: true, // allows revocation of tokens.
-        introspection: true, // Allows client to get information about a token meta information (e.g. token validity). https://tools.ietf.org/html/rfc7662
-        claimsParameter: true, // Allow requesting specific claims for returned "userinfo" object & "id_token" object. https://openid.net/specs/openid-connect-core-1_0.html#ClaimsParameter
-        clientCredentials: true, // Allow client_credentials grant
-        encryption: true, // Enables clients to receive encrypted userinfo responses, encrypted ID Tokens and to send encrypted request parameters to authorization.
-        alwaysIssueRefresh: false, // false i.e. issue refresh token only when offline_access scope is requested
-        // Regarding requests - should be x-www-form-urlencoded by default.
-        request: true, // allows the request to be sent as one parameter (signed &/or encrypted)  https://openid.net/specs/openid-connect-core-1_0.html#JWTRequests
-        requestUri: true, // allows passing request details by reference, rather than by value. https://openid.net/specs/openid-connect-core-1_0.html#JWTRequests
-        oauthNativeApps: true, // Changes redirect_uris validations for clients with application_type native to those defined in OAuth 2.0 for Native Apps - https://tools.ietf.org/html/rfc8252.
-        sessionManagement: true, // draft spec
-        backchannelLogout: false,
-        frontchannelLogout: false,
-        registration: true, // dynamic client registration - https://openid.net/specs/openid-connect-registration-1_0.html
-        registrationManagement: true, // https://tools.ietf.org/html/rfc7592
-        pkce: true, // security challenge for authorization code flow https://tools.ietf.org/html/rfc7636#section-6.2
-    },
-    discovery: {  // Exposes /.well-known/webfinger and /.well-known/openid-configuration endpoints 
-        claim_types_supported: ['normal', 'aggregated', 'distributed'] // If used must be reflected in "findById" -> 'claims' function - returns additional information for claims https://openid.net/specs/openid-connect-core-1_0.html#AggregatedDistributedClaims
-    },
-    routes: {
-        // Discovery fixed routes -  Exposes /.well-known/webfinger and /.well-known/openid-configuration endpoints 
-        authorization: '/auth', // authorize
-        certificates: '/certs',
-        check_session: '/session/check',
-        end_session: '/session/end',
-        introspection: '/token/introspection',
-        registration: '/reg',
-        revocation: '/token/revocation',
-        token: '/token',
-        userinfo: '/me',
-    },    
-    // unsupported: { /* signing algorithms */ }, // change signing algorithms
-    scopes: [
-        'openid', 
-        'offline_access'
-    ],
-    claims: { // https://github.com/panva/node-oidc-provider/blob/master/docs/configuration.md#configuring-available-claims
-        scopeName: ['claim name', 'claim name2'],
-        address: ['address'],
-        email: ['email', 'email_verified'],
-        phone: ['phone_number', 'phone_number_verified'],
-        profile: ['birthdate', 'family_name', 'gender', 'given_name', 'locale', 'middle_name', 'name', 'nickname', 'picture', 'preferred_username', 'profile', 'updated_at', 'website', 'zoneinfo'],    
-    },    
+"use strict";Object.defineProperty(exports, "__esModule", { value: true });exports.oidcConfiguration = void 0;const oidcConfiguration = {
 
-    // TODO: https://github.com/panva/node-oidc-provider/blob/master/example/account.js implementation
-    async findById(context, id) { // Adapter for user / account id & claims https://github.com/panva/node-oidc-provider/blob/master/docs/configuration.md#accounts
-        return { // temporarly for develoopment - return request id directly.
-            accountId: id,
-            async claims(use, scope) { 
-                return { 
-                    sub: id 
-                } 
-            },
-        };
-    },      
-    interactionUrl: function interactionUrl(ctx, interaction) { // devInteractions must be turned off
-        return `/interaction/${ctx.oidc.uuid}`;
-    },
-    interactionCheck: async function interactionCheck(ctx) { // devInteractions must be turned off
-        if (!ctx.oidc.session.sidFor(ctx.oidc.client.clientId)) {
-          return {
-            error: 'consent_required',
-            error_description: 'client not authorized for End-User session yet',
-            reason: 'client_not_authorized',
-          };
-        } else if (
-          ctx.oidc.client.applicationType === 'native' &&
-          ctx.oidc.params.response_type !== 'none' &&
-          !ctx.oidc.result) {
-          return {
-            error: 'interaction_required',
-            error_description: 'native clients require End-User interaction',
-            reason: 'native_client_prompt',
-          };
-        }
-        return false;
-    },
-      
-}
+  features: {
+    discovery: true,
+    devInteractions: false,
+    encryption: true,
+    revocation: true,
+    introspection: true,
+    claimsParameter: true,
+    clientCredentials: true,
+    encryption: true,
+    alwaysIssueRefresh: false,
+
+    request: true,
+    requestUri: true,
+    oauthNativeApps: true,
+    sessionManagement: true,
+    backchannelLogout: false,
+    frontchannelLogout: false,
+    registration: true,
+    registrationManagement: true,
+    pkce: true },
+
+  discovery: {
+    claim_types_supported: ['normal', 'aggregated', 'distributed'] },
+
+  routes: {
+
+    authorization: '/auth',
+    certificates: '/certs',
+    check_session: '/session/check',
+    end_session: '/session/end',
+    introspection: '/token/introspection',
+    registration: '/reg',
+    revocation: '/token/revocation',
+    token: '/token',
+    userinfo: '/me' },
+
+
+  scopes: [
+  'openid',
+  'offline_access'],
+
+  claims: {
+    scopeName: ['claim name', 'claim name2'],
+    address: ['address'],
+    email: ['email', 'email_verified'],
+    phone: ['phone_number', 'phone_number_verified'],
+    profile: ['birthdate', 'family_name', 'gender', 'given_name', 'locale', 'middle_name', 'name', 'nickname', 'picture', 'preferred_username', 'profile', 'updated_at', 'website', 'zoneinfo'] },
+
+
+
+  async findById(context, id) {
+    return {
+      accountId: id,
+      async claims(use, scope) {
+        return {
+          sub: id };
+
+      } };
+
+  },
+  interactionUrl: function interactionUrl(ctx, interaction) {
+    return `/interaction/${ctx.oidc.uuid}`;
+  },
+  interactionCheck: async function interactionCheck(ctx) {
+    if (!ctx.oidc.session.sidFor(ctx.oidc.client.clientId)) {
+      return {
+        error: 'consent_required',
+        error_description: 'client not authorized for End-User session yet',
+        reason: 'client_not_authorized' };
+
+    } else if (
+    ctx.oidc.client.applicationType === 'native' &&
+    ctx.oidc.params.response_type !== 'none' &&
+    !ctx.oidc.result) {
+      return {
+        error: 'interaction_required',
+        error_description: 'native clients require End-User interaction',
+        reason: 'native_client_prompt' };
+
+    }
+    return false;
+  } };exports.oidcConfiguration = oidcConfiguration;
+//# sourceMappingURL=data:application/json;charset=utf-8;base64,eyJ2ZXJzaW9uIjozLCJzb3VyY2VzIjpbIi4uLy4uLy4uLy4uLy4uL3NvdXJjZS9jbGFzcy9wb3J0L29wZW5JZENvbm5lY3Qvb2lkY0NvbmZpZ3VyYXRpb24uanMiXSwibmFtZXMiOlsib2lkY0NvbmZpZ3VyYXRpb24iLCJmZWF0dXJlcyIsImRpc2NvdmVyeSIsImRldkludGVyYWN0aW9ucyIsImVuY3J5cHRpb24iLCJyZXZvY2F0aW9uIiwiaW50cm9zcGVjdGlvbiIsImNsYWltc1BhcmFtZXRlciIsImNsaWVudENyZWRlbnRpYWxzIiwiYWx3YXlzSXNzdWVSZWZyZXNoIiwicmVxdWVzdCIsInJlcXVlc3RVcmkiLCJvYXV0aE5hdGl2ZUFwcHMiLCJzZXNzaW9uTWFuYWdlbWVudCIsImJhY2tjaGFubmVsTG9nb3V0IiwiZnJvbnRjaGFubmVsTG9nb3V0IiwicmVnaXN0cmF0aW9uIiwicmVnaXN0cmF0aW9uTWFuYWdlbWVudCIsInBrY2UiLCJjbGFpbV90eXBlc19zdXBwb3J0ZWQiLCJyb3V0ZXMiLCJhdXRob3JpemF0aW9uIiwiY2VydGlmaWNhdGVzIiwiY2hlY2tfc2Vzc2lvbiIsImVuZF9zZXNzaW9uIiwidG9rZW4iLCJ1c2VyaW5mbyIsInNjb3BlcyIsImNsYWltcyIsInNjb3BlTmFtZSIsImFkZHJlc3MiLCJlbWFpbCIsInBob25lIiwicHJvZmlsZSIsImZpbmRCeUlkIiwiY29udGV4dCIsImlkIiwiYWNjb3VudElkIiwidXNlIiwic2NvcGUiLCJzdWIiLCJpbnRlcmFjdGlvblVybCIsImN0eCIsImludGVyYWN0aW9uIiwib2lkYyIsInV1aWQiLCJpbnRlcmFjdGlvbkNoZWNrIiwic2Vzc2lvbiIsInNpZEZvciIsImNsaWVudCIsImNsaWVudElkIiwiZXJyb3IiLCJlcnJvcl9kZXNjcmlwdGlvbiIsInJlYXNvbiIsImFwcGxpY2F0aW9uVHlwZSIsInBhcmFtcyIsInJlc3BvbnNlX3R5cGUiLCJyZXN1bHQiXSwibWFwcGluZ3MiOiI4R0FBTyxNQUFNQSxpQkFBaUIsR0FBRzs7QUFFN0JDLEVBQUFB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VCxDQUFpQkMsTUFBakIsQ0FBd0JOLEdBQUcsQ0FBQ0UsSUFBSixDQUFTSyxNQUFULENBQWdCQyxRQUF4QyxDQUFMLEVBQXdEO0FBQ3RELGFBQU87QUFDTEMsUUFBQUEsS0FBSyxFQUFFLGtCQURGO0FBRUxDLFFBQUFBLGlCQUFpQixFQUFFLGdEQUZkO0FBR0xDLFFBQUFBLE1BQU0sRUFBRSx1QkFISCxFQUFQOztBQUtELEtBTkQsTUFNTztBQUNMWCxJQUFBQSxHQUFHLENBQUNFLElBQUosQ0FBU0ssTUFBVCxDQUFnQkssZUFBaEIsS0FBb0MsUUFBcEM7QUFDQVosSUFBQUEsR0FBRyxDQUFDRSxJQUFKLENBQVNXLE1BQVQsQ0FBZ0JDLGFBQWhCLEtBQWtDLE1BRGxDO0FBRUEsS0FBQ2QsR0FBRyxDQUFDRSxJQUFKLENBQVNhLE1BSEwsRUFHYTtBQUNsQixhQUFPO0FBQ0xOLFFBQUFBLEtBQUssRUFBRSxzQkFERjtBQUVMQyxRQUFBQSxpQkFBaUIsRUFBRSw2Q0FGZDtBQUdMQyxRQUFBQSxNQUFNLEVBQUUsc0JBSEgsRUFBUDs7QUFLRDtBQUNELFdBQU8sS0FBUDtBQUNILEdBbkY0QixFQUExQixDIiwic291cmNlc0NvbnRlbnQiOlsiZXhwb3J0IGNvbnN0IG9pZGNDb25maWd1cmF0aW9uID0ge1xuICAgIC8vIGFkYXB0ZXI6IHJldGhpbmtkYk9JRENBZGFwdGVyXG4gICAgZmVhdHVyZXM6IHsgXG4gICAgICAgIGRpc2NvdmVyeTogdHJ1ZSwgLy8gRXhwb3NlcyAvLndlbGwta25vd24vd2ViZmluZ2VyIGFuZCAvLndlbGwta25vd24vb3BlbmlkLWNvbmZpZ3VyYXRpb24gZW5kcG9pbnRzIFxuICAgICAgICBkZXZJbnRlcmFjdGlvbnM6IGZhbHNlLCAvLyBkZXYgb25seSAtIGNyZWF0ZXMgaW50ZXJhY3Rpb24gdmlld3MgZm9yIHVzZXJzLiBXaGVuIHR1cm5lZCBvZmYgdGhlIGN1c3RvbSBwcm92aWRlZCBpbnRlcmFjdGlvbiBhcmUgdXNlZC5cbiAgICAgICAgZW5jcnlwdGlvbjogdHJ1ZSxcbiAgICAgICAgcmV2b2NhdGlvbjogdHJ1ZSwgLy8gYWxsb3dzIHJldm9jYXRpb24gb2YgdG9rZW5zLlxuICAgICAgICBpbnRyb3NwZWN0aW9uOiB0cnVlLCAvLyBBbGxvd3MgY2xpZW50IHRvIGdldCBpbmZvcm1hdGlvbiBhYm91dCBhIHRva2VuIG1ldGEgaW5mb3JtYXRpb24gKGUuZy4gdG9rZW4gdmFsaWRpdHkpLiBodHRwczovL3Rvb2xzLmlldGYub3JnL2h0bWwvcmZjNzY2MlxuICAgICAgICBjbGFpbXNQYXJhbWV0ZXI6IHRydWUsIC8vIEFsbG93IHJlcXVlc3Rpbmcgc3BlY2lmaWMgY2xhaW1zIGZvciByZXR1cm5lZCBcInVzZXJpbmZvXCIgb2JqZWN0ICYgXCJpZF90b2tlblwiIG9iamVjdC4gaHR0cHM6Ly9vcGVuaWQubmV0L3NwZWNzL29wZW5pZC1jb25uZWN0LWNvcmUtMV8wLmh0bWwjQ2xhaW1zUGFyYW1ldGVyXG4gICAgICAgIGNsaWVudENyZWRlbnRpYWxzOiB0cnVlLCAvLyBBbGxvdyBjbGllbnRfY3JlZGVudGlhbHMgZ3JhbnRcbiAgICAgICAgZW5jcnlwdGlvbjogdHJ1ZSwgLy8gRW5hYmxlcyBjbGllbnRzIHRvIHJlY2VpdmUgZW5jcnlwdGVkIHVzZXJpbmZvIHJlc3BvbnNlcywgZW5jcnlwdGVkIElEIFRva2VucyBhbmQgdG8gc2VuZCBlbmNyeXB0ZWQgcmVxdWVzdCBwYXJhbWV0ZXJzIHRvIGF1dGhvcml6YXRpb24uXG4gICAgICAgIGFsd2F5c0lzc3VlUmVmcmVzaDogZmFsc2UsIC8vIGZhbHNlIGkuZS4gaXNzdWUgcmVmcmVzaCB0b2tlbiBvbmx5IHdoZW4gb2ZmbGluZV9hY2Nlc3Mgc2NvcGUgaXMgcmVxdWVzdGVkXG4gICAgICAgIC8vIFJlZ2FyZGluZyByZXF1ZXN0cyAtIHNob3VsZCBiZSB4LXd3dy1mb3JtLXVybGVuY29kZWQgYnkgZGVmYXVsdC5cbiAgICAgICAgcmVxdWVzdDogdHJ1ZSwgLy8gYWxsb3dzIHRoZSByZXF1ZXN0IHRvIGJlIHNlbnQgYXMgb25lIHBhcmFtZXRlciAoc2lnbmVkICYvb3IgZW5jcnlwdGVkKSAgaHR0cHM6Ly9vcGVuaWQubmV0L3NwZWNzL29wZW5pZC1jb25uZWN0LWNvcmUtMV8wLmh0bWwjSldUUmVxdWVzdHNcbiAgICAgICAgcmVxdWVzdFVyaTogdHJ1ZSwgLy8gYWxsb3dzIHBhc3NpbmcgcmVxdWVzdCBkZXRhaWxzIGJ5IHJlZmVyZW5jZSwgcmF0aGVyIHRoYW4gYnkgdmFsdWUuIGh0dHBzOi8vb3BlbmlkLm5ldC9zcGVjcy9vcGVuaWQtY29ubmVjdC1jb3JlLTFfMC5odG1sI0pXVFJlcXVlc3RzXG4gICAgICAgIG9hdXRoTmF0aXZlQXBwczogdHJ1ZSwgLy8gQ2hhbmdlcyByZWRpcmVjdF91cmlzIHZhbGlkYXRpb25zIGZvciBjbGllbnRzIHdpdGggYXBwbGljYXRpb25fdHlwZSBuYXRpdmUgdG8gdGhvc2UgZGVmaW5lZCBpbiBPQXV0aCAyLjAgZm9yIE5hdGl2ZSBBcHBzIC0gaHR0cHM6Ly90b29scy5pZXRmLm9yZy9odG1sL3JmYzgyNTIuXG4gICAgICAgIHNlc3Npb25NYW5hZ2VtZW50OiB0cnVlLCAvLyBkcmFmdCBzcGVjXG4gICAgICAgIGJhY2tjaGFubmVsTG9nb3V0OiBmYWxzZSxcbiAgICAgICAgZnJvbnRjaGFubmVsTG9nb3V0OiBmYWxzZSxcbiAgICAgICAgcmVnaXN0cmF0aW9uOiB0cnVlLCAvLyBkeW5hbWljIGNsaWVudCByZWdpc3RyYXRpb24gLSBodHRwczovL29wZW5pZC5uZXQvc3BlY3Mvb3BlbmlkLWNvbm5lY3QtcmVnaXN0cmF0aW9uLTFfMC5odG1sXG4gICAgICAgIHJlZ2lzdHJhdGlvbk1hbmFnZW1lbnQ6IHRydWUsIC8vIGh0dHBzOi8vdG9vbHMuaWV0Zi5vcmcvaHRtbC9yZmM3NTkyXG4gICAgICAgIHBrY2U6IHRydWUsIC8vIHNlY3VyaXR5IGNoYWxsZW5nZSBmb3IgYXV0aG9yaXphdGlvbiBjb2RlIGZsb3cgaHR0cHM6Ly90b29scy5pZXRmLm9yZy9odG1sL3JmYzc2MzYjc2VjdGlvbi02LjJcbiAgICB9LFxuICAgIGRpc2NvdmVyeTogeyAgLy8gRXhwb3NlcyAvLndlbGwta25vd24vd2ViZmluZ2VyIGFuZCAvLndlbGwta25vd24vb3BlbmlkLWNvbmZpZ3VyYXRpb24gZW5kcG9pbnRzIFxuICAgICAgICBjbGFpbV90eXBlc19zdXBwb3J0ZWQ6IFsnbm9ybWFsJywgJ2FnZ3JlZ2F0ZWQnLCAnZGlzdHJpYnV0ZWQnXSAvLyBJZiB1c2VkIG11c3QgYmUgcmVmbGVjdGVkIGluIFwiZmluZEJ5SWRcIiAtPiAnY2xhaW1zJyBmdW5jdGlvbiAtIHJldHVybnMgYWRkaXRpb25hbCBpbmZvcm1hdGlvbiBmb3IgY2xhaW1zIGh0dHBzOi8vb3BlbmlkLm5ldC9zcGVjcy9vcGVuaWQtY29ubmVjdC1jb3JlLTFfMC5odG1sI0FnZ3JlZ2F0ZWREaXN0cmlidXRlZENsYWltc1xuICAgIH0sXG4gICAgcm91dGVzOiB7XG4gICAgICAgIC8vIERpc2NvdmVyeSBmaXhlZCByb3V0ZXMgLSAgRXhwb3NlcyAvLndlbGwta25vd24vd2ViZmluZ2VyIGFuZCAvLndlbGwta25vd24vb3BlbmlkLWNvbmZpZ3VyYXRpb24gZW5kcG9pbnRzIFxuICAgICAgICBhdXRob3JpemF0aW9uOiAnL2F1dGgnLCAvLyBhdXRob3JpemVcbiAgICAgICAgY2VydGlmaWNhdGVzOiAnL2NlcnRzJyxcbiAgICAgICAgY2hlY2tfc2Vzc2lvbjogJy9zZXNzaW9uL2NoZWNrJyxcbiAgICAgICAgZW5kX3Nlc3Npb246ICcvc2Vzc2lvbi9lbmQnLFxuICAgICAgICBpbnRyb3NwZWN0aW9uOiAnL3Rva2VuL2ludHJvc3BlY3Rpb24nLFxuICAgICAgICByZWdpc3RyYXRpb246ICcvcmVnJyxcbiAgICAgICAgcmV2b2NhdGlvbjogJy90b2tlbi9yZXZvY2F0aW9uJyxcbiAgICAgICAgdG9rZW46ICcvdG9rZW4nLFxuICAgICAgICB1c2VyaW5mbzogJy9tZScsXG4gICAgfSwgICAgXG4gICAgLy8gdW5zdXBwb3J0ZWQ6IHsgLyogc2lnbmluZyBhbGdvcml0aG1zICovIH0sIC8vIGNoYW5nZSBzaWduaW5nIGFsZ29yaXRobXNcbiAgICBzY29wZXM6IFtcbiAgICAgICAgJ29wZW5pZCcsIFxuICAgICAgICAnb2ZmbGluZV9hY2Nlc3MnXG4gICAgXSxcbiAgICBjbGFpbXM6IHsgLy8gaHR0cHM6Ly9naXRodWIuY29tL3BhbnZhL25vZGUtb2lkYy1wcm92aWRlci9ibG9iL21hc3Rlci9kb2NzL2NvbmZpZ3VyYXRpb24ubWQjY29uZmlndXJpbmctYXZhaWxhYmxlLWNsYWltc1xuICAgICAgICBzY29wZU5hbWU6IFsnY2xhaW0gbmFtZScsICdjbGFpbSBuYW1lMiddLFxuICAgICAgICBhZGRyZXNzOiBbJ2FkZHJlc3MnXSxcbiAgICAgICAgZW1haWw6IFsnZW1haWwnLCAnZW1haWxfdmVyaWZpZWQnXSxcbiAgICAgICAgcGhvbmU6IFsncGhvbmVfbnVtYmVyJywgJ3Bob25lX251bWJlcl92ZXJpZmllZCddLFxuICAgICAgICBwcm9maWxlOiBbJ2JpcnRoZGF0ZScsICdmYW1pbHlfbmFtZScsICdnZW5kZXInLCAnZ2l2ZW5fbmFtZScsICdsb2NhbGUnLCAnbWlkZGxlX25hbWUnLCAnbmFtZScsICduaWNrbmFtZScsICdwaWN0dXJlJywgJ3ByZWZlcnJlZF91c2VybmFtZScsICdwcm9maWxlJywgJ3VwZGF0ZWRfYXQnLCAnd2Vic2l0ZScsICd6b25laW5mbyddLCAgICBcbiAgICB9LCAgICBcblxuICAgIC8vIFRPRE86IGh0dHBzOi8vZ2l0aHViLmNvbS9wYW52YS9ub2RlLW9pZGMtcHJvdmlkZXIvYmxvYi9tYXN0ZXIvZXhhbXBsZS9hY2NvdW50LmpzIGltcGxlbWVudGF0aW9uXG4gICAgYXN5bmMgZmluZEJ5SWQoY29udGV4dCwgaWQpIHsgLy8gQWRhcHRlciBmb3IgdXNlciAvIGFjY291bnQgaWQgJiBjbGFpbXMgaHR0cHM6Ly9naXRodWIuY29tL3BhbnZhL25vZGUtb2lkYy1wcm92aWRlci9ibG9iL21hc3Rlci9kb2NzL2NvbmZpZ3VyYXRpb24ubWQjYWNjb3VudHNcbiAgICAgICAgcmV0dXJuIHsgLy8gdGVtcG9yYXJseSBmb3IgZGV2ZWxvb3BtZW50IC0gcmV0dXJuIHJlcXVlc3QgaWQgZGlyZWN0bHkuXG4gICAgICAgICAgICBhY2NvdW50SWQ6IGlkLFxuICAgICAgICAgICAgYXN5bmMgY2xhaW1zKHVzZSwgc2NvcGUpIHsgXG4gICAgICAgICAgICAgICAgcmV0dXJuIHsgXG4gICAgICAgICAgICAgICAgICAgIHN1YjogaWQgXG4gICAgICAgICAgICAgICAgfSBcbiAgICAgICAgICAgIH0sXG4gICAgICAgIH07XG4gICAgfSwgICAgICBcbiAgICBpbnRlcmFjdGlvblVybDogZnVuY3Rpb24gaW50ZXJhY3Rpb25VcmwoY3R4LCBpbnRlcmFjdGlvbikgeyAvLyBkZXZJbnRlcmFjdGlvbnMgbXVzdCBiZSB0dXJuZWQgb2ZmXG4gICAgICAgIHJldHVybiBgL2ludGVyYWN0aW9uLyR7Y3R4Lm9pZGMudXVpZH1gO1xuICAgIH0sXG4gICAgaW50ZXJhY3Rpb25DaGVjazogYXN5bmMgZnVuY3Rpb24gaW50ZXJhY3Rpb25DaGVjayhjdHgpIHsgLy8gZGV2SW50ZXJhY3Rpb25zIG11c3QgYmUgdHVybmVkIG9mZlxuICAgICAgICBpZiAoIWN0eC5vaWRjLnNlc3Npb24uc2lkRm9yKGN0eC5vaWRjLmNsaWVudC5jbGllbnRJZCkpIHtcbiAgICAgICAgICByZXR1cm4ge1xuICAgICAgICAgICAgZXJyb3I6ICdjb25zZW50X3JlcXVpcmVkJyxcbiAgICAgICAgICAgIGVycm9yX2Rlc2NyaXB0aW9uOiAnY2xpZW50IG5vdCBhdXRob3JpemVkIGZvciBFbmQtVXNlciBzZXNzaW9uIHlldCcsXG4gICAgICAgICAgICByZWFzb246ICdjbGllbnRfbm90X2F1dGhvcml6ZWQnLFxuICAgICAgICAgIH07XG4gICAgICAgIH0gZWxzZSBpZiAoXG4gICAgICAgICAgY3R4Lm9pZGMuY2xpZW50LmFwcGxpY2F0aW9uVHlwZSA9PT0gJ25hdGl2ZScgJiZcbiAgICAgICAgICBjdHgub2lkYy5wYXJhbXMucmVzcG9uc2VfdHlwZSAhPT0gJ25vbmUnICYmXG4gICAgICAgICAgIWN0eC5vaWRjLnJlc3VsdCkge1xuICAgICAgICAgIHJldHVybiB7XG4gICAgICAgICAgICBlcnJvcjogJ2ludGVyYWN0aW9uX3JlcXVpcmVkJyxcbiAgICAgICAgICAgIGVycm9yX2Rlc2NyaXB0aW9uOiAnbmF0aXZlIGNsaWVudHMgcmVxdWlyZSBFbmQtVXNlciBpbnRlcmFjdGlvbicsXG4gICAgICAgICAgICByZWFzb246ICduYXRpdmVfY2xpZW50X3Byb21wdCcsXG4gICAgICAgICAgfTtcbiAgICAgICAgfVxuICAgICAgICByZXR1cm4gZmFsc2U7XG4gICAgfSxcbiAgICAgIFxufVxuIl19

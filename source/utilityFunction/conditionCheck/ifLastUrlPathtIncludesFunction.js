@@ -1,13 +1,14 @@
-import getUrlPathAsArray from './getUrlPathAsArray.js'
+"use strict";var _interopRequireDefault = require("@babel/runtime/helpers/interopRequireDefault");Object.defineProperty(exports, "__esModule", { value: true });exports.default = void 0;var _getUrlPathAsArray = _interopRequireDefault(require("./getUrlPathAsArray.js"));var _default =
 
-export default async (self) => {
-    let context = self.context
-    let pathArray = await getUrlPathAsArray(self)
-    let lastPath = pathArray.pop() // get url path
-    
-    // remove parameters
-    if(lastPath.includes("?")) lastPath = lastPath.substr(0, lastPath.lastIndexOf('?'))
-    
-    // check if function sign exists
-    return (lastPath.includes('$')) ? true : false;
-}
+async self => {
+  let context = self.context;
+  let pathArray = await (0, _getUrlPathAsArray.default)(self);
+  let lastPath = pathArray.pop();
+
+
+  if (lastPath.includes("?")) lastPath = lastPath.substr(0, lastPath.lastIndexOf('?'));
+
+
+  return lastPath.includes('$') ? true : false;
+};exports.default = _default;
+//# sourceMappingURL=data:application/json;charset=utf-8;base64,eyJ2ZXJzaW9uIjozLCJzb3VyY2VzIjpbIi4uLy4uLy4uLy4uL3NvdXJjZS91dGlsaXR5RnVuY3Rpb24vY29uZGl0aW9uQ2hlY2svaWZMYXN0VXJsUGF0aHRJbmNsdWRlc0Z1bmN0aW9uLmpzIl0sIm5hbWVzIjpbInNlbGYiLCJjb250ZXh0IiwicGF0aEFycmF5IiwibGFzdFBhdGgiLCJwb3AiLCJpbmNsdWRlcyIsInN1YnN0ciIsImxhc3RJbmRleE9mIl0sIm1hcHBpbmdzIjoieUxBQUEsbUY7O0FBRWUsTUFBT0EsSUFBUCxJQUFnQjtBQUMzQixNQUFJQyxPQUFPLEdBQUdELElBQUksQ0FBQ0MsT0FBbkI7QUFDQSxNQUFJQyxTQUFTLEdBQUcsTUFBTSxnQ0FBa0JGLElBQWxCLENBQXRCO0FBQ0EsTUFBSUcsUUFBUSxHQUFHRCxTQUFTLENBQUNFLEdBQVYsRUFBZjs7O0FBR0EsTUFBR0QsUUFBUSxDQUFDRSxRQUFULENBQWtCLEdBQWxCLENBQUgsRUFBMkJGLFFBQVEsR0FBR0EsUUFBUSxDQUFDRyxNQUFULENBQWdCLENBQWhCLEVBQW1CSCxRQUFRLENBQUNJLFdBQVQsQ0FBcUIsR0FBckIsQ0FBbkIsQ0FBWDs7O0FBRzNCLFNBQVFKLFFBQVEsQ0FBQ0UsUUFBVCxDQUFrQixHQUFsQixDQUFELEdBQTJCLElBQTNCLEdBQWtDLEtBQXpDO0FBQ0gsQyIsInNvdXJjZXNDb250ZW50IjpbImltcG9ydCBnZXRVcmxQYXRoQXNBcnJheSBmcm9tICcuL2dldFVybFBhdGhBc0FycmF5LmpzJ1xuXG5leHBvcnQgZGVmYXVsdCBhc3luYyAoc2VsZikgPT4ge1xuICAgIGxldCBjb250ZXh0ID0gc2VsZi5jb250ZXh0XG4gICAgbGV0IHBhdGhBcnJheSA9IGF3YWl0IGdldFVybFBhdGhBc0FycmF5KHNlbGYpXG4gICAgbGV0IGxhc3RQYXRoID0gcGF0aEFycmF5LnBvcCgpIC8vIGdldCB1cmwgcGF0aFxuICAgIFxuICAgIC8vIHJlbW92ZSBwYXJhbWV0ZXJzXG4gICAgaWYobGFzdFBhdGguaW5jbHVkZXMoXCI/XCIpKSBsYXN0UGF0aCA9IGxhc3RQYXRoLnN1YnN0cigwLCBsYXN0UGF0aC5sYXN0SW5kZXhPZignPycpKVxuICAgIFxuICAgIC8vIGNoZWNrIGlmIGZ1bmN0aW9uIHNpZ24gZXhpc3RzXG4gICAgcmV0dXJuIChsYXN0UGF0aC5pbmNsdWRlcygnJCcpKSA/IHRydWUgOiBmYWxzZTtcbn0iXX0=
