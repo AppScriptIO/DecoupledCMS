@@ -51,8 +51,18 @@
     },
     "typescript.check.npmIsInstalled": false,
     "workbench.colorCustomizations": {
-        "activityBar.background": "#4F1054",
-        "titleBar.activeBackground": "#6F1776",
-        "titleBar.activeForeground": "#FEFCFE"
-    }
+        "activityBar.background": "#47f926",
+        "activityBar.foreground": "#15202b",
+        "activityBar.inactiveForeground": "#15202b99",
+        "activityBarBadge.background": "#647cfb",
+        "activityBarBadge.foreground": "#15202b",
+        "titleBar.activeBackground": "#47f926",
+        "titleBar.inactiveBackground": "#47f92699",
+        "titleBar.activeForeground": "#15202b",
+        "titleBar.inactiveForeground": "#15202b99",
+        "statusBar.background": "#47f926",
+        "statusBarItem.hoverBackground": "#29e606",
+        "statusBar.foreground": "#15202b"
+    },
+    "peacock.color": "#71fa58"
 }

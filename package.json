@@ -2,10 +2,13 @@
   "name": "@dependency/appscript",
   "main": "./entrypoint/programmaticAPI",
   "version": "1.1.1",
+  "scripts": {
+    "buildAndRelease": "yarn run scriptManager shouldCompileScript=true JSProject/buildAndRelease \".moduleProject({})\""
+  },
   "dependencies": {
     "@babel/core": "^7.x.x",
+    "@dependency/graph": "https://github.com/AppScriptIO/graph#semver:^1.x.x",
     "@dependency/multiplePrototypeChain": "https://github.com/AppScriptIO/multiplePrototypeChain#semver:^1.x.x",
-    "@dependency/nodeRelationshipGraph": "https://github.com/AppScriptIO/nodeRelationshipGraph#semver:^1.x.x",
     "co-body": "*",
     "koa": "*",
     "koa-bodyparser": "*",

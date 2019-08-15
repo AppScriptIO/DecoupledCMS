@@ -1,5 +1,5 @@
 import { default as Application } from '../../class/Application.class.js'
-import createStaticInstanceClasses from '@dependency/nodeRelationshipGraph'
+import createStaticInstanceClasses from '@dependency/graph'
 
 export default async (context, next) => {
     let connection = Application.rethinkdbConnection

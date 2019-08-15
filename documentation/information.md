@@ -1,5 +1,5 @@
 # Appscript 
-A framework for developing webapps using implementations of [nodeRelationshipGraph](https://github.com/AppScriptIO/nodeRelationshipGraph) module with visual interface for controlling graph nodes. _Built using Nodejs & RethinkDB._
+A framework for developing webapps using implementations of [graph](https://github.com/AppScriptIO/graph) module with visual interface for controlling graph nodes. _Built using Nodejs & RethinkDB._
 
 ## Features: 
 - New perspective on building apps from highly reusable components. 
