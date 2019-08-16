@@ -1,41 +1,42 @@
-import parse from 'co-body' // throws on unsupported content type.
-import bodyParser from 'koa-bodyparser' // Brings extra option for handling error and unsupported content-types.
-import { default as Application } from '../../class/Application.class.js'
-import { getMergedMultipleDocumentOfSpecificLanguage as queryPatternImplementation} from "@dependency/databaseUtility/source/patternImplementation.js";
-import {functionWrappedMiddlewareDecorator} from '@dependency/commonPattern/source/middlewarePatternDecorator.js'
-import { mergeDeep } from '@dependency/deepObjectMerge'
+"use strict";var _interopRequireDefault = require("@babel/runtime/helpers/interopRequireDefault");Object.defineProperty(exports, "__esModule", { value: true });exports.default = void 0;
 
-export default functionWrappedMiddlewareDecorator(async function (context, next, option) {
-        let urlQuery = context.request.query
-        let queryLanguage = (urlQuery.language) ?
-            urlQuery.language.replace(/\b\w/g, l => l.toUpperCase()) // Capitalize first letter.
-            : null ;
-        let uiContent = null;
-        let defaultLanguage = Application.frontendStatic.setting.mode.language
-        try {
-            uiContent = await queryPatternImplementation({
-                databaseConnection: Application.rethinkdbConnection,
-                languageDocumentKey: queryLanguage || defaultLanguage,
-                dataTableName: 'ui'
-            })
-        } catch (error) {
-            console.log(error)
-        }
-    
-        let frontendPerContext = {
-            setting: {
-                mode: {
-                    language: queryLanguage || defaultLanguage // TODO: change setting default twice - fallback to prevent setting a null/undefined over the default value
-                }
-            },
-            uiContent
-        }
+var _ApplicationClass = _interopRequireDefault(require("../../class/Application.class.js"));
+var _patternImplementation = require("@dependency/databaseUtility/source/patternImplementation.js");
+var _middlewarePatternDecorator = require("@dependency/commonPattern/source/middlewarePatternDecorator.js");
+var _deepObjectMerge = require("@dependency/deepObjectMerge");var _default =
 
-        // TODO: separate frontend object creation from language middleware.
+(0, _middlewarePatternDecorator.functionWrappedMiddlewareDecorator)(async function (context, next, option) {
+  let urlQuery = context.request.query;
+  let queryLanguage = urlQuery.language ?
+  urlQuery.language.replace(/\b\w/g, l => l.toUpperCase()) :
+  null;
+  let uiContent = null;
+  let defaultLanguage = _ApplicationClass.default.frontendStatic.setting.mode.language;
+  try {
+    uiContent = await (0, _patternImplementation.getMergedMultipleDocumentOfSpecificLanguage)({
+      databaseConnection: _ApplicationClass.default.rethinkdbConnection,
+      languageDocumentKey: queryLanguage || defaultLanguage,
+      dataTableName: 'ui' });
 
-        frontendPerContext.instance = context.instance // add instance object as it is used by client side.
+  } catch (error) {
+    console.log(error);
+  }
 
-        context.frontend = mergeDeep(Application.frontendStatic, frontendPerContext)
+  let frontendPerContext = {
+    setting: {
+      mode: {
+        language: queryLanguage || defaultLanguage } },
 
-        await next()
-})
+
+    uiContent };
+
+
+
+
+  frontendPerContext.instance = context.instance;
+
+  context.frontend = (0, _deepObjectMerge.mergeDeep)(_ApplicationClass.default.frontendStatic, frontendPerContext);
+
+  await next();
+});exports.default = _default;
+//# sourceMappingURL=data:application/json;charset=utf-8;base64,eyJ2ZXJzaW9uIjozLCJzb3VyY2VzIjpbIi4uLy4uLy4uLy4uL3NvdXJjZS91dGlsaXR5RnVuY3Rpb24vbWlkZGxld2FyZS9sYW5ndWFnZUNvbnRlbnQubWlkZGxld2FyZS5qcyJdLCJuYW1lcyI6WyJjb250ZXh0IiwibmV4dCIsIm9wdGlvbiIsInVybFF1ZXJ5IiwicmVxdWVzdCIsInF1ZXJ5IiwicXVlcnlMYW5ndWFnZSIsImxhbmd1YWdlIiwicmVwbGFjZSIsImwiLCJ0b1VwcGVyQ2FzZSIsInVpQ29udGVudCIsImRlZmF1bHRMYW5ndWFnZSIsIkFwcGxpY2F0aW9uIiwiZnJvbnRlbmRTdGF0aWMiLCJzZXR0aW5nIiwibW9kZSIsImRhdGFiYXNlQ29ubmVjdGlvbiIsInJldGhpbmtkYkNvbm5lY3Rpb24iLCJsYW5ndWFnZURvY3VtZW50S2V5IiwiZGF0YVRhYmxlTmFtZSIsImVycm9yIiwiY29uc29sZSIsImxvZyIsImZyb250ZW5kUGVyQ29udGV4dCIsImluc3RhbmNlIiwiZnJvbnRlbmQiXSwibWFwcGluZ3MiOiI7O0FBRUE7QUFDQTtBQUNBO0FBQ0EsOEQ7O0FBRWUsb0VBQW1DLGdCQUFnQkEsT0FBaEIsRUFBeUJDLElBQXpCLEVBQStCQyxNQUEvQixFQUF1QztBQUNqRixNQUFJQyxRQUFRLEdBQUdILE9BQU8sQ0FBQ0ksT0FBUixDQUFnQkMsS0FBL0I7QUFDQSxNQUFJQyxhQUFhLEdBQUlILFFBQVEsQ0FBQ0ksUUFBVjtBQUNoQkosRUFBQUEsUUFBUSxDQUFDSSxRQUFULENBQWtCQyxPQUFsQixDQUEwQixPQUExQixFQUFtQ0MsQ0FBQyxJQUFJQSxDQUFDLENBQUNDLFdBQUYsRUFBeEMsQ0FEZ0I7QUFFZCxNQUZOO0FBR0EsTUFBSUMsU0FBUyxHQUFHLElBQWhCO0FBQ0EsTUFBSUMsZUFBZSxHQUFHQywwQkFBWUMsY0FBWixDQUEyQkMsT0FBM0IsQ0FBbUNDLElBQW5DLENBQXdDVCxRQUE5RDtBQUNBLE1BQUk7QUFDQUksSUFBQUEsU0FBUyxHQUFHLE1BQU0sd0VBQTJCO0FBQ3pDTSxNQUFBQSxrQkFBa0IsRUFBRUosMEJBQVlLLG1CQURTO0FBRXpDQyxNQUFBQSxtQkFBbUIsRUFBRWIsYUFBYSxJQUFJTSxlQUZHO0FBR3pDUSxNQUFBQSxhQUFhLEVBQUUsSUFIMEIsRUFBM0IsQ0FBbEI7O0FBS0gsR0FORCxDQU1FLE9BQU9DLEtBQVAsRUFBYztBQUNaQyxJQUFBQSxPQUFPLENBQUNDLEdBQVIsQ0FBWUYsS0FBWjtBQUNIOztBQUVELE1BQUlHLGtCQUFrQixHQUFHO0FBQ3JCVCxJQUFBQSxPQUFPLEVBQUU7QUFDTEMsTUFBQUEsSUFBSSxFQUFFO0FBQ0ZULFFBQUFBLFFBQVEsRUFBRUQsYUFBYSxJQUFJTSxlQUR6QixFQURELEVBRFk7OztBQU1yQkQsSUFBQUEsU0FOcUIsRUFBekI7Ozs7O0FBV0FhLEVBQUFBLGtCQUFrQixDQUFDQyxRQUFuQixHQUE4QnpCLE9BQU8sQ0FBQ3lCLFFBQXRDOztBQUVBekIsRUFBQUEsT0FBTyxDQUFDMEIsUUFBUixHQUFtQixnQ0FBVWIsMEJBQVlDLGNBQXRCLEVBQXNDVSxrQkFBdEMsQ0FBbkI7O0FBRUEsUUFBTXZCLElBQUksRUFBVjtBQUNQLENBakNjLEMiLCJzb3VyY2VzQ29udGVudCI6WyJpbXBvcnQgcGFyc2UgZnJvbSAnY28tYm9keScgLy8gdGhyb3dzIG9uIHVuc3VwcG9ydGVkIGNvbnRlbnQgdHlwZS5cbmltcG9ydCBib2R5UGFyc2VyIGZyb20gJ2tvYS1ib2R5cGFyc2VyJyAvLyBCcmluZ3MgZXh0cmEgb3B0aW9uIGZvciBoYW5kbGluZyBlcnJvciBhbmQgdW5zdXBwb3J0ZWQgY29udGVudC10eXBlcy5cbmltcG9ydCB7IGRlZmF1bHQgYXMgQXBwbGljYXRpb24gfSBmcm9tICcuLi8uLi9jbGFzcy9BcHBsaWNhdGlvbi5jbGFzcy5qcydcbmltcG9ydCB7IGdldE1lcmdlZE11bHRpcGxlRG9jdW1lbnRPZlNwZWNpZmljTGFuZ3VhZ2UgYXMgcXVlcnlQYXR0ZXJuSW1wbGVtZW50YXRpb259IGZyb20gXCJAZGVwZW5kZW5jeS9kYXRhYmFzZVV0aWxpdHkvc291cmNlL3BhdHRlcm5JbXBsZW1lbnRhdGlvbi5qc1wiO1xuaW1wb3J0IHtmdW5jdGlvbldyYXBwZWRNaWRkbGV3YXJlRGVjb3JhdG9yfSBmcm9tICdAZGVwZW5kZW5jeS9jb21tb25QYXR0ZXJuL3NvdXJjZS9taWRkbGV3YXJlUGF0dGVybkRlY29yYXRvci5qcydcbmltcG9ydCB7IG1lcmdlRGVlcCB9IGZyb20gJ0BkZXBlbmRlbmN5L2RlZXBPYmplY3RNZXJnZSdcblxuZXhwb3J0IGRlZmF1bHQgZnVuY3Rpb25XcmFwcGVkTWlkZGxld2FyZURlY29yYXRvcihhc3luYyBmdW5jdGlvbiAoY29udGV4dCwgbmV4dCwgb3B0aW9uKSB7XG4gICAgICAgIGxldCB1cmxRdWVyeSA9IGNvbnRleHQucmVxdWVzdC5xdWVyeVxuICAgICAgICBsZXQgcXVlcnlMYW5ndWFnZSA9ICh1cmxRdWVyeS5sYW5ndWFnZSkgP1xuICAgICAgICAgICAgdXJsUXVlcnkubGFuZ3VhZ2UucmVwbGFjZSgvXFxiXFx3L2csIGwgPT4gbC50b1VwcGVyQ2FzZSgpKSAvLyBDYXBpdGFsaXplIGZpcnN0IGxldHRlci5cbiAgICAgICAgICAgIDogbnVsbCA7XG4gICAgICAgIGxldCB1aUNvbnRlbnQgPSBudWxsO1xuICAgICAgICBsZXQgZGVmYXVsdExhbmd1YWdlID0gQXBwbGljYXRpb24uZnJvbnRlbmRTdGF0aWMuc2V0dGluZy5tb2RlLmxhbmd1YWdlXG4gICAgICAgIHRyeSB7XG4gICAgICAgICAgICB1aUNvbnRlbnQgPSBhd2FpdCBxdWVyeVBhdHRlcm5JbXBsZW1lbnRhdGlvbih7XG4gICAgICAgICAgICAgICAgZGF0YWJhc2VDb25uZWN0aW9uOiBBcHBsaWNhdGlvbi5yZXRoaW5rZGJDb25uZWN0aW9uLFxuICAgICAgICAgICAgICAgIGxhbmd1YWdlRG9jdW1lbnRLZXk6IHF1ZXJ5TGFuZ3VhZ2UgfHwgZGVmYXVsdExhbmd1YWdlLFxuICAgICAgICAgICAgICAgIGRhdGFUYWJsZU5hbWU6ICd1aSdcbiAgICAgICAgICAgIH0pXG4gICAgICAgIH0gY2F0Y2ggKGVycm9yKSB7XG4gICAgICAgICAgICBjb25zb2xlLmxvZyhlcnJvcilcbiAgICAgICAgfVxuICAgIFxuICAgICAgICBsZXQgZnJvbnRlbmRQZXJDb250ZXh0ID0ge1xuICAgICAgICAgICAgc2V0dGluZzoge1xuICAgICAgICAgICAgICAgIG1vZGU6IHtcbiAgICAgICAgICAgICAgICAgICAgbGFuZ3VhZ2U6IHF1ZXJ5TGFuZ3VhZ2UgfHwgZGVmYXVsdExhbmd1YWdlIC8vIFRPRE86IGNoYW5nZSBzZXR0aW5nIGRlZmF1bHQgdHdpY2UgLSBmYWxsYmFjayB0byBwcmV2ZW50IHNldHRpbmcgYSBudWxsL3VuZGVmaW5lZCBvdmVyIHRoZSBkZWZhdWx0IHZhbHVlXG4gICAgICAgICAgICAgICAgfVxuICAgICAgICAgICAgfSxcbiAgICAgICAgICAgIHVpQ29udGVudFxuICAgICAgICB9XG5cbiAgICAgICAgLy8gVE9ETzogc2VwYXJhdGUgZnJvbnRlbmQgb2JqZWN0IGNyZWF0aW9uIGZyb20gbGFuZ3VhZ2UgbWlkZGxld2FyZS5cblxuICAgICAgICBmcm9udGVuZFBlckNvbnRleHQuaW5zdGFuY2UgPSBjb250ZXh0Lmluc3RhbmNlIC8vIGFkZCBpbnN0YW5jZSBvYmplY3QgYXMgaXQgaXMgdXNlZCBieSBjbGllbnQgc2lkZS5cblxuICAgICAgICBjb250ZXh0LmZyb250ZW5kID0gbWVyZ2VEZWVwKEFwcGxpY2F0aW9uLmZyb250ZW5kU3RhdGljLCBmcm9udGVuZFBlckNvbnRleHQpXG5cbiAgICAgICAgYXdhaXQgbmV4dCgpXG59KVxuIl19

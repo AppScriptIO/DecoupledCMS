@@ -1,6 +1,7 @@
-export default function () {
-    return async (context, next) => {
-        context.set('Cache-Control', 'max-age=604800');
-        await next()
-    }
+"use strict";Object.defineProperty(exports, "__esModule", { value: true });exports.default = _default;function _default() {
+  return async (context, next) => {
+    context.set('Cache-Control', 'max-age=604800');
+    await next();
+  };
 }
+//# sourceMappingURL=data:application/json;charset=utf-8;base64,eyJ2ZXJzaW9uIjozLCJzb3VyY2VzIjpbIi4uLy4uLy4uLy4uL3NvdXJjZS91dGlsaXR5RnVuY3Rpb24vbWlkZGxld2FyZS9jYWNoZUNvbnRyb2wubWlkZGxld2FyZS5qcyJdLCJuYW1lcyI6WyJjb250ZXh0IiwibmV4dCIsInNldCJdLCJtYXBwaW5ncyI6InNHQUFlLG9CQUFZO0FBQ3ZCLFNBQU8sT0FBT0EsT0FBUCxFQUFnQkMsSUFBaEIsS0FBeUI7QUFDNUJELElBQUFBLE9BQU8sQ0FBQ0UsR0FBUixDQUFZLGVBQVosRUFBNkIsZ0JBQTdCO0FBQ0EsVUFBTUQsSUFBSSxFQUFWO0FBQ0gsR0FIRDtBQUlIIiwic291cmNlc0NvbnRlbnQiOlsiZXhwb3J0IGRlZmF1bHQgZnVuY3Rpb24gKCkge1xuICAgIHJldHVybiBhc3luYyAoY29udGV4dCwgbmV4dCkgPT4ge1xuICAgICAgICBjb250ZXh0LnNldCgnQ2FjaGUtQ29udHJvbCcsICdtYXgtYWdlPTYwNDgwMCcpO1xuICAgICAgICBhd2FpdCBuZXh0KClcbiAgICB9XG59XG4iXX0=

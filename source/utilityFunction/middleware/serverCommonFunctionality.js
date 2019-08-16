@@ -1,38 +1,39 @@
-import serverConfig from '../../../setup/configuration/serverConfig.js'
-import compose from 'koa-compose'
-import responseTime from 'koa-response-time'
-import logger from 'koa-logger'
-// import compress from 'koa-compress'
-import bodyParser from 'koa-bodyparser'
-// import cors from 'kcors'
-// import helmet from 'koa-helmet'
-import error from 'koa-json-error'
-// import enforceHTTPS from 'koa-sslify'
-import koaCompress from 'koa-compress'
-import zlib from 'zlib'
+"use strict";var _interopRequireDefault = require("@babel/runtime/helpers/interopRequireDefault");Object.defineProperty(exports, "__esModule", { value: true });exports.default = void 0;var _serverConfig = _interopRequireDefault(require("../../../setup/configuration/serverConfig.js"));
+var _koaCompose = _interopRequireDefault(require("koa-compose"));
+var _koaResponseTime = _interopRequireDefault(require("koa-response-time"));
+var _koaLogger = _interopRequireDefault(require("koa-logger"));
 
-// Database
-import rethinkdbConfig from '../../../setup/configuration/rethinkdbConfig.js'
-import r from 'rethinkdb'
-import { handleConnection, createDatabase, createTable } from './commonDatabaseFunctionality.js'
+
+
+
+var _koaJsonError = _interopRequireDefault(require("koa-json-error"));
+
+var _koaCompress = _interopRequireDefault(require("koa-compress"));
+var _zlib = _interopRequireDefault(require("zlib"));
+
+
+
+
+
 
 let middlewareArray = [
-    responseTime(), // Response time x-response-time
-    logger(), // Console logger
-    // bodyParser(),
-    // cors(), // Cross-Origin Resource Sharing(CORS)
-    error(), // Error handler for pure-JSON Koa apps
-    // handleConnection(), // Open connection on middleware downstream, Close connection on upstream.
-    // createDatabase(),
-    // createTable(),
-    koaCompress({
-        flush: zlib.Z_SYNC_FLUSH
-    })
-]
-if(!serverConfig.ssl) { 
-    // middleware.push(compress())  // Compress responses
-    // middleware.push(enforceHTTPS())
-    // middleware.push(helmet()) // Security header middleware collection
-}
+(0, _koaResponseTime.default)(),
+(0, _koaLogger.default)(),
 
-export default () => compose(middlewareArray)
+
+(0, _koaJsonError.default)(),
+
+
+
+(0, _koaCompress.default)({
+  flush: _zlib.default.Z_SYNC_FLUSH })];
+
+
+if (!_serverConfig.default.ssl) {
+
+
+
+}var _default =
+
+() => (0, _koaCompose.default)(middlewareArray);exports.default = _default;
+//# sourceMappingURL=data:application/json;charset=utf-8;base64,eyJ2ZXJzaW9uIjozLCJzb3VyY2VzIjpbIi4uLy4uLy4uLy4uL3NvdXJjZS91dGlsaXR5RnVuY3Rpb24vbWlkZGxld2FyZS9zZXJ2ZXJDb21tb25GdW5jdGlvbmFsaXR5LmpzIl0sIm5hbWVzIjpbIm1pZGRsZXdhcmVBcnJheSIsImZsdXNoIiwiemxpYiIsIlpfU1lOQ19GTFVTSCIsInNlcnZlckNvbmZpZyIsInNzbCJdLCJtYXBwaW5ncyI6InlMQUFBO0FBQ0E7QUFDQTtBQUNBOzs7OztBQUtBOztBQUVBO0FBQ0E7Ozs7Ozs7QUFPQSxJQUFJQSxlQUFlLEdBQUc7QUFDbEIsK0JBRGtCO0FBRWxCLHlCQUZrQjs7O0FBS2xCLDRCQUxrQjs7OztBQVNsQiwwQkFBWTtBQUNSQyxFQUFBQSxLQUFLLEVBQUVDLGNBQUtDLFlBREosRUFBWixDQVRrQixDQUF0Qjs7O0FBYUEsSUFBRyxDQUFDQyxzQkFBYUMsR0FBakIsRUFBc0I7Ozs7QUFJckIsQzs7QUFFYyxNQUFNLHlCQUFRTCxlQUFSLEMiLCJzb3VyY2VzQ29udGVudCI6WyJpbXBvcnQgc2VydmVyQ29uZmlnIGZyb20gJy4uLy4uLy4uL3NldHVwL2NvbmZpZ3VyYXRpb24vc2VydmVyQ29uZmlnLmpzJ1xuaW1wb3J0IGNvbXBvc2UgZnJvbSAna29hLWNvbXBvc2UnXG5pbXBvcnQgcmVzcG9uc2VUaW1lIGZyb20gJ2tvYS1yZXNwb25zZS10aW1lJ1xuaW1wb3J0IGxvZ2dlciBmcm9tICdrb2EtbG9nZ2VyJ1xuLy8gaW1wb3J0IGNvbXByZXNzIGZyb20gJ2tvYS1jb21wcmVzcydcbmltcG9ydCBib2R5UGFyc2VyIGZyb20gJ2tvYS1ib2R5cGFyc2VyJ1xuLy8gaW1wb3J0IGNvcnMgZnJvbSAna2NvcnMnXG4vLyBpbXBvcnQgaGVsbWV0IGZyb20gJ2tvYS1oZWxtZXQnXG5pbXBvcnQgZXJyb3IgZnJvbSAna29hLWpzb24tZXJyb3InXG4vLyBpbXBvcnQgZW5mb3JjZUhUVFBTIGZyb20gJ2tvYS1zc2xpZnknXG5pbXBvcnQga29hQ29tcHJlc3MgZnJvbSAna29hLWNvbXByZXNzJ1xuaW1wb3J0IHpsaWIgZnJvbSAnemxpYidcblxuLy8gRGF0YWJhc2VcbmltcG9ydCByZXRoaW5rZGJDb25maWcgZnJvbSAnLi4vLi4vLi4vc2V0dXAvY29uZmlndXJhdGlvbi9yZXRoaW5rZGJDb25maWcuanMnXG5pbXBvcnQgciBmcm9tICdyZXRoaW5rZGInXG5pbXBvcnQgeyBoYW5kbGVDb25uZWN0aW9uLCBjcmVhdGVEYXRhYmFzZSwgY3JlYXRlVGFibGUgfSBmcm9tICcuL2NvbW1vbkRhdGFiYXNlRnVuY3Rpb25hbGl0eS5qcydcblxubGV0IG1pZGRsZXdhcmVBcnJheSA9IFtcbiAgICByZXNwb25zZVRpbWUoKSwgLy8gUmVzcG9uc2UgdGltZSB4LXJlc3BvbnNlLXRpbWVcbiAgICBsb2dnZXIoKSwgLy8gQ29uc29sZSBsb2dnZXJcbiAgICAvLyBib2R5UGFyc2VyKCksXG4gICAgLy8gY29ycygpLCAvLyBDcm9zcy1PcmlnaW4gUmVzb3VyY2UgU2hhcmluZyhDT1JTKVxuICAgIGVycm9yKCksIC8vIEVycm9yIGhhbmRsZXIgZm9yIHB1cmUtSlNPTiBLb2EgYXBwc1xuICAgIC8vIGhhbmRsZUNvbm5lY3Rpb24oKSwgLy8gT3BlbiBjb25uZWN0aW9uIG9uIG1pZGRsZXdhcmUgZG93bnN0cmVhbSwgQ2xvc2UgY29ubmVjdGlvbiBvbiB1cHN0cmVhbS5cbiAgICAvLyBjcmVhdGVEYXRhYmFzZSgpLFxuICAgIC8vIGNyZWF0ZVRhYmxlKCksXG4gICAga29hQ29tcHJlc3Moe1xuICAgICAgICBmbHVzaDogemxpYi5aX1NZTkNfRkxVU0hcbiAgICB9KVxuXVxuaWYoIXNlcnZlckNvbmZpZy5zc2wpIHsgXG4gICAgLy8gbWlkZGxld2FyZS5wdXNoKGNvbXByZXNzKCkpICAvLyBDb21wcmVzcyByZXNwb25zZXNcbiAgICAvLyBtaWRkbGV3YXJlLnB1c2goZW5mb3JjZUhUVFBTKCkpXG4gICAgLy8gbWlkZGxld2FyZS5wdXNoKGhlbG1ldCgpKSAvLyBTZWN1cml0eSBoZWFkZXIgbWlkZGxld2FyZSBjb2xsZWN0aW9uXG59XG5cbmV4cG9ydCBkZWZhdWx0ICgpID0+IGNvbXBvc2UobWlkZGxld2FyZUFycmF5KVxuIl19

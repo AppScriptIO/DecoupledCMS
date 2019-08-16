@@ -1,47 +1,48 @@
-import compose from 'koa-compose'
-import { default as Application } from '../../class/Application.class.js'
+"use strict";var _interopRequireDefault = require("@babel/runtime/helpers/interopRequireDefault");Object.defineProperty(exports, "__esModule", { value: true });exports.default = void 0;var _koaCompose = _interopRequireDefault(require("koa-compose"));var _default =
 
-// let staticMiddlewareSetting = r
-//     .table('setting') // first field assigns name of table
-//     .run(context.rethinkdbConnection)
-//     .then((cursor) => {
-//         return cursor.toArray()
-//     })
 
-/**
- * @param {array} staticMiddlewareSetting holds the json middle configurations. Where each json is composed of executionType, filePath, arguments.
- */
-export default (
-    staticMiddlewareSetting // middleware nested units array.
-) => {
-    let middlewareArray = []
-    
-    staticMiddlewareSetting.forEach((setting) => {
-        // TODO: create an options extractor function.
-        let filePath = setting.file.filePath // nested unit file's properties.
-        let argument = setting.arguments // nested unit unit's properties.
-        let executionType = setting.executionType // nested unit unit's properties.
-        let importModuleName = setting.importModuleName
 
-        // import/load module
-        let exportedModule = (!importModuleName || importModuleName == 'default') ? 
-            require(filePath).default : // import default export from the module
-            require(filePath)[importModuleName]; // import the export using it's name.
 
-        // execute module
-        let middleware;
-        switch (executionType) {
-            case 'middleware':
-                middleware = exportedModule
-            break;
-            case 'functionWrappedMiddleware':
-            default:
-                middleware = (argument) ? 
-                    exportedModule(argument) :
-                    exportedModule();
-            break;
-        }
-        middlewareArray.push(middleware)
-    }, this);
-    return compose(middlewareArray)
-}
+
+
+
+
+
+
+
+
+(
+staticMiddlewareSetting) =>
+{
+  let middlewareArray = [];
+
+  staticMiddlewareSetting.forEach(setting => {
+
+    let filePath = setting.file.filePath;
+    let argument = setting.arguments;
+    let executionType = setting.executionType;
+    let importModuleName = setting.importModuleName;
+
+
+    let exportedModule = !importModuleName || importModuleName == 'default' ?
+    require(filePath).default :
+    require(filePath)[importModuleName];
+
+
+    let middleware;
+    switch (executionType) {
+      case 'middleware':
+        middleware = exportedModule;
+        break;
+      case 'functionWrappedMiddleware':
+      default:
+        middleware = argument ?
+        exportedModule(argument) :
+        exportedModule();
+        break;}
+
+    middlewareArray.push(middleware);
+  }, void 0);
+  return (0, _koaCompose.default)(middlewareArray);
+};exports.default = _default;
+//# sourceMappingURL=data:application/json;charset=utf-8;base64,eyJ2ZXJzaW9uIjozLCJzb3VyY2VzIjpbIi4uLy4uLy4uLy4uL3NvdXJjZS91dGlsaXR5RnVuY3Rpb24vbWlkZGxld2FyZS9pbXBsZW1lbnRNaWRkbGV3YXJlT25Nb2R1bGVVc2luZ0pzb24uanMiXSwibmFtZXMiOlsic3RhdGljTWlkZGxld2FyZVNldHRpbmciLCJtaWRkbGV3YXJlQXJyYXkiLCJmb3JFYWNoIiwic2V0dGluZyIsImZpbGVQYXRoIiwiZmlsZSIsImFyZ3VtZW50IiwiYXJndW1lbnRzIiwiZXhlY3V0aW9uVHlwZSIsImltcG9ydE1vZHVsZU5hbWUiLCJleHBvcnRlZE1vZHVsZSIsInJlcXVpcmUiLCJkZWZhdWx0IiwibWlkZGxld2FyZSIsInB1c2giXSwibWFwcGluZ3MiOiJ5TEFBQSxpRTs7Ozs7Ozs7Ozs7OztBQWFlO0FBQ1hBLHVCQURXO0FBRVY7QUFDRCxNQUFJQyxlQUFlLEdBQUcsRUFBdEI7O0FBRUFELEVBQUFBLHVCQUF1QixDQUFDRSxPQUF4QixDQUFpQ0MsT0FBRCxJQUFhOztBQUV6QyxRQUFJQyxRQUFRLEdBQUdELE9BQU8sQ0FBQ0UsSUFBUixDQUFhRCxRQUE1QjtBQUNBLFFBQUlFLFFBQVEsR0FBR0gsT0FBTyxDQUFDSSxTQUF2QjtBQUNBLFFBQUlDLGFBQWEsR0FBR0wsT0FBTyxDQUFDSyxhQUE1QjtBQUNBLFFBQUlDLGdCQUFnQixHQUFHTixPQUFPLENBQUNNLGdCQUEvQjs7O0FBR0EsUUFBSUMsY0FBYyxHQUFJLENBQUNELGdCQUFELElBQXFCQSxnQkFBZ0IsSUFBSSxTQUExQztBQUNqQkUsSUFBQUEsT0FBTyxDQUFDUCxRQUFELENBQVAsQ0FBa0JRLE9BREQ7QUFFakJELElBQUFBLE9BQU8sQ0FBQ1AsUUFBRCxDQUFQLENBQWtCSyxnQkFBbEIsQ0FGSjs7O0FBS0EsUUFBSUksVUFBSjtBQUNBLFlBQVFMLGFBQVI7QUFDSSxXQUFLLFlBQUw7QUFDSUssUUFBQUEsVUFBVSxHQUFHSCxjQUFiO0FBQ0o7QUFDQSxXQUFLLDJCQUFMO0FBQ0E7QUFDSUcsUUFBQUEsVUFBVSxHQUFJUCxRQUFEO0FBQ1RJLFFBQUFBLGNBQWMsQ0FBQ0osUUFBRCxDQURMO0FBRVRJLFFBQUFBLGNBQWMsRUFGbEI7QUFHSixjQVRKOztBQVdBVCxJQUFBQSxlQUFlLENBQUNhLElBQWhCLENBQXFCRCxVQUFyQjtBQUNILEdBMUJEO0FBMkJBLFNBQU8seUJBQVFaLGVBQVIsQ0FBUDtBQUNILEMiLCJzb3VyY2VzQ29udGVudCI6WyJpbXBvcnQgY29tcG9zZSBmcm9tICdrb2EtY29tcG9zZSdcbmltcG9ydCB7IGRlZmF1bHQgYXMgQXBwbGljYXRpb24gfSBmcm9tICcuLi8uLi9jbGFzcy9BcHBsaWNhdGlvbi5jbGFzcy5qcydcblxuLy8gbGV0IHN0YXRpY01pZGRsZXdhcmVTZXR0aW5nID0gclxuLy8gICAgIC50YWJsZSgnc2V0dGluZycpIC8vIGZpcnN0IGZpZWxkIGFzc2lnbnMgbmFtZSBvZiB0YWJsZVxuLy8gICAgIC5ydW4oY29udGV4dC5yZXRoaW5rZGJDb25uZWN0aW9uKVxuLy8gICAgIC50aGVuKChjdXJzb3IpID0+IHtcbi8vICAgICAgICAgcmV0dXJuIGN1cnNvci50b0FycmF5KClcbi8vICAgICB9KVxuXG4vKipcbiAqIEBwYXJhbSB7YXJyYXl9IHN0YXRpY01pZGRsZXdhcmVTZXR0aW5nIGhvbGRzIHRoZSBqc29uIG1pZGRsZSBjb25maWd1cmF0aW9ucy4gV2hlcmUgZWFjaCBqc29uIGlzIGNvbXBvc2VkIG9mIGV4ZWN1dGlvblR5cGUsIGZpbGVQYXRoLCBhcmd1bWVudHMuXG4gKi9cbmV4cG9ydCBkZWZhdWx0IChcbiAgICBzdGF0aWNNaWRkbGV3YXJlU2V0dGluZyAvLyBtaWRkbGV3YXJlIG5lc3RlZCB1bml0cyBhcnJheS5cbikgPT4ge1xuICAgIGxldCBtaWRkbGV3YXJlQXJyYXkgPSBbXVxuICAgIFxuICAgIHN0YXRpY01pZGRsZXdhcmVTZXR0aW5nLmZvckVhY2goKHNldHRpbmcpID0+IHtcbiAgICAgICAgLy8gVE9ETzogY3JlYXRlIGFuIG9wdGlvbnMgZXh0cmFjdG9yIGZ1bmN0aW9uLlxuICAgICAgICBsZXQgZmlsZVBhdGggPSBzZXR0aW5nLmZpbGUuZmlsZVBhdGggLy8gbmVzdGVkIHVuaXQgZmlsZSdzIHByb3BlcnRpZXMuXG4gICAgICAgIGxldCBhcmd1bWVudCA9IHNldHRpbmcuYXJndW1lbnRzIC8vIG5lc3RlZCB1bml0IHVuaXQncyBwcm9wZXJ0aWVzLlxuICAgICAgICBsZXQgZXhlY3V0aW9uVHlwZSA9IHNldHRpbmcuZXhlY3V0aW9uVHlwZSAvLyBuZXN0ZWQgdW5pdCB1bml0J3MgcHJvcGVydGllcy5cbiAgICAgICAgbGV0IGltcG9ydE1vZHVsZU5hbWUgPSBzZXR0aW5nLmltcG9ydE1vZHVsZU5hbWVcblxuICAgICAgICAvLyBpbXBvcnQvbG9hZCBtb2R1bGVcbiAgICAgICAgbGV0IGV4cG9ydGVkTW9kdWxlID0gKCFpbXBvcnRNb2R1bGVOYW1lIHx8IGltcG9ydE1vZHVsZU5hbWUgPT0gJ2RlZmF1bHQnKSA/IFxuICAgICAgICAgICAgcmVxdWlyZShmaWxlUGF0aCkuZGVmYXVsdCA6IC8vIGltcG9ydCBkZWZhdWx0IGV4cG9ydCBmcm9tIHRoZSBtb2R1bGVcbiAgICAgICAgICAgIHJlcXVpcmUoZmlsZVBhdGgpW2ltcG9ydE1vZHVsZU5hbWVdOyAvLyBpbXBvcnQgdGhlIGV4cG9ydCB1c2luZyBpdCdzIG5hbWUuXG5cbiAgICAgICAgLy8gZXhlY3V0ZSBtb2R1bGVcbiAgICAgICAgbGV0IG1pZGRsZXdhcmU7XG4gICAgICAgIHN3aXRjaCAoZXhlY3V0aW9uVHlwZSkge1xuICAgICAgICAgICAgY2FzZSAnbWlkZGxld2FyZSc6XG4gICAgICAgICAgICAgICAgbWlkZGxld2FyZSA9IGV4cG9ydGVkTW9kdWxlXG4gICAgICAgICAgICBicmVhaztcbiAgICAgICAgICAgIGNhc2UgJ2Z1bmN0aW9uV3JhcHBlZE1pZGRsZXdhcmUnOlxuICAgICAgICAgICAgZGVmYXVsdDpcbiAgICAgICAgICAgICAgICBtaWRkbGV3YXJlID0gKGFyZ3VtZW50KSA/IFxuICAgICAgICAgICAgICAgICAgICBleHBvcnRlZE1vZHVsZShhcmd1bWVudCkgOlxuICAgICAgICAgICAgICAgICAgICBleHBvcnRlZE1vZHVsZSgpO1xuICAgICAgICAgICAgYnJlYWs7XG4gICAgICAgIH1cbiAgICAgICAgbWlkZGxld2FyZUFycmF5LnB1c2gobWlkZGxld2FyZSlcbiAgICB9LCB0aGlzKTtcbiAgICByZXR1cm4gY29tcG9zZShtaWRkbGV3YXJlQXJyYXkpXG59XG4iXX0=

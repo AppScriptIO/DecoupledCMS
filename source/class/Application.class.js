@@ -1,142 +1,141 @@
-import http from 'http'
-import assert from 'assert'
-import path from 'path'
-import filesystem from 'fs'
-import EventEmitter from 'events'
-import configuration from '../../setup/configuration/configuration.export.js' // Load configuration settings.
-import Koa from 'koa' // Koa applicaiton server
-import compose from 'koa-compose'
-import rethinkdbConfig from '../../setup/configuration/rethinkdbConfig.js'
-import { connect } from '../utilityFunction/middleware/commonDatabaseFunctionality.js'
-import { add, execute, applyMixin } from '@dependency/commonPattern/source/decoratorUtility.js'
-import addStaticSubclassToClassArray from '@dependency/commonPattern/source/addStaticSubclassToClassArray.staticMethod'
-import { extendedSubclassPattern } from '@dependency/commonPattern/source/extendedSubclassPattern.js'
-import underscore from 'underscore'
-import {default as getTableDocumentDefault} from "@dependency/databaseUtility/source/getTableDocument.query.js";
-import { getMergedMultipleDocumentOfSpecificLanguage as queryPatternImplementation} from "@dependency/databaseUtility/source/patternImplementation.js";
+"use strict";var _interopRequireDefault = require("@babel/runtime/helpers/interopRequireDefault");Object.defineProperty(exports, "__esModule", { value: true });exports.instance = exports.default = void 0;var _http = _interopRequireDefault(require("http"));
+var _assert = _interopRequireDefault(require("assert"));
+var _path = _interopRequireDefault(require("path"));
+var _fs = _interopRequireDefault(require("fs"));
+var _events = _interopRequireDefault(require("events"));
+var _configurationExport = _interopRequireDefault(require("../../setup/configuration/configuration.export.js"));
+var _koa = _interopRequireDefault(require("koa"));
 
-const self = 
-@add({ to: 'static'}, {
-    addStaticSubclassToClassArray
-})
-@extendedSubclassPattern.Superclass()
-class Application extends EventEmitter { /* Core event emitter module, different from the module used in the static property "self.eventEmitter" */
-    
-    static rethinkdbConnection = {}
-    static underscore;
-    static config = configuration // Array
-    static frontendStatic;
-    
-    static async initialize(/*staticSubclass*/) { // One-time initialization of Applicaiton Class.
-        console.info(`☕%c Running Application as ${self.config.DEPLOYMENT} - '${self.config.PROTOCOL}${self.config.HOST}'`, self.config.style.green)
-        assert.notStrictEqual(self.config.HOST, undefined)
-        
-        self.rethinkdbConnection = await connect()
-        
-        // TODO: Sync settings between multiple underscore installations or fix issue when multiple installations present.
-        // Solution option - when underscore used outside appscript module, export it to get it's settings.
-        // underscore template should have one single instance accross application - To affect changes of _ to the main app.
-        let underscorePath = require.resolve('underscore')
-        let appLevelUnderscorePath = path.resolve(__dirname, '../../../node_modules/underscore/underscore.js')
-        if(filesystem.existsSync(appLevelUnderscorePath) && underscorePath !== appLevelUnderscorePath) {
-            // case - multiple underscore installations present
-            console.log(`• Underscore template - Found multiple underscore installations, Using appscript local underscore instance (module in lower hierarchy) i.e. ${underscorePath}.`)
-            // self.underscore = require(appLevelUnderscorePath)
-            // throw 'Found multiple underscore installations. This will prevent consistent settings between modules that use underscore for templating e.g. koa-view and local appscript underscore usage.'
-        } else {
-            // single either appscript module installation or applevel installation.
-            console.log(`• Underscore template - Found a single installation of underscore, using ${underscorePath}.`)
-            // self.underscore = require(underscorePath)
-        }
-        
-        underscore.templateSettings = { // initial underscore template settings on first import gets applied on the rest.
-            evaluate: /\{\%(.+?)\%\}/g,
-            interpolate: /\{\%=(.+?)\%\}/g,
-            escape: /\{\%-(.+?)\%\}/g
-        }
-        console.info(`• Underscore template setting set as ${underscore.templateSettings.evaluate} ${underscore.templateSettings.interpolate} ${underscore.templateSettings.escape}`)
 
-        await self.eventEmitter.emit('initializationEnd')
-        await self.eventEmitter.emit('addSubclass')
-        await self.loadFrontendData() // initialize template document front end.
+var _commonDatabaseFunctionality = require("../utilityFunction/middleware/commonDatabaseFunctionality.js");
+var _decoratorUtility = require("@dependency/commonPattern/source/decoratorUtility.js");
+var _addStaticSubclassToClassArray = _interopRequireDefault(require("@dependency/commonPattern/source/addStaticSubclassToClassArray.staticMethod"));
+var _extendedSubclassPattern = require("@dependency/commonPattern/source/extendedSubclassPattern.js");
+var _underscore = _interopRequireDefault(require("underscore"));
+var _getTableDocumentQuery = _interopRequireDefault(require("@dependency/databaseUtility/source/getTableDocument.query.js"));var _dec, _dec2, _class, _class2, _temp;
 
-        // if(staticSubclass) self.addStaticSubclassToClassArray(staticSubclass)
-        console.log('• App up & running !')
+
+const self = (_dec =
+(0, _decoratorUtility.add)({ to: 'static' }, {
+  addStaticSubclassToClassArray: _addStaticSubclassToClassArray.default }), _dec2 =
+
+_extendedSubclassPattern.extendedSubclassPattern.Superclass(), _dec(_class = _dec2(_class = (_temp = _class2 = class
+Application extends _events.default {
+
+
+
+
+
+
+  static async initialize() {
+    console.info(`☕%c Running Application as ${self.config.DEPLOYMENT} - '${self.config.PROTOCOL}${self.config.HOST}'`, self.config.style.green);
+    _assert.default.notStrictEqual(self.config.HOST, undefined);
+
+    self.rethinkdbConnection = await (0, _commonDatabaseFunctionality.connect)();
+
+
+
+
+    let underscorePath = require.resolve('underscore');
+    let appLevelUnderscorePath = _path.default.resolve(__dirname, '../../../node_modules/underscore/underscore.js');
+    if (_fs.default.existsSync(appLevelUnderscorePath) && underscorePath !== appLevelUnderscorePath) {
+
+      console.log(`• Underscore template - Found multiple underscore installations, Using appscript local underscore instance (module in lower hierarchy) i.e. ${underscorePath}.`);
+
+
+    } else {
+
+      console.log(`• Underscore template - Found a single installation of underscore, using ${underscorePath}.`);
+
     }
 
-// Used by extended subclasses:
+    _underscore.default.templateSettings = {
+      evaluate: /\{\%(.+?)\%\}/g,
+      interpolate: /\{\%=(.+?)\%\}/g,
+      escape: /\{\%-(.+?)\%\}/g };
 
-    static initializeStaticClass() { // used for extended subclasses
-        let self = this
-        self.serverKoa = self.createKoaServer()
-    }
+    console.info(`• Underscore template setting set as ${_underscore.default.templateSettings.evaluate} ${_underscore.default.templateSettings.interpolate} ${_underscore.default.templateSettings.escape}`);
 
-    static async applyKoaMiddleware(middlewareArray = false) {
-        const self = this
-        if(middlewareArray) self.middlewareArray = middlewareArray
-        await self.middlewareArray.forEach((middleware) => {
-            self.serverKoa.use(middleware)
-        }, this)
-    }
+    await self.eventEmitter.emit('initializationEnd');
+    await self.eventEmitter.emit('addSubclass');
+    await self.loadFrontendData();
 
-    static createKoaServer() {
-        let serverKoa = new Koa() // export if script is required.
-        if(self.config.DEPLOYMENT == 'development') serverKoa.subdomainOffset = 1 // i.e. localhost
-        return serverKoa
-    }
 
-    static createHttpServer() {
-        return new Promise((resolve, reject) => {
-            const self = this
-            self.httpServer = http.createServer(self.serverKoa.callback())
-            // self.httpServer.on('connection', (socket) => {
-            //     console.info('SOCKET OPENED' + JSON.stringify(socket.address()))
-            //     socket.on('end', () => { console.info('SOCKET END: other end of the socket sends a FIN packet') })
-            //     socket.on('timeout', () => { console.info('SOCKET TIMEOUT') })
-            //     socket.on('error', (error) => { console.info('SOCKET ERROR: ' + JSON.stringify(error)) })
-            //     socket.on('close', (had_error) => { console.info('SOCKET CLOSED. Is ERROR ?: ' + had_error) })
-            // })
-            // self.httpServer.setTimeout(0, () => {
-            //     console.log('HTTP server connection socket was timedout (console.log in httpServer.setTimeout)!')
-            // })
-            self.httpServer.listen(self.port, ()=> {
-                console.log(`☕%c ${self.name} listening on port ${self.port}`, self.config.style.green)
-                resolve()
-            })
-        })
-    }
+    console.log('• App up & running !');
+  }
 
-    static async loadFrontendData() {
-        let getTableDocument = {
-            generate: getTableDocumentDefault,
-            instance: []
-        }
-        getTableDocument.instance['template_documentFrontend'] = await getTableDocument.generate('webappSetting', 'template_documentFrontend')
-        const documentFrontendData = await getTableDocument.instance['template_documentFrontend'](self.rethinkdbConnection)
-        let defaultLanguage = 'English'
-        // let uiContent = await queryPatternImplementation({
-        //     databaseConnection: Application.rethinkdbConnection,
-        //     languageDocumentKey: defaultLanguage,
-        //     dataTableName: 'ui'
-        // })
-        self.frontendStatic = { // Configurations passed to frontend 
-            config: self.config,
-            setting: {
-                location: {
-                    routeBasePath: `${self.config.PROTOCOL}${self.config.HOST}`,
-                    cdnBasePath: self.extendedSubclass.static['StaticContent'].url
-                },
-                mode: { // version / mode of app
-                    language: defaultLanguage // default language
-                }
-            },
-            route: 'route',
-            document: documentFrontendData, 
-            // uiContent: uiContent
-        }
-    }
 
-}
-const instance = new self();
 
-export { self as default, instance as instance }
+  static initializeStaticClass() {
+    let self = this;
+    self.serverKoa = self.createKoaServer();
+  }
+
+  static async applyKoaMiddleware(middlewareArray = false) {
+    const self = this;
+    if (middlewareArray) self.middlewareArray = middlewareArray;
+    await self.middlewareArray.forEach(middleware => {
+      self.serverKoa.use(middleware);
+    }, this);
+  }
+
+  static createKoaServer() {
+    let serverKoa = new _koa.default();
+    if (self.config.DEPLOYMENT == 'development') serverKoa.subdomainOffset = 1;
+    return serverKoa;
+  }
+
+  static createHttpServer() {
+    return new Promise((resolve, reject) => {
+      const self = this;
+      self.httpServer = _http.default.createServer(self.serverKoa.callback());
+
+
+
+
+
+
+
+
+
+
+      self.httpServer.listen(self.port, () => {
+        console.log(`☕%c ${self.name} listening on port ${self.port}`, self.config.style.green);
+        resolve();
+      });
+    });
+  }
+
+  static async loadFrontendData() {
+    let getTableDocument = {
+      generate: _getTableDocumentQuery.default,
+      instance: [] };
+
+    getTableDocument.instance['template_documentFrontend'] = await getTableDocument.generate('webappSetting', 'template_documentFrontend');
+    const documentFrontendData = await getTableDocument.instance['template_documentFrontend'](self.rethinkdbConnection);
+    let defaultLanguage = 'English';
+
+
+
+
+
+    self.frontendStatic = {
+      config: self.config,
+      setting: {
+        location: {
+          routeBasePath: `${self.config.PROTOCOL}${self.config.HOST}`,
+          cdnBasePath: self.extendedSubclass.static['StaticContent'].url },
+
+        mode: {
+          language: defaultLanguage } },
+
+
+      route: 'route',
+      document: documentFrontendData };
+
+
+  }}, _class2.rethinkdbConnection = {}, _class2.config = _configurationExport.default, _temp)) || _class) || _class);exports.default = self;
+
+
+const instance = new self();exports.instance = instance;
+//# sourceMappingURL=data:application/json;charset=utf-8;base64,eyJ2ZXJzaW9uIjozLCJzb3VyY2VzIjpbIi4uLy4uLy4uL3NvdXJjZS9jbGFzcy9BcHBsaWNhdGlvbi5jbGFzcy5qcyJdLCJuYW1lcyI6WyJzZWxmIiwidG8iLCJhZGRTdGF0aWNTdWJjbGFzc1RvQ2xhc3NBcnJheSIsImV4dGVuZGVkU3ViY2xhc3NQYXR0ZXJuIiwiU3VwZXJjbGFzcyIsIkFwcGxpY2F0aW9uIiwiRXZlbnRFbWl0dGVyIiwiaW5pdGlhbGl6ZSIsImNvbnNvbGUiLCJpbmZvIiwiY29uZmlnIiwiREVQTE9ZTUVOVCIsIlBST1RPQ09MIiwiSE9TVCIsInN0eWxlIiwiZ3JlZW4iLCJhc3NlcnQiLCJub3RTdHJpY3RFcXVhbCIsInVuZGVmaW5lZCIsInJldGhpbmtkYkNvbm5lY3Rpb24iLCJ1bmRlcnNjb3JlUGF0aCIsInJlcXVpcmUiLCJyZXNvbHZlIiwiYXBwTGV2ZWxVbmRlcnNjb3JlUGF0aCIsInBhdGgiLCJfX2Rpcm5hbWUiLCJmaWxlc3lzdGVtIiwiZXhpc3RzU3luYyIsImxvZyIsInVuZGVyc2NvcmUiLCJ0ZW1wbGF0ZVNldHRpbmdzIiwiZXZhbHVhdGUiLCJpbnRlcnBvbGF0ZSIsImVzY2FwZSIsImV2ZW50RW1pdHRlciIsImVtaXQiLCJsb2FkRnJvbnRlbmREYXRhIiwiaW5pdGlhbGl6ZVN0YXRpY0NsYXNzIiwic2VydmVyS29hIiwiY3JlYXRlS29hU2VydmVyIiwiYXBwbHlLb2FNaWRkbGV3YXJlIiwibWlkZGxld2FyZUFycmF5IiwiZm9yRWFjaCIsIm1pZGRsZXdhcmUiLCJ1c2UiLCJLb2EiLCJzdWJkb21haW5PZmZzZXQiLCJjcmVhdGVIdHRwU2VydmVyIiwiUHJvbWlzZSIsInJlamVjdCIsImh0dHBTZXJ2ZXIiLCJodHRwIiwiY3JlYXRlU2VydmVyIiwiY2FsbGJhY2siLCJsaXN0ZW4iLCJwb3J0IiwibmFtZSIsImdldFRhYmxlRG9jdW1lbnQiLCJnZW5lcmF0ZSIsImdldFRhYmxlRG9jdW1lbnREZWZhdWx0IiwiaW5zdGFuY2UiLCJkb2N1bWVudEZyb250ZW5kRGF0YSIsImRlZmF1bHRMYW5ndWFnZSIsImZyb250ZW5kU3RhdGljIiwic2V0dGluZyIsImxvY2F0aW9uIiwicm91dGVCYXNlUGF0aCIsImNkbkJhc2VQYXRoIiwiZXh0ZW5kZWRTdWJjbGFzcyIsInN0YXRpYyIsInVybCIsIm1vZGUiLCJsYW5ndWFnZSIsInJvdXRlIiwiZG9jdW1lbnQiLCJjb25maWd1cmF0aW9uIl0sIm1hcHBpbmdzIjoiNE1BQUE7QUFDQTtBQUNBO0FBQ0E7QUFDQTtBQUNBO0FBQ0E7OztBQUdBO0FBQ0E7QUFDQTtBQUNBO0FBQ0E7QUFDQSw2SDs7O0FBR0EsTUFBTUEsSUFBSTtBQUNULDJCQUFJLEVBQUVDLEVBQUUsRUFBRSxRQUFOLEVBQUosRUFBcUI7QUFDbEJDLEVBQUFBLDZCQUE2QixFQUE3QkEsc0NBRGtCLEVBQXJCLENBRFM7O0FBSVRDLGlEQUF3QkMsVUFBeEIsRUFKUyxrREFDVjtBQUlNQyxXQUpOLFNBSTBCQyxlQUoxQixDQUl1Qzs7Ozs7OztBQU9uQyxlQUFhQyxVQUFiLEdBQTRDO0FBQ3hDQyxJQUFBQSxPQUFPLENBQUNDLElBQVIsQ0FBYyw4QkFBNkJULElBQUksQ0FBQ1UsTUFBTCxDQUFZQyxVQUFXLE9BQU1YLElBQUksQ0FBQ1UsTUFBTCxDQUFZRSxRQUFTLEdBQUVaLElBQUksQ0FBQ1UsTUFBTCxDQUFZRyxJQUFLLEdBQWhILEVBQW9IYixJQUFJLENBQUNVLE1BQUwsQ0FBWUksS0FBWixDQUFrQkMsS0FBdEk7QUFDQUMsb0JBQU9DLGNBQVAsQ0FBc0JqQixJQUFJLENBQUNVLE1BQUwsQ0FBWUcsSUFBbEMsRUFBd0NLLFNBQXhDOztBQUVBbEIsSUFBQUEsSUFBSSxDQUFDbUIsbUJBQUwsR0FBMkIsTUFBTSwyQ0FBakM7Ozs7O0FBS0EsUUFBSUMsY0FBYyxHQUFHQyxPQUFPLENBQUNDLE9BQVIsQ0FBZ0IsWUFBaEIsQ0FBckI7QUFDQSxRQUFJQyxzQkFBc0IsR0FBR0MsY0FBS0YsT0FBTCxDQUFhRyxTQUFiLEVBQXdCLGdEQUF4QixDQUE3QjtBQUNBLFFBQUdDLFlBQVdD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RUFBdkI7O0FBSUFILElBQUFBLGdCQUFnQixDQUFDRyxRQUFqQixDQUEwQiwyQkFBMUIsSUFBeUQsTUFBTUgsZ0JBQWdCLENBQUNDLFFBQWpCLENBQTBCLGVBQTFCLEVBQTJDLDJCQUEzQyxDQUEvRDtBQUNBLFVBQU1HLG9CQUFvQixHQUFHLE1BQU1KLGdCQUFnQixDQUFDRyxRQUFqQixDQUEwQiwyQkFBMUIsRUFBdUQ1RCxJQUFJLENBQUNtQixtQkFBNUQsQ0FBbkM7QUFDQSxRQUFJMkMsZUFBZSxHQUFHLFNBQXRCOzs7Ozs7QUFNQTlELElBQUFBLElBQUksQ0FBQytELGNBQUwsR0FBc0I7QUFDbEJyRCxNQUFBQSxNQUFNLEVBQUVWLElBQUksQ0FBQ1UsTUFESztBQUVsQnNELE1BQUFBLE9BQU8sRUFBRTtBQUNMQyxRQUFBQSxRQUFRLEVBQUU7QUFDTkMsVUFBQUEsYUFBYSxFQUFHLEdBQUVsRSxJQUFJLENBQUNVLE1BQUwsQ0FBWUUsUUFBUyxHQUFFWixJQUFJLENBQUNVLE1BQUwsQ0FBWUcsSUFBSyxFQURwRDtBQUVOc0QsVUFBQUEsV0FBVyxFQUFFbkUsSUFBSSxDQUFDb0UsZ0JBQUwsQ0FBc0JDLE1BQXRCLENBQTZCLGVBQTdCLEVBQThDQyxHQUZyRCxFQURMOztBQUtMQyxRQUFBQSxJQUFJLEVBQUU7QUFDRkMsVUFBQUEsUUFBUSxFQUFFVixlQURSLEVBTEQsRUFGUzs7O0FBV2xCVyxNQUFBQSxLQUFLLEVBQUUsT0FYVztBQVlsQkMsTUFBQUEsUUFBUSxFQUFFYixvQkFaUSxFQUF0Qjs7O0FBZUgsR0FsSGtDLENBTDdCLFVBT0MxQyxtQkFQRCxHQU91QixFQVB2QixVQVNDVCxNQVRELEdBU1VpRSw0QkFUViwrQkFBVixDOzs7QUEwSEEsTUFBTWYsUUFBUSxHQUFHLElBQUk1RCxJQUFKLEVBQWpCLEMiLCJzb3VyY2VzQ29udGVudCI6WyJpbXBvcnQgaHR0cCBmcm9tICdodHRwJ1xuaW1wb3J0IGFzc2VydCBmcm9tICdhc3NlcnQnXG5pbXBvcnQgcGF0aCBmcm9tICdwYXRoJ1xuaW1wb3J0IGZpbGVzeXN0ZW0gZnJvbSAnZnMnXG5pbXBvcnQgRXZlbnRFbWl0dGVyIGZyb20gJ2V2ZW50cydcbmltcG9ydCBjb25maWd1cmF0aW9uIGZyb20gJy4uLy4uL3NldHVwL2NvbmZpZ3VyYXRpb24vY29uZmlndXJhdGlvbi5leHBvcnQuanMnIC8vIExvYWQgY29uZmlndXJhdGlvbiBzZXR0aW5ncy5cbmltcG9ydCBLb2EgZnJvbSAna29hJyAvLyBLb2EgYXBwbGljYWl0b24gc2VydmVyXG5pbXBvcnQgY29tcG9zZSBmcm9tICdrb2EtY29tcG9zZSdcbmltcG9ydCByZXRoaW5rZGJDb25maWcgZnJvbSAnLi4vLi4vc2V0dXAvY29uZmlndXJhdGlvbi9yZXRoaW5rZGJDb25maWcuanMnXG5pbXBvcnQgeyBjb25uZWN0IH0gZnJvbSAnLi4vdXRpbGl0eUZ1bmN0aW9uL21pZGRsZXdhcmUvY29tbW9uRGF0YWJhc2VGdW5jdGlvbmFsaXR5LmpzJ1xuaW1wb3J0IHsgYWRkLCBleGVjdXRlLCBhcHBseU1peGluIH0gZnJvbSAnQGRlcGVuZGVuY3kvY29tbW9uUGF0dGVybi9zb3VyY2UvZGVjb3JhdG9yVXRpbGl0eS5qcydcbmltcG9ydCBhZGRTdGF0aWNTdWJjbGFzc1RvQ2xhc3NBcnJheSBmcm9tICdAZGVwZW5kZW5jeS9jb21tb25QYXR0ZXJuL3NvdXJjZS9hZGRTdGF0aWNTdWJjbGFzc1RvQ2xhc3NBcnJheS5zdGF0aWNNZXRob2QnXG5pbXBvcnQgeyBleHRlbmRlZFN1YmNsYXNzUGF0dGVybiB9IGZyb20gJ0BkZXBlbmRlbmN5L2NvbW1vblBhdHRlcm4vc291cmNlL2V4dGVuZGVkU3ViY2xhc3NQYXR0ZXJuLmpzJ1xuaW1wb3J0IHVuZGVyc2NvcmUgZnJvbSAndW5kZXJzY29yZSdcbmltcG9ydCB7ZGVmYXVsdCBhcyBnZXRUYWJsZURvY3VtZW50RGVmYXVsdH0gZnJvbSBcIkBkZXBlbmRlbmN5L2RhdGFiYXNlVXRpbGl0eS9zb3VyY2UvZ2V0VGFibGVEb2N1bWVudC5xdWVyeS5qc1wiO1xuaW1wb3J0IHsgZ2V0TWVyZ2VkTXVsdGlwbGVEb2N1bWVudE9mU3BlY2lmaWNMYW5ndWFnZSBhcyBxdWVyeVBhdHRlcm5JbXBsZW1lbnRhdGlvbn0gZnJvbSBcIkBkZXBlbmRlbmN5L2RhdGFiYXNlVXRpbGl0eS9zb3VyY2UvcGF0dGVybkltcGxlbWVudGF0aW9uLmpzXCI7XG5cbmNvbnN0IHNlbGYgPSBcbkBhZGQoeyB0bzogJ3N0YXRpYyd9LCB7XG4gICAgYWRkU3RhdGljU3ViY2xhc3NUb0NsYXNzQXJyYXlcbn0pXG5AZXh0ZW5kZWRTdWJjbGFzc1BhdHRlcm4uU3VwZXJjbGFzcygpXG5jbGFzcyBBcHBsaWNhdGlvbiBleHRlbmRzIEV2ZW50RW1pdHRlciB7IC8qIENvcmUgZXZlbnQgZW1pdHRlciBtb2R1bGUsIGRpZmZlcmVudCBmcm9tIHRoZSBtb2R1bGUgdXNlZCBpbiB0aGUgc3RhdGljIHByb3BlcnR5IFwic2VsZi5ldmVudEVtaXR0ZXJcIiAqL1xuICAgIFxuICAgIHN0YXRpYyByZXRoaW5rZGJDb25uZWN0aW9uID0ge31cbiAgICBzdGF0aWMgdW5kZXJzY29yZTtcbiAgICBzdGF0aWMgY29uZmlnID0gY29uZmlndXJhdGlvbiAvLyBBcnJheVxuICAgIHN0YXRpYyBmcm9udGVuZFN0YXRpYztcbiAgICBcbiAgICBzdGF0aWMgYXN5bmMgaW5pdGlhbGl6ZSgvKnN0YXRpY1N1YmNsYXNzKi8pIHsgLy8gT25lLXRpbWUgaW5pdGlhbGl6YXRpb24gb2YgQXBwbGljYWl0b24gQ2xhc3MuXG4gICAgICAgIGNvbnNvbGUuaW5mbyhg4piVJWMgUnVubmluZyBBcHBsaWNhdGlvbiBhcyAke3NlbGYuY29uZmlnLkRFUExPWU1FTlR9IC0gJyR7c2VsZi5jb25maWcuUFJPVE9DT0x9JHtzZWxmLmNvbmZpZy5IT1NUfSdgLCBzZWxmLmNvbmZpZy5zdHlsZS5ncmVlbilcbiAgICAgICAgYXNzZXJ0Lm5vdFN0cmljdEVxdWFsKHNlbGYuY29uZmlnLkhPU1QsIHVuZGVmaW5lZClcbiAgICAgICAgXG4gICAgICAgIHNlbGYucmV0aGlua2RiQ29ubmVjdGlvbiA9IGF3YWl0IGNvbm5lY3QoKVxuICAgICAgICBcbiAgICAgICAgLy8gVE9ETzogU3luYyBzZXR0aW5ncyBiZXR3ZWVuIG11bHRpcGxlIHVuZGVyc2NvcmUgaW5zdGFsbGF0aW9ucyBvciBmaXggaXNzdWUgd2hlbiBtdWx0aXBsZSBpbnN0YWxsYXRpb25zIHByZXNlbnQuXG4gICAgICAgIC8vIFNvbHV0aW9uIG9wdGlvbiAtIHdoZW4gdW5kZXJzY29yZSB1c2VkIG91dHNpZGUgYXBwc2NyaXB0IG1vZHVsZSwgZXhwb3J0IGl0IHRvIGdldCBpdCdzIHNldHRpbmdzLlxuICAgICAgICAvLyB1bmRlcnNjb3JlIHRlbXBsYXRlIHNob3VsZCBoYXZlIG9uZSBzaW5nbGUgaW5zdGFuY2UgYWNjcm9zcyBhcHBsaWNhdGlvbiAtIFRvIGFmZmVjdCBjaGFuZ2VzIG9mIF8gdG8gdGhlIG1haW4gYXBwLlxuICAgICAgICBsZXQgdW5kZXJzY29yZVBhdGggPSByZXF1aXJlLnJlc29sdmUoJ3VuZGVyc2NvcmUnKVxuICAgICAgICBsZXQgYXBwTGV2ZWxVbmRlcnNjb3JlUGF0aCA9IHBhdGgucmVzb2x2ZShfX2Rpcm5hbWUsICcuLi8uLi8uLi9ub2RlX21vZHVsZXMvdW5kZXJzY29yZS91bmRlcnNjb3JlLmpzJylcbiAgICAgICAgaWYoZmlsZXN5c3RlbS5leGlzdHNTeW5jKGFwcExldmVsVW5kZXJzY29yZVBhdGgpICYmIHVuZGVyc2NvcmVQYXRoICE9PSBhcHBMZXZlbFVuZGVyc2NvcmVQYXRoKSB7XG4gICAgICAgICAgICAvLyBjYXNlIC0gbXVsdGlwbGUgdW5kZXJzY29yZSBpbnN0YWxsYXRpb25zIHByZXNlbnRcbiAgICAgICAgICAgIGNvbnNvbGUubG9nKGDigKIgVW5kZXJzY29yZSB0ZW1wbGF0ZSAtIEZvdW5kIG11bHRpcGxlIHVuZGVyc2NvcmUgaW5zdGFsbGF0aW9ucywgVXNpbmcgYXBwc2NyaXB0IGxvY2FsIHVuZGVyc2NvcmUgaW5zdGFuY2UgKG1vZHVsZSBpbiBsb3dlciBoaWVyYXJjaHkpIGkuZS4gJHt1bmRlcnNjb3JlUGF0aH0uYClcbiAgICAgICAgICAgIC8vIHNlbGYudW5kZXJzY29yZSA9IHJlcXVpcmUoYXBwTGV2ZWxVbmRlcnNjb3JlUGF0aClcbiAgICAgICAgICAgIC8vIHRocm93ICdGb3VuZCBtdWx0aXBsZSB1bmRlcnNjb3JlIGluc3RhbGxhdGlvbnMuIFRoaXMgd2lsbCBwcmV2ZW50IGNvbnNpc3RlbnQgc2V0dGluZ3MgYmV0d2VlbiBtb2R1bGVzIHRoYXQgdXNlIHVuZGVyc2NvcmUgZm9yIHRlbXBsYXRpbmcgZS5nLiBrb2EtdmlldyBhbmQgbG9jYWwgYXBwc2NyaXB0IHVuZGVyc2NvcmUgdXNhZ2UuJ1xuICAgICAgICB9IGVsc2Uge1xuICAgICAgICAgICAgLy8gc2luZ2xlIGVpdGhlciBhcHBzY3JpcHQgbW9kdWxlIGluc3RhbGxhdGlvbiBvciBhcHBsZXZlbCBpbnN0YWxsYXRpb24uXG4gICAgICAgICAgICBjb25zb2xlLmxvZyhg4oCiIFVuZGVyc2NvcmUgdGVtcGxhdGUgLSBGb3VuZCBhIHNpbmdsZSBpbnN0YWxsYXRpb24gb2YgdW5kZXJzY29yZSwgdXNpbmcgJHt1bmRlcnNjb3JlUGF0aH0uYClcbiAgICAgICAgICAgIC8vIHNlbGYudW5kZXJzY29yZSA9IHJlcXVpcmUodW5kZXJzY29yZVBhdGgpXG4gICAgICAgIH1cbiAgICAgICAgXG4gICAgICAgIHVuZGVyc2NvcmUudGVtcGxhdGVTZXR0aW5ncyA9IHsgLy8gaW5pdGlhbCB1bmRlcnNjb3JlIHRlbXBsYXRlIHNldHRpbmdzIG9uIGZpcnN0IGltcG9ydCBnZXRzIGFwcGxpZWQgb24gdGhlIHJlc3QuXG4gICAgICAgICAgICBldmFsdWF0ZTogL1xce1xcJSguKz8pXFwlXFx9L2csXG4gICAgICAgICAgICBpbnRlcnBvbGF0ZTogL1xce1xcJT0oLis/KVxcJVxcfS9nLFxuICAgICAgICAgICAgZXNjYXBlOiAvXFx7XFwlLSguKz8pXFwlXFx9L2dcbiAgICAgICAgfVxuICAgICAgICBjb25zb2xlLmluZm8oYOKAoiBVbmRlcnNjb3JlIHRlbXBsYXRlIHNldHRpbmcgc2V0IGFzICR7dW5kZXJzY29yZS50ZW1wbGF0ZVNldHRpbmdzLmV2YWx1YXRlfSAke3VuZGVyc2NvcmUudGVtcGxhdGVTZXR0aW5ncy5pbnRlcnBvbGF0ZX0gJHt1bmRlcnNjb3JlLnRlbXBsYXRlU2V0dGluZ3MuZXNjYXBlfWApXG5cbiAgICAgICAgYXdhaXQgc2VsZi5ldmVudEVtaXR0ZXIuZW1pdCgnaW5pdGlhbGl6YXRpb25FbmQnKVxuICAgICAgICBhd2FpdCBzZWxmLmV2ZW50RW1pdHRlci5lbWl0KCdhZGRTdWJjbGFzcycpXG4gICAgICAgIGF3YWl0IHNlbGYubG9hZEZyb250ZW5kRGF0YSgpIC8vIGluaXRpYWxpemUgdGVtcGxhdGUgZG9jdW1lbnQgZnJvbnQgZW5kLlxuXG4gICAgICAgIC8vIGlmKHN0YXRpY1N1YmNsYXNzKSBzZWxmLmFkZFN0YXRpY1N1YmNsYXNzVG9DbGFzc0FycmF5KHN0YXRpY1N1YmNsYXNzKVxuICAgICAgICBjb25zb2xlLmxvZygn4oCiIEFwcCB1cCAmIHJ1bm5pbmcgIScpXG4gICAgfVxuXG4vLyBVc2VkIGJ5IGV4dGVuZGVkIHN1YmNsYXNzZXM6XG5cbiAgICBzdGF0aWMgaW5pdGlhbGl6ZVN0YXRpY0NsYXNzKCkgeyAvLyB1c2VkIGZvciBleHRlbmRlZCBzdWJjbGFzc2VzXG4gICAgICAgIGxldCBzZWxmID0gdGhpc1xuICAgICAgICBzZWxmLnNlcnZlcktvYSA9IHNlbGYuY3JlYXRlS29hU2VydmVyKClcbiAgICB9XG5cbiAgICBzdGF0aWMgYXN5bmMgYXBwbHlLb2FNaWRkbGV3YXJlKG1pZGRsZXdhcmVBcnJheSA9IGZhbHNlKSB7XG4gICAgICAgIGNvbnN0IHNlbGYgPSB0aGlzXG4gICAgICAgIGlmKG1pZGRsZXdhcmVBcnJheSkgc2VsZi5taWRkbGV3YXJlQXJyYXkgPSBtaWRkbGV3YXJlQXJyYXlcbiAgICAgICAgYXdhaXQgc2VsZi5taWRkbGV3YXJlQXJyYXkuZm9yRWFjaCgobWlkZGxld2FyZSkgPT4ge1xuICAgICAgICAgICAgc2VsZi5zZXJ2ZXJLb2EudXNlKG1pZGRsZXdhcmUpXG4gICAgICAgIH0sIHRoaXMpXG4gICAgfVxuXG4gICAgc3RhdGljIGNyZWF0ZUtvYVNlcnZlcigpIHtcbiAgICAgICAgbGV0IHNlcnZlcktvYSA9IG5ldyBLb2EoKSAvLyBleHBvcnQgaWYgc2NyaXB0IGlzIHJlcXVpcmVkLlxuICAgICAgICBpZihzZWxmLmNvbmZpZy5ERVBMT1lNRU5UID09ICdkZXZlbG9wbWVudCcpIHNlcnZlcktvYS5zdWJkb21haW5PZmZzZXQgPSAxIC8vIGkuZS4gbG9jYWxob3N0XG4gICAgICAgIHJldHVybiBzZXJ2ZXJLb2FcbiAgICB9XG5cbiAgICBzdGF0aWMgY3JlYXRlSHR0cFNlcnZlcigpIHtcbiAgICAgICAgcmV0dXJuIG5ldyBQcm9taXNlKChyZXNvbHZlLCByZWplY3QpID0+IHtcbiAgICAgICAgICAgIGNvbnN0IHNlbGYgPSB0aGlzXG4gICAgICAgICAgICBzZWxmLmh0dHBTZXJ2ZXIgPSBodHRwLmNyZWF0ZVNlcnZlcihzZWxmLnNlcnZlcktvYS5jYWxsYmFjaygpKVxuICAgICAgICAgICAgLy8gc2VsZi5odHRwU2VydmVyLm9uKCdjb25uZWN0aW9uJywgKHNvY2tldCkgPT4ge1xuICAgICAgICAgICAgLy8gICAgIGNvbnNvbGUuaW5mbygnU09DS0VUIE9QRU5FRCcgKyBKU09OLnN0cmluZ2lmeShzb2NrZXQuYWRkcmVzcygpKSlcbiAgICAgICAgICAgIC8vICAgICBzb2NrZXQub24oJ2VuZCcsICgpID0+IHsgY29uc29sZS5pbmZvKCdTT0NLRVQgRU5EOiBvdGhlciBlbmQgb2YgdGhlIHNvY2tldCBzZW5kcyBhIEZJTiBwYWNrZXQnKSB9KVxuICAgICAgICAgICAgLy8gICAgIHNvY2tldC5vbigndGltZW91dCcsICgpID0+IHsgY29uc29sZS5pbmZvKCdTT0NLRVQgVElNRU9VVCcpIH0pXG4gICAgICAgICAgICAvLyAgICAgc29ja2V0Lm9uKCdlcnJvcicsIChlcnJvcikgPT4geyBjb25zb2xlLmluZm8oJ1NPQ0tFVCBFUlJPUjogJyArIEpTT04uc3RyaW5naWZ5KGVycm9yKSkgfSlcbiAgICAgICAgICAgIC8vICAgICBzb2NrZXQub24oJ2Nsb3NlJywgKGhhZF9lcnJvcikgPT4geyBjb25zb2xlLmluZm8oJ1NPQ0tFVCBDTE9TRUQuIElzIEVSUk9SID86ICcgKyBoYWRfZXJyb3IpIH0pXG4gICAgICAgICAgICAvLyB9KVxuICAgICAgICAgICAgLy8gc2VsZi5odHRwU2VydmVyLnNldFRpbWVvdXQoMCwgKCkgPT4ge1xuICAgICAgICAgICAgLy8gICAgIGNvbnNvbGUubG9nKCdIVFRQIHNlcnZlciBjb25uZWN0aW9uIHNvY2tldCB3YXMgdGltZWRvdXQgKGNvbnNvbGUubG9nIGluIGh0dHBTZXJ2ZXIuc2V0VGltZW91dCkhJylcbiAgICAgICAgICAgIC8vIH0pXG4gICAgICAgICAgICBzZWxmLmh0dHBTZXJ2ZXIubGlzdGVuKHNlbGYucG9ydCwgKCk9PiB7XG4gICAgICAgICAgICAgICAgY29uc29sZS5sb2coYOKYlSVjICR7c2VsZi5uYW1lfSBsaXN0ZW5pbmcgb24gcG9ydCAke3NlbGYucG9ydH1gLCBzZWxmLmNvbmZpZy5zdHlsZS5ncmVlbilcbiAgICAgICAgICAgICAgICByZXNvbHZlKClcbiAgICAgICAgICAgIH0pXG4gICAgICAgIH0pXG4gICAgfVxuXG4gICAgc3RhdGljIGFzeW5jIGxvYWRGcm9udGVuZERhdGEoKSB7XG4gICAgICAgIGxldCBnZXRUYWJsZURvY3VtZW50ID0ge1xuICAgICAgICAgICAgZ2VuZXJhdGU6IGdldFRhYmxlRG9jdW1lbnREZWZhdWx0LFxuICAgICAgICAgICAgaW5zdGFuY2U6IFtdXG4gICAgICAgIH1cbiAgICAgICAgZ2V0VGFibGVEb2N1bWVudC5pbnN0YW5jZVsndGVtcGxhdGVfZG9jdW1lbnRGcm9udGVuZCddID0gYXdhaXQgZ2V0VGFibGVEb2N1bWVudC5nZW5lcmF0ZSgnd2ViYXBwU2V0dGluZycsICd0ZW1wbGF0ZV9kb2N1bWVudEZyb250ZW5kJylcbiAgICAgICAgY29uc3QgZG9jdW1lbnRGcm9udGVuZERhdGEgPSBhd2FpdCBnZXRUYWJsZURvY3VtZW50Lmluc3RhbmNlWyd0ZW1wbGF0ZV9kb2N1bWVudEZyb250ZW5kJ10oc2VsZi5yZXRoaW5rZGJDb25uZWN0aW9uKVxuICAgICAgICBsZXQgZGVmYXVsdExhbmd1YWdlID0gJ0VuZ2xpc2gnXG4gICAgICAgIC8vIGxldCB1aUNvbnRlbnQgPSBhd2FpdCBxdWVyeVBhdHRlcm5JbXBsZW1lbnRhdGlvbih7XG4gICAgICAgIC8vICAgICBkYXRhYmFzZUNvbm5lY3Rpb246IEFwcGxpY2F0aW9uLnJldGhpbmtkYkNvbm5lY3Rpb24sXG4gICAgICAgIC8vICAgICBsYW5ndWFnZURvY3VtZW50S2V5OiBkZWZhdWx0TGFuZ3VhZ2UsXG4gICAgICAgIC8vICAgICBkYXRhVGFibGVOYW1lOiAndWknXG4gICAgICAgIC8vIH0pXG4gICAgICAgIHNlbGYuZnJvbnRlbmRTdGF0aWMgPSB7IC8vIENvbmZpZ3VyYXRpb25zIHBhc3NlZCB0byBmcm9udGVuZCBcbiAgICAgICAgICAgIGNvbmZpZzogc2VsZi5jb25maWcsXG4gICAgICAgICAgICBzZXR0aW5nOiB7XG4gICAgICAgICAgICAgICAgbG9jYXRpb246IHtcbiAgICAgICAgICAgICAgICAgICAgcm91dGVCYXNlUGF0aDogYCR7c2VsZi5jb25maWcuUFJPVE9DT0x9JHtzZWxmLmNvbmZpZy5IT1NUfWAsXG4gICAgICAgICAgICAgICAgICAgIGNkbkJhc2VQYXRoOiBzZWxmLmV4dGVuZGVkU3ViY2xhc3Muc3RhdGljWydTdGF0aWNDb250ZW50J10udXJsXG4gICAgICAgICAgICAgICAgfSxcbiAgICAgICAgICAgICAgICBtb2RlOiB7IC8vIHZlcnNpb24gLyBtb2RlIG9mIGFwcFxuICAgICAgICAgICAgICAgICAgICBsYW5ndWFnZTogZGVmYXVsdExhbmd1YWdlIC8vIGRlZmF1bHQgbGFuZ3VhZ2VcbiAgICAgICAgICAgICAgICB9XG4gICAgICAgICAgICB9LFxuICAgICAgICAgICAgcm91dGU6ICdyb3V0ZScsXG4gICAgICAgICAgICBkb2N1bWVudDogZG9jdW1lbnRGcm9udGVuZERhdGEsIFxuICAgICAgICAgICAgLy8gdWlDb250ZW50OiB1aUNvbnRlbnRcbiAgICAgICAgfVxuICAgIH1cblxufVxuY29uc3QgaW5zdGFuY2UgPSBuZXcgc2VsZigpO1xuXG5leHBvcnQgeyBzZWxmIGFzIGRlZmF1bHQsIGluc3RhbmNlIGFzIGluc3RhbmNlIH0iXX0=

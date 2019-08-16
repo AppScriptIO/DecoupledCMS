@@ -1,35 +1,36 @@
-
+"use strict";Object.defineProperty(exports, "__esModule", { value: true });exports.default = _default;
 const namedImportMap = [
-    {
-        namedImport: 'webcomponent', // @webcomponent
-        path: 'asset/webcomponent'
-    },
-    {
-        namedImport: 'javascript', // @javascript
-        path: 'asset/javascript'
-    }        
-]
+{
+  namedImport: 'webcomponent',
+  path: 'asset/webcomponent' },
+
+{
+  namedImport: 'javascript',
+  path: 'asset/javascript' }];
 
 
-export default function () {
-    return async (context, next) => {
-        let path = context.path
-        // path = path.replace(/^\/|\/$/g, '') // remove first and last slash
-        let pathArray = path.split('/').filter(item => item) // split path and remove empty values
-        let firstURLPart = pathArray[0]
-        // let lastIndexPosition = (path.indexOf("/") == -1) ? path.length : path.indexOf("/");
-        let relativeAtPathName = firstURLPart.substring(firstURLPart.indexOf("@") + 1, firstURLPart.length)
-        
-        let namedImportObject = namedImportMap.filter(item => item.namedImport == relativeAtPathName)[0] // example '/@webcomponent/package/x/x.js'
-        let mappedPath = namedImportObject.path
-        
-        context.relativeAtPathName = relativeAtPathName
-        // change path if @ path is mapped
-        // if(mappedPath) context.path = context.path.replace(`@${relativeAtPathName}`, mappedPath)
-        if(mappedPath) { // replace part to be mapped
-            pathArray[0] = mappedPath
-            context.path = pathArray.join('/')
-        }
-        await next()
+
+
+function _default() {
+  return async (context, next) => {
+    let path = context.path;
+
+    let pathArray = path.split('/').filter(item => item);
+    let firstURLPart = pathArray[0];
+
+    let relativeAtPathName = firstURLPart.substring(firstURLPart.indexOf("@") + 1, firstURLPart.length);
+
+    let namedImportObject = namedImportMap.filter(item => item.namedImport == relativeAtPathName)[0];
+    let mappedPath = namedImportObject.path;
+
+    context.relativeAtPathName = relativeAtPathName;
+
+
+    if (mappedPath) {
+      pathArray[0] = mappedPath;
+      context.path = pathArray.join('/');
     }
+    await next();
+  };
 }
+//# sourceMappingURL=data:application/json;charset=utf-8;base64,eyJ2ZXJzaW9uIjozLCJzb3VyY2VzIjpbIi4uLy4uLy4uLy4uL3NvdXJjZS91dGlsaXR5RnVuY3Rpb24vbWlkZGxld2FyZS9tYXBAUGF0aFRvQWJzb2x1dGVQYXRoLm1pZGRsZXdhcmUuanMiXSwibmFtZXMiOlsibmFtZWRJbXBvcnRNYXAiLCJuYW1lZEltcG9ydCIsInBhdGgiLCJjb250ZXh0IiwibmV4dCIsInBhdGhBcnJheSIsInNwbGl0IiwiZmlsdGVyIiwiaXRlbSIsImZpcnN0VVJMUGFydCIsInJlbGF0aXZlQXRQYXRoTmFtZSIsInN1YnN0cmluZyIsImluZGV4T2YiLCJsZW5ndGgiLCJuYW1lZEltcG9ydE9iamVjdCIsIm1hcHBlZFBhdGgiLCJqb2luIl0sIm1hcHBpbmdzIjoiO0FBQ0EsTUFBTUEsY0FBYyxHQUFHO0FBQ25CO0FBQ0lDLEVBQUFBLFdBQVcsRUFBRSxjQURqQjtBQUVJQyxFQUFBQSxJQUFJLEVBQUUsb0JBRlYsRUFEbUI7O0FBS25CO0FBQ0lELEVBQUFBLFdBQVcsRUFBRSxZQURqQjtBQUVJQyxFQUFBQSxJQUFJLEVBQUUsa0JBRlYsRUFMbUIsQ0FBdkI7Ozs7O0FBWWUsb0JBQVk7QUFDdkIsU0FBTyxPQUFPQyxPQUFQLEVBQWdCQyxJQUFoQixLQUF5QjtBQUM1QixRQUFJRixJQUFJLEdBQUdDLE9BQU8sQ0FBQ0QsSUFBbkI7O0FBRUEsUUFBSUcsU0FBUyxHQUFHSCxJQUFJLENBQUNJLEtBQUwsQ0FBVyxHQUFYLEVBQWdCQyxNQUFoQixDQUF1QkMsSUFBSSxJQUFJQSxJQUEvQixDQUFoQjtBQUNBLFFBQUlDLFlBQVksR0FBR0osU0FBUyxDQUFDLENBQUQsQ0FBNUI7O0FBRUEsUUFBSUssa0JBQWtCLEdBQUdELFlBQVksQ0FBQ0UsU0FBYixDQUF1QkYsWUFBWSxDQUFDRyxPQUFiLENBQXFCLEdBQXJCLElBQTRCLENBQW5ELEVBQXNESCxZQUFZLENBQUNJLE1BQW5FLENBQXpCOztBQUVBLFFBQUlDLGlCQUFpQixHQUFHZCxjQUFjLENBQUNPLE1BQWYsQ0FBc0JDLElBQUksSUFBSUEsSUFBSSxDQUFDUCxXQUFMLElBQW9CUyxrQkFBbEQsRUFBc0UsQ0FBdEUsQ0FBeEI7QUFDQSxRQUFJSyxVQUFVLEdBQUdELGlCQUFpQixDQUFDWixJQUFuQzs7QUFFQUMsSUFBQUEsT0FBTyxDQUFDTyxrQkFBUixHQUE2QkEsa0JBQTdCOzs7QUFHQSxRQUFHSyxVQUFILEVBQWU7QUFDWFYsTUFBQUEsU0FBUyxDQUFDLENBQUQsQ0FBVCxHQUFlVSxVQUFmO0FBQ0FaLE1BQUFBLE9BQU8sQ0FBQ0QsSUFBUixHQUFlRyxTQUFTLENBQUNXLElBQVYsQ0FBZSxHQUFmLENBQWY7QUFDSDtBQUNELFVBQU1aLElBQUksRUFBVjtBQUNILEdBbkJEO0FBb0JIIiwic291cmNlc0NvbnRlbnQiOlsiXG5jb25zdCBuYW1lZEltcG9ydE1hcCA9IFtcbiAgICB7XG4gICAgICAgIG5hbWVkSW1wb3J0OiAnd2ViY29tcG9uZW50JywgLy8gQHdlYmNvbXBvbmVudFxuICAgICAgICBwYXRoOiAnYXNzZXQvd2ViY29tcG9uZW50J1xuICAgIH0sXG4gICAge1xuICAgICAgICBuYW1lZEltcG9ydDogJ2phdmFzY3JpcHQnLCAvLyBAamF2YXNjcmlwdFxuICAgICAgICBwYXRoOiAnYXNzZXQvamF2YXNjcmlwdCdcbiAgICB9ICAgICAgICBcbl1cblxuXG5leHBvcnQgZGVmYXVsdCBmdW5jdGlvbiAoKSB7XG4gICAgcmV0dXJuIGFzeW5jIChjb250ZXh0LCBuZXh0KSA9PiB7XG4gICAgICAgIGxldCBwYXRoID0gY29udGV4dC5wYXRoXG4gICAgICAgIC8vIHBhdGggPSBwYXRoLnJlcGxhY2UoL15cXC98XFwvJC9nLCAnJykgLy8gcmVtb3ZlIGZpcnN0IGFuZCBsYXN0IHNsYXNoXG4gICAgICAgIGxldCBwYXRoQXJyYXkgPSBwYXRoLnNwbGl0KCcvJykuZmlsdGVyKGl0ZW0gPT4gaXRlbSkgLy8gc3BsaXQgcGF0aCBhbmQgcmVtb3ZlIGVtcHR5IHZhbHVlc1xuICAgICAgICBsZXQgZmlyc3RVUkxQYXJ0ID0gcGF0aEFycmF5WzBdXG4gICAgICAgIC8vIGxldCBsYXN0SW5kZXhQb3NpdGlvbiA9IChwYXRoLmluZGV4T2YoXCIvXCIpID09IC0xKSA/IHBhdGgubGVuZ3RoIDogcGF0aC5pbmRleE9mKFwiL1wiKTtcbiAgICAgICAgbGV0IHJlbGF0aXZlQXRQYXRoTmFtZSA9IGZpcnN0VVJMUGFydC5zdWJzdHJpbmcoZmlyc3RVUkxQYXJ0LmluZGV4T2YoXCJAXCIpICsgMSwgZmlyc3RVUkxQYXJ0Lmxlbmd0aClcbiAgICAgICAgXG4gICAgICAgIGxldCBuYW1lZEltcG9ydE9iamVjdCA9IG5hbWVkSW1wb3J0TWFwLmZpbHRlcihpdGVtID0+IGl0ZW0ubmFtZWRJbXBvcnQgPT0gcmVsYXRpdmVBdFBhdGhOYW1lKVswXSAvLyBleGFtcGxlICcvQHdlYmNvbXBvbmVudC9wYWNrYWdlL3gveC5qcydcbiAgICAgICAgbGV0IG1hcHBlZFBhdGggPSBuYW1lZEltcG9ydE9iamVjdC5wYXRoXG4gICAgICAgIFxuICAgICAgICBjb250ZXh0LnJlbGF0aXZlQXRQYXRoTmFtZSA9IHJlbGF0aXZlQXRQYXRoTmFtZVxuICAgICAgICAvLyBjaGFuZ2UgcGF0aCBpZiBAIHBhdGggaXMgbWFwcGVkXG4gICAgICAgIC8vIGlmKG1hcHBlZFBhdGgpIGNvbnRleHQucGF0aCA9IGNvbnRleHQucGF0aC5yZXBsYWNlKGBAJHtyZWxhdGl2ZUF0UGF0aE5hbWV9YCwgbWFwcGVkUGF0aClcbiAgICAgICAgaWYobWFwcGVkUGF0aCkgeyAvLyByZXBsYWNlIHBhcnQgdG8gYmUgbWFwcGVkXG4gICAgICAgICAgICBwYXRoQXJyYXlbMF0gPSBtYXBwZWRQYXRoXG4gICAgICAgICAgICBjb250ZXh0LnBhdGggPSBwYXRoQXJyYXkuam9pbignLycpXG4gICAgICAgIH1cbiAgICAgICAgYXdhaXQgbmV4dCgpXG4gICAgfVxufVxuIl19

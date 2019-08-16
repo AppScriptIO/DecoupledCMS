@@ -1,4 +1,5 @@
-export default (self) => {
-    let context = self.context
-    return context.request.method
-}
+"use strict";Object.defineProperty(exports, "__esModule", { value: true });exports.default = void 0;var _default = self => {
+  let context = self.context;
+  return context.request.method;
+};exports.default = _default;
+//# sourceMappingURL=data:application/json;charset=utf-8;base64,eyJ2ZXJzaW9uIjozLCJzb3VyY2VzIjpbIi4uLy4uLy4uLy4uL3NvdXJjZS91dGlsaXR5RnVuY3Rpb24vY29uZGl0aW9uQ2hlY2svZ2V0TWV0aG9kLmpzIl0sIm5hbWVzIjpbInNlbGYiLCJjb250ZXh0IiwicmVxdWVzdCIsIm1ldGhvZCJdLCJtYXBwaW5ncyI6Im1IQUFnQkEsSUFBRCxJQUFVO0FBQ3JCLE1BQUlDLE9BQU8sR0FBR0QsSUFBSSxDQUFDQyxPQUFuQjtBQUNBLFNBQU9BLE9BQU8sQ0FBQ0MsT0FBUixDQUFnQkMsTUFBdkI7QUFDSCxDIiwic291cmNlc0NvbnRlbnQiOlsiZXhwb3J0IGRlZmF1bHQgKHNlbGYpID0+IHtcbiAgICBsZXQgY29udGV4dCA9IHNlbGYuY29udGV4dFxuICAgIHJldHVybiBjb250ZXh0LnJlcXVlc3QubWV0aG9kXG59Il19

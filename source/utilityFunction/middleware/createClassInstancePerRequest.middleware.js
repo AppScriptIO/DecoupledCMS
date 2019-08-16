@@ -1,12 +1,13 @@
-import path from 'path'
-import serverConfig from '../../../setup/configuration/serverConfig.js'
-import { default as Application } from '../../class/Application.class.js'
+"use strict";Object.defineProperty(exports, "__esModule", { value: true });exports.default = void 0;var _default =
 
-export default (Class) => {
-    return async (context, next) => {
-        let instance = new Class() // create new instance for each request.
-        instance.context = context; 
-        context.instance = instance;
-        await next()
-    }
-}
+
+
+Class => {
+  return async (context, next) => {
+    let instance = new Class();
+    instance.context = context;
+    context.instance = instance;
+    await next();
+  };
+};exports.default = _default;
+//# sourceMappingURL=data:application/json;charset=utf-8;base64,eyJ2ZXJzaW9uIjozLCJzb3VyY2VzIjpbIi4uLy4uLy4uLy4uL3NvdXJjZS91dGlsaXR5RnVuY3Rpb24vbWlkZGxld2FyZS9jcmVhdGVDbGFzc0luc3RhbmNlUGVyUmVxdWVzdC5taWRkbGV3YXJlLmpzIl0sIm5hbWVzIjpbIkNsYXNzIiwiY29udGV4dCIsIm5leHQiLCJpbnN0YW5jZSJdLCJtYXBwaW5ncyI6Ijs7OztBQUlnQkEsS0FBRCxJQUFXO0FBQ3RCLFNBQU8sT0FBT0MsT0FBUCxFQUFnQkMsSUFBaEIsS0FBeUI7QUFDNUIsUUFBSUMsUUFBUSxHQUFHLElBQUlILEtBQUosRUFBZjtBQUNBRyxJQUFBQSxRQUFRLENBQUNGLE9BQVQsR0FBbUJBLE9BQW5CO0FBQ0FBLElBQUFBLE9BQU8sQ0FBQ0UsUUFBUixHQUFtQkEsUUFBbkI7QUFDQSxVQUFNRCxJQUFJLEVBQVY7QUFDSCxHQUxEO0FBTUgsQyIsInNvdXJjZXNDb250ZW50IjpbImltcG9ydCBwYXRoIGZyb20gJ3BhdGgnXG5pbXBvcnQgc2VydmVyQ29uZmlnIGZyb20gJy4uLy4uLy4uL3NldHVwL2NvbmZpZ3VyYXRpb24vc2VydmVyQ29uZmlnLmpzJ1xuaW1wb3J0IHsgZGVmYXVsdCBhcyBBcHBsaWNhdGlvbiB9IGZyb20gJy4uLy4uL2NsYXNzL0FwcGxpY2F0aW9uLmNsYXNzLmpzJ1xuXG5leHBvcnQgZGVmYXVsdCAoQ2xhc3MpID0+IHtcbiAgICByZXR1cm4gYXN5bmMgKGNvbnRleHQsIG5leHQpID0+IHtcbiAgICAgICAgbGV0IGluc3RhbmNlID0gbmV3IENsYXNzKCkgLy8gY3JlYXRlIG5ldyBpbnN0YW5jZSBmb3IgZWFjaCByZXF1ZXN0LlxuICAgICAgICBpbnN0YW5jZS5jb250ZXh0ID0gY29udGV4dDsgXG4gICAgICAgIGNvbnRleHQuaW5zdGFuY2UgPSBpbnN0YW5jZTtcbiAgICAgICAgYXdhaXQgbmV4dCgpXG4gICAgfVxufVxuIl19

@@ -1,13 +1,14 @@
-import path from 'path'
-import config from '../../../setup/configuration/configuration.export.js' // Load configuration settings.
-import send from 'koa-sendfile'
-import { default as Application } from '../../class/Application.class.js'
+"use strict";Object.defineProperty(exports, "__esModule", { value: true });exports.default = void 0;var _default =
 
-export default () => {
-    return async (context, next) => { // fallback to sending the app index. If not found.
-        await next()
-        if(404 != context.status) return;
-        // return context.body = 'This is the not found middleware.'
-        // return send(context, path.normalize(`${context.instance.config.clientBasePath}/root/entrypoint.html`))
-    }
-}
+
+
+
+() => {
+  return async (context, next) => {
+    await next();
+    if (404 != context.status) return;
+
+
+  };
+};exports.default = _default;
+//# sourceMappingURL=data:application/json;charset=utf-8;base64,eyJ2ZXJzaW9uIjozLCJzb3VyY2VzIjpbIi4uLy4uLy4uLy4uL3NvdXJjZS91dGlsaXR5RnVuY3Rpb24vbWlkZGxld2FyZS9ub3RGb3VuZC5qcyJdLCJuYW1lcyI6WyJjb250ZXh0IiwibmV4dCIsInN0YXR1cyJdLCJtYXBwaW5ncyI6Ijs7Ozs7QUFLZSxNQUFNO0FBQ2pCLFNBQU8sT0FBT0EsT0FBUCxFQUFnQkMsSUFBaEIsS0FBeUI7QUFDNUIsVUFBTUEsSUFBSSxFQUFWO0FBQ0EsUUFBRyxPQUFPRCxPQUFPLENBQUNFLE1BQWxCLEVBQTBCOzs7QUFHN0IsR0FMRDtBQU1ILEMiLCJzb3VyY2VzQ29udGVudCI6WyJpbXBvcnQgcGF0aCBmcm9tICdwYXRoJ1xuaW1wb3J0IGNvbmZpZyBmcm9tICcuLi8uLi8uLi9zZXR1cC9jb25maWd1cmF0aW9uL2NvbmZpZ3VyYXRpb24uZXhwb3J0LmpzJyAvLyBMb2FkIGNvbmZpZ3VyYXRpb24gc2V0dGluZ3MuXG5pbXBvcnQgc2VuZCBmcm9tICdrb2Etc2VuZGZpbGUnXG5pbXBvcnQgeyBkZWZhdWx0IGFzIEFwcGxpY2F0aW9uIH0gZnJvbSAnLi4vLi4vY2xhc3MvQXBwbGljYXRpb24uY2xhc3MuanMnXG5cbmV4cG9ydCBkZWZhdWx0ICgpID0+IHtcbiAgICByZXR1cm4gYXN5bmMgKGNvbnRleHQsIG5leHQpID0+IHsgLy8gZmFsbGJhY2sgdG8gc2VuZGluZyB0aGUgYXBwIGluZGV4LiBJZiBub3QgZm91bmQuXG4gICAgICAgIGF3YWl0IG5leHQoKVxuICAgICAgICBpZig0MDQgIT0gY29udGV4dC5zdGF0dXMpIHJldHVybjtcbiAgICAgICAgLy8gcmV0dXJuIGNvbnRleHQuYm9keSA9ICdUaGlzIGlzIHRoZSBub3QgZm91bmQgbWlkZGxld2FyZS4nXG4gICAgICAgIC8vIHJldHVybiBzZW5kKGNvbnRleHQsIHBhdGgubm9ybWFsaXplKGAke2NvbnRleHQuaW5zdGFuY2UuY29uZmlnLmNsaWVudEJhc2VQYXRofS9yb290L2VudHJ5cG9pbnQuaHRtbGApKVxuICAgIH1cbn0iXX0=

@@ -1,21 +1,21 @@
-import serverConfig from '../../../../../../setup/configuration/serverConfig.js'
-import r from 'rethinkdb'
+"use strict";var _interopRequireDefault = require("@babel/runtime/helpers/interopRequireDefault");Object.defineProperty(exports, "__esModule", { value: true });exports.test = test;exports.default = void 0;
+var _rethinkdb = _interopRequireDefault(require("rethinkdb"));
 
-export async function test(context, next) {
-    console.log('SZN - Inside <API>/test')
-    // get universities
-    await r
-        .table('authors')
-        .run(context.rethinkdbConnection)
-        .then((cursor) => {
-            return cursor.toArray()
-        })
-        .then((result) => {
-            context.body = result
-        })
-    await next()
-}
+async function test(context, next) {
+  console.log('SZN - Inside <API>/test');
 
-export default {
-    test
-}
+  await _rethinkdb.default.
+  table('authors').
+  run(context.rethinkdbConnection).
+  then(cursor => {
+    return cursor.toArray();
+  }).
+  then(result => {
+    context.body = result;
+  });
+  await next();
+}var _default =
+
+{
+  test };exports.default = _default;
+//# sourceMappingURL=data:application/json;charset=utf-8;base64,eyJ2ZXJzaW9uIjozLCJzb3VyY2VzIjpbIi4uLy4uLy4uLy4uLy4uLy4uLy4uL3NvdXJjZS9jbGFzcy9wb3J0L2FwaS9taWRkbGV3YXJlL2RhdGFiYXNlL2N1c3RvbVF1ZXJ5LmpzIl0sIm5hbWVzIjpbInRlc3QiLCJjb250ZXh0IiwibmV4dCIsImNvbnNvbGUiLCJsb2ciLCJyIiwidGFibGUiLCJydW4iLCJyZXRoaW5rZGJDb25uZWN0aW9uIiwidGhlbiIsImN1cnNvciIsInRvQXJyYXkiLCJyZXN1bHQiLCJib2R5Il0sIm1hcHBpbmdzIjoiO0FBQ0E7O0FBRU8sZUFBZUEsSUFBZixDQUFvQkMsT0FBcEIsRUFBNkJDLElBQTdCLEVBQW1DO0FBQ3RDQyxFQUFBQSxPQUFPLENBQUNDLEdBQVIsQ0FBWSx5QkFBWjs7QUFFQSxRQUFNQztBQUNEQyxFQUFBQSxLQURDLENBQ0ssU0FETDtBQUVEQyxFQUFBQSxHQUZDLENBRUdOLE9BQU8sQ0FBQ08sbUJBRlg7QUFHREMsRUFBQUEsSUFIQyxDQUdLQyxNQUFELElBQVk7QUFDZCxXQUFPQSxNQUFNLENBQUNDLE9BQVAsRUFBUDtBQUNILEdBTEM7QUFNREYsRUFBQUEsSUFOQyxDQU1LRyxNQUFELElBQVk7QUFDZFgsSUFBQUEsT0FBTyxDQUFDWSxJQUFSLEdBQWVELE1BQWY7QUFDSCxHQVJDLENBQU47QUFTQSxRQUFNVixJQUFJLEVBQVY7QUFDSCxDOztBQUVjO0FBQ1hGLEVBQUFBLElBRFcsRSIsInNvdXJjZXNDb250ZW50IjpbImltcG9ydCBzZXJ2ZXJDb25maWcgZnJvbSAnLi4vLi4vLi4vLi4vLi4vLi4vc2V0dXAvY29uZmlndXJhdGlvbi9zZXJ2ZXJDb25maWcuanMnXG5pbXBvcnQgciBmcm9tICdyZXRoaW5rZGInXG5cbmV4cG9ydCBhc3luYyBmdW5jdGlvbiB0ZXN0KGNvbnRleHQsIG5leHQpIHtcbiAgICBjb25zb2xlLmxvZygnU1pOIC0gSW5zaWRlIDxBUEk+L3Rlc3QnKVxuICAgIC8vIGdldCB1bml2ZXJzaXRpZXNcbiAgICBhd2FpdCByXG4gICAgICAgIC50YWJsZSgnYXV0aG9ycycpXG4gICAgICAgIC5ydW4oY29udGV4dC5yZXRoaW5rZGJDb25uZWN0aW9uKVxuICAgICAgICAudGhlbigoY3Vyc29yKSA9PiB7XG4gICAgICAgICAgICByZXR1cm4gY3Vyc29yLnRvQXJyYXkoKVxuICAgICAgICB9KVxuICAgICAgICAudGhlbigocmVzdWx0KSA9PiB7XG4gICAgICAgICAgICBjb250ZXh0LmJvZHkgPSByZXN1bHRcbiAgICAgICAgfSlcbiAgICBhd2FpdCBuZXh0KClcbn1cblxuZXhwb3J0IGRlZmF1bHQge1xuICAgIHRlc3Rcbn0iXX0=

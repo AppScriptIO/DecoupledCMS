@@ -1,28 +1,29 @@
-// API server
-import Koa from 'koa' // Koa applicaiton server
-import WebappUIClass from 'class/WebappUI.class.js'
-import ConditionTreeClass from 'class/ConditionTree.class.js'
+"use strict";var _interopRequireDefault = require("@babel/runtime/helpers/interopRequireDefault");Object.defineProperty(exports, "__esModule", { value: true });exports.default = void 0;
+var _koa = _interopRequireDefault(require("koa"));
+var _WebappUIClass = _interopRequireDefault(require("class/WebappUI.class.js"));
 
-class Test extends WebappUIClass {
 
-    middlewareArray = []
+class Test extends _WebappUIClass.default {
 
-    constructor() {
-        super(true)
-        this.port = 8083
-        this.createKoaServer()
-    }
 
-    createKoaServer() {
-        this.serverKoa = new Koa() // export if script is required.
-    }
 
-    applyKoaMiddleware() {
-        this.middlewareArray.forEach((middleware) => {
-            this.serverKoa.use(middleware)
-        }, this);
-    }
+  constructor() {
+    super(true);this.middlewareArray = [];
+    this.port = 8083;
+    this.createKoaServer();
+  }
 
-}
+  createKoaServer() {
+    this.serverKoa = new _koa.default();
+  }
 
-export default Test
+  applyKoaMiddleware() {
+    this.middlewareArray.forEach(middleware => {
+      this.serverKoa.use(middleware);
+    }, this);
+  }}var _default =
+
+
+
+Test;exports.default = _default;
+//# sourceMappingURL=data:application/json;charset=utf-8;base64,eyJ2ZXJzaW9uIjozLCJzb3VyY2VzIjpbIi4uLy4uLy4uLy4uL3NvdXJjZS9jbGFzcy9wb3J0L19FeGFtcGxlLmNsYXNzLmpzIl0sIm5hbWVzIjpbIlRlc3QiLCJXZWJhcHBVSUNsYXNzIiwiY29uc3RydWN0b3IiLCJtaWRkbGV3YXJlQXJyYXkiLCJwb3J0IiwiY3JlYXRlS29hU2VydmVyIiwic2VydmVyS29hIiwiS29hIiwiYXBwbHlLb2FNaWRkbGV3YXJlIiwiZm9yRWFjaCIsIm1pZGRsZXdhcmUiLCJ1c2UiXSwibWFwcGluZ3MiOiI7QUFDQTtBQUNBOzs7QUFHQSxNQUFNQSxJQUFOLFNBQW1CQyxzQkFBbkIsQ0FBaUM7Ozs7QUFJN0JDLEVBQUFBLFdBQVcsR0FBRztBQUNWLFVBQU0sSUFBTixFQURVLEtBRmRDLGVBRWMsR0FGSSxFQUVKO0FBRVYsU0FBS0MsSUFBTCxHQUFZLElBQVo7QUFDQSxTQUFLQyxlQUFMO0FBQ0g7O0FBRURBLEVBQUFBLGVBQWUsR0FBRztBQUNkLFNBQUtDLFNBQUwsR0FBaUIsSUFBSUMsWUFBSixFQUFqQjtBQUNIOztBQUVEQyxFQUFBQSxrQkFBa0IsR0FBRztBQUNqQixTQUFLTCxlQUFMLENBQXFCTSxPQUFyQixDQUE4QkMsVUFBRCxJQUFnQjtBQUN6QyxXQUFLSixTQUFMLENBQWVLLEdBQWYsQ0FBbUJELFVBQW5CO0FBQ0gsS0FGRCxFQUVHLElBRkg7QUFHSCxHQWxCNEIsQzs7OztBQXNCbEJWLEkiLCJzb3VyY2VzQ29udGVudCI6WyIvLyBBUEkgc2VydmVyXG5pbXBvcnQgS29hIGZyb20gJ2tvYScgLy8gS29hIGFwcGxpY2FpdG9uIHNlcnZlclxuaW1wb3J0IFdlYmFwcFVJQ2xhc3MgZnJvbSAnY2xhc3MvV2ViYXBwVUkuY2xhc3MuanMnXG5pbXBvcnQgQ29uZGl0aW9uVHJlZUNsYXNzIGZyb20gJ2NsYXNzL0NvbmRpdGlvblRyZWUuY2xhc3MuanMnXG5cbmNsYXNzIFRlc3QgZXh0ZW5kcyBXZWJhcHBVSUNsYXNzIHtcblxuICAgIG1pZGRsZXdhcmVBcnJheSA9IFtdXG5cbiAgICBjb25zdHJ1Y3RvcigpIHtcbiAgICAgICAgc3VwZXIodHJ1ZSlcbiAgICAgICAgdGhpcy5wb3J0ID0gODA4M1xuICAgICAgICB0aGlzLmNyZWF0ZUtvYVNlcnZlcigpXG4gICAgfVxuXG4gICAgY3JlYXRlS29hU2VydmVyKCkge1xuICAgICAgICB0aGlzLnNlcnZlcktvYSA9IG5ldyBLb2EoKSAvLyBleHBvcnQgaWYgc2NyaXB0IGlzIHJlcXVpcmVkLlxuICAgIH1cblxuICAgIGFwcGx5S29hTWlkZGxld2FyZSgpIHtcbiAgICAgICAgdGhpcy5taWRkbGV3YXJlQXJyYXkuZm9yRWFjaCgobWlkZGxld2FyZSkgPT4ge1xuICAgICAgICAgICAgdGhpcy5zZXJ2ZXJLb2EudXNlKG1pZGRsZXdhcmUpXG4gICAgICAgIH0sIHRoaXMpO1xuICAgIH1cblxufVxuXG5leHBvcnQgZGVmYXVsdCBUZXN0Il19

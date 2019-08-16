@@ -1,369 +1,368 @@
-import { default as Application } from '../../Application.class.js'
-import rethinkDB from 'rethinkdb' 
-import getTableDocumentAndFilter from '@dependency/databaseUtility/source/getTableDocumentAndFilter.query.js'
+"use strict";var _interopRequireDefault = require("@babel/runtime/helpers/interopRequireDefault");Object.defineProperty(exports, "__esModule", { value: true });exports.default = void 0;var _ApplicationClass = _interopRequireDefault(require("../../Application.class.js"));
+var _rethinkdb = _interopRequireDefault(require("rethinkdb"));
+var _getTableDocumentAndFilterQuery = _interopRequireDefault(require("@dependency/databaseUtility/source/getTableDocumentAndFilter.query.js"));
 
 let getTableDocument = {
-    generate: getTableDocumentAndFilter,
-    instance: []
-}
-getTableDocument.instance['oAuth_token'] = getTableDocument.generate('oAuth_token')
-getTableDocument.instance['oAuth_client'] = getTableDocument.generate('oAuth_client')
-getTableDocument.instance['oAuth_user'] = getTableDocument.generate('oAuth_user')
+  generate: _getTableDocumentAndFilterQuery.default,
+  instance: [] };
+
+getTableDocument.instance['oAuth_token'] = getTableDocument.generate('oAuth_token');
+getTableDocument.instance['oAuth_client'] = getTableDocument.generate('oAuth_client');
+getTableDocument.instance['oAuth_user'] = getTableDocument.generate('oAuth_user');var _default =
 
 
-export default {  // Model functions required by node-auth2-server See https://github.com/oauthjs/node-oauth2-server for specification
-    
-    /**
-     * Not implemented, using default instead.
-     */
-    generateAccessToken: undefined,
-    generateRefreshToken: undefined,
-    generateAuthorizationCode: undefined,
-    getUserFromClient: undefined,
+{
 
-    // /**
-    //  * Invoked to generate a new access token.
-    //  * @param {object} client The client the access token is generated for.
-    //  * @param {object} user The user the access token is generated for.
-    //  * @param {string} scope The scopes associated with the access token. can be null.
-    //  * @return {string} accessToken - A String to be used as access token.
-    //  */
-    // generateAccessToken: async (client, user, scope) => {
 
-    // },
-    
-    /**
-     * Invoked to retrieve a user using a username/password combination.
-     * @param {string} userId
-     * @param {string} userPassword
-     * @return {object} representing the user or falsy if no such user could be found.
-     */
-    getUser: async (userId, userPassword) => {
-        console.log('getUser function')
-        const connection = Application.rethinkdbConnection
-        let dbFilterObject = { key: userId, password: userPassword };
-        let user = await getTableDocument.instance['oAuth_user'](connection, dbFilterObject)
 
-        return {
-            username: user.key,
-            password: user.password
-        }
-    },
-    
-    /**
-     * the node-oauth2-server use this method to get detail infomation of a registered client.
-     * @param {String} clientId - the client id
-     * @param {String} [clientSecret] - the client secret, used in the token granting phase to authenticate the oauth client
-     * @return {Object} client - the client object, containing (at least) the following infomation, or null if the client is not a valid registered client or the client secret doesn't match the clientId:
-     *         {String} client.id - the client id
-     *         {Array<String>} grants - an array of grant types allowed for this client, allowed values are: authorization_code | client_credentials | password | refresh_token
-     *         {Array<String>} redirectUris - an array of urls (of the client) that allowed for redirecting to by the oauth server
-     *         {Number} [accessTokenLifetime=3600] - define the lifetime of an access token in seconds, default is 1 hour
-     *         {Number} [refreshTokenLifetime=3600 * 24 * 14] - define the lifetime of an refresh token in seconds, default is 2 weeks
-     */
-    getClient: async (clientId, clientSecret) => {
-        console.log('getClient function')
 
-        const connection = Application.rethinkdbConnection
-        let dbFilterObject = (clientSecret) ? { key: clientId, clientSecret: clientSecret } : { key: clientId };
-        let client = await getTableDocument.instance['oAuth_client'](connection, dbFilterObject)
-        if(!client) return null;
-        // return in required format.
-        return {
-            id: client.key,
-            redirectUris: [client.redirectUri],
-            grants: client.grantType,
-            // Client-specific lifetime of generated refresh tokens in seconds.
-            // accessTokenLifetime: client.accessTokenLifetime,
-            // refreshTokenLifetime: client.refreshTokenLifetime
-        }
-    },
+  generateAccessToken: undefined,
+  generateRefreshToken: undefined,
+  generateAuthorizationCode: undefined,
+  getUserFromClient: undefined,
 
-    /**
-     * Invoked to retrieve an existing access token previously saved through Model#saveToken().
-     * @param {String} accessToken - The access token to retrieve.
-     * @return {Object} token - An Object representing the access token and associated data. Containing at least the following information:
-     *         {String} .accessToken - the access token string
-     *         {Date}   .accessTokenExpiresAt - the exact time when the access token should expire
-     *         {String} .scope - access scope of this access token
-     *         {Object} .client - the oauth client
-     *         {String} .client.id - string id of the oauth client
-     *         {Object} .user - the user which this access token represents, this data structure of the user object is not part of the Model Specification, and what it should be is completely up to you. In this example, we use { username: 'someUserName' } where the 'username' field is used to uniquely identify an user in the user database.
-     */
-    getAccessToken: async (accessToken) => {
-        console.log('getAccessToken function')
-        
-        const connection = Application.rethinkdbConnection
-        let tokenData = await getTableDocument.instance['oAuth_token'](connection, { type: 'accessToken', token: accessToken })
-        if(!tokenData) return null
-        let client = await getTableDocument.instance['oAuth_client'](connection, { key: tokenData.clientId })
-        let user = await getTableDocument.instance['oAuth_user'](connection, { key: tokenData.userId })
-        // return in required format.
-        return { 
-            accessToken: tokenData.token,
-            accessTokenExpiresAt: tokenData.expiresAt,
-            scope: tokenData.scope,
-            client: Object.assign(client, { id: client.key }), // with 'id' property
-            user: {
-                username: user.key
-            }            
-        }
-    },
 
-    /**
-     * the node-oauth2-server use this method to get detail information of a refresh token previously stored used OauthModel.prototype.saveToken.
-     * <b>Note:</b>refresh token is used by the oauth client to request for a new access token, and it's actually not related to any access token in any way, so access tokens and refresh tokens should be stored and retrieved independent to each other.
-     * @param {String} refreshToken - the refresh token string
-     * @return {Object} token - the token object containing (at least) the following infomation, or null if the refresh token doesn't exist:
-     *        {String} token.refreshToken - the refresh token string
-     *        {Date} token.refreshTokenExpiresAt - the exact time when the refresh token should expire
-     *        {String} scope - the access scope
-     *        {Object} client - the client object
-     *        {String} client.id - the id of the client
-     *        {Object} user - the user object
-     *        {String} user.username - identifier of the user
-     */
-    getRefreshToken: async (refreshToken) => {
-        console.log('getRefreshToken function')
 
-        const connection = Application.rethinkdbConnection
-        let tokenData = await getTableDocument.instance['oAuth_token'](connection, { type: 'refreshToken', token: refreshToken })
-        if(!tokenData) return null
-        let client = await getTableDocument.instance['oAuth_client'](connection, { key: tokenData.clientId })
-        let user = await getTableDocument.instance['oAuth_user'](connection, { key: tokenData.userId })
-        // return in required format.
-        return { 
-            refreshToken: tokenData.token,
-            refreshTokenExpiresAt: tokenData.expiresAt,
-            scope: tokenData.scope,
-            client: Object.assign(client, { id: client.key }), // with 'id' property
-            user: {
-                username: user.key
-            } // with 'username' property
-        }
-    },
 
-    /**
-     * the node-oauth2-server use this method to get detail information of a authorization code previously stored used OauthModel.prototype.saveAuthorizationCode.
-     * @param {String} authorizationCode - the authorization code string
-     * @return {Object} code - the code object containing the following information, or null if the authorization code doesn't exist
-     *         {String} code - the authorization code string
-     *         {Date} expiresAt - the exact time when the code should expire
-     *         {String} redirectUri - the redirect_uri query parameter of the '/oauth/authorize' request, indicating where to redirect to with the code
-     *         {String} scope - the authorization scope deciding the access scope of the access token requested by the oauth client using this code
-     *         {Object} client - the client object
-     *         {String} client.id - the client id
-     *         {Object} user - the user object
-     *         {String} user.username - the user identifier
-     */
-    getAuthorizationCode: async (authorizationCode) => {
-        console.log('getAuthorizationCode function')
-        
-        const connection = Application.rethinkdbConnection
-        let tokenData = await getTableDocument.instance['oAuth_token'](connection, { type: 'authorizationCode', token: authorizationCode })
-        if(!tokenData) return null
-        let client = await getTableDocument.instance['oAuth_client'](connection, { key: tokenData.clientId })
-        let user = await getTableDocument.instance['oAuth_user'](connection, { key: tokenData.userId })
-        // return in required format.
-        return {
-            code: tokenData.token,
-            expiresAt: tokenData.expiresAt,
-            redirectUri: tokenData.redirectUri,
-            scope: tokenData.scope,
-            client: Object.assign(client, { id: client.key }), // with 'id' property
-            user: {
-                username: user.key
-            }          
-        }
-    },
-     
-    /**
-     * the node-oauth2-server uses this method to save an access token and an refresh token(if refresh token enabled) during the token granting phase.
-     * @param {Object} token - the token object
-     * @param {String} token.accessToken - the access token string
-     * @param {Date} token.accessTokenExpiresAt - @see OauthModel.prototype.getAccessToken
-     * @param {String} token.refreshToken - the refresh token string
-     * @param {Date} token.refreshTokenExpiresAt - @see OauthModel.prototype.getRefreshToken
-     * @param {String} token.scope - the access scope
-     * @param {Object} client - the client object - @see OauthModel.prototype.getClient
-     *        {String} client.id - the client id
-     * @param {Object} user - the user object @see OauthModel.prototype.getAccessToken
-     * @return {Object} token - the token object saved, same as the parameter 'token'
-     */
-    saveToken: async (token, client, user) => {
-        console.log('saveToken function')
-        let userId = user.username
 
-        // TODO: set expiration / TTL - https://groups.google.com/forum/#!topic/rethinkdb/tFSiG5Ex1KE for rethinkdb underdevelopment.
-        const connection = Application.rethinkdbConnection
-        let returnedValue = {
-            scope: token.scope,
-            client: client,
-            user: user
-        }
 
-        if(token.accessToken) {
-            await rethinkDB.db('webappSetting').table('oAuth_token').insert({
-                token: token.accessToken,
-                expiresAt: token.accessTokenExpiresAt,
-                scope: token.scope,
-                clientId: client.id,
-                type: 'accessToken',
-                userId: userId
-            }).run(connection)
-        }
-        
-        if(token.refreshToken) {
-            await rethinkDB.db('webappSetting').table('oAuth_token').insert({
-                token: token.refreshToken,
-                expiresAt: token.refreshTokenExpiresAt,
-                scope: token.scope,
-                clientId: client.id,
-                userId: userId,
-                type: 'refreshToken'
-            }).run(connection)
-        }
-        
-        Object.assign(returnedValue, { // token to the returned object.
-            refreshToken: token.refreshToken,
-            refreshTokenExpiresAt: token.refreshTokenExpiresAt,
-            accessToken: token.accessToken,
-            accessTokenExpiresAt: token.accessTokenExpiresAt
-        })  
-        
-        return returnedValue     
-    },
-        
-    /**
-     * the node-oauth2-server uses this method to save an authorization code.
-     * @param {Object} code - the authorization code object
-     * @param {String} code.authorizationCode - the authorization code string
-     * @param {Date} code.expiresAt - the time when the code should expire
-     * @param {String} code.redirectUri - where to redirect to with the code
-     * @param {String} [code.scope] - the authorized access scope
-     * @param {Object} client - the client object
-     * @param {String} client.id - the client id
-     * @param {Object} user - the user object
-     * @param {String} user.username - the user identifier
-     * @return {Object} code - the code object saved
-     */
-    saveAuthorizationCode: async (code, client, user) => {
-        console.log('saveAuthorizationCode function')
-        
-        let userId = user.username
-        const connection = Application.rethinkdbConnection                
-                        
-        await rethinkDB.db('webappSetting').table('oAuth_token').insert({
-            type: 'authorizationCode',
-            token: code.authorizationCode,
-            expiresAt: code.expiresAt,
-            redirectUri: code.redirectUri,
-            scope: code.scope,
-            clientId: client.id,
-            userId: userId
-        }).run(connection)
 
-        return {
-            authorizationCode: code.authorizationCode,
-            expiresAt: code.expiresAt,
-            redirectUri: code.redirectUri,
-            scope: code.scope,
-            client: client,
-            user: user
-        }
-    },
 
-    /**
-     * the node-oauth2-server uses this method to revoke a refresh token(remove it from the store).
-     * Note: by default, the node-oauth2-server enable the option 'alwaysIssueNewRefreshToken', meaning that every time you use a refresh token to get a new access token, the refresh token itself will be revoked and a new one will be issued along with the access token (you can set the option through OAuth2Server.token(request, response, [options], [callback]) or KoaOAuthServer.token(options)).
-     * If you always use the refresh token before it expires, then there will always be a valid refresh token in the store(unless you explictly revoke it). This makes it seem like refresh token never expires.
-     * @param {Object} token - the token object
-     * @param {String} token.refreshToken - the refresh token string
-     * @param {Date} token.refreshTokenExpiresAt - the exact time when the refresh token should expire
-     * @param {String} token.scope - the access scope
-     * @param {Object} token.client - the client object
-     * @param {String} token.client.id - the client id
-     * @param {Object} token.user - the user object
-     * @param {String} token.user.username - the user identifier
-     * @return {Boolean} - true if the token was successfully revoked, false if the token cound not be found
-     */
-    revokeToken: async (token) => {
-        console.log('revokeToken function')
-        
-        const connection = Application.rethinkdbConnection                
-        let filterObject = { token: token.refreshToken }
-        let {deleted: deletionResult} = await rethinkDB.db('webappSetting').table('oAuth_token').filter(filterObject).delete().run(connection)
-        return (deletionResult) ? true : false;
-    },
 
-    /**
-     * the node-oauth2-server uses this method to revoke a authorization code(mostly when it expires)
-     * @param {Object} code - the authorization code object
-     * @param {String} authorizationCode - the authorization code string
-     * @param {Date} code.expiresAt -the time when the code should expire
-     * @param {String} code.redirectUri - the redirect uri
-     * @param {String} code.scope - the authorization scope
-     * @param {Object} code.client - the client object
-     * @param {String} code.client.id - the client id
-     * @param {Object}  code.user - the user object
-     * @param {String} code.user.username - the user identifier
-     * @return {Boolean} - true if the code is revoked successfully,false if the could not be found
-     */
-    revokeAuthorizationCode: async (code) => {
-        console.log('revokeAuthorizationCode function')
-        
-        const connection = Application.rethinkdbConnection
-        let filterObject = { token: code.code }
-        let {deleted: deletionResult} = await rethinkDB.db('webappSetting').table('oAuth_token').filter(filterObject).delete().run(connection)
-        return (deletionResult) ? true : false;
-    },
 
-    /**
-     * the node-oauth2-server uses this method to determine what scopes should be granted to the client for accessing the user's data.
-     * for example, the client requests the oauth server for an access token of the 'user_info:read,user_info_write' scope, 
-     * but the oauth server determine by this method that only the 'user_info:read' scope should be granted.
-     * @param {Object} user - the user whose data the client wants to access
-     * @param {String} user.username - the user identifier
-     * @param {Object} client - the oauth client
-     * @param {String} client.id - the client id
-     * @param {String} scope - the scopes which the client requested for
-     * @return {String} validScopes - the actual valid scopes for the client, null if no valid scopes for the client
-     */
-    validateScope: async (user, client, scope) => {
-        console.log('validateScope function')
-        if(!scope) return null
-        const connection = Application.rethinkdbConnection
-        let dbFilterObject = { key: client.id }
-        client = await getTableDocument.instance['oAuth_client'](connection, dbFilterObject)
-        if(!client || !client.scope) return null
-        let validScopes = client.scope.split(',').map(s => s.trim())
-        let scopes = scope.split(',').map(s => s.trim()).filter(s => validScopes.indexOf(s) >= 0)
-        return (scope.length) ? scopes.join(',') : null;                
-    },
 
-    /**
-     * node-oauth2-server uses this method in authentication handler to verify whether an access token from a request is sufficient to the 'scope' declared for the requested resources
-     * @param {Object} accessToken - the accessToken object
-     * @param {String} accessToken.accessToken - the accessToken string
-     * @param {Date} accessToken.accessTokenExpiresAt - the time when the token should expire
-     * @param {String} accessToken.scope - the granted access scope of the token
-     * @param {Object} accessToken.client - the client object
-     * @param {String} accessToken.client.id - the client id
-     * @param {Object} accessTokne.user - the user object
-     * @param {String} accessToken.user.username - the user identifier
-     * @param {String} scope - the scope declared for the resources
-     * @return {Boolean} - true if the access token has sufficient access scopes for the resources
-     */
-    verifyScope: async (accessToken, scope) => {
-        console.log('verifyScope function')
-        
-        //no scope declared for the resource, free to access
-        if(!scope) return true     
-        if(!accessToken.scope) return false
-        validScopes = scope.split(',').map(s => s.trim())
-        scopes = accessToken.scope.split(',').map(s => s.trim())
-        //check if at least one of the scopes granted to the access token are allowed to access the resource
-        return scopes.some(s => validScopes.indexOf(s) >= 0)            
-    },
-    
-}
+
+
+
+
+
+
+
+  getUser: async (userId, userPassword) => {
+    console.log('getUser function');
+    const connection = _ApplicationClass.default.rethinkdbConnection;
+    let dbFilterObject = { key: userId, password: userPassword };
+    let user = await getTableDocument.instance['oAuth_user'](connection, dbFilterObject);
+
+    return {
+      username: user.key,
+      password: user.password };
+
+  },
+
+
+
+
+
+
+
+
+
+
+
+
+  getClient: async (clientId, clientSecret) => {
+    console.log('getClient function');
+
+    const connection = _ApplicationClass.default.rethinkdbConnection;
+    let dbFilterObject = clientSecret ? { key: clientId, clientSecret: clientSecret } : { key: clientId };
+    let client = await getTableDocument.instance['oAuth_client'](connection, dbFilterObject);
+    if (!client) return null;
+
+    return {
+      id: client.key,
+      redirectUris: [client.redirectUri],
+      grants: client.grantType };
+
+
+
+
+  },
+
+
+
+
+
+
+
+
+
+
+
+
+  getAccessToken: async accessToken => {
+    console.log('getAccessToken function');
+
+    const connection = _ApplicationClass.default.rethinkdbConnection;
+    let tokenData = await getTableDocument.instance['oAuth_token'](connection, { type: 'accessToken', token: accessToken });
+    if (!tokenData) return null;
+    let client = await getTableDocument.instance['oAuth_client'](connection, { key: tokenData.clientId });
+    let user = await getTableDocument.instance['oAuth_user'](connection, { key: tokenData.userId });
+
+    return {
+      accessToken: tokenData.token,
+      accessTokenExpiresAt: tokenData.expiresAt,
+      scope: tokenData.scope,
+      client: Object.assign(client, { id: client.key }),
+      user: {
+        username: user.key } };
+
+
+  },
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  getRefreshToken: async refreshToken => {
+    console.log('getRefreshToken function');
+
+    const connection = _ApplicationClass.default.rethinkdbConnection;
+    let tokenData = await getTableDocument.instance['oAuth_token'](connection, { type: 'refreshToken', token: refreshToken });
+    if (!tokenData) return null;
+    let client = await getTableDocument.instance['oAuth_client'](connection, { key: tokenData.clientId });
+    let user = await getTableDocument.instance['oAuth_user'](connection, { key: tokenData.userId });
+
+    return {
+      refreshToken: tokenData.token,
+      refreshTokenExpiresAt: tokenData.expiresAt,
+      scope: tokenData.scope,
+      client: Object.assign(client, { id: client.key }),
+      user: {
+        username: user.key } };
+
+
+  },
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  getAuthorizationCode: async authorizationCode => {
+    console.log('getAuthorizationCode function');
+
+    const connection = _ApplicationClass.default.rethinkdbConnection;
+    let tokenData = await getTableDocument.instance['oAuth_token'](connection, { type: 'authorizationCode', token: authorizationCode });
+    if (!tokenData) return null;
+    let client = await getTableDocument.instance['oAuth_client'](connection, { key: tokenData.clientId });
+    let user = await getTableDocument.instance['oAuth_user'](connection, { key: tokenData.userId });
+
+    return {
+      code: tokenData.token,
+      expiresAt: tokenData.expiresAt,
+      redirectUri: tokenData.redirectUri,
+      scope: tokenData.scope,
+      client: Object.assign(client, { id: client.key }),
+      user: {
+        username: user.key } };
+
+
+  },
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  saveToken: async (token, client, user) => {
+    console.log('saveToken function');
+    let userId = user.username;
+
+
+    const connection = _ApplicationClass.default.rethinkdbConnection;
+    let returnedValue = {
+      scope: token.scope,
+      client: client,
+      user: user };
+
+
+    if (token.accessToken) {
+      await _rethinkdb.default.db('webappSetting').table('oAuth_token').insert({
+        token: token.accessToken,
+        expiresAt: token.accessTokenExpiresAt,
+        scope: token.scope,
+        clientId: client.id,
+        type: 'accessToken',
+        userId: userId }).
+      run(connection);
+    }
+
+    if (token.refreshToken) {
+      await _rethinkdb.default.db('webappSetting').table('oAuth_token').insert({
+        token: token.refreshToken,
+        expiresAt: token.refreshTokenExpiresAt,
+        scope: token.scope,
+        clientId: client.id,
+        userId: userId,
+        type: 'refreshToken' }).
+      run(connection);
+    }
+
+    Object.assign(returnedValue, {
+      refreshToken: token.refreshToken,
+      refreshTokenExpiresAt: token.refreshTokenExpiresAt,
+      accessToken: token.accessToken,
+      accessTokenExpiresAt: token.accessTokenExpiresAt });
+
+
+    return returnedValue;
+  },
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  saveAuthorizationCode: async (code, client, user) => {
+    console.log('saveAuthorizationCode function');
+
+    let userId = user.username;
+    const connection = _ApplicationClass.default.rethinkdbConnection;
+
+    await _rethinkdb.default.db('webappSetting').table('oAuth_token').insert({
+      type: 'authorizationCode',
+      token: code.authorizationCode,
+      expiresAt: code.expiresAt,
+      redirectUri: code.redirectUri,
+      scope: code.scope,
+      clientId: client.id,
+      userId: userId }).
+    run(connection);
+
+    return {
+      authorizationCode: code.authorizationCode,
+      expiresAt: code.expiresAt,
+      redirectUri: code.redirectUri,
+      scope: code.scope,
+      client: client,
+      user: user };
+
+  },
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  revokeToken: async token => {
+    console.log('revokeToken function');
+
+    const connection = _ApplicationClass.default.rethinkdbConnection;
+    let filterObject = { token: token.refreshToken };
+    let { deleted: deletionResult } = await _rethinkdb.default.db('webappSetting').table('oAuth_token').filter(filterObject).delete().run(connection);
+    return deletionResult ? true : false;
+  },
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  revokeAuthorizationCode: async code => {
+    console.log('revokeAuthorizationCode function');
+
+    const connection = _ApplicationClass.default.rethinkdbConnection;
+    let filterObject = { token: code.code };
+    let { deleted: deletionResult } = await _rethinkdb.default.db('webappSetting').table('oAuth_token').filter(filterObject).delete().run(connection);
+    return deletionResult ? true : false;
+  },
+
+
+
+
+
+
+
+
+
+
+
+
+  validateScope: async (user, client, scope) => {
+    console.log('validateScope function');
+    if (!scope) return null;
+    const connection = _ApplicationClass.default.rethinkdbConnection;
+    let dbFilterObject = { key: client.id };
+    client = await getTableDocument.instance['oAuth_client'](connection, dbFilterObject);
+    if (!client || !client.scope) return null;
+    let validScopes = client.scope.split(',').map(s => s.trim());
+    let scopes = scope.split(',').map(s => s.trim()).filter(s => validScopes.indexOf(s) >= 0);
+    return scope.length ? scopes.join(',') : null;
+  },
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  verifyScope: async (accessToken, scope) => {
+    console.log('verifyScope function');
+
+
+    if (!scope) return true;
+    if (!accessToken.scope) return false;
+    validScopes = scope.split(',').map(s => s.trim());
+    scopes = accessToken.scope.split(',').map(s => s.trim());
+
+    return scopes.some(s => validScopes.indexOf(s) >= 0);
+  } };exports.default = _default;
+//# sourceMappingURL=data:application/json;charset=utf-8;base64,eyJ2ZXJzaW9uIjozLCJzb3VyY2VzIjpbIi4uLy4uLy4uLy4uLy4uL3NvdXJjZS9jbGFzcy9wb3J0L29BdXRoL29BdXRoMlNlcnZlci5tb2RlbC5qcyJdLCJuYW1lcyI6WyJnZXRUYWJsZURvY3VtZW50IiwiZ2VuZXJhdGUiLCJnZXRUYWJsZURvY3VtZW50QW5kRmlsdGVyIiwiaW5zdGFuY2UiLCJnZW5lcmF0ZUFjY2Vzc1Rva2VuIiwidW5kZWZpbmVkIiwiZ2VuZXJhdGVSZWZyZXNoVG9rZW4iLCJnZW5lcmF0ZUF1dGhvcml6YXRpb25Db2RlIiwiZ2V0VXNlckZyb21DbGllbnQiLCJnZXRVc2VyIiwidXNlcklkIiwidXNlclBhc3N3b3JkIiwiY29uc29sZSIsImxvZyIsImNvbm5lY3Rpb24iLCJBcHBsaWNhdGlvbiIsInJldGhpbmtkYkNvbm5lY3Rpb24iLCJkYkZpbHRlck9iamVjdCIsImtleSIsInBhc3N3b3JkIiwidXNlciIsInVzZXJuYW1lIiwiZ2V0Q2xpZW50IiwiY2xpZW50SWQiLCJjbGllbnRTZWNyZXQiLCJjbGllbnQiLCJpZCIsInJlZGlyZWN0VXJpcyIsInJlZGlyZWN0VXJpIiwiZ3JhbnRzIiwiZ3JhbnRUeXBlIiwiZ2V0QWNjZXNzVG9rZW4iLCJhY2Nlc3NUb2tlbiIsInRva2VuRGF0YSIsInR5cGUiLCJ0b2tlbiIsImFjY2Vzc1Rva2VuRXhwaXJlc0F0IiwiZXhwaXJlc0F0Iiwic2NvcGUiLCJPYmplY3QiLCJhc3NpZ24iLCJnZXRSZWZyZXNoVG9rZW4iLCJyZWZyZXNoVG9rZW4iLCJyZWZyZXNoVG9rZW5FeHBpcmVzQXQiLCJnZXRBdXRob3JpemF0aW9uQ29kZSIsImF1dGhvcml6YXRpb25Db2RlIiwiY29kZSIsInNhdmVUb2tlbiIsInJldHVybmVkVmFsdWUiLCJyZXRoaW5rREIiLCJkYiIsInRhYmxlIiwiaW5zZXJ0IiwicnVuIiwic2F2ZUF1dGhvcml6YXRpb25Db2RlIiwicmV2b2tlVG9rZW4iLCJmaWx0ZXJPYmplY3QiLCJkZWxldGVkIiwiZGVsZXRpb25SZXN1bHQiLCJmaWx0ZXIiLCJkZWxldGUiLCJyZXZva2VBdXRob3JpemF0aW9uQ29kZSIsInZhbGlkYXRlU2NvcGUiLCJ2YWxpZFNjb3BlcyIsInNwbGl0IiwibWFwIiwicyIsInRyaW0iLCJzY29wZXMiLCJpbmRleE9mIiwibGVuZ3RoIiwiam9pbiIsInZlcmlmeVNjb3BlIiwic29tZSJdLCJtYXBwaW5ncyI6InlMQUFBO0FBQ0E7QUFDQTs7QUFFQSxJQUFJQSxnQkFBZ0IsR0FBRztBQUNuQkMsRUFBQUEsUUFBUSxFQUFFQyx1Q0FEUztBQUVuQkMsRUFBQUEsUUFBUSxFQUFFLEVBRlMsRUFBdkI7O0FBSUFILGdCQUFnQixDQUFDRyxRQUFqQixDQUEwQixhQUExQixJQUEyQ0gsZ0JBQWdCLENBQUNDLFFBQWpCLENBQTBCLGFBQTFCLENBQTNDO0FBQ0FELGdCQUFnQixDQUFDRyxRQUFqQixDQUEwQixjQUExQixJQUE0Q0gsZ0JBQWdCLENBQUNDLFFBQWpCLENBQTBCLGNBQTFCLENBQTVDO0FBQ0FELGdCQUFnQixDQUFDRyxRQUFqQixDQUEwQixZQUExQixJQUEwQ0gsZ0JBQWdCLENBQUNDLFFBQWpCLENBQTBCLFlBQTFCLENBQTFDLEM7OztBQUdlOzs7OztBQUtYRyxFQUFBQSxtQkFBbUIsRUFBRUMsU0FMVjtBQU1YQyxFQUFBQSxvQkFBb0IsRUFBRUQsU0FOWDtBQU9YRSxFQUFBQSx5QkFBeUIsRUFBRUYsU0FQaEI7QUFRWEcsRUFBQUEsaUJBQWlCLEVBQUVILFNBUlI7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7QUEyQlhJLEVBQUFBLE9BQU8sRUFBRSxPQUFPQyxNQUFQLEVBQWVDLFlBQWYsS0FBZ0M7QUFDckNDLElBQUFBLE9BQU8sQ0FBQ0MsR0FBUixDQUFZLGtCQUFaO0FBQ0EsVUFBTUMsVUFBVSxHQUFHQywwQkFBWUMsbUJBQS9CO0FBQ0EsUUFBSUMsY0FBYyxHQUFHLEVBQUVDLEdBQUcsRUFBRVIsTUFBUCxFQUFlUyxRQUFRLEVBQUVSLFlBQXpCLEVBQXJCO0FBQ0EsUUFBSVMsSUFBSSxHQUFHLE1BQU1wQixnQkFBZ0Is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RSxPQUFPeEMsV0FBUCxFQUFvQk0sS0FBcEIsS0FBOEI7QUFDdkMxQixJQUFBQSxPQUFPLENBQUNDLEdBQVIsQ0FBWSxzQkFBWjs7O0FBR0EsUUFBRyxDQUFDeUIsS0FBSixFQUFXLE9BQU8sSUFBUDtBQUNYLFFBQUcsQ0FBQ04sV0FBVyxDQUFDTSxLQUFoQixFQUF1QixPQUFPLEtBQVA7QUFDdkJ5QixJQUFBQSxXQUFXLEdBQUd6QixLQUFLLENBQUMwQixLQUFOLENBQVksR0FBWixFQUFpQkMsR0FBakIsQ0FBcUJDLENBQUMsSUFBSUEsQ0FBQyxDQUFDQyxJQUFGLEVBQTFCLENBQWQ7QUFDQUMsSUFBQUEsTUFBTSxHQUFHcEMsV0FBVyxDQUFDTSxLQUFaLENBQWtCMEIsS0FBbEIsQ0FBd0IsR0FBeEIsRUFBNkJDLEdBQTdCLENBQWlDQyxDQUFDLElBQUlBLENBQUMsQ0FBQ0MsSUFBRixFQUF0QyxDQUFUOztBQUVBLFdBQU9DLE1BQU0sQ0FBQ0ssSUFBUCxDQUFZUCxDQUFDLElBQUlILFdBQVcsQ0FBQ00sT0FBWixDQUFvQkgsQ0FBcEIsS0FBMEIsQ0FBM0MsQ0FBUDtBQUNILEdBaldVLEUiLCJzb3VyY2VzQ29udGVudCI6WyJpbXBvcnQgeyBkZWZhdWx0IGFzIEFwcGxpY2F0aW9uIH0gZnJvbSAnLi4vLi4vQXBwbGljYXRpb24uY2xhc3MuanMnXG5pbXBvcnQgcmV0aGlua0RCIGZyb20gJ3JldGhpbmtkYicgXG5pbXBvcnQgZ2V0VGFibGVEb2N1bWVudEFuZEZpbHRlciBmcm9tICdAZGVwZW5kZW5jeS9kYXRhYmFzZVV0aWxpdHkvc291cmNlL2dldFRhYmxlRG9jdW1lbnRBbmRGaWx0ZXIucXVlcnkuanMnXG5cbmxldCBnZXRUYWJsZURvY3VtZW50ID0ge1xuICAgIGdlbmVyYXRlOiBnZXRUYWJsZURvY3VtZW50QW5kRmlsdGVyLFxuICAgIGluc3RhbmNlOiBbXVxufVxuZ2V0VGFibGVEb2N1bWVudC5pbnN0YW5jZVsnb0F1dGhfdG9rZW4nXSA9IGdldFRhYmxlRG9jdW1lbnQuZ2VuZXJhdGUoJ29BdXRoX3Rva2VuJylcbmdldFRhYmxlRG9jdW1lbnQuaW5zdGFuY2VbJ29BdXRoX2NsaWVudCddID0gZ2V0VGFibGVEb2N1bWVudC5nZW5lcmF0ZSgnb0F1dGhfY2xpZW50JylcbmdldFRhYmxlRG9jdW1lbnQuaW5zdGFuY2VbJ29BdXRoX3VzZXInXSA9IGdldFRhYmxlRG9jdW1lbnQuZ2VuZXJhdGUoJ29BdXRoX3VzZXInKVxuXG5cbmV4cG9ydCBkZWZhdWx0IHsgIC8vIE1vZGVsIGZ1bmN0aW9ucyByZXF1aXJlZCBieSBub2RlLWF1dGgyLXNlcnZlciBTZWUgaHR0cHM6Ly9naXRodWIuY29tL29hdXRoanMvbm9kZS1vYXV0aDItc2VydmVyIGZvciBzcGVjaWZpY2F0aW9uXG4gICAgXG4gICAgLyoqXG4gICAgICogTm90IGltcGxlbWVudGVkLCB1c2luZyBkZWZhdWx0IGluc3RlYWQuXG4gICAgICovXG4gICAgZ2VuZXJhdGVBY2Nlc3NUb2tlbjogdW5kZWZpbmVkLFxuICAgIGdlbmVyYXRlUmVmcmVzaFRva2VuOiB1bmRlZmluZWQsXG4gICAgZ2VuZXJhdGVBdXRob3JpemF0aW9uQ29kZTogdW5kZWZpbmVkLFxuICAgIGdldFVzZXJGcm9tQ2xpZW50OiB1bmRlZmluZWQsXG5cbiAgICAvLyAvKipcbiAgICAvLyAgKiBJbnZva2VkIHRvIGdlbmVyYXRlIGEgbmV3IGFjY2VzcyB0b2tlbi5cbiAgICAvLyAgKiBAcGFyYW0ge29iamVjdH0gY2xpZW50IFRoZSBjbGllbnQgdGhlIGFjY2VzcyB0b2tlbiBpcyBnZW5lcmF0ZWQgZm9yLlxuICAgIC8vICAqIEBwYXJhbSB7b2JqZWN0fSB1c2VyIFRoZSB1c2VyIHRoZSBhY2Nlc3MgdG9rZW4gaXMgZ2VuZXJhdGVkIGZvci5cbiAgICAvLyAgKiBAcGFyYW0ge3N0cmluZ30gc2NvcGUgVGhlIHNjb3BlcyBhc3NvY2lhdGVkIHdpdGggdGhlIGFjY2VzcyB0b2tlbi4gY2FuIGJlIG51bGwuXG4gICAgLy8gICogQHJldHVybiB7c3RyaW5nfSBhY2Nlc3NUb2tlbiAtIEEgU3RyaW5nIHRvIGJlIHVzZWQgYXMgYWNjZXNzIHRva2VuLlxuICAgIC8vICAqL1xuICAgIC8vIGdlbmVyYXRlQWNjZXNzVG9rZW46IGFzeW5jIChjbGllbnQsIHVzZXIsIHNjb3BlKSA9PiB7XG5cbiAgICAvLyB9LFxuICAgIFxuICAgIC8qKlxuICAgICAqIEludm9rZWQgdG8gcmV0cmlldmUgYSB1c2VyIHVzaW5nIGEgdXNlcm5hbWUvcGFzc3dvcmQgY29tYmluYXRpb24uXG4gICAgICogQHBhcmFtIHtzdHJpbmd9IHVzZXJJZFxuICAgICAqIEBwYXJhbSB7c3RyaW5nfSB1c2VyUGFzc3dvcmRcbiAgICAgKiBAcmV0dXJuIHtvYmplY3R9IHJlcHJlc2VudGluZyB0aGUgdXNlciBvciBmYWxzeSBpZiBubyBzdWNoIHVzZXIgY291bGQgYmUgZm91bmQuXG4gICAgICovXG4gICAgZ2V0VXNlcjogYXN5bmMgKHVzZXJJZCwgdXNlclBhc3N3b3JkKSA9PiB7XG4gICAgICAgIGNvbnNvbGUubG9nKCdnZXRVc2VyIGZ1bmN0aW9uJylcbiAgICAgICAgY29uc3QgY29ubmVjdGlvbiA9IEFwcGxpY2F0aW9uLnJldGhpbmtkYkNvbm5lY3Rpb25cbiAgICAgICAgbGV0IGRiRmlsdGVyT2JqZWN0ID0geyBrZXk6IHVzZXJJZCwgcGFzc3dvcmQ6IHVzZXJQYXNzd29yZCB9O1xuICAgICAgICBsZXQgdXNlciA9IGF3YWl0IGdldFRhYmxlRG9jdW1lbnQuaW5zdGFuY2VbJ29BdXRoX3VzZXInXShjb25uZWN0aW9uLCBkYkZpbHRlck9iamVjdClcblxuICAgICAgICByZXR1cm4ge1xuICAgICAgICAgICAgdXNlcm5hbWU6IHVzZXIua2V5LFxuICAgICAgICAgICAgcGFzc3dvcmQ6IHVzZXIucGFzc3dvcmRcbiAgICAgICAgfVxuICAgIH0sXG4gICAgXG4gICAgLyoqXG4gICAgICogdGhlIG5vZGUtb2F1dGgyLXNlcnZlciB1c2UgdGhpcyBtZXRob2QgdG8gZ2V0IGRldGFpbCBpbmZvbWF0aW9uIG9mIGEgcmVnaXN0ZXJlZCBjbGllbnQuXG4gICAgICogQHBhcmFtIHtTdHJpbmd9IGNsaWVudElkIC0gdGhlIGNsaWVudCBpZFxuICAgICAqIEBwYXJhbSB7U3RyaW5nfSBbY2xpZW50U2VjcmV0XSAtIHRoZSBjbGllbnQgc2VjcmV0LCB1c2VkIGluIHRoZSB0b2tlbiBncmFudGluZyBwaGFzZSB0byBhdXRoZW50aWNhdGUgdGhlIG9hdXRoIGNsaWVudFxuICAgICAqIEByZXR1cm4ge09iamVjdH0gY2xpZW50IC0gdGhlIGNsaWVudCBvYmplY3QsIGNvbnRhaW5pbmcgKGF0IGxlYXN0KSB0aGUgZm9sbG93aW5nIGluZm9tYXRpb24sIG9yIG51bGwgaWYgdGhlIGNsaWVudCBpcyBub3QgYSB2YWxpZCByZWdpc3RlcmVkIGNsaWVudCBvciB0aGUgY2xpZW50IHNlY3JldCBkb2Vzbid0IG1hdGNoIHRoZSBjbGllbnRJZDpcbiAgICAgKiAgICAgICAgIHtTdHJpbmd9IGNsaWVudC5pZCAtIHRoZSBjbGllbnQgaWRcbiAgICAgKiAgICAgICAgIHtBcnJheTxTdHJpbmc+fSBncmFudHMgLSBhbiBhcnJheSBvZiBncmFudCB0eXBlcyBhbGxvd2VkIGZvciB0aGlzIGNsaWVudCwgYWxsb3dlZCB2YWx1ZXMgYXJlOiBhdXRob3JpemF0aW9uX2NvZGUgfCBjbGllbnRfY3JlZGVudGlhbHMgfCBwYXNzd29yZCB8IHJlZnJlc2hfdG9rZW5cbiAgICAgKiAgICAgICAgIHtBcnJheTxTdHJpbmc+fSByZWRpcmVjdFVyaXMgLSBhbiBhcnJheSBvZiB1cmxzIChvZiB0aGUgY2xpZW50KSB0aGF0IGFsbG93ZWQgZm9yIHJlZGlyZWN0aW5nIHRvIGJ5IHRoZSBvYXV0aCBzZXJ2ZXJcbiAgICAgKiAgICAgICAgIHtOdW1iZXJ9IFthY2Nlc3NUb2tlbkxpZmV0aW1lPTM2MDBdIC0gZGVmaW5lIHRoZSBsaWZldGltZSBvZiBhbiBhY2Nlc3MgdG9rZW4gaW4gc2Vjb25kcywgZGVmYXVsdCBpcyAxIGhvdXJcbiAgICAgKiAgICAgICAgIHtOdW1iZXJ9IFtyZWZyZXNoVG9rZW5MaWZldGltZT0zNjAwICogMjQgKiAxNF0gLSBkZWZpbmUgdGhlIGxpZmV0aW1lIG9mIGFuIHJlZnJlc2ggdG9rZW4gaW4gc2Vjb25kcywgZGVmYXVsdCBpcyAyIHdlZWtzXG4gICAgICovXG4gICAgZ2V0Q2xpZW50OiBhc3luYyAoY2xpZW50SWQsIGNsaWVudFNlY3JldCkgPT4ge1xuICAgICAgICBjb25zb2xlLmxvZygnZ2V0Q2xpZW50IGZ1bmN0aW9uJylcblxuICAgICAgICBjb25zdCBjb25uZWN0aW9uID0gQXBwbGljYXRpb24ucmV0aGlua2RiQ29ubmVjdGlvblxuICAgICAgICBsZXQgZGJGaWx0ZXJPYmplY3QgPSAoY2xpZW50U2VjcmV0KSA/IHsga2V5OiBjbGllbnRJZCwgY2xpZW50U2VjcmV0OiBjbGllbnRTZWNyZXQgfSA6IHsga2V5OiBjbGllbnRJZCB9O1xuICAgICAgICBsZXQgY2xpZW50ID0gYXdhaXQgZ2V0VGFibGVEb2N1bWVudC5pbnN0YW5jZVsnb0F1dGhfY2xpZW50J10oY29ubmVjdGlvbiwgZGJGaWx0ZXJPYmplY3QpXG4gICAgICAgIGlmKCFjbGllbnQpIHJldHVybiBudWxsO1xuICAgICAgICAvLyByZXR1cm4gaW4gcmVxdWlyZWQgZm9ybWF0LlxuICAgICAgICByZXR1cm4ge1xuICAgICAgICAgICAgaWQ6IGNsaWVudC5rZXksXG4gICAgICAgICAgICByZWRpcmVjdFVyaXM6IFtjbGllbnQucmVkaXJlY3RVcmldLFxuICAgICAgICAgICAgZ3JhbnRzOiBjbGllbnQuZ3JhbnRUeXBlLFxuICAgICAgICAgICAgLy8gQ2xpZW50LXNwZWNpZmljIGxpZmV0aW1lIG9mIGdlbmVyYXRlZCByZWZyZXNoIHRva2VucyBpbiBzZWNvbmRzLlxuICAgICAgICAgICAgLy8gYWNjZXNzVG9rZW5MaWZldGltZTogY2xpZW50LmFjY2Vzc1Rva2VuTGlmZXRpbWUsXG4gICAgICAgICAgICAvLyByZWZyZXNoVG9rZW5MaWZldGltZTogY2xpZW50LnJlZnJlc2hUb2tlbkxpZmV0aW1lXG4gICAgICAgIH1cbiAgICB9LFxuXG4gICAgLyoqXG4gICAgICogSW52b2tlZCB0byByZXRyaWV2ZSBhbiBleGlzdGluZyBhY2Nlc3MgdG9rZW4gcHJldmlvdXNseSBzYXZlZCB0aHJvdWdoIE1vZGVsI3NhdmVUb2tlbigpLlxuICAgICAqIEBwYXJhbSB7U3RyaW5nfSBhY2Nlc3NUb2tlbiAtIFRoZSBhY2Nlc3MgdG9rZW4gdG8gcmV0cmlldmUuXG4gICAgICogQHJldHVybiB7T2JqZWN0fSB0b2tlbiAtIEFuIE9iamVjdCByZXByZXNlbnRpbmcgdGhlIGFjY2VzcyB0b2tlbiBhbmQgYXNzb2NpYXRlZCBkYXRhLiBDb250YWluaW5nIGF0IGxlYXN0IHRoZSBmb2xsb3dpbmcgaW5mb3JtYXRpb246XG4gICAgICogICAgICAgICB7U3RyaW5nfSAuYWNjZXNzVG9rZW4gLSB0aGUgYWNjZXNzIHRva2VuIHN0cmluZ1xuICAgICAqICAgICAgICAge0RhdGV9ICAgLmFjY2Vzc1Rva2VuRXhwaXJlc0F0IC0gdGhlIGV4YWN0IHRpbWUgd2hlbiB0aGUgYWNjZXNzIHRva2VuIHNob3VsZCBleHBpcmVcbiAgICAgKiAgICAgICAgIHtTdHJpbmd9IC5zY29wZSAtIGFjY2VzcyBzY29wZSBvZiB0aGlzIGFjY2VzcyB0b2tlblxuICAgICAqICAgICAgICAge09iamVjdH0gLmNsaWVudCAtIHRoZSBvYXV0aCBjbGllbnRcbiAgICAgKiAgICAgICAgIHtTdHJpbmd9IC5jbGllbnQuaWQgLSBzdHJpbmcgaWQgb2YgdGhlIG9hdXRoIGNsaWVudFxuICAgICAqICAgICAgICAge09iamVjdH0gLnVzZXIgLSB0aGUgdXNlciB3aGljaCB0aGlzIGFjY2VzcyB0b2tlbiByZXByZXNlbnRzLCB0aGlzIGRhdGEgc3RydWN0dXJlIG9mIHRoZSB1c2VyIG9iamVjdCBpcyBub3QgcGFydCBvZiB0aGUgTW9kZWwgU3BlY2lmaWNhdGlvbiwgYW5kIHdoYXQgaXQgc2hvdWxkIGJlIGlzIGNvbXBsZXRlbHkgdXAgdG8geW91LiBJbiB0aGlzIGV4YW1wbGUsIHdlIHVzZSB7IHVzZXJuYW1lOiAnc29tZVVzZXJOYW1lJyB9IHdoZXJlIHRoZSAndXNlcm5hbWUnIGZpZWxkIGlzIHVzZWQgdG8gdW5pcXVlbHkgaWRlbnRpZnkgYW4gdXNlciBpbiB0aGUgdXNlciBkYXRhYmFzZS5cbiAgICAgKi9cbiAgICBnZXRBY2Nlc3NUb2tlbjogYXN5bmMgKGFjY2Vzc1Rva2VuKSA9PiB7XG4gICAgICAgIGNvbnNvbGUubG9nKCdnZXRBY2Nlc3NUb2tlbiBmdW5jdGlvbicpXG4gICAgICAgIFxuICAgICAgICBjb25zdCBjb25uZWN0aW9uID0gQXBwbGljYXRpb24ucmV0aGlua2RiQ29ubmVjdGlvblxuICAgICAgICBsZXQgdG9rZW5EYXRhID0gYXdhaXQgZ2V0VGFibGVEb2N1bWVudC5pbnN0YW5jZVsnb0F1dGhfdG9rZW4nXShjb25uZWN0aW9uLCB7IHR5cGU6ICdhY2Nlc3NUb2tlbicsIHRva2VuOiBhY2Nlc3NUb2tlbiB9KVxuICAgICAgICBpZighdG9rZW5EYXRhKSByZXR1cm4gbnVsbFxuICAgICAgICBsZXQgY2xpZW50ID0gYXdhaXQgZ2V0VGFibGVEb2N1bWVudC5pbnN0YW5jZVsnb0F1dGhfY2xpZW50J10oY29ubmVjdGlvbiwgeyBrZXk6IHRva2VuRGF0YS5jbGllbnRJZCB9KVxuICAgICAgICBsZXQgdXNlciA9IGF3YWl0IGdldFRhYmxlRG9jdW1lbnQuaW5zdGFuY2VbJ29BdXRoX3VzZXInXShjb25uZWN0aW9uLCB7IGtleTogdG9rZW5EYXRhLnVzZXJJZCB9KVxuICAgICAgICAvLyByZXR1cm4gaW4gcmVxdWlyZWQgZm9ybWF0LlxuICAgICAgICByZXR1cm4geyBcbiAgICAgICAgICAgIGFjY2Vzc1Rva2VuOiB0b2tlbkRhdGEudG9rZW4sXG4gICAgICAgICAgICBhY2Nlc3NUb2tlbkV4cGlyZXNBdDogdG9rZW5EYXRhLmV4cGlyZXNBdCxcbiAgICAgICAgICAgIHNjb3BlOiB0b2tlbkRhdGEuc2NvcGUsXG4gICAgICAgICAgICBjbGllbnQ6IE9iamVjdC5hc3NpZ24oY2xpZW50LCB7IGlkOiBjbGllbnQua2V5IH0pLCAvLyB3aXRoICdpZCcgcHJvcGVydHlcbiAgICAgICAgICAgIHVzZXI6IHtcbiAgICAgICAgICAgICAgICB1c2VybmFtZTogdXNlci5rZXlcbiAgICAgICAgICAgIH0gICAgICAgICAgICBcbiAgICAgICAgfVxuICAgIH0sXG5cbiAgICAvKipcbiAgICAgKiB0aGUgbm9kZS1vYXV0aDItc2VydmVyIHVzZSB0aGlzIG1ldGhvZCB0byBnZXQgZGV0YWlsIGluZm9ybWF0aW9uIG9mIGEgcmVmcmVzaCB0b2tlbiBwcmV2aW91c2x5IHN0b3JlZCB1c2VkIE9hdXRoTW9kZWwucHJvdG90eXBlLnNhdmVUb2tlbi5cbiAgICAgKiA8Yj5Ob3RlOjwvYj5yZWZyZXNoIHRva2VuIGlzIHVzZWQgYnkgdGhlIG9hdXRoIGNsaWVudCB0byByZXF1ZXN0IGZvciBhIG5ldyBhY2Nlc3MgdG9rZW4sIGFuZCBpdCdzIGFjdHVhbGx5IG5vdCByZWxhdGVkIHRvIGFueSBhY2Nlc3MgdG9rZW4gaW4gYW55IHdheSwgc28gYWNjZXNzIHRva2VucyBhbmQgcmVmcmVzaCB0b2tlbnMgc2hvdWxkIGJlIHN0b3JlZCBhbmQgcmV0cmlldmVkIGluZGVwZW5kZW50IHRvIGVhY2ggb3RoZXIuXG4gICAgICogQHBhcmFtIHtTdHJpbmd9IHJlZnJlc2hUb2tlbiAtIHRoZSByZWZyZXNoIHRva2VuIHN0cmluZ1xuICAgICAqIEByZXR1cm4ge09iamVjdH0gdG9rZW4gLSB0aGUgdG9rZW4gb2JqZWN0IGNvbnRhaW5pbmcgKGF0IGxlYXN0KSB0aGUgZm9sbG93aW5nIGluZm9tYXRpb24sIG9yIG51bGwgaWYgdGhlIHJlZnJlc2ggdG9rZW4gZG9lc24ndCBleGlzdDpcbiAgICAgKiAgICAgICAge1N0cmluZ30gdG9rZW4ucmVmcmVzaFRva2VuIC0gdGhlIHJlZnJlc2ggdG9rZW4gc3RyaW5nXG4gICAgICogICAgICAgIHtEYXRlfSB0b2tlbi5yZWZyZXNoVG9rZW5FeHBpcmVzQXQgLSB0aGUgZXhhY3QgdGltZSB3aGVuIHRoZSByZWZyZXNoIHRva2VuIHNob3VsZCBleHBpcmVcbiAgICAgKiAgICAgICAge1N0cmluZ30gc2NvcGUgLSB0aGUgYWNjZXNzIHNjb3BlXG4gICAgICogICAgICAgIHtPYmplY3R9IGNsaWVudCAtIHRoZSBjbGllbnQgb2JqZWN0XG4gICAgICogICAgICAgIHtTdHJpbmd9IGNsaWVudC5pZCAtIHRoZSBpZCBvZiB0aGUgY2xpZW50XG4gICAgICogICAgICAgIHtPYmplY3R9IHVzZXIgLSB0aGUgdXNlciBvYmplY3RcbiAgICAgKiAgICAgICAge1N0cmluZ30gdXNlci51c2VybmFtZSAtIGlkZW50aWZpZXIgb2YgdGhlIHVzZXJcbiAgICAgKi9cbiAgICBnZXRSZWZyZXNoVG9rZW46IGFzeW5jIChyZWZyZXNoVG9rZW4pID0+IHtcbiAgICAgICAgY29uc29sZS5sb2coJ2dldFJlZnJlc2hUb2tlbiBmdW5jdGlvbicpXG5cbiAgICAgICAgY29uc3QgY29ubmVjdGlvbiA9IEFwcGxpY2F0aW9uLnJldGhpbmtkYkNvbm5lY3Rpb25cbiAgICAgICAgbGV0IHRva2VuRGF0YSA9IGF3YWl0IGdldFRhYmxlRG9jdW1lbnQuaW5zdGFuY2VbJ29BdXRoX3Rva2VuJ10oY29ubmVjdGlvbiwgeyB0eXBlOiAncmVmcmVzaFRva2VuJywgdG9rZW46IHJlZnJlc2hUb2tlbiB9KVxuICAgICAgICBpZighdG9rZW5EYXRhKSByZXR1cm4gbnVsbFxuICAgICAgICBsZXQgY2xpZW50ID0gYXdhaXQgZ2V0VGFibGVEb2N1bWVudC5pbnN0YW5jZVsnb0F1dGhfY2xpZW50J10oY29ubmVjdGlvbiwgeyBrZXk6IHRva2VuRGF0YS5jbGllbnRJZCB9KVxuICAgICAgICBsZXQgdXNlciA9IGF3YWl0IGdldFRhYmxlRG9jdW1lbnQuaW5zdGFuY2VbJ29BdXRoX3VzZXInXShjb25uZWN0aW9uLCB7IGtleTogdG9rZW5EYXRhLnVzZXJJZCB9KVxuICAgICAgICAvLyByZXR1cm4gaW4gcmVxdWlyZWQgZm9ybWF0LlxuICAgICAgICByZXR1cm4geyBcbiAgICAgICAgICAgIHJlZnJlc2hUb2tlbjogdG9rZW5EYXRhLnRva2VuLFxuICAgICAgICAgICAgcmVmcmVzaFRva2VuRXhwaXJlc0F0OiB0b2tlbkRhdGEuZXhwaXJlc0F0LFxuICAgICAgICAgICAgc2NvcGU6IHRva2VuRGF0YS5zY29wZSxcbiAgICAgICAgICAgIGNsaWVudDogT2JqZWN0LmFzc2lnbihjbGllbnQsIHsgaWQ6IGNsaWVudC5rZXkgfSksIC8vIHdpdGggJ2lkJyBwcm9wZXJ0eVxuICAgICAgICAgICAgdXNlcjoge1xuICAgICAgICAgICAgICAgIHVzZXJuYW1lOiB1c2VyLmtleVxuICAgICAgICAgICAgfSAvLyB3aXRoICd1c2VybmFtZScgcHJvcGVydHlcbiAgICAgICAgfVxuICAgIH0sXG5cbiAgICAvKipcbiAgICAgKiB0aGUgbm9kZS1vYXV0aDItc2VydmVyIHVzZSB0aGlzIG1ldGhvZCB0byBnZXQgZGV0YWlsIGluZm9ybWF0aW9uIG9mIGEgYXV0aG9yaXphdGlvbiBjb2RlIHByZXZpb3VzbHkgc3RvcmVkIHVzZWQgT2F1dGhNb2RlbC5wcm90b3R5cGUuc2F2ZUF1dGhvcml6YXRpb25Db2RlLlxuICAgICAqIEBwYXJhbSB7U3RyaW5nfSBhdXRob3JpemF0aW9uQ29kZSAtIHRoZSBhdXRob3JpemF0aW9uIGNvZGUgc3RyaW5nXG4gICAgICogQHJldHVybiB7T2JqZWN0fSBjb2RlIC0gdGhlIGNvZGUgb2JqZWN0IGNvbnRhaW5pbmcgdGhlIGZvbGxvd2luZyBpbmZvcm1hdGlvbiwgb3IgbnVsbCBpZiB0aGUgYXV0aG9yaXphdGlvbiBjb2RlIGRvZXNuJ3QgZXhpc3RcbiAgICAgKiAgICAgICAgIHtTdHJpbmd9IGNvZGUgLSB0aGUgYXV0aG9yaXphdGlvbiBjb2RlIHN0cmluZ1xuICAgICAqICAgICAgICAge0RhdGV9IGV4cGlyZXNBdCAtIHRoZSBleGFjdCB0aW1lIHdoZW4gdGhlIGNvZGUgc2hvdWxkIGV4cGlyZVxuICAgICAqICAgICAgICAge1N0cmluZ30gcmVkaXJlY3RVcmkgLSB0aGUgcmVkaXJlY3RfdXJpIHF1ZXJ5IHBhcmFtZXRlciBvZiB0aGUgJy9vYXV0aC9hdXRob3JpemUnIHJlcXVlc3QsIGluZGljYXRpbmcgd2hlcmUgdG8gcmVkaXJlY3QgdG8gd2l0aCB0aGUgY29kZVxuICAgICAqICAgICAgICAge1N0cmluZ30gc2NvcGUgLSB0aGUgYXV0aG9yaXphdGlvbiBzY29wZSBkZWNpZGluZyB0aGUgYWNjZXNzIHNjb3BlIG9mIHRoZSBhY2Nlc3MgdG9rZW4gcmVxdWVzdGVkIGJ5IHRoZSBvYXV0aCBjbGllbnQgdXNpbmcgdGhpcyBjb2RlXG4gICAgICogICAgICAgICB7T2JqZWN0fSBjbGllbnQgLSB0aGUgY2xpZW50IG9iamVjdFxuICAgICAqICAgICAgICAge1N0cmluZ30gY2xpZW50LmlkIC0gdGhlIGNsaWVudCBpZFxuICAgICAqICAgICAgICAge09iamVjdH0gdXNlciAtIHRoZSB1c2VyIG9iamVjdFxuICAgICAqICAgICAgICAge1N0cmluZ30gdXNlci51c2VybmFtZSAtIHRoZSB1c2VyIGlkZW50aWZpZXJcbiAgICAgKi9cbiAgICBnZXRBdXRob3JpemF0aW9uQ29kZTogYXN5bmMgKGF1dGhvcml6YXRpb25Db2RlKSA9PiB7XG4gICAgICAgIGNvbnNvbGUubG9nKCdnZXRBdXRob3JpemF0aW9uQ29kZSBmdW5jdGlvbicpXG4gICAgICAgIFxuICAgICAgICBjb25zdCBjb25uZWN0aW9uID0gQXBwbGljYXRpb24ucmV0aGlua2RiQ29ubmVjdGlvblxuICAgICAgICBsZXQgdG9rZW5EYXRhID0gYXdhaXQgZ2V0VGFibGVEb2N1bWVudC5pbnN0YW5jZVsnb0F1dGhfdG9rZW4nXShjb25uZWN0aW9uLCB7IHR5cGU6ICdhdXRob3JpemF0aW9uQ29kZScsIHRva2VuOiBhdXRob3JpemF0aW9uQ29kZSB9KVxuICAgICAgICBpZighdG9rZW5EYXRhKSByZXR1cm4gbnVsbFxuICAgICAgICBsZXQgY2xpZW50ID0gYXdhaXQgZ2V0VGFibGVEb2N1bWVudC5pbnN0YW5jZVsnb0F1dGhfY2xpZW50J10oY29ubmVjdGlvbiwgeyBrZXk6IHRva2VuRGF0YS5jbGllbnRJZCB9KVxuICAgICAgICBsZXQgdXNlciA9IGF3YWl0IGdldFRhYmxlRG9jdW1lbnQuaW5zdGFuY2VbJ29BdXRoX3VzZXInXShjb25uZWN0aW9uLCB7IGtleTogdG9rZW5EYXRhLnVzZXJJZCB9KVxuICAgICAgICAvLyByZXR1cm4gaW4gcmVxdWlyZWQgZm9ybWF0LlxuICAgICAgICByZXR1cm4ge1xuICAgICAgICAgICAgY29kZTogdG9rZW5EYXRhLnRva2VuLFxuICAgICAgICAgICAgZXhwaXJlc0F0OiB0b2tlbkRhdGEuZXhwaXJlc0F0LFxuICAgICAgICAgICAgcmVkaXJlY3RVcmk6IHRva2VuRGF0YS5yZWRpcmVjdFVyaSxcbiAgICAgICAgICAgIHNjb3BlOiB0b2tlbkRhdGEuc2NvcGUsXG4gICAgICAgICAgICBjbGllbnQ6IE9iamVjdC5hc3NpZ24oY2xpZW50LCB7IGlkOiBjbGllbnQua2V5IH0pLCAvLyB3aXRoICdpZCcgcHJvcGVydHlcbiAgICAgICAgICAgIHVzZXI6IHtcbiAgICAgICAgICAgICAgICB1c2VybmFtZTogdXNlci5rZXlcbiAgICAgICAgICAgIH0gICAgICAgICAgXG4gICAgICAgIH1cbiAgICB9LFxuICAgICBcbiAgICAvKipcbiAgICAgKiB0aGUgbm9kZS1vYXV0aDItc2VydmVyIHVzZXMgdGhpcyBtZXRob2QgdG8gc2F2ZSBhbiBhY2Nlc3MgdG9rZW4gYW5kIGFuIHJlZnJlc2ggdG9rZW4oaWYgcmVmcmVzaCB0b2tlbiBlbmFibGVkKSBkdXJpbmcgdGhlIHRva2VuIGdyYW50aW5nIHBoYXNlLlxuICAgICAqIEBwYXJhbSB7T2JqZWN0fSB0b2tlbiAtIHRoZSB0b2tlbiBvYmplY3RcbiAgICAgKiBAcGFyYW0ge1N0cmluZ30gdG9rZW4uYWNjZXNzVG9rZW4gLSB0aGUgYWNjZXNzIHRva2VuIHN0cmluZ1xuICAgICAqIEBwYXJhbSB7RGF0ZX0gdG9rZW4uYWNjZXNzVG9rZW5FeHBpcmVzQXQgLSBAc2VlIE9hdXRoTW9kZWwucHJvdG90eXBlLmdldEFjY2Vzc1Rva2VuXG4gICAgICogQHBhcmFtIHtTdHJpbmd9IHRva2VuLnJlZnJlc2hUb2tlbiAtIHRoZSByZWZyZXNoIHRva2VuIHN0cmluZ1xuICAgICAqIEBwYXJhbSB7RGF0ZX0gdG9rZW4ucmVmcmVzaFRva2VuRXhwaXJlc0F0IC0gQHNlZSBPYXV0aE1vZGVsLnByb3RvdHlwZS5nZXRSZWZyZXNoVG9rZW5cbiAgICAgKiBAcGFyYW0ge1N0cmluZ30gdG9rZW4uc2NvcGUgLSB0aGUgYWNjZXNzIHNjb3BlXG4gICAgICogQHBhcmFtIHtPYmplY3R9IGNsaWVudCAtIHRoZSBjbGllbnQgb2JqZWN0IC0gQHNlZSBPYXV0aE1vZGVsLnByb3RvdHlwZS5nZXRDbGllbnRcbiAgICAgKiAgICAgICAge1N0cmluZ30gY2xpZW50LmlkIC0gdGhlIGNsaWVudCBpZFxuICAgICAqIEBwYXJhbSB7T2JqZWN0fSB1c2VyIC0gdGhlIHVzZXIgb2JqZWN0IEBzZWUgT2F1dGhNb2RlbC5wcm90b3R5cGUuZ2V0QWNjZXNzVG9rZW5cbiAgICAgKiBAcmV0dXJuIHtPYmplY3R9IHRva2VuIC0gdGhlIHRva2VuIG9iamVjdCBzYXZlZCwgc2FtZSBhcyB0aGUgcGFyYW1ldGVyICd0b2tlbidcbiAgICAgKi9cbiAgICBzYXZlVG9rZW46IGFzeW5jICh0b2tlbiwgY2xpZW50LCB1c2VyKSA9PiB7XG4gICAgICAgIGNvbnNvbGUubG9nKCdzYXZlVG9rZW4gZnVuY3Rpb24nKVxuICAgICAgICBsZXQgdXNlcklkID0gdXNlci51c2VybmFtZVxuXG4gICAgICAgIC8vIFRPRE86IHNldCBleHBpcmF0aW9uIC8gVFRMIC0gaHR0cHM6Ly9ncm91cHMuZ29vZ2xlLmNvbS9mb3J1bS8jIXRvcGljL3JldGhpbmtkYi90RlNpRzVFeDFLRSBmb3IgcmV0aGlua2RiIHVuZGVyZGV2ZWxvcG1lbnQuXG4gICAgICAgIGNvbnN0IGNvbm5lY3Rpb24gPSBBcHBsaWNhdGlvbi5yZXRoaW5rZGJDb25uZWN0aW9uXG4gICAgICAgIGxldCByZXR1cm5lZFZhbHVlID0ge1xuICAgICAgICAgICAgc2NvcGU6IHRva2VuLnNjb3BlLFxuICAgICAgICAgICAgY2xpZW50OiBjbGllbnQsXG4gICAgICAgICAgICB1c2VyOiB1c2VyXG4gICAgICAgIH1cblxuICAgICAgICBpZih0b2tlbi5hY2Nlc3NUb2tlbikge1xuICAgICAgICAgICAgYXdhaXQgcmV0aGlua0RCLmRiKCd3ZWJhcHBTZXR0aW5nJykudGFibGUoJ29BdXRoX3Rva2VuJykuaW5zZXJ0KHtcbiAgICAgICAgICAgICAgICB0b2tlbjogdG9rZW4uYWNjZXNzVG9rZW4sXG4gICAgICAgICAgICAgICAgZXhwaXJlc0F0OiB0b2tlbi5hY2Nlc3NUb2tlbkV4cGlyZXNBdCxcbiAgICAgICAgICAgICAgICBzY29wZTogdG9rZW4uc2NvcGUsXG4gICAgICAgICAgICAgICAgY2xpZW50SWQ6IGNsaWVudC5pZCxcbiAgICAgICAgICAgICAgICB0eXBlOiAnYWNjZXNzVG9rZW4nLFxuICAgICAgICAgICAgICAgIHVzZXJJZDogdXNlcklkXG4gICAgICAgICAgICB9KS5ydW4oY29ubmVjdGlvbilcbiAgICAgICAgfVxuICAgICAgICBcbiAgICAgICAgaWYodG9rZW4ucmVmcmVzaFRva2VuKSB7XG4gICAgICAgICAgICBhd2FpdCByZXRoaW5rREIuZGIoJ3dlYmFwcFNldHRpbmcnKS50YWJsZSgnb0F1dGhfdG9rZW4nKS5pbnNlcnQoe1xuICAgICAgICAgICAgICAgIHRva2VuOiB0b2tlbi5yZWZyZXNoVG9rZW4sXG4gICAgICAgICAgICAgICAgZXhwaXJlc0F0OiB0b2tlbi5yZWZyZXNoVG9rZW5FeHBpcmVzQXQsXG4gICAgICAgICAgICAgICAgc2NvcGU6IHRva2VuLnNjb3BlLFxuICAgICAgICAgICAgICAgIGNsaWVudElkOiBjbGllbnQuaWQsXG4gICAgICAgICAgICAgICAgdXNlcklkOiB1c2VySWQsXG4gICAgICAgICAgICAgICAgdHlwZTogJ3JlZnJlc2hUb2tlbidcbiAgICAgICAgICAgIH0pLnJ1bihjb25uZWN0aW9uKVxuICAgICAgICB9XG4gICAgICAgIFxuICAgICAgICBPYmplY3QuYXNzaWduKHJldHVybmVkVmFsdWUsIHsgLy8gdG9rZW4gdG8gdGhlIHJldHVybmVkIG9iamVjdC5cbiAgICAgICAgICAgIHJlZnJlc2hUb2tlbjogdG9rZW4ucmVmcmVzaFRva2VuLFxuICAgICAgICAgICAgcmVmcmVzaFRva2VuRXhwaXJlc0F0OiB0b2tlbi5yZWZyZXNoVG9rZW5FeHBpcmVzQXQsXG4gICAgICAgICAgICBhY2Nlc3NUb2tlbjogdG9rZW4uYWNjZXNzVG9rZW4sXG4gICAgICAgICAgICBhY2Nlc3NUb2tlbkV4cGlyZXNBdDogdG9rZW4uYWNjZXNzVG9rZW5FeHBpcmVzQXRcbiAgICAgICAgfSkgIFxuICAgICAgICBcbiAgICAgICAgcmV0dXJuIHJldHVybmVkVmFsdWUgICAgIFxuICAgIH0sXG4gICAgICAgIFxuICAgIC8qKlxuICAgICAqIHRoZSBub2RlLW9hdXRoMi1zZXJ2ZXIgdXNlcyB0aGlzIG1ldGhvZCB0byBzYXZlIGFuIGF1dGhvcml6YXRpb24gY29kZS5cbiAgICAgKiBAcGFyYW0ge09iamVjdH0gY29kZSAtIHRoZSBhdXRob3JpemF0aW9uIGNvZGUgb2JqZWN0XG4gICAgICogQHBhcmFtIHtTdHJpbmd9IGNvZGUuYXV0aG9yaXphdGlvbkNvZGUgLSB0aGUgYXV0aG9yaXphdGlvbiBjb2RlIHN0cmluZ1xuICAgICAqIEBwYXJhbSB7RGF0ZX0gY29kZS5leHBpcmVzQXQgLSB0aGUgdGltZSB3aGVuIHRoZSBjb2RlIHNob3VsZCBleHBpcmVcbiAgICAgKiBAcGFyYW0ge1N0cmluZ30gY29kZS5yZWRpcmVjdFVyaSAtIHdoZXJlIHRvIHJlZGlyZWN0IHRvIHdpdGggdGhlIGNvZGVcbiAgICAgKiBAcGFyYW0ge1N0cmluZ30gW2NvZGUuc2NvcGVdIC0gdGhlIGF1dGhvcml6ZWQgYWNjZXNzIHNjb3BlXG4gICAgICogQHBhcmFtIHtPYmplY3R9IGNsaWVudCAtIHRoZSBjbGllbnQgb2JqZWN0XG4gICAgICogQHBhcmFtIHtTdHJpbmd9IGNsaWVudC5pZCAtIHRoZSBjbGllbnQgaWRcbiAgICAgKiBAcGFyYW0ge09iamVjdH0gdXNlciAtIHRoZSB1c2VyIG9iamVjdFxuICAgICAqIEBwYXJhbSB7U3RyaW5nfSB1c2VyLnVzZXJuYW1lIC0gdGhlIHVzZXIgaWRlbnRpZmllclxuICAgICAqIEByZXR1cm4ge09iamVjdH0gY29kZSAtIHRoZSBjb2RlIG9iamVjdCBzYXZlZFxuICAgICAqL1xuICAgIHNhdmVBdXRob3JpemF0aW9uQ29kZTogYXN5bmMgKGNvZGUsIGNsaWVudCwgdXNlcikgPT4ge1xuICAgICAgICBjb25zb2xlLmxvZygnc2F2ZUF1dGhvcml6YXRpb25Db2RlIGZ1bmN0aW9uJylcbiAgICAgICAgXG4gICAgICAgIGxldCB1c2VySWQgPSB1c2VyLnVzZXJuYW1lXG4gICAgICAgIGNvbnN0IGNvbm5lY3Rpb24gPSBBcHBsaWNhdGlvbi5yZXRoaW5rZGJDb25uZWN0aW9uICAgICAgICAgICAgICAgIFxuICAgICAgICAgICAgICAgICAgICAgICAgXG4gICAgICAgIGF3YWl0IHJldGhpbmtEQi5kYignd2ViYXBwU2V0dGluZycpLnRhYmxlKCdvQXV0aF90b2tlbicpLmluc2VydCh7XG4gICAgICAgICAgICB0eXBlOiAnYXV0aG9yaXphdGlvbkNvZGUnLFxuICAgICAgICAgICAgdG9rZW46IGNvZGUuYXV0aG9yaXphdGlvbkNvZGUsXG4gICAgICAgICAgICBleHBpcmVzQXQ6IGNvZGUuZXhwaXJlc0F0LFxuICAgICAgICAgICAgcmVkaXJlY3RVcmk6IGNvZGUucmVkaXJlY3RVcmksXG4gICAgICAgICAgICBzY29wZTogY29kZS5zY29wZSxcbiAgICAgICAgICAgIGNsaWVudElkOiBjbGllbnQuaWQsXG4gICAgICAgICAgICB1c2VySWQ6IHVzZXJJZFxuICAgICAgICB9KS5ydW4oY29ubmVjdGlvbilcblxuICAgICAgICByZXR1cm4ge1xuICAgICAgICAgICAgYXV0aG9yaXphdGlvbkNvZGU6IGNvZGUuYXV0aG9yaXphdGlvbkNvZGUsXG4gICAgICAgICAgICBleHBpcmVzQXQ6IGNvZGUuZXhwaXJlc0F0LFxuICAgICAgICAgICAgcmVkaXJlY3RVcmk6IGNvZGUucmVkaXJlY3RVcmksXG4gICAgICAgICAgICBzY29wZTogY29kZS5zY29wZSxcbiAgICAgICAgICAgIGNsaWVudDogY2xpZW50LFxuICAgICAgICAgICAgdXNlcjogdXNlclxuICAgICAgICB9XG4gICAgfSxcblxuICAgIC8qKlxuICAgICAqIHRoZSBub2RlLW9hdXRoMi1zZXJ2ZXIgdXNlcyB0aGlzIG1ldGhvZCB0byByZXZva2UgYSByZWZyZXNoIHRva2VuKHJlbW92ZSBpdCBmcm9tIHRoZSBzdG9yZSkuXG4gICAgICogTm90ZTogYnkgZGVmYXVsdCwgdGhlIG5vZGUtb2F1dGgyLXNlcnZlciBlbmFibGUgdGhlIG9wdGlvbiAnYWx3YXlzSXNzdWVOZXdSZWZyZXNoVG9rZW4nLCBtZWFuaW5nIHRoYXQgZXZlcnkgdGltZSB5b3UgdXNlIGEgcmVmcmVzaCB0b2tlbiB0byBnZXQgYSBuZXcgYWNjZXNzIHRva2VuLCB0aGUgcmVmcmVzaCB0b2tlbiBpdHNlbGYgd2lsbCBiZSByZXZva2VkIGFuZCBhIG5ldyBvbmUgd2lsbCBiZSBpc3N1ZWQgYWxvbmcgd2l0aCB0aGUgYWNjZXNzIHRva2VuICh5b3UgY2FuIHNldCB0aGUgb3B0aW9uIHRocm91Z2ggT0F1dGgyU2VydmVyLnRva2VuKHJlcXVlc3QsIHJlc3BvbnNlLCBbb3B0aW9uc10sIFtjYWxsYmFja10pIG9yIEtvYU9BdXRoU2VydmVyLnRva2VuKG9wdGlvbnMpKS5cbiAgICAgKiBJZiB5b3UgYWx3YXlzIHVzZSB0aGUgcmVmcmVzaCB0b2tlbiBiZWZvcmUgaXQgZXhwaXJlcywgdGhlbiB0aGVyZSB3aWxsIGFsd2F5cyBiZSBhIHZhbGlkIHJlZnJlc2ggdG9rZW4gaW4gdGhlIHN0b3JlKHVubGVzcyB5b3UgZXhwbGljdGx5IHJldm9rZSBpdCkuIFRoaXMgbWFrZXMgaXQgc2VlbSBsaWtlIHJlZnJlc2ggdG9rZW4gbmV2ZXIgZXhwaXJlcy5cbiAgICAgKiBAcGFyYW0ge09iamVjdH0gdG9rZW4gLSB0aGUgdG9rZW4gb2JqZWN0XG4gICAgICogQHBhcmFtIHtTdHJpbmd9IHRva2VuLnJlZnJlc2hUb2tlbiAtIHRoZSByZWZyZXNoIHRva2VuIHN0cmluZ1xuICAgICAqIEBwYXJhbSB7RGF0ZX0gdG9rZW4ucmVmcmVzaFRva2VuRXhwaXJlc0F0IC0gdGhlIGV4YWN0IHRpbWUgd2hlbiB0aGUgcmVmcmVzaCB0b2tlbiBzaG91bGQgZXhwaXJlXG4gICAgICogQHBhcmFtIHtTdHJpbmd9IHRva2VuLnNjb3BlIC0gdGhlIGFjY2VzcyBzY29wZVxuICAgICAqIEBwYXJhbSB7T2JqZWN0fSB0b2tlbi5jbGllbnQgLSB0aGUgY2xpZW50IG9iamVjdFxuICAgICAqIEBwYXJhbSB7U3RyaW5nfSB0b2tlbi5jbGllbnQuaWQgLSB0aGUgY2xpZW50IGlkXG4gICAgICogQHBhcmFtIHtPYmplY3R9IHRva2VuLnVzZXIgLSB0aGUgdXNlciBvYmplY3RcbiAgICAgKiBAcGFyYW0ge1N0cmluZ30gdG9rZW4udXNlci51c2VybmFtZSAtIHRoZSB1c2VyIGlkZW50aWZpZXJcbiAgICAgKiBAcmV0dXJuIHtCb29sZWFufSAtIHRydWUgaWYgdGhlIHRva2VuIHdhcyBzdWNjZXNzZnVsbHkgcmV2b2tlZCwgZmFsc2UgaWYgdGhlIHRva2VuIGNvdW5kIG5vdCBiZSBmb3VuZFxuICAgICAqL1xuICAgIHJldm9rZVRva2VuOiBhc3luYyAodG9rZW4pID0+IHtcbiAgICAgICAgY29uc29sZS5sb2coJ3Jldm9rZVRva2VuIGZ1bmN0aW9uJylcbiAgICAgICAgXG4gICAgICAgIGNvbnN0IGNvbm5lY3Rpb24gPSBBcHBsaWNhdGlvbi5yZXRoaW5rZGJDb25uZWN0aW9uICAgICAgICAgICAgICAgIFxuICAgICAgICBsZXQgZmlsdGVyT2JqZWN0ID0geyB0b2tlbjogdG9rZW4ucmVmcmVzaFRva2VuIH1cbiAgICAgICAgbGV0IHtkZWxldGVkOiBkZWxldGlvblJlc3VsdH0gPSBhd2FpdCByZXRoaW5rREIuZGIoJ3dlYmFwcFNldHRpbmcnKS50YWJsZSgnb0F1dGhfdG9rZW4nKS5maWx0ZXIoZmlsdGVyT2JqZWN0KS5kZWxldGUoKS5ydW4oY29ubmVjdGlvbilcbiAgICAgICAgcmV0dXJuIChkZWxldGlvblJlc3VsdCkgPyB0cnVlIDogZmFsc2U7XG4gICAgfSxcblxuICAgIC8qKlxuICAgICAqIHRoZSBub2RlLW9hdXRoMi1zZXJ2ZXIgdXNlcyB0aGlzIG1ldGhvZCB0byByZXZva2UgYSBhdXRob3JpemF0aW9uIGNvZGUobW9zdGx5IHdoZW4gaXQgZXhwaXJlcylcbiAgICAgKiBAcGFyYW0ge09iamVjdH0gY29kZSAtIHRoZSBhdXRob3JpemF0aW9uIGNvZGUgb2JqZWN0XG4gICAgICogQHBhcmFtIHtTdHJpbmd9IGF1dGhvcml6YXRpb25Db2RlIC0gdGhlIGF1dGhvcml6YXRpb24gY29kZSBzdHJpbmdcbiAgICAgKiBAcGFyYW0ge0RhdGV9IGNvZGUuZXhwaXJlc0F0IC10aGUgdGltZSB3aGVuIHRoZSBjb2RlIHNob3VsZCBleHBpcmVcbiAgICAgKiBAcGFyYW0ge1N0cmluZ30gY29kZS5yZWRpcmVjdFVyaSAtIHRoZSByZWRpcmVjdCB1cmlcbiAgICAgKiBAcGFyYW0ge1N0cmluZ30gY29kZS5zY29wZSAtIHRoZSBhdXRob3JpemF0aW9uIHNjb3BlXG4gICAgICogQHBhcmFtIHtPYmplY3R9IGNvZGUuY2xpZW50IC0gdGhlIGNsaWVudCBvYmplY3RcbiAgICAgKiBAcGFyYW0ge1N0cmluZ30gY29kZS5jbGllbnQuaWQgLSB0aGUgY2xpZW50IGlkXG4gICAgICogQHBhcmFtIHtPYmplY3R9ICBjb2RlLnVzZXIgLSB0aGUgdXNlciBvYmplY3RcbiAgICAgKiBAcGFyYW0ge1N0cmluZ30gY29kZS51c2VyLnVzZXJuYW1lIC0gdGhlIHVzZXIgaWRlbnRpZmllclxuICAgICAqIEByZXR1cm4ge0Jvb2xlYW59IC0gdHJ1ZSBpZiB0aGUgY29kZSBpcyByZXZva2VkIHN1Y2Nlc3NmdWxseSxmYWxzZSBpZiB0aGUgY291bGQgbm90IGJlIGZvdW5kXG4gICAgICovXG4gICAgcmV2b2tlQXV0aG9yaXphdGlvbkNvZGU6IGFzeW5jIChjb2RlKSA9PiB7XG4gICAgICAgIGNvbnNvbGUubG9nKCdyZXZva2VBdXRob3JpemF0aW9uQ29kZSBmdW5jdGlvbicpXG4gICAgICAgIFxuICAgICAgICBjb25zdCBjb25uZWN0aW9uID0gQXBwbGljYXRpb24ucmV0aGlua2RiQ29ubmVjdGlvblxuICAgICAgICBsZXQgZmlsdGVyT2JqZWN0ID0geyB0b2tlbjogY29kZS5jb2RlIH1cbiAgICAgICAgbGV0IHtkZWxldGVkOiBkZWxldGlvblJlc3VsdH0gPSBhd2FpdCByZXRoaW5rREIuZGIoJ3dlYmFwcFNldHRpbmcnKS50YWJsZSgnb0F1dGhfdG9rZW4nKS5maWx0ZXIoZmlsdGVyT2JqZWN0KS5kZWxldGUoKS5ydW4oY29ubmVjdGlvbilcbiAgICAgICAgcmV0dXJuIChkZWxldGlvblJlc3VsdCkgPyB0cnVlIDogZmFsc2U7XG4gICAgfSxcblxuICAgIC8qKlxuICAgICAqIHRoZSBub2RlLW9hdXRoMi1zZXJ2ZXIgdXNlcyB0aGlzIG1ldGhvZCB0byBkZXRlcm1pbmUgd2hhdCBzY29wZXMgc2hvdWxkIGJlIGdyYW50ZWQgdG8gdGhlIGNsaWVudCBmb3IgYWNjZXNzaW5nIHRoZSB1c2VyJ3MgZGF0YS5cbiAgICAgKiBmb3IgZXhhbXBsZSwgdGhlIGNsaWVudCByZXF1ZXN0cyB0aGUgb2F1dGggc2VydmVyIGZvciBhbiBhY2Nlc3MgdG9rZW4gb2YgdGhlICd1c2VyX2luZm86cmVhZCx1c2VyX2luZm9fd3JpdGUnIHNjb3BlLCBcbiAgICAgKiBidXQgdGhlIG9hdXRoIHNlcnZlciBkZXRlcm1pbmUgYnkgdGhpcyBtZXRob2QgdGhhdCBvbmx5IHRoZSAndXNlcl9pbmZvOnJlYWQnIHNjb3BlIHNob3VsZCBiZSBncmFudGVkLlxuICAgICAqIEBwYXJhbSB7T2JqZWN0fSB1c2VyIC0gdGhlIHVzZXIgd2hvc2UgZGF0YSB0aGUgY2xpZW50IHdhbnRzIHRvIGFjY2Vzc1xuICAgICAqIEBwYXJhbSB7U3RyaW5nfSB1c2VyLnVzZXJuYW1lIC0gdGhlIHVzZXIgaWRlbnRpZmllclxuICAgICAqIEBwYXJhbSB7T2JqZWN0fSBjbGllbnQgLSB0aGUgb2F1dGggY2xpZW50XG4gICAgICogQHBhcmFtIHtTdHJpbmd9IGNsaWVudC5pZCAtIHRoZSBjbGllbnQgaWRcbiAgICAgKiBAcGFyYW0ge1N0cmluZ30gc2NvcGUgLSB0aGUgc2NvcGVzIHdoaWNoIHRoZSBjbGllbnQgcmVxdWVzdGVkIGZvclxuICAgICAqIEByZXR1cm4ge1N0cmluZ30gdmFsaWRTY29wZXMgLSB0aGUgYWN0dWFsIHZhbGlkIHNjb3BlcyBmb3IgdGhlIGNsaWVudCwgbnVsbCBpZiBubyB2YWxpZCBzY29wZXMgZm9yIHRoZSBjbGllbnRcbiAgICAgKi9cbiAgICB2YWxpZGF0ZVNjb3BlOiBhc3luYyAodXNlciwgY2xpZW50LCBzY29wZSkgPT4ge1xuICAgICAgICBjb25zb2xlLmxvZygndmFsaWRhdGVTY29wZSBmdW5jdGlvbicpXG4gICAgICAgIGlmKCFzY29wZSkgcmV0dXJuIG51bGxcbiAgICAgICAgY29uc3QgY29ubmVjdGlvbiA9IEFwcGxpY2F0aW9uLnJldGhpbmtkYkNvbm5lY3Rpb25cbiAgICAgICAgbGV0IGRiRmlsdGVyT2JqZWN0ID0geyBrZXk6IGNsaWVudC5pZCB9XG4gICAgICAgIGNsaWVudCA9IGF3YWl0IGdldFRhYmxlRG9jdW1lbnQuaW5zdGFuY2VbJ29BdXRoX2NsaWVudCddKGNvbm5lY3Rpb24sIGRiRmlsdGVyT2JqZWN0KVxuICAgICAgICBpZighY2xpZW50IHx8ICFjbGllbnQuc2NvcGUpIHJldHVybiBudWxsXG4gICAgICAgIGxldCB2YWxpZFNjb3BlcyA9IGNsaWVudC5zY29wZS5zcGxpdCgnLCcpLm1hcChzID0+IHMudHJpbSgpKVxuICAgICAgICBsZXQgc2NvcGVzID0gc2NvcGUuc3BsaXQoJywnKS5tYXAocyA9PiBzLnRyaW0oKSkuZmlsdGVyKHMgPT4gdmFsaWRTY29wZXMuaW5kZXhPZihzKSA+PSAwKVxuICAgICAgICByZXR1cm4gKHNjb3BlLmxlbmd0aCkgPyBzY29wZXMuam9pbignLCcpIDogbnVsbDsgICAgICAgICAgICAgICAgXG4gICAgfSxcblxuICAgIC8qKlxuICAgICAqIG5vZGUtb2F1dGgyLXNlcnZlciB1c2VzIHRoaXMgbWV0aG9kIGluIGF1dGhlbnRpY2F0aW9uIGhhbmRsZXIgdG8gdmVyaWZ5IHdoZXRoZXIgYW4gYWNjZXNzIHRva2VuIGZyb20gYSByZXF1ZXN0IGlzIHN1ZmZpY2llbnQgdG8gdGhlICdzY29wZScgZGVjbGFyZWQgZm9yIHRoZSByZXF1ZXN0ZWQgcmVzb3VyY2VzXG4gICAgICogQHBhcmFtIHtPYmplY3R9IGFjY2Vzc1Rva2VuIC0gdGhlIGFjY2Vzc1Rva2VuIG9iamVjdFxuICAgICAqIEBwYXJhbSB7U3RyaW5nfSBhY2Nlc3NUb2tlbi5hY2Nlc3NUb2tlbiAtIHRoZSBhY2Nlc3NUb2tlbiBzdHJpbmdcbiAgICAgKiBAcGFyYW0ge0RhdGV9IGFjY2Vzc1Rva2VuLmFjY2Vzc1Rva2VuRXhwaXJlc0F0IC0gdGhlIHRpbWUgd2hlbiB0aGUgdG9rZW4gc2hvdWxkIGV4cGlyZVxuICAgICAqIEBwYXJhbSB7U3RyaW5nfSBhY2Nlc3NUb2tlbi5zY29wZSAtIHRoZSBncmFudGVkIGFjY2VzcyBzY29wZSBvZiB0aGUgdG9rZW5cbiAgICAgKiBAcGFyYW0ge09iamVjdH0gYWNjZXNzVG9rZW4uY2xpZW50IC0gdGhlIGNsaWVudCBvYmplY3RcbiAgICAgKiBAcGFyYW0ge1N0cmluZ30gYWNjZXNzVG9rZW4uY2xpZW50LmlkIC0gdGhlIGNsaWVudCBpZFxuICAgICAqIEBwYXJhbSB7T2JqZWN0fSBhY2Nlc3NUb2tuZS51c2VyIC0gdGhlIHVzZXIgb2JqZWN0XG4gICAgICogQHBhcmFtIHtTdHJpbmd9IGFjY2Vzc1Rva2VuLnVzZXIudXNlcm5hbWUgLSB0aGUgdXNlciBpZGVudGlmaWVyXG4gICAgICogQHBhcmFtIHtTdHJpbmd9IHNjb3BlIC0gdGhlIHNjb3BlIGRlY2xhcmVkIGZvciB0aGUgcmVzb3VyY2VzXG4gICAgICogQHJldHVybiB7Qm9vbGVhbn0gLSB0cnVlIGlmIHRoZSBhY2Nlc3MgdG9rZW4gaGFzIHN1ZmZpY2llbnQgYWNjZXNzIHNjb3BlcyBmb3IgdGhlIHJlc291cmNlc1xuICAgICAqL1xuICAgIHZlcmlmeVNjb3BlOiBhc3luYyAoYWNjZXNzVG9rZW4sIHNjb3BlKSA9PiB7XG4gICAgICAgIGNvbnNvbGUubG9nKCd2ZXJpZnlTY29wZSBmdW5jdGlvbicpXG4gICAgICAgIFxuICAgICAgICAvL25vIHNjb3BlIGRlY2xhcmVkIGZvciB0aGUgcmVzb3VyY2UsIGZyZWUgdG8gYWNjZXNzXG4gICAgICAgIGlmKCFzY29wZSkgcmV0dXJuIHRydWUgICAgIFxuICAgICAgICBpZighYWNjZXNzVG9rZW4uc2NvcGUpIHJldHVybiBmYWxzZVxuICAgICAgICB2YWxpZFNjb3BlcyA9IHNjb3BlLnNwbGl0KCcsJykubWFwKHMgPT4gcy50cmltKCkpXG4gICAgICAgIHNjb3BlcyA9IGFjY2Vzc1Rva2VuLnNjb3BlLnNwbGl0KCcsJykubWFwKHMgPT4gcy50cmltKCkpXG4gICAgICAgIC8vY2hlY2sgaWYgYXQgbGVhc3Qgb25lIG9mIHRoZSBzY29wZXMgZ3JhbnRlZCB0byB0aGUgYWNjZXNzIHRva2VuIGFyZSBhbGxvd2VkIHRvIGFjY2VzcyB0aGUgcmVzb3VyY2VcbiAgICAgICAgcmV0dXJuIHNjb3Blcy5zb21lKHMgPT4gdmFsaWRTY29wZXMuaW5kZXhPZihzKSA+PSAwKSAgICAgICAgICAgIFxuICAgIH0sXG4gICAgXG59XG4iXX0=
