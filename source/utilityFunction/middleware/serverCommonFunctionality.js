@@ -17,22 +17,22 @@ import r from 'rethinkdb'
 import { handleConnection, createDatabase, createTable } from './commonDatabaseFunctionality.js'
 
 let middlewareArray = [
-    responseTime(), // Response time x-response-time
-    logger(), // Console logger
-    // bodyParser(),
-    // cors(), // Cross-Origin Resource Sharing(CORS)
-    error(), // Error handler for pure-JSON Koa apps
-    // handleConnection(), // Open connection on middleware downstream, Close connection on upstream.
-    // createDatabase(),
-    // createTable(),
-    koaCompress({
-        flush: zlib.Z_SYNC_FLUSH
-    })
+  responseTime(), // Response time x-response-time
+  logger(), // Console logger
+  // bodyParser(),
+  // cors(), // Cross-Origin Resource Sharing(CORS)
+  error(), // Error handler for pure-JSON Koa apps
+  // handleConnection(), // Open connection on middleware downstream, Close connection on upstream.
+  // createDatabase(),
+  // createTable(),
+  koaCompress({
+    flush: zlib.Z_SYNC_FLUSH,
+  }),
 ]
-if(!serverConfig.ssl) { 
-    // middleware.push(compress())  // Compress responses
-    // middleware.push(enforceHTTPS())
-    // middleware.push(helmet()) // Security header middleware collection
+if (!serverConfig.ssl) {
+  // middleware.push(compress())  // Compress responses
+  // middleware.push(enforceHTTPS())
+  // middleware.push(helmet()) // Security header middleware collection
 }
 
 export default () => compose(middlewareArray)

@@ -3,42 +3,44 @@ import path from 'path'
 import filesystem from 'fs'
 import stream from 'stream'
 import { default as Application } from '../../class/Application.class.js'
-import {functionWrappedMiddlewareDecorator} from '../middlewarePatternDecorator.js'
+import { functionWrappedMiddlewareDecorator } from '../middlewarePatternDecorator.js'
 import { streamToString } from '../streamToStringConvertion.js'
 
 let babel, nativeClientSideRuntimeCompilerConfig
-if(Application.config.DEPLOYMENT == 'development') { // as in production appDeploymentLifecycle dependency doesn't exist.
-    babel = require('/project/application/dependency/appDeploymentLifecycle/babel_javascriptTranspilation.js/node_modules/@babel/core')
-    nativeClientSideRuntimeCompilerConfig = require(path.normalize(`${config.directory.appDeploymentLifecyclePath}/babel_javascriptTranspilation.js/compilerConfiguration/nativeClientSideRuntime.BabelConfig.js`))
+if (Application.config.DEPLOYMENT == 'development') {
+  // as in production appDeploymentLifecycle dependency doesn't exist.
+  babel = require('/project/application/dependency/appDeploymentLifecycle/babel_javascriptTranspilation.js/node_modules/@babel/core')
+  nativeClientSideRuntimeCompilerConfig = require(path.normalize(
+    `${config.directory.appDeploymentLifecyclePath}/babel_javascriptTranspilation.js/compilerConfiguration/nativeClientSideRuntime.BabelConfig.js`,
+  ))
 }
 
-export let transformJavascript = functionWrappedMiddlewareDecorator(async function (context, next, option) {
-    // transpile only on development and non-distribution folders, i.e. on-the-fly transpilation is executed only in development, while production and distribution should be already transpiled.
-    if(Application.config.DEPLOYMENT == 'development' && !Application.config.DISTRIBUTION && context.response.type == 'application/javascript') {
-        let path = context.path
-        let scriptCode = context.body
-        let transformBabelPlugin = [ ]
-        
-        if(path.includes('webcomponent/@package')) {  // in case an npm webcomponent package
-            transformBabelPlugin = nativeClientSideRuntimeCompilerConfig.plugins
-        } else { // in case a custom project element
-            transformBabelPlugin = nativeClientSideRuntimeCompilerConfig.plugins
-        }
-        let transformBabelPreset = nativeClientSideRuntimeCompilerConfig.presets
-        
-        if(transformBabelPlugin.length) {
-            // convert stream into string
-            if(scriptCode instanceof stream.Stream) scriptCode = await streamToString(scriptCode)
-            // transform code using array of plugins.
-            let transformedObject = babel.transformSync(
-                scriptCode,
-                {
-                    presets: transformBabelPreset,
-                    plugins: transformBabelPlugin
-                } 
-            )
-            context.body = transformedObject.code
-        }
+export let transformJavascript = functionWrappedMiddlewareDecorator(async function(context, next, option) {
+  // transpile only on development and non-distribution folders, i.e. on-the-fly transpilation is executed only in development, while production and distribution should be already transpiled.
+  if (Application.config.DEPLOYMENT == 'development' && !Application.config.DISTRIBUTION && context.response.type == 'application/javascript') {
+    let path = context.path
+    let scriptCode = context.body
+    let transformBabelPlugin = []
+
+    if (path.includes('webcomponent/@package')) {
+      // in case an npm webcomponent package
+      transformBabelPlugin = nativeClientSideRuntimeCompilerConfig.plugins
+    } else {
+      // in case a custom project element
+      transformBabelPlugin = nativeClientSideRuntimeCompilerConfig.plugins
     }
-    await next()
+    let transformBabelPreset = nativeClientSideRuntimeCompilerConfig.presets
+
+    if (transformBabelPlugin.length) {
+      // convert stream into string
+      if (scriptCode instanceof stream.Stream) scriptCode = await streamToString(scriptCode)
+      // transform code using array of plugins.
+      let transformedObject = babel.transformSync(scriptCode, {
+        presets: transformBabelPreset,
+        plugins: transformBabelPlugin,
+      })
+      context.body = transformedObject.code
+    }
+  }
+  await next()
 })

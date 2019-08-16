@@ -1,41 +1,41 @@
 import parse from 'co-body' // throws on unsupported content type.
 import bodyParser from 'koa-bodyparser' // Brings extra option for handling error and unsupported content-types.
 import { default as Application } from '../../class/Application.class.js'
-import { getMergedMultipleDocumentOfSpecificLanguage as queryPatternImplementation} from "@dependency/databaseUtility/source/patternImplementation.js";
-import {functionWrappedMiddlewareDecorator} from '@dependency/commonPattern/source/middlewarePatternDecorator.js'
+import { getMergedMultipleDocumentOfSpecificLanguage as queryPatternImplementation } from '@dependency/databaseUtility/source/patternImplementation.js'
+import { functionWrappedMiddlewareDecorator } from '@dependency/commonPattern/source/middlewarePatternDecorator.js'
 import { mergeDeep } from '@dependency/deepObjectMerge'
 
-export default functionWrappedMiddlewareDecorator(async function (context, next, option) {
-        let urlQuery = context.request.query
-        let queryLanguage = (urlQuery.language) ?
-            urlQuery.language.replace(/\b\w/g, l => l.toUpperCase()) // Capitalize first letter.
-            : null ;
-        let uiContent = null;
-        let defaultLanguage = Application.frontendStatic.setting.mode.language
-        try {
-            uiContent = await queryPatternImplementation({
-                databaseConnection: Application.rethinkdbConnection,
-                languageDocumentKey: queryLanguage || defaultLanguage,
-                dataTableName: 'ui'
-            })
-        } catch (error) {
-            console.log(error)
-        }
-    
-        let frontendPerContext = {
-            setting: {
-                mode: {
-                    language: queryLanguage || defaultLanguage // TODO: change setting default twice - fallback to prevent setting a null/undefined over the default value
-                }
-            },
-            uiContent
-        }
+export default functionWrappedMiddlewareDecorator(async function(context, next, option) {
+  let urlQuery = context.request.query
+  let queryLanguage = urlQuery.language
+    ? urlQuery.language.replace(/\b\w/g, l => l.toUpperCase()) // Capitalize first letter.
+    : null
+  let uiContent = null
+  let defaultLanguage = Application.frontendStatic.setting.mode.language
+  try {
+    uiContent = await queryPatternImplementation({
+      databaseConnection: Application.rethinkdbConnection,
+      languageDocumentKey: queryLanguage || defaultLanguage,
+      dataTableName: 'ui',
+    })
+  } catch (error) {
+    console.log(error)
+  }
 
-        // TODO: separate frontend object creation from language middleware.
+  let frontendPerContext = {
+    setting: {
+      mode: {
+        language: queryLanguage || defaultLanguage, // TODO: change setting default twice - fallback to prevent setting a null/undefined over the default value
+      },
+    },
+    uiContent,
+  }
 
-        frontendPerContext.instance = context.instance // add instance object as it is used by client side.
+  // TODO: separate frontend object creation from language middleware.
 
-        context.frontend = mergeDeep(Application.frontendStatic, frontendPerContext)
+  frontendPerContext.instance = context.instance // add instance object as it is used by client side.
 
-        await next()
+  context.frontend = mergeDeep(Application.frontendStatic, frontendPerContext)
+
+  await next()
 })

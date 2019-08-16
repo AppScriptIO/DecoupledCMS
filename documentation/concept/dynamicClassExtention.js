@@ -1,11 +1,10 @@
 const ClassProducer = ({ Superclass = null } = {}) => {
-    const self = class Class extends Superclass /* superclass must be function */ {
-        constructor() {
-            super()
-        }
+  const self = class Class extends Superclass /* superclass must be function */ {
+    constructor() {
+      super()
     }
-    return self
+  }
+  return self
 }
-
 
 export { ClassProducer }

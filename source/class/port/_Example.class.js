@@ -4,25 +4,23 @@ import WebappUIClass from 'class/WebappUI.class.js'
 import ConditionTreeClass from 'class/ConditionTree.class.js'
 
 class Test extends WebappUIClass {
+  middlewareArray = []
 
-    middlewareArray = []
+  constructor() {
+    super(true)
+    this.port = 8083
+    this.createKoaServer()
+  }
 
-    constructor() {
-        super(true)
-        this.port = 8083
-        this.createKoaServer()
-    }
+  createKoaServer() {
+    this.serverKoa = new Koa() // export if script is required.
+  }
 
-    createKoaServer() {
-        this.serverKoa = new Koa() // export if script is required.
-    }
-
-    applyKoaMiddleware() {
-        this.middlewareArray.forEach((middleware) => {
-            this.serverKoa.use(middleware)
-        }, this);
-    }
-
+  applyKoaMiddleware() {
+    this.middlewareArray.forEach(middleware => {
+      this.serverKoa.use(middleware)
+    }, this)
+  }
 }
 
 export default Test
