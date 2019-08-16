@@ -1,25 +1,26 @@
-import WebSocketModule from 'ws'
-import WebSocketClass from './WebSocket.class.js'
+"use strict";var _interopRequireDefault = require("@babel/runtime/helpers/interopRequireDefault");Object.defineProperty(exports, "__esModule", { value: true });exports.default = void 0;var _ws = _interopRequireDefault(require("ws"));
+var _WebSocketClass = _interopRequireDefault(require("./WebSocket.class.js"));var _default =
 
-export default ({} = {}) => async () => {
-  let Class = WebSocketClass
-  await Class.createWebsocketServer()
+({} = {}) => async () => {
+  let Class = _WebSocketClass.default;
+  await Class.createWebsocketServer();
   Class.webSocketServer.on('connection', function connection(ws) {
-    // console.log('client connected !')
-    ws.on('message', function incoming(message) {
-      console.log('received: %s', message)
-      Class.webSocketServer.clients.forEach(function each(client) {
-        if (client !== ws && client.readyState === WebSocketModule.OPEN) {
-          client.send(message)
-        }
-      })
-    })
-    var i = 0
 
-    // setInterval(function() {
-    //     i++
-    //     console.log('interval running ! ' + i)
-    if (ws.readyState == WebSocketModule.OPEN) ws.send(i)
-    // }, 500);
-  })
-}
+    ws.on('message', function incoming(message) {
+      console.log('received: %s', message);
+      Class.webSocketServer.clients.forEach(function each(client) {
+        if (client !== ws && client.readyState === _ws.default.OPEN) {
+          client.send(message);
+        }
+      });
+    });
+    var i = 0;
+
+
+
+
+    if (ws.readyState == _ws.default.OPEN) ws.send(i);
+
+  });
+};exports.default = _default;
+//# sourceMappingURL=data:application/json;charset=utf-8;base64,eyJ2ZXJzaW9uIjozLCJzb3VyY2VzIjpbIi4uLy4uLy4uLy4uLy4uL3NvdXJjZS9jbGFzcy9wb3J0L3dlYlNvY2tldC9pbml0aWFsaXplUG9ydFNlcnZlci5qcyJdLCJuYW1lcyI6WyJDbGFzcyIsIldlYlNvY2tldENsYXNzIiwiY3JlYXRlV2Vic29ja2V0U2VydmVyIiwid2ViU29ja2V0U2VydmVyIiwib24iLCJjb25uZWN0aW9uIiwid3MiLCJpbmNvbWluZyIsIm1lc3NhZ2UiLCJjb25zb2xlIiwibG9nIiwiY2xpZW50cyIsImZvckVhY2giLCJlYWNoIiwiY2xpZW50IiwicmVhZHlTdGF0ZSIsIldlYlNvY2tldE1vZHVsZSIsIk9QRU4iLCJzZW5kIiwiaSJdLCJtYXBwaW5ncyI6InlMQUFBO0FBQ0EsOEU7O0FBRWUsQ0FBQyxLQUFLLEVBQU4sS0FBYSxZQUFZO0FBQ3RDLE1BQUlBLEtBQUssR0FBR0MsdUJBQVo7QUFDQSxRQUFNRCxLQUFLLENBQUNFLHFCQUFOLEVBQU47QUFDQUYsRUFBQUEsS0FBSyxDQUFDRyxlQUFOLENBQXNCQyxFQUF0QixDQUF5QixZQUF6QixFQUF1QyxTQUFTQyxVQUFULENBQW9CQyxFQUFwQixFQUF3Qjs7QUFFN0RBLElBQUFBLEVBQUUsQ0FBQ0YsRUFBSCxDQUFNLFNBQU4sRUFBaUIsU0FBU0csUUFBVCxDQUFrQkMsT0FBbEIsRUFBMkI7QUFDMUNDLE1BQUFBLE9BQU8sQ0FBQ0MsR0FBUixDQUFZLGNBQVosRUFBNEJGLE9BQTVCO0FBQ0FSLE1BQUFBLEtBQUssQ0FBQ0csZUFBTixDQUFzQlEsT0FBdEIsQ0FBOEJDLE9BQTlCLENBQXNDLFNBQVNDLElBQVQsQ0FBY0MsTUFBZCxFQUFzQjtBQUMxRCxZQUFJQSxNQUFNLEtBQUtSLEVBQVgsSUFBaUJRLE1BQU0sQ0FBQ0MsVUFBUCxLQUFzQkMsWUFBZ0JDLElBQTNELEVBQWlFO0FBQy9ESCxVQUFBQSxNQUFNLENBQUNJLElBQVAsQ0FBWVYsT0FBWjtBQUNEO0FBQ0YsT0FKRDtBQUtELEtBUEQ7QUFRQSxRQUFJVyxDQUFDLEdBQUcsQ0FBUjs7Ozs7QUFLQSxRQUFJYixFQUFFLENBQUNTLFVBQUgsSUFBaUJDLFlBQWdCQyxJQUFyQyxFQUEyQ1gsRUFBRSxDQUFDWSxJQUFILENBQVFDLENBQVI7O0FBRTVDLEdBakJEO0FBa0JELEMiLCJzb3VyY2VzQ29udGVudCI6WyJpbXBvcnQgV2ViU29ja2V0TW9kdWxlIGZyb20gJ3dzJ1xuaW1wb3J0IFdlYlNvY2tldENsYXNzIGZyb20gJy4vV2ViU29ja2V0LmNsYXNzLmpzJ1xuXG5leHBvcnQgZGVmYXVsdCAoe30gPSB7fSkgPT4gYXN5bmMgKCkgPT4ge1xuICBsZXQgQ2xhc3MgPSBXZWJTb2NrZXRDbGFzc1xuICBhd2FpdCBDbGFzcy5jcmVhdGVXZWJzb2NrZXRTZXJ2ZXIoKVxuICBDbGFzcy53ZWJTb2NrZXRTZXJ2ZXIub24oJ2Nvbm5lY3Rpb24nLCBmdW5jdGlvbiBjb25uZWN0aW9uKHdzKSB7XG4gICAgLy8gY29uc29sZS5sb2coJ2NsaWVudCBjb25uZWN0ZWQgIScpXG4gICAgd3Mub24oJ21lc3NhZ2UnLCBmdW5jdGlvbiBpbmNvbWluZyhtZXNzYWdlKSB7XG4gICAgICBjb25zb2xlLmxvZygncmVjZWl2ZWQ6ICVzJywgbWVzc2FnZSlcbiAgICAgIENsYXNzLndlYlNvY2tldFNlcnZlci5jbGllbnRzLmZvckVhY2goZnVuY3Rpb24gZWFjaChjbGllbnQpIHtcbiAgICAgICAgaWYgKGNsaWVudCAhPT0gd3MgJiYgY2xpZW50LnJlYWR5U3RhdGUgPT09IFdlYlNvY2tldE1vZHVsZS5PUEVOKSB7XG4gICAgICAgICAgY2xpZW50LnNlbmQobWVzc2FnZSlcbiAgICAgICAgfVxuICAgICAgfSlcbiAgICB9KVxuICAgIHZhciBpID0gMFxuXG4gICAgLy8gc2V0SW50ZXJ2YWwoZnVuY3Rpb24oKSB7XG4gICAgLy8gICAgIGkrK1xuICAgIC8vICAgICBjb25zb2xlLmxvZygnaW50ZXJ2YWwgcnVubmluZyAhICcgKyBpKVxuICAgIGlmICh3cy5yZWFkeVN0YXRlID09IFdlYlNvY2tldE1vZHVsZS5PUEVOKSB3cy5zZW5kKGkpXG4gICAgLy8gfSwgNTAwKTtcbiAgfSlcbn1cbiJdfQ==

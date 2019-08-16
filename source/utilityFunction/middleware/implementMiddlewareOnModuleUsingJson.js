@@ -1,46 +1,47 @@
-import compose from 'koa-compose'
-import { default as Application } from '../../class/Application.class.js'
+"use strict";var _interopRequireDefault = require("@babel/runtime/helpers/interopRequireDefault");Object.defineProperty(exports, "__esModule", { value: true });exports.default = void 0;var _koaCompose = _interopRequireDefault(require("koa-compose"));var _default =
 
-// let staticMiddlewareSetting = r
-//     .table('setting') // first field assigns name of table
-//     .run(context.rethinkdbConnection)
-//     .then((cursor) => {
-//         return cursor.toArray()
-//     })
 
-/**
- * @param {array} staticMiddlewareSetting holds the json middle configurations. Where each json is composed of executionType, filePath, arguments.
- */
-export default (
-  staticMiddlewareSetting, // middleware nested units array.
+
+
+
+
+
+
+
+
+
+
+(
+  staticMiddlewareSetting
 ) => {
-  let middlewareArray = []
+  let middlewareArray = [];
 
   staticMiddlewareSetting.forEach(setting => {
-    // TODO: create an options extractor function.
-    let filePath = setting.file.filePath // nested unit file's properties.
-    let argument = setting.arguments // nested unit unit's properties.
-    let executionType = setting.executionType // nested unit unit's properties.
-    let importModuleName = setting.importModuleName
 
-    // import/load module
+    let filePath = setting.file.filePath;
+    let argument = setting.arguments;
+    let executionType = setting.executionType;
+    let importModuleName = setting.importModuleName;
+
+
     let exportedModule =
-      !importModuleName || importModuleName == 'default'
-        ? require(filePath).default // import default export from the module
-        : require(filePath)[importModuleName] // import the export using it's name.
+    !importModuleName || importModuleName == 'default' ?
+    require(filePath).default :
+    require(filePath)[importModuleName];
 
-    // execute module
-    let middleware
+
+    let middleware;
     switch (executionType) {
       case 'middleware':
-        middleware = exportedModule
-        break
+        middleware = exportedModule;
+        break;
       case 'functionWrappedMiddleware':
       default:
-        middleware = argument ? exportedModule(argument) : exportedModule()
-        break
-    }
-    middlewareArray.push(middleware)
-  }, this)
-  return compose(middlewareArray)
-}
+        middleware = argument ? exportedModule(argument) : exportedModule();
+        break;}
+
+    middlewareArray.push(middleware);
+  }, void 0);
+  return (0, _koaCompose.default)(middlewareArray);
+};exports.default = _default;
+//# sourceMappingURL=data:application/json;charset=utf-8;base64,eyJ2ZXJzaW9uIjozLCJzb3VyY2VzIjpbIi4uLy4uLy4uLy4uL3NvdXJjZS91dGlsaXR5RnVuY3Rpb24vbWlkZGxld2FyZS9pbXBsZW1lbnRNaWRkbGV3YXJlT25Nb2R1bGVVc2luZ0pzb24uanMiXSwibmFtZXMiOlsic3RhdGljTWlkZGxld2FyZVNldHRpbmciLCJtaWRkbGV3YXJlQXJyYXkiLCJmb3JFYWNoIiwic2V0dGluZyIsImZpbGVQYXRoIiwiZmlsZSIsImFyZ3VtZW50IiwiYXJndW1lbnRzIiwiZXhlY3V0aW9uVHlwZSIsImltcG9ydE1vZHVsZU5hbWUiLCJleHBvcnRlZE1vZHVsZSIsInJlcXVpcmUiLCJkZWZhdWx0IiwibWlkZGxld2FyZSIsInB1c2giXSwibWFwcGluZ3MiOiJ5TEFBQSxpRTs7Ozs7Ozs7Ozs7OztBQWFlO0FBQ2JBLEVBQUFBO0FBRGEsS0FFVjtBQUNILE1BQUlDLGVBQWUsR0FBRyxFQUF0Qjs7QUFFQUQsRUFBQUEsdUJBQXVCLENBQUNFLE9BQXhCLENBQWdDQyxPQUFPLElBQUk7O0FBRXpDLFFBQUlDLFFBQVEsR0FBR0QsT0FBTyxDQUFDRSxJQUFSLENBQWFELFFBQTVCO0FBQ0EsUUFBSUUsUUFBUSxHQUFHSCxPQUFPLENBQUNJLFNBQXZCO0FBQ0EsUUFBSUMsYUFBYSxHQUFHTCxPQUFPLENBQUNLLGFBQTVCO0FBQ0EsUUFBSUMsZ0JBQWdCLEdBQUdOLE9BQU8sQ0FBQ00sZ0JBQS9COzs7QUFHQSxRQUFJQyxjQUFjO0FBQ2hCLEtBQUNELGdCQUFELElBQXFCQSxnQkFBZ0IsSUFBSSxTQUF6QztBQUNJRSxJQUFBQSxPQUFPLENBQUNQLFFBQUQsQ0FBUCxDQUFrQlEsT0FEdEI7QUFFSUQsSUFBQUEsT0FBTyxDQUFDUCxRQUFELENBQVAsQ0FBa0JLLGdCQUFsQixDQUhOOzs7QUFNQSxRQUFJSSxVQUFKO0FBQ0EsWUFBUUwsYUFBUjtBQUNFLFdBQUssWUFBTDtBQUNFSyxRQUFBQSxVQUFVLEdBQUdILGNBQWI7QUFDQTtBQUNGLFdBQUssMkJBQUw7QUFDQTtBQUNFRyxRQUFBQSxVQUFVLEdBQUdQLFFBQVEsR0FBR0ksY0FBYyxDQUFDSixRQUFELENBQWpCLEdBQThCSSxjQUFjLEVBQWpFO0FBQ0EsY0FQSjs7QUFTQVQsSUFBQUEsZUFBZSxDQUFDYSxJQUFoQixDQUFxQkQsVUFBckI7QUFDRCxHQXpCRDtBQTBCQSxTQUFPLHlCQUFRWixlQUFSLENBQVA7QUFDRCxDIiwic291cmNlc0NvbnRlbnQiOlsiaW1wb3J0IGNvbXBvc2UgZnJvbSAna29hLWNvbXBvc2UnXG5pbXBvcnQgeyBkZWZhdWx0IGFzIEFwcGxpY2F0aW9uIH0gZnJvbSAnLi4vLi4vY2xhc3MvQXBwbGljYXRpb24uY2xhc3MuanMnXG5cbi8vIGxldCBzdGF0aWNNaWRkbGV3YXJlU2V0dGluZyA9IHJcbi8vICAgICAudGFibGUoJ3NldHRpbmcnKSAvLyBmaXJzdCBmaWVsZCBhc3NpZ25zIG5hbWUgb2YgdGFibGVcbi8vICAgICAucnVuKGNvbnRleHQucmV0aGlua2RiQ29ubmVjdGlvbilcbi8vICAgICAudGhlbigoY3Vyc29yKSA9PiB7XG4vLyAgICAgICAgIHJldHVybiBjdXJzb3IudG9BcnJheSgpXG4vLyAgICAgfSlcblxuLyoqXG4gKiBAcGFyYW0ge2FycmF5fSBzdGF0aWNNaWRkbGV3YXJlU2V0dGluZyBob2xkcyB0aGUganNvbiBtaWRkbGUgY29uZmlndXJhdGlvbnMuIFdoZXJlIGVhY2gganNvbiBpcyBjb21wb3NlZCBvZiBleGVjdXRpb25UeXBlLCBmaWxlUGF0aCwgYXJndW1lbnRzLlxuICovXG5leHBvcnQgZGVmYXVsdCAoXG4gIHN0YXRpY01pZGRsZXdhcmVTZXR0aW5nLCAvLyBtaWRkbGV3YXJlIG5lc3RlZCB1bml0cyBhcnJheS5cbikgPT4ge1xuICBsZXQgbWlkZGxld2FyZUFycmF5ID0gW11cblxuICBzdGF0aWNNaWRkbGV3YXJlU2V0dGluZy5mb3JFYWNoKHNldHRpbmcgPT4ge1xuICAgIC8vIFRPRE86IGNyZWF0ZSBhbiBvcHRpb25zIGV4dHJhY3RvciBmdW5jdGlvbi5cbiAgICBsZXQgZmlsZVBhdGggPSBzZXR0aW5nLmZpbGUuZmlsZVBhdGggLy8gbmVzdGVkIHVuaXQgZmlsZSdzIHByb3BlcnRpZXMuXG4gICAgbGV0IGFyZ3VtZW50ID0gc2V0dGluZy5hcmd1bWVudHMgLy8gbmVzdGVkIHVuaXQgdW5pdCdzIHByb3BlcnRpZXMuXG4gICAgbGV0IGV4ZWN1dGlvblR5cGUgPSBzZXR0aW5nLmV4ZWN1dGlvblR5cGUgLy8gbmVzdGVkIHVuaXQgdW5pdCdzIHByb3BlcnRpZXMuXG4gICAgbGV0IGltcG9ydE1vZHVsZU5hbWUgPSBzZXR0aW5nLmltcG9ydE1vZHVsZU5hbWVcblxuICAgIC8vIGltcG9ydC9sb2FkIG1vZHVsZVxuICAgIGxldCBleHBvcnRlZE1vZHVsZSA9XG4gICAgICAhaW1wb3J0TW9kdWxlTmFtZSB8fCBpbXBvcnRNb2R1bGVOYW1lID09ICdkZWZhdWx0J1xuICAgICAgICA/IHJlcXVpcmUoZmlsZVBhdGgpLmRlZmF1bHQgLy8gaW1wb3J0IGRlZmF1bHQgZXhwb3J0IGZyb20gdGhlIG1vZHVsZVxuICAgICAgICA6IHJlcXVpcmUoZmlsZVBhdGgpW2ltcG9ydE1vZHVsZU5hbWVdIC8vIGltcG9ydCB0aGUgZXhwb3J0IHVzaW5nIGl0J3MgbmFtZS5cblxuICAgIC8vIGV4ZWN1dGUgbW9kdWxlXG4gICAgbGV0IG1pZGRsZXdhcmVcbiAgICBzd2l0Y2ggKGV4ZWN1dGlvblR5cGUpIHtcbiAgICAgIGNhc2UgJ21pZGRsZXdhcmUnOlxuICAgICAgICBtaWRkbGV3YXJlID0gZXhwb3J0ZWRNb2R1bGVcbiAgICAgICAgYnJlYWtcbiAgICAgIGNhc2UgJ2Z1bmN0aW9uV3JhcHBlZE1pZGRsZXdhcmUnOlxuICAgICAgZGVmYXVsdDpcbiAgICAgICAgbWlkZGxld2FyZSA9IGFyZ3VtZW50ID8gZXhwb3J0ZWRNb2R1bGUoYXJndW1lbnQpIDogZXhwb3J0ZWRNb2R1bGUoKVxuICAgICAgICBicmVha1xuICAgIH1cbiAgICBtaWRkbGV3YXJlQXJyYXkucHVzaChtaWRkbGV3YXJlKVxuICB9LCB0aGlzKVxuICByZXR1cm4gY29tcG9zZShtaWRkbGV3YXJlQXJyYXkpXG59XG4iXX0=

@@ -1,46 +1,47 @@
-import config from '../../../setup/configuration/configuration.export.js'
-import path from 'path'
-import filesystem from 'fs'
-import stream from 'stream'
-import { default as Application } from '../../class/Application.class.js'
-import { functionWrappedMiddlewareDecorator } from '../middlewarePatternDecorator.js'
-import { streamToString } from '../streamToStringConvertion.js'
+"use strict";var _interopRequireDefault = require("@babel/runtime/helpers/interopRequireDefault");Object.defineProperty(exports, "__esModule", { value: true });exports.transformJavascript = void 0;var _configurationExport = _interopRequireDefault(require("../../../setup/configuration/configuration.export.js"));
+var _path = _interopRequireDefault(require("path"));
 
-let babel, nativeClientSideRuntimeCompilerConfig
-if (Application.config.DEPLOYMENT == 'development') {
-  // as in production appDeploymentLifecycle dependency doesn't exist.
-  babel = require('/project/application/dependency/appDeploymentLifecycle/babel_javascriptTranspilation.js/node_modules/@babel/core')
-  nativeClientSideRuntimeCompilerConfig = require(path.normalize(
-    `${config.directory.appDeploymentLifecyclePath}/babel_javascriptTranspilation.js/compilerConfiguration/nativeClientSideRuntime.BabelConfig.js`,
-  ))
+var _stream = _interopRequireDefault(require("stream"));
+var _ApplicationClass = _interopRequireDefault(require("../../class/Application.class.js"));
+var _middlewarePatternDecorator = require("../middlewarePatternDecorator.js");
+var _streamToStringConvertion = require("../streamToStringConvertion.js");
+
+let babel, nativeClientSideRuntimeCompilerConfig;
+if (_ApplicationClass.default.config.DEPLOYMENT == 'development') {
+
+  babel = require('/project/application/dependency/appDeploymentLifecycle/babel_javascriptTranspilation.js/node_modules/@babel/core');
+  nativeClientSideRuntimeCompilerConfig = require(_path.default.normalize(
+  `${_configurationExport.default.directory.appDeploymentLifecyclePath}/babel_javascriptTranspilation.js/compilerConfiguration/nativeClientSideRuntime.BabelConfig.js`));
+
 }
 
-export let transformJavascript = functionWrappedMiddlewareDecorator(async function(context, next, option) {
-  // transpile only on development and non-distribution folders, i.e. on-the-fly transpilation is executed only in development, while production and distribution should be already transpiled.
-  if (Application.config.DEPLOYMENT == 'development' && !Application.config.DISTRIBUTION && context.response.type == 'application/javascript') {
-    let path = context.path
-    let scriptCode = context.body
-    let transformBabelPlugin = []
+let transformJavascript = (0, _middlewarePatternDecorator.functionWrappedMiddlewareDecorator)(async function (context, next, option) {
+
+  if (_ApplicationClass.default.config.DEPLOYMENT == 'development' && !_ApplicationClass.default.config.DISTRIBUTION && context.response.type == 'application/javascript') {
+    let path = context.path;
+    let scriptCode = context.body;
+    let transformBabelPlugin = [];
 
     if (path.includes('webcomponent/@package')) {
-      // in case an npm webcomponent package
-      transformBabelPlugin = nativeClientSideRuntimeCompilerConfig.plugins
+
+      transformBabelPlugin = nativeClientSideRuntimeCompilerConfig.plugins;
     } else {
-      // in case a custom project element
-      transformBabelPlugin = nativeClientSideRuntimeCompilerConfig.plugins
+
+      transformBabelPlugin = nativeClientSideRuntimeCompilerConfig.plugins;
     }
-    let transformBabelPreset = nativeClientSideRuntimeCompilerConfig.presets
+    let transformBabelPreset = nativeClientSideRuntimeCompilerConfig.presets;
 
     if (transformBabelPlugin.length) {
-      // convert stream into string
-      if (scriptCode instanceof stream.Stream) scriptCode = await streamToString(scriptCode)
-      // transform code using array of plugins.
+
+      if (scriptCode instanceof _stream.default.Stream) scriptCode = await (0, _streamToStringConvertion.streamToString)(scriptCode);
+
       let transformedObject = babel.transformSync(scriptCode, {
         presets: transformBabelPreset,
-        plugins: transformBabelPlugin,
-      })
-      context.body = transformedObject.code
+        plugins: transformBabelPlugin });
+
+      context.body = transformedObject.code;
     }
   }
-  await next()
-})
+  await next();
+});exports.transformJavascript = transformJavascript;
+//# sourceMappingURL=data:application/json;charset=utf-8;base64,eyJ2ZXJzaW9uIjozLCJzb3VyY2VzIjpbIi4uLy4uLy4uLy4uL3NvdXJjZS91dGlsaXR5RnVuY3Rpb24vbWlkZGxld2FyZS9iYWJlbFRyYW5zcGlsZXIubWlkZGxld2FyZS5qcyJdLCJuYW1lcyI6WyJiYWJlbCIsIm5hdGl2ZUNsaWVudFNpZGVSdW50aW1lQ29tcGlsZXJDb25maWciLCJBcHBsaWNhdGlvbiIsImNvbmZpZyIsIkRFUExPWU1FTlQiLCJyZXF1aXJlIiwicGF0aCIsIm5vcm1hbGl6ZSIsImRpcmVjdG9yeSIsImFwcERlcGxveW1lbnRMaWZlY3ljbGVQYXRoIiwidHJhbnNmb3JtSmF2YXNjcmlwdCIsImNvbnRleHQiLCJuZXh0Iiwib3B0aW9uIiwiRElTVFJJQlVUSU9OIiwicmVzcG9uc2UiLCJ0eXBlIiwic2NyaXB0Q29kZSIsImJvZHkiLCJ0cmFuc2Zvcm1CYWJlbFBsdWdpbiIsImluY2x1ZGVzIiwicGx1Z2lucyIsInRyYW5zZm9ybUJhYmVsUHJlc2V0IiwicHJlc2V0cyIsImxlbmd0aCIsInN0cmVhbSIsIlN0cmVhbSIsInRyYW5zZm9ybWVkT2JqZWN0IiwidHJhbnNmb3JtU3luYyIsImNvZGUiXSwibWFwcGluZ3MiOiJxTUFBQTtBQUNBOztBQUVBO0FBQ0E7QUFDQTtBQUNBOztBQUVBLElBQUlBLEtBQUosRUFBV0MscUNBQVg7QUFDQSxJQUFJQywwQkFBWUMsTUFBWixDQUFtQkMsVUFBbkIsSUFBaUMsYUFBckMsRUFBb0Q7O0FBRWxESixFQUFBQSxLQUFLLEdBQUdLLE9BQU8sQ0FBQyxrSEFBRCxDQUFmO0FBQ0FKLEVBQUFBLHFDQUFxQyxHQUFHSSxPQUFPLENBQUNDLGNBQUtDLFNBQUw7QUFDN0MsS0FBRUosNkJBQU9LLFNBQVAsQ0FBaUJDLDBCQUEyQixnR0FERCxDQUFELENBQS9DOztBQUdEOztBQUVNLElBQUlDLG1CQUFtQixHQUFHLG9FQUFtQyxnQkFBZUMsT0FBZixFQUF3QkMsSUFBeEIsRUFBOEJDLE1BQTlCLEVBQXNDOztBQUV4RyxNQUFJWCwwQkFBWUMsTUFBWixDQUFtQkMsVUFBbkIsSUFBaUMsYUFBakMsSUFBa0QsQ0FBQ0YsMEJBQVlDLE1BQVosQ0FBbUJXLFlBQXRFLElBQXNGSCxPQUFPLENBQUNJLFFBQVIsQ0FBaUJDLElBQWpCLElBQXlCLHdCQUFuSCxFQUE2STtBQUMzSSxRQUFJVixJQUFJLEdBQUdLLE9BQU8sQ0FBQ0wsSUFBbkI7QUFDQSxRQUFJVyxVQUFVLEdBQUdOLE9BQU8sQ0FBQ08sSUFBekI7QUFDQSxRQUFJQyxvQkFBb0IsR0FBRyxFQUEzQjs7QUFFQSxRQUFJYixJQUFJLENBQUNjLFFBQUwsQ0FBYyx1QkFBZCxDQUFKLEVBQTRDOztBQUUxQ0QsTUFBQUEsb0JBQW9CLEdBQUdsQixxQ0FBcUMsQ0FBQ29CLE9BQTdEO0FBQ0QsS0FIRCxNQUdPOztBQUVMRixNQUFBQSxvQkFBb0IsR0FBR2xCLHFDQUFxQyxDQUFDb0IsT0FBN0Q7QUFDRDtBQUNELFFBQUlDLG9CQUFvQixHQUFHckIscUNBQXFDLENBQUNzQixPQUFqRTs7QUFFQSxRQUFJSixvQkFBb0IsQ0FBQ0ssTUFBekIsRUFBaUM7O0FBRS9CLFVBQUlQLFVBQVUsWUFBWVEsZ0JBQU9DLE1BQWpDLEVBQXlDVCxVQUFVLEdBQUcsTUFBTSw4Q0FBZUEsVUFBZixDQUFuQjs7QUFFekMsVUFBSVUsaUJBQWlCLEdBQUczQixLQUFLLENBQUM0QixhQUFOLENBQW9CWCxVQUFwQixFQUFnQztBQUN0RE0sUUFBQUEsT0FBTyxFQUFFRCxvQkFENkM7QUFFdERELFFBQUFBLE9BQU8sRUFBRUYsb0JBRjZDLEVBQWhDLENBQXhCOztBQUlBUixNQUFBQSxPQUFPLENBQUNPLElBQVIsR0FBZVMsaUJBQWlCLENBQUNFLElBQWpDO0FBQ0Q7QUFDRjtBQUNELFFBQU1qQixJQUFJLEVBQVY7QUFDRCxDQTVCZ0MsQ0FBMUIsQyIsInNvdXJjZXNDb250ZW50IjpbImltcG9ydCBjb25maWcgZnJvbSAnLi4vLi4vLi4vc2V0dXAvY29uZmlndXJhdGlvbi9jb25maWd1cmF0aW9uLmV4cG9ydC5qcydcbmltcG9ydCBwYXRoIGZyb20gJ3BhdGgnXG5pbXBvcnQgZmlsZXN5c3RlbSBmcm9tICdmcydcbmltcG9ydCBzdHJlYW0gZnJvbSAnc3RyZWFtJ1xuaW1wb3J0IHsgZGVmYXVsdCBhcyBBcHBsaWNhdGlvbiB9IGZyb20gJy4uLy4uL2NsYXNzL0FwcGxpY2F0aW9uLmNsYXNzLmpzJ1xuaW1wb3J0IHsgZnVuY3Rpb25XcmFwcGVkTWlkZGxld2FyZURlY29yYXRvciB9IGZyb20gJy4uL21pZGRsZXdhcmVQYXR0ZXJuRGVjb3JhdG9yLmpzJ1xuaW1wb3J0IHsgc3RyZWFtVG9TdHJpbmcgfSBmcm9tICcuLi9zdHJlYW1Ub1N0cmluZ0NvbnZlcnRpb24uanMnXG5cbmxldCBiYWJlbCwgbmF0aXZlQ2xpZW50U2lkZVJ1bnRpbWVDb21waWxlckNvbmZpZ1xuaWYgKEFwcGxpY2F0aW9uLmNvbmZpZy5ERVBMT1lNRU5UID09ICdkZXZlbG9wbWVudCcpIHtcbiAgLy8gYXMgaW4gcHJvZHVjdGlvbiBhcHBEZXBsb3ltZW50TGlmZWN5Y2xlIGRlcGVuZGVuY3kgZG9lc24ndCBleGlzdC5cbiAgYmFiZWwgPSByZXF1aXJlKCcvcHJvamVjdC9hcHBsaWNhdGlvbi9kZXBlbmRlbmN5L2FwcERlcGxveW1lbnRMaWZlY3ljbGUvYmFiZWxfamF2YXNjcmlwdFRyYW5zcGlsYXRpb24uanMvbm9kZV9tb2R1bGVzL0BiYWJlbC9jb3JlJylcbiAgbmF0aXZlQ2xpZW50U2lkZVJ1bnRpbWVDb21waWxlckNvbmZpZyA9IHJlcXVpcmUocGF0aC5ub3JtYWxpemUoXG4gICAgYCR7Y29uZmlnLmRpcmVjdG9yeS5hcHBEZXBsb3ltZW50TGlmZWN5Y2xlUGF0aH0vYmFiZWxfamF2YXNjcmlwdFRyYW5zcGlsYXRpb24uanMvY29tcGlsZXJDb25maWd1cmF0aW9uL25hdGl2ZUNsaWVudFNpZGVSdW50aW1lLkJhYmVsQ29uZmlnLmpzYCxcbiAgKSlcbn1cblxuZXhwb3J0IGxldCB0cmFuc2Zvcm1KYXZhc2NyaXB0ID0gZnVuY3Rpb25XcmFwcGVkTWlkZGxld2FyZURlY29yYXRvcihhc3luYyBmdW5jdGlvbihjb250ZXh0LCBuZXh0LCBvcHRpb24pIHtcbiAgLy8gdHJhbnNwaWxlIG9ubHkgb24gZGV2ZWxvcG1lbnQgYW5kIG5vbi1kaXN0cmlidXRpb24gZm9sZGVycywgaS5lLiBvbi10aGUtZmx5IHRyYW5zcGlsYXRpb24gaXMgZXhlY3V0ZWQgb25seSBpbiBkZXZlbG9wbWVudCwgd2hpbGUgcHJvZHVjdGlvbiBhbmQgZGlzdHJpYnV0aW9uIHNob3VsZCBiZSBhbHJlYWR5IHRyYW5zcGlsZWQuXG4gIGlmIChBcHBsaWNhdGlvbi5jb25maWcuREVQTE9ZTUVOVCA9PSAnZGV2ZWxvcG1lbnQnICYmICFBcHBsaWNhdGlvbi5jb25maWcuRElTVFJJQlVUSU9OICYmIGNvbnRleHQucmVzcG9uc2UudHlwZSA9PSAnYXBwbGljYXRpb24vamF2YXNjcmlwdCcpIHtcbiAgICBsZXQgcGF0aCA9IGNvbnRleHQucGF0aFxuICAgIGxldCBzY3JpcHRDb2RlID0gY29udGV4dC5ib2R5XG4gICAgbGV0IHRyYW5zZm9ybUJhYmVsUGx1Z2luID0gW11cblxuICAgIGlmIChwYXRoLmluY2x1ZGVzKCd3ZWJjb21wb25lbnQvQHBhY2thZ2UnKSkge1xuICAgICAgLy8gaW4gY2FzZSBhbiBucG0gd2ViY29tcG9uZW50IHBhY2thZ2VcbiAgICAgIHRyYW5zZm9ybUJhYmVsUGx1Z2luID0gbmF0aXZlQ2xpZW50U2lkZVJ1bnRpbWVDb21waWxlckNvbmZpZy5wbHVnaW5zXG4gICAgfSBlbHNlIHtcbiAgICAgIC8vIGluIGNhc2UgYSBjdXN0b20gcHJvamVjdCBlbGVtZW50XG4gICAgICB0cmFuc2Zvcm1CYWJlbFBsdWdpbiA9IG5hdGl2ZUNsaWVudFNpZGVSdW50aW1lQ29tcGlsZXJDb25maWcucGx1Z2luc1xuICAgIH1cbiAgICBsZXQgdHJhbnNmb3JtQmFiZWxQcmVzZXQgPSBuYXRpdmVDbGllbnRTaWRlUnVudGltZUNvbXBpbGVyQ29uZmlnLnByZXNldHNcblxuICAgIGlmICh0cmFuc2Zvcm1CYWJlbFBsdWdpbi5sZW5ndGgpIHtcbiAgICAgIC8vIGNvbnZlcnQgc3RyZWFtIGludG8gc3RyaW5nXG4gICAgICBpZiAoc2NyaXB0Q29kZSBpbnN0YW5jZW9mIHN0cmVhbS5TdHJlYW0pIHNjcmlwdENvZGUgPSBhd2FpdCBzdHJlYW1Ub1N0cmluZyhzY3JpcHRDb2RlKVxuICAgICAgLy8gdHJhbnNmb3JtIGNvZGUgdXNpbmcgYXJyYXkgb2YgcGx1Z2lucy5cbiAgICAgIGxldCB0cmFuc2Zvcm1lZE9iamVjdCA9IGJhYmVsLnRyYW5zZm9ybVN5bmMoc2NyaXB0Q29kZSwge1xuICAgICAgICBwcmVzZXRzOiB0cmFuc2Zvcm1CYWJlbFByZXNldCxcbiAgICAgICAgcGx1Z2luczogdHJhbnNmb3JtQmFiZWxQbHVnaW4sXG4gICAgICB9KVxuICAgICAgY29udGV4dC5ib2R5ID0gdHJhbnNmb3JtZWRPYmplY3QuY29kZVxuICAgIH1cbiAgfVxuICBhd2FpdCBuZXh0KClcbn0pXG4iXX0=

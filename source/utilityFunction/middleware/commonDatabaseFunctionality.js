@@ -1,95 +1,96 @@
-import rethinkdbConfig from '../../../setup/configuration/rethinkdbConfig.js'
-import r from 'rethinkdb'
-import _ from 'underscore'
-import Application from '../../class/Application.class.js'
+"use strict";var _interopRequireDefault = require("@babel/runtime/helpers/interopRequireDefault");Object.defineProperty(exports, "__esModule", { value: true });exports.handleConnection = handleConnection;exports.createDatabase = createDatabase;exports.createTable = createTable;exports.connect = connect;exports.getSubdocument = getSubdocument;exports.getConditionTreeEntrypoint = getConditionTreeEntrypoint;var _rethinkdbConfig = _interopRequireDefault(require("../../../setup/configuration/rethinkdbConfig.js"));
+var _rethinkdb = _interopRequireDefault(require("rethinkdb"));
+var _underscore = _interopRequireDefault(require("underscore"));
+var _ApplicationClass = _interopRequireDefault(require("../../class/Application.class.js"));
 
-export function handleConnection() {
+function handleConnection() {
   return async (context, next) => {
-    // context.rethinkdbConnection = await connect()
-    // Application.rethinkdbConnection = await context.rethinkdbConnection
-    context.rethinkdbConnection = Application.rethinkdbConnection
-    await next() // Execute database-dependent middleware
-    // context.rethinkdbConnection.close().then(() => { // Close connection
-    //     console.log('SZN - Rethinkdb database - connection closed')
-    // })
-  }
+
+
+    context.rethinkdbConnection = _ApplicationClass.default.rethinkdbConnection;
+    await next();
+
+
+
+  };
 }
 
-export function createDatabase() {
+function createDatabase() {
   return async (context, next) => {
-    await r
-      .dbList()
-      .contains(`${rethinkdbConfig.database}`)
-      .do(databaseExists => {
-        return r.branch(databaseExists, { dbs_created: 0 }, r.dbCreate(`${rethinkdbConfig.database}`))
-      })
-      .run(context.rethinkdbConnection)
-      .catch(error => {
-        throw error
-      })
-    await next()
-  }
+    await _rethinkdb.default.
+    dbList().
+    contains(`${_rethinkdbConfig.default.database}`).
+    do(databaseExists => {
+      return _rethinkdb.default.branch(databaseExists, { dbs_created: 0 }, _rethinkdb.default.dbCreate(`${_rethinkdbConfig.default.database}`));
+    }).
+    run(context.rethinkdbConnection).
+    catch(error => {
+      throw error;
+    });
+    await next();
+  };
 }
 
-export function createTable() {
+function createTable() {
   return async (context, next) => {
-    let tableName = 'setting'
-    await r
-      .tableList()
-      .run(context.rethinkdbConnection)
-      .then(tableNames => {
-        if (!_.includes(tableNames, tableName)) {
-          return r.tableCreate(tableName).run(context.rethinkdbConnection)
-        } else {
-          return
-        }
-      })
-      .catch(error => {
-        throw error
-      })
-    await next()
-  }
+    let tableName = 'setting';
+    await _rethinkdb.default.
+    tableList().
+    run(context.rethinkdbConnection).
+    then(tableNames => {
+      if (!_underscore.default.includes(tableNames, tableName)) {
+        return _rethinkdb.default.tableCreate(tableName).run(context.rethinkdbConnection);
+      } else {
+        return;
+      }
+    }).
+    catch(error => {
+      throw error;
+    });
+    await next();
+  };
 }
 
-export async function connect() {
-  let connection
+async function connect() {
+  let connection;
   try {
-    connection = await r // Create connection
-      .connect({
-        host: rethinkdbConfig.host,
-        port: rethinkdbConfig.port,
-        db: rethinkdbConfig.database,
-      })
+    connection = await _rethinkdb.default.
+    connect({
+      host: _rethinkdbConfig.default.host,
+      port: _rethinkdbConfig.default.port,
+      db: _rethinkdbConfig.default.database });
+
   } catch (e) {
-    await new Promise((resolve, reject) => setTimeout(() => resolve(), 2000))
-    console.info(`☕Connection failed to RethinkDB, retrying.`)
-    connection = await connect()
-    await new Promise((resolve, reject) => setTimeout(() => resolve(), 1000))
-    return connection
+    await new Promise((resolve, reject) => setTimeout(() => resolve(), 2000));
+    console.info(`☕Connection failed to RethinkDB, retrying.`);
+    connection = await connect();
+    await new Promise((resolve, reject) => setTimeout(() => resolve(), 1000));
+    return connection;
   }
-  console.info(`☕Connected to RethinkDB.`)
-  return connection
+  console.info(`☕Connected to RethinkDB.`);
+  return connection;
 }
 
-export function getSubdocument(context) {
-  return r
-    .db('webapp')
-    .table('setting')
-    .get('valueReturningFile')('valueReturningFile')
-    .filter(function(file) {
-      return file('key').match('bc7a29ab-facc-4054-ae34-c1b853c31a10')
-    })
-    .run(context.rethinkdbConnection)
+function getSubdocument(context) {
+  return _rethinkdb.default.
+  db('webapp').
+  table('setting').
+  get('valueReturningFile')('valueReturningFile').
+  filter(function (file) {
+    return file('key').match('bc7a29ab-facc-4054-ae34-c1b853c31a10');
+  }).
+  run(context.rethinkdbConnection);
 }
 
-export async function getConditionTreeEntrypoint(connection) {
-  let result = r
-    .db('webapp')
-    .table('setting')
-    .get('conditionTree')('conditionTree')
-    .filter(conditionTree => {
-      return conditionTree('key').match('default')
-    })
-    .run(connection)
-  return result
+async function getConditionTreeEntrypoint(connection) {
+  let result = _rethinkdb.default.
+  db('webapp').
+  table('setting').
+  get('conditionTree')('conditionTree').
+  filter(conditionTree => {
+    return conditionTree('key').match('default');
+  }).
+  run(connection);
+  return result;
 }
+//# sourceMappingURL=data:application/json;charset=utf-8;base64,eyJ2ZXJzaW9uIjozLCJzb3VyY2VzIjpbIi4uLy4uLy4uLy4uL3NvdXJjZS91dGlsaXR5RnVuY3Rpb24vbWlkZGxld2FyZS9jb21tb25EYXRhYmFzZUZ1bmN0aW9uYWxpdHkuanMiXSwibmFtZXMiOlsiaGFuZGxlQ29ubmVjdGlvbiIsImNvbnRleHQiLCJuZXh0IiwicmV0aGlua2RiQ29ubmVjdGlvbiIsIkFwcGxpY2F0aW9uIiwiY3JlYXRlRGF0YWJhc2UiLCJyIiwiZGJMaXN0IiwiY29udGFpbnMiLCJyZXRoaW5rZGJDb25maWciLCJkYXRhYmFzZSIsImRvIiwiZGF0YWJhc2VFeGlzdHMiLCJicmFuY2giLCJkYnNfY3JlYXRlZCIsImRiQ3JlYXRlIiwicnVuIiwiY2F0Y2giLCJlcnJvciIsImNyZWF0ZVRhYmxlIiwidGFibGVOYW1lIiwidGFibGVMaXN0IiwidGhlbiIsInRhYmxlTmFtZXMiLCJfIiwiaW5jbHVkZXMiLCJ0YWJsZUNyZWF0ZSIsImNvbm5lY3QiLCJjb25uZWN0aW9uIiwiaG9zdCIsInBvcnQiLCJkYiIsImUiLCJQcm9taXNlIiwicmVzb2x2ZSIsInJlamVjdCIsInNldFRpbWVvdXQiLCJjb25zb2xlIiwiaW5mbyIsImdldFN1YmRvY3VtZW50IiwidGFibGUiLCJnZXQiLCJmaWx0ZXIiLCJmaWxlIiwibWF0Y2giLCJnZXRDb25kaXRpb25UcmVlRW50cnlwb2ludCIsInJlc3VsdCIsImNvbmRpdGlvblRyZWUiXSwibWFwcGluZ3MiOiJ3WkFBQTtBQUNBO0FBQ0E7QUFDQTs7QUFFTyxTQUFTQSxnQkFBVCxHQUE0QjtBQUNqQyxTQUFPLE9BQU9DLE9BQVAsRUFBZ0JDLElBQWhCLEtBQXlCOzs7QUFHOUJELElBQUFBLE9BQU8sQ0FBQ0UsbUJBQVIsR0FBOEJDLDBCQUFZRCxtQkFBMUM7QUFDQSxVQUFNRCxJQUFJLEVBQVY7Ozs7QUFJRCxHQVJEO0FBU0Q7O0FBRU0sU0FBU0csY0FBVCxHQUEwQjtBQUMvQixTQUFPLE9BQU9KLE9BQVAsRUFBZ0JDLElBQWhCLEtBQXlCO0FBQzlCLFVBQU1J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QywwQkFBZixDQUEwQ2pCLFVBQTFDLEVBQXNEO0FBQzNELE1BQUlrQixNQUFNLEdBQUd4QztBQUNWeUIsRUFBQUEsRUFEVSxDQUNQLFFBRE87QUFFVlMsRUFBQUEsS0FGVSxDQUVKLFNBRkk7QUFHVkMsRUFBQUEsR0FIVSxDQUdOLGVBSE0sRUFHVyxlQUhYO0FBSVZDLEVBQUFBLE1BSlUsQ0FJSEssYUFBYSxJQUFJO0FBQ3ZCLFdBQU9BLGFBQWEsQ0FBQyxLQUFELENBQWIsQ0FBcUJILEtBQXJCLENBQTJCLFNBQTNCLENBQVA7QUFDRCxHQU5VO0FBT1Y1QixFQUFBQSxHQVBVLENBT05ZLFVBUE0sQ0FBYjtBQVFBLFNBQU9rQixNQUFQO0FBQ0QiLCJzb3VyY2VzQ29udGVudCI6WyJpbXBvcnQgcmV0aGlua2RiQ29uZmlnIGZyb20gJy4uLy4uLy4uL3NldHVwL2NvbmZpZ3VyYXRpb24vcmV0aGlua2RiQ29uZmlnLmpzJ1xuaW1wb3J0IHIgZnJvbSAncmV0aGlua2RiJ1xuaW1wb3J0IF8gZnJvbSAndW5kZXJzY29yZSdcbmltcG9ydCBBcHBsaWNhdGlvbiBmcm9tICcuLi8uLi9jbGFzcy9BcHBsaWNhdGlvbi5jbGFzcy5qcydcblxuZXhwb3J0IGZ1bmN0aW9uIGhhbmRsZUNvbm5lY3Rpb24oKSB7XG4gIHJldHVybiBhc3luYyAoY29udGV4dCwgbmV4dCkgPT4ge1xuICAgIC8vIGNvbnRleHQucmV0aGlua2RiQ29ubmVjdGlvbiA9IGF3YWl0IGNvbm5lY3QoKVxuICAgIC8vIEFwcGxpY2F0aW9uLnJldGhpbmtkYkNvbm5lY3Rpb24gPSBhd2FpdCBjb250ZXh0LnJldGhpbmtkYkNvbm5lY3Rpb25cbiAgICBjb250ZXh0LnJldGhpbmtkYkNvbm5lY3Rpb24gPSBBcHBsaWNhdGlvbi5yZXRoaW5rZGJDb25uZWN0aW9uXG4gICAgYXdhaXQgbmV4dCgpIC8vIEV4ZWN1dGUgZGF0YWJhc2UtZGVwZW5kZW50IG1pZGRsZXdhcmVcbiAgICAvLyBjb250ZXh0LnJldGhpbmtkYkNvbm5lY3Rpb24uY2xvc2UoKS50aGVuKCgpID0+IHsgLy8gQ2xvc2UgY29ubmVjdGlvblxuICAgIC8vICAgICBjb25zb2xlLmxvZygnU1pOIC0gUmV0aGlua2RiIGRhdGFiYXNlIC0gY29ubmVjdGlvbiBjbG9zZWQnKVxuICAgIC8vIH0pXG4gIH1cbn1cblxuZXhwb3J0IGZ1bmN0aW9uIGNyZWF0ZURhdGFiYXNlKCkge1xuICByZXR1cm4gYXN5bmMgKGNvbnRleHQsIG5leHQpID0+IHtcbiAgICBhd2FpdCByXG4gICAgICAuZGJMaXN0KClcbiAgICAgIC5jb250YWlucyhgJHtyZXRoaW5rZGJDb25maWcuZGF0YWJhc2V9YClcbiAgICAgIC5kbyhkYXRhYmFzZUV4aXN0cyA9PiB7XG4gICAgICAgIHJldHVybiByLmJyYW5jaChkYXRhYmFzZUV4aXN0cywgeyBkYnNfY3JlYXRlZDogMCB9LCByLmRiQ3JlYXRlKGAke3JldGhpbmtkYkNvbmZpZy5kYXRhYmFzZX1gKSlcbiAgICAgIH0pXG4gICAgICAucnVuKGNvbnRleHQucmV0aGlua2RiQ29ubmVjdGlvbilcbiAgICAgIC5jYXRjaChlcnJvciA9PiB7XG4gICAgICAgIHRocm93IGVycm9yXG4gICAgICB9KVxuICAgIGF3YWl0IG5leHQoKVxuICB9XG59XG5cbmV4cG9ydCBmdW5jdGlvbiBjcmVhdGVUYWJsZSgpIHtcbiAgcmV0dXJuIGFzeW5jIChjb250ZXh0LCBuZXh0KSA9PiB7XG4gICAgbGV0IHRhYmxlTmFtZSA9ICdzZXR0aW5nJ1xuICAgIGF3YWl0IHJcbiAgICAgIC50YWJsZUxpc3QoKVxuICAgICAgLnJ1bihjb250ZXh0LnJldGhpbmtkYkNvbm5lY3Rpb24pXG4gICAgICAudGhlbih0YWJsZU5hbWVzID0+IHtcbiAgICAgICAgaWYgKCFfLmluY2x1ZGVzKHRhYmxlTmFtZXMsIHRhYmxlTmFtZSkpIHtcbiAgICAgICAgICByZXR1cm4gci50YWJsZUNyZWF0ZSh0YWJsZU5hbWUpLnJ1bihjb250ZXh0LnJldGhpbmtkYkNvbm5lY3Rpb24pXG4gICAgICAgIH0gZWxzZSB7XG4gICAgICAgICAgcmV0dXJuXG4gICAgICAgIH1cbiAgICAgIH0pXG4gICAgICAuY2F0Y2goZXJyb3IgPT4ge1xuICAgICAgICB0aHJvdyBlcnJvclxuICAgICAgfSlcbiAgICBhd2FpdCBuZXh0KClcbiAgfVxufVxuXG5leHBvcnQgYXN5bmMgZnVuY3Rpb24gY29ubmVjdCgpIHtcbiAgbGV0IGNvbm5lY3Rpb25cbiAgdHJ5IHtcbiAgICBjb25uZWN0aW9uID0gYXdhaXQgciAvLyBDcmVhdGUgY29ubmVjdGlvblxuICAgICAgLmNvbm5lY3Qoe1xuICAgICAgICBob3N0OiByZXRoaW5rZGJDb25maWcuaG9zdCxcbiAgICAgICAgcG9ydDogcmV0aGlua2RiQ29uZmlnLnBvcnQsXG4gICAgICAgIGRiOiByZXRoaW5rZGJDb25maWcuZGF0YWJhc2UsXG4gICAgICB9KVxuICB9IGNhdGNoIChlKSB7XG4gICAgYXdhaXQgbmV3IFByb21pc2UoKHJlc29sdmUsIHJlamVjdCkgPT4gc2V0VGltZW91dCgoKSA9PiByZXNvbHZlKCksIDIwMDApKVxuICAgIGNvbnNvbGUuaW5mbyhg4piVQ29ubmVjdGlvbiBmYWlsZWQgdG8gUmV0aGlua0RCLCByZXRyeWluZy5gKVxuICAgIGNvbm5lY3Rpb24gPSBhd2FpdCBjb25uZWN0KClcbiAgICBhd2FpdCBuZXcgUHJvbWlzZSgocmVzb2x2ZSwgcmVqZWN0KSA9PiBzZXRUaW1lb3V0KCgpID0+IHJlc29sdmUoKSwgMTAwMCkpXG4gICAgcmV0dXJuIGNvbm5lY3Rpb25cbiAgfVxuICBjb25zb2xlLmluZm8oYOKYlUNvbm5lY3RlZCB0byBSZXRoaW5rREIuYClcbiAgcmV0dXJuIGNvbm5lY3Rpb25cbn1cblxuZXhwb3J0IGZ1bmN0aW9uIGdldFN1YmRvY3VtZW50KGNvbnRleHQpIHtcbiAgcmV0dXJuIHJcbiAgICAuZGIoJ3dlYmFwcCcpXG4gICAgLnRhYmxlKCdzZXR0aW5nJylcbiAgICAuZ2V0KCd2YWx1ZVJldHVybmluZ0ZpbGUnKSgndmFsdWVSZXR1cm5pbmdGaWxlJylcbiAgICAuZmlsdGVyKGZ1bmN0aW9uKGZpbGUpIHtcbiAgICAgIHJldHVybiBmaWxlKCdrZXknKS5tYXRjaCgnYmM3YTI5YWItZmFjYy00MDU0LWFlMzQtYzFiODUzYzMxYTEwJylcbiAgICB9KVxuICAgIC5ydW4oY29udGV4dC5yZXRoaW5rZGJDb25uZWN0aW9uKVxufVxuXG5leHBvcnQgYXN5bmMgZnVuY3Rpb24gZ2V0Q29uZGl0aW9uVHJlZUVudHJ5cG9pbnQoY29ubmVjdGlvbikge1xuICBsZXQgcmVzdWx0ID0gclxuICAgIC5kYignd2ViYXBwJylcbiAgICAudGFibGUoJ3NldHRpbmcnKVxuICAgIC5nZXQoJ2NvbmRpdGlvblRyZWUnKSgnY29uZGl0aW9uVHJlZScpXG4gICAgLmZpbHRlcihjb25kaXRpb25UcmVlID0+IHtcbiAgICAgIHJldHVybiBjb25kaXRpb25UcmVlKCdrZXknKS5tYXRjaCgnZGVmYXVsdCcpXG4gICAgfSlcbiAgICAucnVuKGNvbm5lY3Rpb24pXG4gIHJldHVybiByZXN1bHRcbn1cbiJdfQ==

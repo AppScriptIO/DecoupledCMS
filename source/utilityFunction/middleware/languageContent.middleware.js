@@ -1,41 +1,42 @@
-import parse from 'co-body' // throws on unsupported content type.
-import bodyParser from 'koa-bodyparser' // Brings extra option for handling error and unsupported content-types.
-import { default as Application } from '../../class/Application.class.js'
-import { getMergedMultipleDocumentOfSpecificLanguage as queryPatternImplementation } from '@dependency/databaseUtility/source/patternImplementation.js'
-import { functionWrappedMiddlewareDecorator } from '@dependency/commonPattern/source/middlewarePatternDecorator.js'
-import { mergeDeep } from '@dependency/deepObjectMerge'
+"use strict";var _interopRequireDefault = require("@babel/runtime/helpers/interopRequireDefault");Object.defineProperty(exports, "__esModule", { value: true });exports.default = void 0;
 
-export default functionWrappedMiddlewareDecorator(async function(context, next, option) {
-  let urlQuery = context.request.query
-  let queryLanguage = urlQuery.language
-    ? urlQuery.language.replace(/\b\w/g, l => l.toUpperCase()) // Capitalize first letter.
-    : null
-  let uiContent = null
-  let defaultLanguage = Application.frontendStatic.setting.mode.language
+var _ApplicationClass = _interopRequireDefault(require("../../class/Application.class.js"));
+var _patternImplementation = require("@dependency/databaseUtility/source/patternImplementation.js");
+var _middlewarePatternDecorator = require("@dependency/commonPattern/source/middlewarePatternDecorator.js");
+var _deepObjectMerge = require("@dependency/deepObjectMerge");var _default =
+
+(0, _middlewarePatternDecorator.functionWrappedMiddlewareDecorator)(async function (context, next, option) {
+  let urlQuery = context.request.query;
+  let queryLanguage = urlQuery.language ?
+  urlQuery.language.replace(/\b\w/g, l => l.toUpperCase()) :
+  null;
+  let uiContent = null;
+  let defaultLanguage = _ApplicationClass.default.frontendStatic.setting.mode.language;
   try {
-    uiContent = await queryPatternImplementation({
-      databaseConnection: Application.rethinkdbConnection,
+    uiContent = await (0, _patternImplementation.getMergedMultipleDocumentOfSpecificLanguage)({
+      databaseConnection: _ApplicationClass.default.rethinkdbConnection,
       languageDocumentKey: queryLanguage || defaultLanguage,
-      dataTableName: 'ui',
-    })
+      dataTableName: 'ui' });
+
   } catch (error) {
-    console.log(error)
+    console.log(error);
   }
 
   let frontendPerContext = {
     setting: {
       mode: {
-        language: queryLanguage || defaultLanguage, // TODO: change setting default twice - fallback to prevent setting a null/undefined over the default value
-      },
-    },
-    uiContent,
-  }
+        language: queryLanguage || defaultLanguage } },
 
-  // TODO: separate frontend object creation from language middleware.
 
-  frontendPerContext.instance = context.instance // add instance object as it is used by client side.
+    uiContent };
 
-  context.frontend = mergeDeep(Application.frontendStatic, frontendPerContext)
 
-  await next()
-})
+
+
+  frontendPerContext.instance = context.instance;
+
+  context.frontend = (0, _deepObjectMerge.mergeDeep)(_ApplicationClass.default.frontendStatic, frontendPerContext);
+
+  await next();
+});exports.default = _default;
+//# sourceMappingURL=data:application/json;charset=utf-8;base64,eyJ2ZXJzaW9uIjozLCJzb3VyY2VzIjpbIi4uLy4uLy4uLy4uL3NvdXJjZS91dGlsaXR5RnVuY3Rpb24vbWlkZGxld2FyZS9sYW5ndWFnZUNvbnRlbnQubWlkZGxld2FyZS5qcyJdLCJuYW1lcyI6WyJjb250ZXh0IiwibmV4dCIsIm9wdGlvbiIsInVybFF1ZXJ5IiwicmVxdWVzdCIsInF1ZXJ5IiwicXVlcnlMYW5ndWFnZSIsImxhbmd1YWdlIiwicmVwbGFjZSIsImwiLCJ0b1VwcGVyQ2FzZSIsInVpQ29udGVudCIsImRlZmF1bHRMYW5ndWFnZSIsIkFwcGxpY2F0aW9uIiwiZnJvbnRlbmRTdGF0aWMiLCJzZXR0aW5nIiwibW9kZSIsImRhdGFiYXNlQ29ubmVjdGlvbiIsInJldGhpbmtkYkNvbm5lY3Rpb24iLCJsYW5ndWFnZURvY3VtZW50S2V5IiwiZGF0YVRhYmxlTmFtZSIsImVycm9yIiwiY29uc29sZSIsImxvZyIsImZyb250ZW5kUGVyQ29udGV4dCIsImluc3RhbmNlIiwiZnJvbnRlbmQiXSwibWFwcGluZ3MiOiI7O0FBRUE7QUFDQTtBQUNBO0FBQ0EsOEQ7O0FBRWUsb0VBQW1DLGdCQUFlQSxPQUFmLEVBQXdCQyxJQUF4QixFQUE4QkMsTUFBOUIsRUFBc0M7QUFDdEYsTUFBSUMsUUFBUSxHQUFHSCxPQUFPLENBQUNJLE9BQVIsQ0FBZ0JDLEtBQS9CO0FBQ0EsTUFBSUMsYUFBYSxHQUFHSCxRQUFRLENBQUNJLFFBQVQ7QUFDaEJKLEVBQUFBLFFBQVEsQ0FBQ0ksUUFBVCxDQUFrQkMsT0FBbEIsQ0FBMEIsT0FBMUIsRUFBbUNDLENBQUMsSUFBSUEsQ0FBQyxDQUFDQyxXQUFGLEVBQXhDLENBRGdCO0FBRWhCLE1BRko7QUFHQSxNQUFJQyxTQUFTLEdBQUcsSUFBaEI7QUFDQSxNQUFJQyxlQUFlLEdBQUdDLDBCQUFZQyxjQUFaLENBQTJCQyxPQUEzQixDQUFtQ0MsSUFBbkMsQ0FBd0NULFFBQTlEO0FBQ0EsTUFBSTtBQUNGSSxJQUFBQSxTQUFTLEdBQUcsTUFBTSx3RUFBMkI7QUFDM0NNLE1BQUFBLGtCQUFrQixFQUFFSiwwQkFBWUssbUJBRFc7QUFFM0NDLE1BQUFBLG1CQUFtQixFQUFFYixhQUFhLElBQUlNLGVBRks7QUFHM0NRLE1BQUFBLGFBQWEsRUFBRSxJQUg0QixFQUEzQixDQUFsQjs7QUFLRCxHQU5ELENBTUUsT0FBT0MsS0FBUCxFQUFjO0FBQ2RDLElBQUFBLE9BQU8sQ0FBQ0MsR0FBUixDQUFZRixLQUFaO0FBQ0Q7O0FBRUQsTUFBSUcsa0JBQWtCLEdBQUc7QUFDdkJULElBQUFBLE9BQU8sRUFBRTtBQUNQQyxNQUFBQSxJQUFJLEVBQUU7QUFDSlQsUUFBQUEsUUFBUSxFQUFFRCxhQUFhLElBQUlNLGVBRHZCLEVBREMsRUFEYzs7O0FBTXZCRCxJQUFBQSxTQU51QixFQUF6Qjs7Ozs7QUFXQWEsRUFBQUEsa0JBQWtCLENBQUNDLFFBQW5CLEdBQThCekIsT0FBTyxDQUFDeUIsUUFBdEM7O0FBRUF6QixFQUFBQSxPQUFPLENBQUMwQixRQUFSLEdBQW1CLGdDQUFVYiwwQkFBWUMsY0FBdEIsRUFBc0NVLGtCQUF0QyxDQUFuQjs7QUFFQSxRQUFNdkIsSUFBSSxFQUFWO0FBQ0QsQ0FqQ2MsQyIsInNvdXJjZXNDb250ZW50IjpbImltcG9ydCBwYXJzZSBmcm9tICdjby1ib2R5JyAvLyB0aHJvd3Mgb24gdW5zdXBwb3J0ZWQgY29udGVudCB0eXBlLlxuaW1wb3J0IGJvZHlQYXJzZXIgZnJvbSAna29hLWJvZHlwYXJzZXInIC8vIEJyaW5ncyBleHRyYSBvcHRpb24gZm9yIGhhbmRsaW5nIGVycm9yIGFuZCB1bnN1cHBvcnRlZCBjb250ZW50LXR5cGVzLlxuaW1wb3J0IHsgZGVmYXVsdCBhcyBBcHBsaWNhdGlvbiB9IGZyb20gJy4uLy4uL2NsYXNzL0FwcGxpY2F0aW9uLmNsYXNzLmpzJ1xuaW1wb3J0IHsgZ2V0TWVyZ2VkTXVsdGlwbGVEb2N1bWVudE9mU3BlY2lmaWNMYW5ndWFnZSBhcyBxdWVyeVBhdHRlcm5JbXBsZW1lbnRhdGlvbiB9IGZyb20gJ0BkZXBlbmRlbmN5L2RhdGFiYXNlVXRpbGl0eS9zb3VyY2UvcGF0dGVybkltcGxlbWVudGF0aW9uLmpzJ1xuaW1wb3J0IHsgZnVuY3Rpb25XcmFwcGVkTWlkZGxld2FyZURlY29yYXRvciB9IGZyb20gJ0BkZXBlbmRlbmN5L2NvbW1vblBhdHRlcm4vc291cmNlL21pZGRsZXdhcmVQYXR0ZXJuRGVjb3JhdG9yLmpzJ1xuaW1wb3J0IHsgbWVyZ2VEZWVwIH0gZnJvbSAnQGRlcGVuZGVuY3kvZGVlcE9iamVjdE1lcmdlJ1xuXG5leHBvcnQgZGVmYXVsdCBmdW5jdGlvbldyYXBwZWRNaWRkbGV3YXJlRGVjb3JhdG9yKGFzeW5jIGZ1bmN0aW9uKGNvbnRleHQsIG5leHQsIG9wdGlvbikge1xuICBsZXQgdXJsUXVlcnkgPSBjb250ZXh0LnJlcXVlc3QucXVlcnlcbiAgbGV0IHF1ZXJ5TGFuZ3VhZ2UgPSB1cmxRdWVyeS5sYW5ndWFnZVxuICAgID8gdXJsUXVlcnkubGFuZ3VhZ2UucmVwbGFjZSgvXFxiXFx3L2csIGwgPT4gbC50b1VwcGVyQ2FzZSgpKSAvLyBDYXBpdGFsaXplIGZpcnN0IGxldHRlci5cbiAgICA6IG51bGxcbiAgbGV0IHVpQ29udGVudCA9IG51bGxcbiAgbGV0IGRlZmF1bHRMYW5ndWFnZSA9IEFwcGxpY2F0aW9uLmZyb250ZW5kU3RhdGljLnNldHRpbmcubW9kZS5sYW5ndWFnZVxuICB0cnkge1xuICAgIHVpQ29udGVudCA9IGF3YWl0IHF1ZXJ5UGF0dGVybkltcGxlbWVudGF0aW9uKHtcbiAgICAgIGRhdGFiYXNlQ29ubmVjdGlvbjogQXBwbGljYXRpb24ucmV0aGlua2RiQ29ubmVjdGlvbixcbiAgICAgIGxhbmd1YWdlRG9jdW1lbnRLZXk6IHF1ZXJ5TGFuZ3VhZ2UgfHwgZGVmYXVsdExhbmd1YWdlLFxuICAgICAgZGF0YVRhYmxlTmFtZTogJ3VpJyxcbiAgICB9KVxuICB9IGNhdGNoIChlcnJvcikge1xuICAgIGNvbnNvbGUubG9nKGVycm9yKVxuICB9XG5cbiAgbGV0IGZyb250ZW5kUGVyQ29udGV4dCA9IHtcbiAgICBzZXR0aW5nOiB7XG4gICAgICBtb2RlOiB7XG4gICAgICAgIGxhbmd1YWdlOiBxdWVyeUxhbmd1YWdlIHx8IGRlZmF1bHRMYW5ndWFnZSwgLy8gVE9ETzogY2hhbmdlIHNldHRpbmcgZGVmYXVsdCB0d2ljZSAtIGZhbGxiYWNrIHRvIHByZXZlbnQgc2V0dGluZyBhIG51bGwvdW5kZWZpbmVkIG92ZXIgdGhlIGRlZmF1bHQgdmFsdWVcbiAgICAgIH0sXG4gICAgfSxcbiAgICB1aUNvbnRlbnQsXG4gIH1cblxuICAvLyBUT0RPOiBzZXBhcmF0ZSBmcm9udGVuZCBvYmplY3QgY3JlYXRpb24gZnJvbSBsYW5ndWFnZSBtaWRkbGV3YXJlLlxuXG4gIGZyb250ZW5kUGVyQ29udGV4dC5pbnN0YW5jZSA9IGNvbnRleHQuaW5zdGFuY2UgLy8gYWRkIGluc3RhbmNlIG9iamVjdCBhcyBpdCBpcyB1c2VkIGJ5IGNsaWVudCBzaWRlLlxuXG4gIGNvbnRleHQuZnJvbnRlbmQgPSBtZXJnZURlZXAoQXBwbGljYXRpb24uZnJvbnRlbmRTdGF0aWMsIGZyb250ZW5kUGVyQ29udGV4dClcblxuICBhd2FpdCBuZXh0KClcbn0pXG4iXX0=

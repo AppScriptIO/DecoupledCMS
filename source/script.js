@@ -1,13 +1,5 @@
-import path from 'path'
-import { default as Application } from './class/Application.class.js'
-import { microservice } from './microservice'
-import localUnderscore from 'underscore'
-
-// Important: Exporting Application and another module that imports 'appscript' would could infinite loop. e.g. exporting also microservice.
-//            To prevent such behavior all modules in 'appscript' module should call each other using relative paths.
-export { Application as default, microservice, localUnderscore as underscore }
-// __________________________________
-
-// // Conneciton ports:
-// if (!module.parent || module.parent) { // Dummy for future use // if loaded as a standart script.
-// }
+"use strict";var _interopRequireDefault = require("@babel/runtime/helpers/interopRequireDefault");Object.defineProperty(exports, "__esModule", { value: true });Object.defineProperty(exports, "default", { enumerable: true, get: function () {return _ApplicationClass.default;} });Object.defineProperty(exports, "microservice", { enumerable: true, get: function () {return _microservice.microservice;} });Object.defineProperty(exports, "underscore", { enumerable: true, get: function () {return _underscore.default;} });
+var _ApplicationClass = _interopRequireDefault(require("./class/Application.class.js"));
+var _microservice = require("./microservice");
+var _underscore = _interopRequireDefault(require("underscore"));
+//# sourceMappingURL=data:application/json;charset=utf-8;base64,eyJ2ZXJzaW9uIjozLCJzb3VyY2VzIjpbIi4uLy4uL3NvdXJjZS9zY3JpcHQuanMiXSwibmFtZXMiOltdLCJtYXBwaW5ncyI6IjtBQUNBO0FBQ0E7QUFDQSIsInNvdXJjZXNDb250ZW50IjpbImltcG9ydCBwYXRoIGZyb20gJ3BhdGgnXHJcbmltcG9ydCB7IGRlZmF1bHQgYXMgQXBwbGljYXRpb24gfSBmcm9tICcuL2NsYXNzL0FwcGxpY2F0aW9uLmNsYXNzLmpzJ1xyXG5pbXBvcnQgeyBtaWNyb3NlcnZpY2UgfSBmcm9tICcuL21pY3Jvc2VydmljZSdcclxuaW1wb3J0IGxvY2FsVW5kZXJzY29yZSBmcm9tICd1bmRlcnNjb3JlJ1xyXG5cclxuLy8gSW1wb3J0YW50OiBFeHBvcnRpbmcgQXBwbGljYXRpb24gYW5kIGFub3RoZXIgbW9kdWxlIHRoYXQgaW1wb3J0cyAnYXBwc2NyaXB0JyB3b3VsZCBjb3VsZCBpbmZpbml0ZSBsb29wLiBlLmcuIGV4cG9ydGluZyBhbHNvIG1pY3Jvc2VydmljZS5cclxuLy8gICAgICAgICAgICBUbyBwcmV2ZW50IHN1Y2ggYmVoYXZpb3IgYWxsIG1vZHVsZXMgaW4gJ2FwcHNjcmlwdCcgbW9kdWxlIHNob3VsZCBjYWxsIGVhY2ggb3RoZXIgdXNpbmcgcmVsYXRpdmUgcGF0aHMuXHJcbmV4cG9ydCB7IEFwcGxpY2F0aW9uIGFzIGRlZmF1bHQsIG1pY3Jvc2VydmljZSwgbG9jYWxVbmRlcnNjb3JlIGFzIHVuZGVyc2NvcmUgfVxyXG4vLyBfX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fXHJcblxyXG4vLyAvLyBDb25uZWNpdG9uIHBvcnRzOlxyXG4vLyBpZiAoIW1vZHVsZS5wYXJlbnQgfHwgbW9kdWxlLnBhcmVudCkgeyAvLyBEdW1teSBmb3IgZnV0dXJlIHVzZSAvLyBpZiBsb2FkZWQgYXMgYSBzdGFuZGFydCBzY3JpcHQuXHJcbi8vIH1cclxuIl19

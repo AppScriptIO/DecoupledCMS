@@ -1,14 +1,15 @@
-import path from 'path'
-import config from '../../../setup/configuration/configuration.export.js' // Load configuration settings.
-import send from 'koa-sendfile'
-import { default as Application } from '../../class/Application.class.js'
+"use strict";Object.defineProperty(exports, "__esModule", { value: true });exports.default = void 0;var _default =
 
-export default () => {
+
+
+
+() => {
   return async (context, next) => {
-    // fallback to sending the app index. If not found.
-    await next()
-    if (404 != context.status) return
-    // return context.body = 'This is the not found middleware.'
-    // return send(context, path.normalize(`${context.instance.config.clientBasePath}/root/entrypoint.html`))
-  }
-}
+
+    await next();
+    if (404 != context.status) return;
+
+
+  };
+};exports.default = _default;
+//# sourceMappingURL=data:application/json;charset=utf-8;base64,eyJ2ZXJzaW9uIjozLCJzb3VyY2VzIjpbIi4uLy4uLy4uLy4uL3NvdXJjZS91dGlsaXR5RnVuY3Rpb24vbWlkZGxld2FyZS9ub3RGb3VuZC5qcyJdLCJuYW1lcyI6WyJjb250ZXh0IiwibmV4dCIsInN0YXR1cyJdLCJtYXBwaW5ncyI6Ijs7Ozs7QUFLZSxNQUFNO0FBQ25CLFNBQU8sT0FBT0EsT0FBUCxFQUFnQkMsSUFBaEIsS0FBeUI7O0FBRTlCLFVBQU1BLElBQUksRUFBVjtBQUNBLFFBQUksT0FBT0QsT0FBTyxDQUFDRSxNQUFuQixFQUEyQjs7O0FBRzVCLEdBTkQ7QUFPRCxDIiwic291cmNlc0NvbnRlbnQiOlsiaW1wb3J0IHBhdGggZnJvbSAncGF0aCdcbmltcG9ydCBjb25maWcgZnJvbSAnLi4vLi4vLi4vc2V0dXAvY29uZmlndXJhdGlvbi9jb25maWd1cmF0aW9uLmV4cG9ydC5qcycgLy8gTG9hZCBjb25maWd1cmF0aW9uIHNldHRpbmdzLlxuaW1wb3J0IHNlbmQgZnJvbSAna29hLXNlbmRmaWxlJ1xuaW1wb3J0IHsgZGVmYXVsdCBhcyBBcHBsaWNhdGlvbiB9IGZyb20gJy4uLy4uL2NsYXNzL0FwcGxpY2F0aW9uLmNsYXNzLmpzJ1xuXG5leHBvcnQgZGVmYXVsdCAoKSA9PiB7XG4gIHJldHVybiBhc3luYyAoY29udGV4dCwgbmV4dCkgPT4ge1xuICAgIC8vIGZhbGxiYWNrIHRvIHNlbmRpbmcgdGhlIGFwcCBpbmRleC4gSWYgbm90IGZvdW5kLlxuICAgIGF3YWl0IG5leHQoKVxuICAgIGlmICg0MDQgIT0gY29udGV4dC5zdGF0dXMpIHJldHVyblxuICAgIC8vIHJldHVybiBjb250ZXh0LmJvZHkgPSAnVGhpcyBpcyB0aGUgbm90IGZvdW5kIG1pZGRsZXdhcmUuJ1xuICAgIC8vIHJldHVybiBzZW5kKGNvbnRleHQsIHBhdGgubm9ybWFsaXplKGAke2NvbnRleHQuaW5zdGFuY2UuY29uZmlnLmNsaWVudEJhc2VQYXRofS9yb290L2VudHJ5cG9pbnQuaHRtbGApKVxuICB9XG59XG4iXX0=

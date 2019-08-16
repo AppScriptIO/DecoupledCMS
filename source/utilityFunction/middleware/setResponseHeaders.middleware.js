@@ -1,9 +1,10 @@
-export default function() {
+"use strict";Object.defineProperty(exports, "__esModule", { value: true });exports.default = _default;function _default() {
   return async (context, next) => {
-    // instance.middlewareArray.push(middleware)
-    // await context.req.setTimeout(0); // changes default Nodejs timeout (default 120 seconds).
-    await context.set('Access-Control-Allow-Origin', '*')
-    await context.set('connection', 'keep-alive')
-    await next()
-  }
+
+
+    await context.set('Access-Control-Allow-Origin', '*');
+    await context.set('connection', 'keep-alive');
+    await next();
+  };
 }
+//# sourceMappingURL=data:application/json;charset=utf-8;base64,eyJ2ZXJzaW9uIjozLCJzb3VyY2VzIjpbIi4uLy4uLy4uLy4uL3NvdXJjZS91dGlsaXR5RnVuY3Rpb24vbWlkZGxld2FyZS9zZXRSZXNwb25zZUhlYWRlcnMubWlkZGxld2FyZS5qcyJdLCJuYW1lcyI6WyJjb250ZXh0IiwibmV4dCIsInNldCJdLCJtYXBwaW5ncyI6InNHQUFlLG9CQUFXO0FBQ3hCLFNBQU8sT0FBT0EsT0FBUCxFQUFnQkMsSUFBaEIsS0FBeUI7OztBQUc5QixVQUFNRCxPQUFPLENBQUNFLEdBQVIsQ0FBWSw2QkFBWixFQUEyQyxHQUEzQyxDQUFOO0FBQ0EsVUFBTUYsT0FBTyxDQUFDRSxHQUFSLENBQVksWUFBWixFQUEwQixZQUExQixDQUFOO0FBQ0EsVUFBTUQsSUFBSSxFQUFWO0FBQ0QsR0FORDtBQU9EIiwic291cmNlc0NvbnRlbnQiOlsiZXhwb3J0IGRlZmF1bHQgZnVuY3Rpb24oKSB7XG4gIHJldHVybiBhc3luYyAoY29udGV4dCwgbmV4dCkgPT4ge1xuICAgIC8vIGluc3RhbmNlLm1pZGRsZXdhcmVBcnJheS5wdXNoKG1pZGRsZXdhcmUpXG4gICAgLy8gYXdhaXQgY29udGV4dC5yZXEuc2V0VGltZW91dCgwKTsgLy8gY2hhbmdlcyBkZWZhdWx0IE5vZGVqcyB0aW1lb3V0IChkZWZhdWx0IDEyMCBzZWNvbmRzKS5cbiAgICBhd2FpdCBjb250ZXh0LnNldCgnQWNjZXNzLUNvbnRyb2wtQWxsb3ctT3JpZ2luJywgJyonKVxuICAgIGF3YWl0IGNvbnRleHQuc2V0KCdjb25uZWN0aW9uJywgJ2tlZXAtYWxpdmUnKVxuICAgIGF3YWl0IG5leHQoKVxuICB9XG59XG4iXX0=

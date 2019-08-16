@@ -1,23 +1,23 @@
-let data = [
-  {
-    key: 'Arabic',
-    nativeName: 'الغربية',
-    twoLetterCode: 'AR',
-  },
-  {
-    key: 'English',
-    nativeName: 'English',
-    twoLetterCode: 'EN',
-  },
-  {
-    key: 'Hebrew',
-    nativeName: 'עברית',
-    twoLetterCode: 'HE',
-  },
-]
+"use strict";Object.defineProperty(exports, "__esModule", { value: true });exports.default = void 0;let data = [
+{
+  key: 'Arabic',
+  nativeName: 'الغربية',
+  twoLetterCode: 'AR' },
 
-export default {
+{
+  key: 'English',
+  nativeName: 'English',
+  twoLetterCode: 'EN' },
+
+{
+  key: 'Hebrew',
+  nativeName: 'עברית',
+  twoLetterCode: 'HE' }];var _default =
+
+
+
+{
   databaseTableName: 'language',
   data: data,
-  index: ['key'],
-}
+  index: ['key'] };exports.default = _default;
+//# sourceMappingURL=data:application/json;charset=utf-8;base64,eyJ2ZXJzaW9uIjozLCJzb3VyY2VzIjpbIi4uLy4uLy4uLy4uL3NvdXJjZS9kYXRhYmFzZURhdGEvY29udGVudC9sYW5ndWFnZS5qcyJdLCJuYW1lcyI6WyJkYXRhIiwia2V5IiwibmF0aXZlTmFtZSIsInR3b0xldHRlckNvZGUiLCJkYXRhYmFzZVRhYmxlTmFtZSIsImluZGV4Il0sIm1hcHBpbmdzIjoib0dBQUEsSUFBSUEsSUFBSSxHQUFHO0FBQ1Q7QUFDRUMsRUFBQUEsR0FBRyxFQUFFLFFBRFA7QUFFRUMsRUFBQUEsVUFBVSxFQUFFLFNBRmQ7QUFHRUMsRUFBQUEsYUFBYSxFQUFFLElBSGpCLEVBRFM7O0FBTVQ7QUFDRUYsRUFBQUEsR0FBRyxFQUFFLFNBRFA7QUFFRUMsRUFBQUEsVUFBVSxFQUFFLFNBRmQ7QUFHRUMsRUFBQUEsYUFBYSxFQUFFLElBSGpCLEVBTlM7O0FBV1Q7QUFDRUYsRUFBQUEsR0FBRyxFQUFFLFFBRFA7QUFFRUMsRUFBQUEsVUFBVSxFQUFFLE9BRmQ7QUFHRUMsRUFBQUEsYUFBYSxFQUFFLElBSGpCLEVBWFMsQ0FBWCxDOzs7O0FBa0JlO0FBQ2JDLEVBQUFBLGlCQUFpQixFQUFFLFVBRE47QUFFYkosRUFBQUEsSUFBSSxFQUFFQSxJQUZPO0FBR2JLLEVBQUFBLEtBQUssRUFBRSxDQUFDLEtBQUQsQ0FITSxFIiwic291cmNlc0NvbnRlbnQiOlsibGV0IGRhdGEgPSBbXG4gIHtcbiAgICBrZXk6ICdBcmFiaWMnLFxuICAgIG5hdGl2ZU5hbWU6ICfYp9mE2LrYsdio2YrYqScsXG4gICAgdHdvTGV0dGVyQ29kZTogJ0FSJyxcbiAgfSxcbiAge1xuICAgIGtleTogJ0VuZ2xpc2gnLFxuICAgIG5hdGl2ZU5hbWU6ICdFbmdsaXNoJyxcbiAgICB0d29MZXR0ZXJDb2RlOiAnRU4nLFxuICB9LFxuICB7XG4gICAga2V5OiAnSGVicmV3JyxcbiAgICBuYXRpdmVOYW1lOiAn16LXkdeo15nXqicsXG4gICAgdHdvTGV0dGVyQ29kZTogJ0hFJyxcbiAgfSxcbl1cblxuZXhwb3J0IGRlZmF1bHQge1xuICBkYXRhYmFzZVRhYmxlTmFtZTogJ2xhbmd1YWdlJyxcbiAgZGF0YTogZGF0YSxcbiAgaW5kZXg6IFsna2V5J10sXG59XG4iXX0=

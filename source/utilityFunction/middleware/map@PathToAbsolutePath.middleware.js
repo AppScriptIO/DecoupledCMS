@@ -1,34 +1,35 @@
-const namedImportMap = [
-  {
-    namedImport: 'webcomponent', // @webcomponent
-    path: 'asset/webcomponent',
-  },
-  {
-    namedImport: 'javascript', // @javascript
-    path: 'asset/javascript',
-  },
-]
+"use strict";Object.defineProperty(exports, "__esModule", { value: true });exports.default = _default;const namedImportMap = [
+{
+  namedImport: 'webcomponent',
+  path: 'asset/webcomponent' },
 
-export default function() {
+{
+  namedImport: 'javascript',
+  path: 'asset/javascript' }];
+
+
+
+function _default() {
   return async (context, next) => {
-    let path = context.path
-    // path = path.replace(/^\/|\/$/g, '') // remove first and last slash
-    let pathArray = path.split('/').filter(item => item) // split path and remove empty values
-    let firstURLPart = pathArray[0]
-    // let lastIndexPosition = (path.indexOf("/") == -1) ? path.length : path.indexOf("/");
-    let relativeAtPathName = firstURLPart.substring(firstURLPart.indexOf('@') + 1, firstURLPart.length)
+    let path = context.path;
 
-    let namedImportObject = namedImportMap.filter(item => item.namedImport == relativeAtPathName)[0] // example '/@webcomponent/package/x/x.js'
-    let mappedPath = namedImportObject.path
+    let pathArray = path.split('/').filter(item => item);
+    let firstURLPart = pathArray[0];
 
-    context.relativeAtPathName = relativeAtPathName
-    // change path if @ path is mapped
-    // if(mappedPath) context.path = context.path.replace(`@${relativeAtPathName}`, mappedPath)
+    let relativeAtPathName = firstURLPart.substring(firstURLPart.indexOf('@') + 1, firstURLPart.length);
+
+    let namedImportObject = namedImportMap.filter(item => item.namedImport == relativeAtPathName)[0];
+    let mappedPath = namedImportObject.path;
+
+    context.relativeAtPathName = relativeAtPathName;
+
+
     if (mappedPath) {
-      // replace part to be mapped
-      pathArray[0] = mappedPath
-      context.path = pathArray.join('/')
+
+      pathArray[0] = mappedPath;
+      context.path = pathArray.join('/');
     }
-    await next()
-  }
+    await next();
+  };
 }
+//# sourceMappingURL=data:application/json;charset=utf-8;base64,eyJ2ZXJzaW9uIjozLCJzb3VyY2VzIjpbIi4uLy4uLy4uLy4uL3NvdXJjZS91dGlsaXR5RnVuY3Rpb24vbWlkZGxld2FyZS9tYXBAUGF0aFRvQWJzb2x1dGVQYXRoLm1pZGRsZXdhcmUuanMiXSwibmFtZXMiOlsibmFtZWRJbXBvcnRNYXAiLCJuYW1lZEltcG9ydCIsInBhdGgiLCJjb250ZXh0IiwibmV4dCIsInBhdGhBcnJheSIsInNwbGl0IiwiZmlsdGVyIiwiaXRlbSIsImZpcnN0VVJMUGFydCIsInJlbGF0aXZlQXRQYXRoTmFtZSIsInN1YnN0cmluZyIsImluZGV4T2YiLCJsZW5ndGgiLCJuYW1lZEltcG9ydE9iamVjdCIsIm1hcHBlZFBhdGgiLCJqb2luIl0sIm1hcHBpbmdzIjoic0dBQUEsTUFBTUEsY0FBYyxHQUFHO0FBQ3JCO0FBQ0VDLEVBQUFBLFdBQVcsRUFBRSxjQURmO0FBRUVDLEVBQUFBLElBQUksRUFBRSxvQkFGUixFQURxQjs7QUFLckI7QUFDRUQsRUFBQUEsV0FBVyxFQUFFLFlBRGY7QUFFRUMsRUFBQUEsSUFBSSxFQUFFLGtCQUZSLEVBTHFCLENBQXZCOzs7O0FBV2Usb0JBQVc7QUFDeEIsU0FBTyxPQUFPQyxPQUFQLEVBQWdCQyxJQUFoQixLQUF5QjtBQUM5QixRQUFJRixJQUFJLEdBQUdDLE9BQU8sQ0FBQ0QsSUFBbkI7O0FBRUEsUUFBSUcsU0FBUyxHQUFHSCxJQUFJLENBQUNJLEtBQUwsQ0FBVyxHQUFYLEVBQWdCQyxNQUFoQixDQUF1QkMsSUFBSSxJQUFJQSxJQUEvQixDQUFoQjtBQUNBLFFBQUlDLFlBQVksR0FBR0osU0FBUyxDQUFDLENBQUQsQ0FBNUI7O0FBRUEsUUFBSUssa0JBQWtCLEdBQUdELFlBQVksQ0FBQ0UsU0FBYixDQUF1QkYsWUFBWSxDQUFDRyxPQUFiLENBQXFCLEdBQXJCLElBQTRCLENBQW5ELEVBQXNESCxZQUFZLENBQUNJLE1BQW5FLENBQXpCOztBQUVBLFFBQUlDLGlCQUFpQixHQUFHZCxjQUFjLENBQUNPLE1BQWYsQ0FBc0JDLElBQUksSUFBSUEsSUFBSSxDQUFDUCxXQUFMLElBQW9CUyxrQkFBbEQsRUFBc0UsQ0FBdEUsQ0FBeEI7QUFDQSxRQUFJSyxVQUFVLEdBQUdELGlCQUFpQixDQUFDWixJQUFuQzs7QUFFQUMsSUFBQUEsT0FBTyxDQUFDTyxrQkFBUixHQUE2QkEsa0JBQTdCOzs7QUFHQSxRQUFJSyxVQUFKLEVBQWdCOztBQUVkVixNQUFBQSxTQUFTLENBQUMsQ0FBRCxDQUFULEdBQWVVLFVBQWY7QUFDQVosTUFBQUEsT0FBTyxDQUFDRCxJQUFSLEdBQWVHLFNBQVMsQ0FBQ1csSUFBVixDQUFlLEdBQWYsQ0FBZjtBQUNEO0FBQ0QsVUFBTVosSUFBSSxFQUFWO0FBQ0QsR0FwQkQ7QUFxQkQiLCJzb3VyY2VzQ29udGVudCI6WyJjb25zdCBuYW1lZEltcG9ydE1hcCA9IFtcbiAge1xuICAgIG5hbWVkSW1wb3J0OiAnd2ViY29tcG9uZW50JywgLy8gQHdlYmNvbXBvbmVudFxuICAgIHBhdGg6ICdhc3NldC93ZWJjb21wb25lbnQnLFxuICB9LFxuICB7XG4gICAgbmFtZWRJbXBvcnQ6ICdqYXZhc2NyaXB0JywgLy8gQGphdmFzY3JpcHRcbiAgICBwYXRoOiAnYXNzZXQvamF2YXNjcmlwdCcsXG4gIH0sXG5dXG5cbmV4cG9ydCBkZWZhdWx0IGZ1bmN0aW9uKCkge1xuICByZXR1cm4gYXN5bmMgKGNvbnRleHQsIG5leHQpID0+IHtcbiAgICBsZXQgcGF0aCA9IGNvbnRleHQucGF0aFxuICAgIC8vIHBhdGggPSBwYXRoLnJlcGxhY2UoL15cXC98XFwvJC9nLCAnJykgLy8gcmVtb3ZlIGZpcnN0IGFuZCBsYXN0IHNsYXNoXG4gICAgbGV0IHBhdGhBcnJheSA9IHBhdGguc3BsaXQoJy8nKS5maWx0ZXIoaXRlbSA9PiBpdGVtKSAvLyBzcGxpdCBwYXRoIGFuZCByZW1vdmUgZW1wdHkgdmFsdWVzXG4gICAgbGV0IGZpcnN0VVJMUGFydCA9IHBhdGhBcnJheVswXVxuICAgIC8vIGxldCBsYXN0SW5kZXhQb3NpdGlvbiA9IChwYXRoLmluZGV4T2YoXCIvXCIpID09IC0xKSA/IHBhdGgubGVuZ3RoIDogcGF0aC5pbmRleE9mKFwiL1wiKTtcbiAgICBsZXQgcmVsYXRpdmVBdFBhdGhOYW1lID0gZmlyc3RVUkxQYXJ0LnN1YnN0cmluZyhmaXJzdFVSTFBhcnQuaW5kZXhPZignQCcpICsgMSwgZmlyc3RVUkxQYXJ0Lmxlbmd0aClcblxuICAgIGxldCBuYW1lZEltcG9ydE9iamVjdCA9IG5hbWVkSW1wb3J0TWFwLmZpbHRlcihpdGVtID0+IGl0ZW0ubmFtZWRJbXBvcnQgPT0gcmVsYXRpdmVBdFBhdGhOYW1lKVswXSAvLyBleGFtcGxlICcvQHdlYmNvbXBvbmVudC9wYWNrYWdlL3gveC5qcydcbiAgICBsZXQgbWFwcGVkUGF0aCA9IG5hbWVkSW1wb3J0T2JqZWN0LnBhdGhcblxuICAgIGNvbnRleHQucmVsYXRpdmVBdFBhdGhOYW1lID0gcmVsYXRpdmVBdFBhdGhOYW1lXG4gICAgLy8gY2hhbmdlIHBhdGggaWYgQCBwYXRoIGlzIG1hcHBlZFxuICAgIC8vIGlmKG1hcHBlZFBhdGgpIGNvbnRleHQucGF0aCA9IGNvbnRleHQucGF0aC5yZXBsYWNlKGBAJHtyZWxhdGl2ZUF0UGF0aE5hbWV9YCwgbWFwcGVkUGF0aClcbiAgICBpZiAobWFwcGVkUGF0aCkge1xuICAgICAgLy8gcmVwbGFjZSBwYXJ0IHRvIGJlIG1hcHBlZFxuICAgICAgcGF0aEFycmF5WzBdID0gbWFwcGVkUGF0aFxuICAgICAgY29udGV4dC5wYXRoID0gcGF0aEFycmF5LmpvaW4oJy8nKVxuICAgIH1cbiAgICBhd2FpdCBuZXh0KClcbiAgfVxufVxuIl19

@@ -1,93 +1,94 @@
-import { default as Application } from '../../Application.class.js'
-import _ from 'underscore'
-import filesystem from 'fs'
-import https from 'https'
-import http from 'http'
-import { add, execute, applyMixin } from '@dependency/commonPattern/source/decoratorUtility.js'
-import { extendedSubclassPattern } from '@dependency/commonPattern/source/extendedSubclassPattern.js'
-import OpenIdConnectServer from 'oidc-provider'
-import rethinkdbOIDCAdapter from './rethinkdbOIDCAdapter.js'
-import memoryAdapter from 'oidc-provider/lib/adapters/memory_adapter.js' // for development only
-import { oidcConfiguration } from './oidcConfiguration.js'
-import { clientArray } from './clientApplication.js'
-import keystore from './key/keystore.json'
+"use strict";var _interopRequireDefault = require("@babel/runtime/helpers/interopRequireDefault");Object.defineProperty(exports, "__esModule", { value: true });exports.default = void 0;var _ApplicationClass = _interopRequireDefault(require("../../Application.class.js"));
 
-const self =
-  @execute({ staticMethod: 'initializeStaticClass' })
-  @extendedSubclassPattern.Subclass()
-  class OpenIdConnect extends Application {
-    static OpenIdConnectServer // oidc-provider class
-    static openIdConnectServer // oidc-provider instance
-    static serverKoa
-    static createdHttpServer
-    static port
-    static entrypointSetting = {
-      defaultConditionTreeKey: '',
-    }
-    static middlewareArray = []
-    middlewareArray = []
-    next
 
-    static async initializeStaticClass(self) {
-      super.initializeStaticClass()
-      self.port = 8084
 
-      /**
-       * initialize oAuth2 server
-       */
-      self.OpenIdConnectServer = OpenIdConnectServer
-      self.openIdConnectServer = new OpenIdConnectServer(
-        `${Application.config.PROTOCOL}${Application.config.HOST}:${self.port}`, // issuer address
-        oidcConfiguration,
-      )
-      await self.openIdConnectServer
-        .initialize({
-          // initialize server.
-          clients: clientArray,
-          adapter: memoryAdapter, // databse adapter TODO: implement https://github.com/panva/node-oidc-provider/blob/master/example/my_adapter.js
-          keystore, // encryption keys / certificates. TODO: create keystore for production
-        })
-        .catch(error => {
-          throw error
-        })
-      const oidcKoaServer = self.openIdConnectServer.app
+var _http = _interopRequireDefault(require("http"));
+var _decoratorUtility = require("@dependency/commonPattern/source/decoratorUtility.js");
+var _extendedSubclassPattern = require("@dependency/commonPattern/source/extendedSubclassPattern.js");
+var _oidcProvider = _interopRequireDefault(require("oidc-provider"));
 
-      // cookie signing keys // TODO: add encryption keys for cookies to prevent tampering & add interval rotation for keys.
-      // oidcKoaServer.keys = [/* Add signing keys for cookies & configure interval for creating new keys (rotation) */] // as explained in kos docs & in https://github.com/panva/node-oidc-provider/blob/master/docs/configuration.md#cookieskeys
+var _memory_adapter = _interopRequireDefault(require("oidc-provider/lib/adapters/memory_adapter.js"));
+var _oidcConfiguration = require("./oidcConfiguration.js");
+var _clientApplication = require("./clientApplication.js");
+var _keystore = _interopRequireDefault(require("./key/keystore.json"));var _dec, _dec2, _class, _class2, _temp;
 
-      // TODO: check if proxy configuration below is necessary for the production setup.
-      // self.openIdConnectServer.proxy = true // trust x-forwarded headers, which are required for oidc to detect the original ip. // https://github.com/panva/node-oidc-provider/blob/master/docs/configuration.md#trusting-tls-offloading-proxies
-      self.serverKoa.proxy = true
+const self = (_dec =
+(0, _decoratorUtility.execute)({ staticMethod: 'initializeStaticClass' }), _dec2 =
+_extendedSubclassPattern.extendedSubclassPattern.Subclass(), _dec(_class = _dec2(_class = (_temp = _class2 = class
+OpenIdConnect extends _ApplicationClass.default {
 
-      /** state & nonce in openid connect server requests
-       * In addition you need to create two random numbers for state and nonce. State is used to correlate the authentication response,
-       * nonce is used to correlate the identity token coming back. Both values need to be stored temporarily (I use a cookie for that).
-       * state parameter - returned from the response as it was sent in a parameter.
-       * nonce claim - is integrated into the id_token in the response as a claim (token's data component).
-       * IMPORTANT - the nonce for example in the cookie in the browser is saved as a cryptographic hash, and only the server can check wether the recieved nonce is able to verify and compare the nonces.
-       */
-    }
-    constructor(skipConstructor = false) {
-      super(true)
-      this.config = {} // populated by useragentDetection module.
-      if (skipConstructor) return
-      // if (!new.target) console.log(new.target) // not supported by babel
-      // if (!(this instanceof WebappUI)) return new WebappUI() // This is used in factory functions not classes.
-    }
 
-    static createHttpServer() {
-      const self = this
-      self.createdHttpServer = http.createServer(self.serverKoa.callback()).listen(self.port, () => {
-        console.log(`☕%c ${self.name} listening on port ${self.port}`, self.config.style.green)
-        // eventEmitter.emit('listening')
-        // process.emit('listening')
-        if (process.send !== undefined) {
-          // if process is a forked child process.
-          if (self.config.DEPLOYMENT == 'development') process.send({ message: 'Server listening' })
-        }
-      })
-      // eventEmitter.on("listening", function () { console.log("catched listening on same script file"); })
-    }
+
+
+
+
+
+
+
+
+
+
+  static async initializeStaticClass(self) {
+    super.initializeStaticClass();
+    self.port = 8084;
+
+
+
+
+    self.OpenIdConnectServer = _oidcProvider.default;
+    self.openIdConnectServer = new _oidcProvider.default(
+    `${_ApplicationClass.default.config.PROTOCOL}${_ApplicationClass.default.config.HOST}:${self.port}`,
+    _oidcConfiguration.oidcConfiguration);
+
+    await self.openIdConnectServer.
+    initialize({
+
+      clients: _clientApplication.clientArray,
+      adapter: _memory_adapter.default,
+      keystore: _keystore.default }).
+
+    catch(error => {
+      throw error;
+    });
+    const oidcKoaServer = self.openIdConnectServer.app;
+
+
+
+
+
+
+    self.serverKoa.proxy = true;
+
+
+
+
+
+
+
+
+  }
+  constructor(skipConstructor = false) {
+    super(true);this.middlewareArray = [];
+    this.config = {};
+    if (skipConstructor) return;
+
+
   }
 
-export default self
+  static createHttpServer() {
+    const self = this;
+    self.createdHttpServer = _http.default.createServer(self.serverKoa.callback()).listen(self.port, () => {
+      console.log(`☕%c ${self.name} listening on port ${self.port}`, self.config.style.green);
+
+
+      if (process.send !== undefined) {
+
+        if (self.config.DEPLOYMENT == 'development') process.send({ message: 'Server listening' });
+      }
+    });
+
+  }}, _class2.entrypointSetting = { defaultConditionTreeKey: '' }, _class2.middlewareArray = [], _temp)) || _class) || _class);var _default =
+
+
+self;exports.default = _default;
+//# sourceMappingURL=data:application/json;charset=utf-8;base64,eyJ2ZXJzaW9uIjozLCJzb3VyY2VzIjpbIi4uLy4uLy4uLy4uLy4uL3NvdXJjZS9jbGFzcy9wb3J0L29wZW5JZENvbm5lY3QvT3BlbklkQ29ubmVjdC5jbGFzcy5qcyJdLCJuYW1lcyI6WyJzZWxmIiwic3RhdGljTWV0aG9kIiwiZXh0ZW5kZWRTdWJjbGFzc1BhdHRlcm4iLCJTdWJjbGFzcyIsIk9wZW5JZENvbm5lY3QiLCJBcHBsaWNhdGlvbiIsImluaXRpYWxpemVTdGF0aWNDbGFzcyIsInBvcnQiLCJPcGVuSWRDb25uZWN0U2VydmVyIiwib3BlbklkQ29ubmVjdFNlcnZlciIsImNvbmZpZyIsIlBST1RPQ09MIiwiSE9TVCIsIm9pZGNDb25maWd1cmF0aW9uIiwiaW5pdGlhbGl6ZSIsImNsaWVudHMiLCJjbGllbnRBcnJheSIsImFkYXB0ZXIiLCJtZW1vcnlBZGFwdGVyIiwia2V5c3RvcmUiLCJjYXRjaCIsImVycm9yIiwib2lkY0tvYVNlcnZlciIsImFwcCIsInNlcnZlcktvYSIsInByb3h5IiwiY29uc3RydWN0b3IiLCJza2lwQ29uc3RydWN0b3IiLCJtaWRkbGV3YXJlQXJyYXkiLCJjcmVhdGVIdHRwU2VydmVyIiwiY3JlYXRlZEh0dHBTZXJ2ZXIiLCJodHRwIiwiY3JlYXRlU2VydmVyIiwiY2FsbGJhY2siLCJsaXN0ZW4iLCJjb25zb2xlIiwibG9nIiwibmFtZSIsInN0eWxlIiwiZ3JlZW4iLCJwcm9jZXNzIiwic2VuZCIsInVuZGVmaW5lZCIsIkRFUExPWU1FTlQiLCJtZXNzYWdlIiwiZW50cnlwb2ludFNldHRpbmciLCJkZWZhdWx0Q29uZGl0aW9uVHJlZUtleSJdLCJtYXBwaW5ncyI6InlMQUFBOzs7O0FBSUE7QUFDQTtBQUNBO0FBQ0E7O0FBRUE7QUFDQTtBQUNBO0FBQ0EsdUU7O0FBRUEsTUFBTUEsSUFBSTtBQUNQLCtCQUFRLEVBQUVDLFlBQVksRUFBRSx1QkFBaEIsRUFBUixDQURPO0FBRVBDLGlEQUF3QkMsUUFBeEIsRUFGTyxrREFDUjtBQUVNQyxhQUZOLFNBRTRCQyx5QkFGNUIsQ0FFd0M7Ozs7Ozs7Ozs7Ozs7QUFhdEMsZUFBYUMscUJBQWIsQ0FBbUNOLElBQW5DLEVBQXlDO0FBQ3ZDLFVBQU1NLHFCQUFOO0FBQ0FOLElBQUFBLElBQUksQ0FBQ08sSUFBTCxHQUFZLElBQVo7Ozs7O0FBS0FQLElBQUFBLElBQUksQ0FBQ1EsbUJBQUwsR0FBMkJBLHFCQUEzQjtBQUNBUixJQUFBQSxJQUFJLENBQUNTLG1CQUFMLEdBQTJCLElBQUlELHFCQUFKO0FBQ3hCLE9BQUVILDBCQUFZSyxNQUFaLENBQW1CQyxRQUFTLEdBQUVOLDBCQUFZSyxNQUFaLENBQW1CRSxJQUFLLElBQUdaLElBQUksQ0FBQ08sSUFBSyxFQUQ3QztBQUV6Qk0sd0NBRnlCLENBQTNCOztBQUlBLFVBQU1iLElBQUksQ0FBQ1MsbUJBQUw7QUFDSEssSUFBQUEsVUFERyxDQUNROztBQUVWQyxNQUFBQSxPQUFPLEVBQUVDLDhCQUZDO0FBR1ZDLE1BQUFBLE9BQU8sRUFBRUMsdUJBSEM7QUFJVkMsTUFBQUEsUUFBUSxFQUFSQSxpQkFKVSxFQURSOztBQU9IQyxJQUFBQSxLQVBHLENBT0dDLEtBQUssSUFBSTtBQUNkLFlBQU1BLEtBQU47QUFDRCxLQVRHLENBQU47QUFVQSxVQUFNQyxhQUFhLEdBQUd0QixJQUFJLENBQUNTLG1CQUFMLENBQXlCYyxHQUEvQzs7Ozs7OztBQU9BdkIsSUFBQUEsSUFBSSxDQUFDd0IsU0FBTCxDQUFlQyxLQUFmLEdBQXVCLElBQXZCOzs7Ozs7Ozs7QUFTRDtBQUNEQyxFQUFBQSxXQUFXLENBQUNDLGVBQWUsR0FBRyxLQUFuQixFQUEwQjtBQUNuQyxVQUFNLElBQU4sRUFEbUMsS0ExQ3JDQyxlQTBDcUMsR0ExQ25CLEVBMENtQjtBQUVuQyxTQUFLbEIsTUFBTCxHQUFjLEVBQWQ7QUFDQSxRQUFJaUIsZUFBSixFQUFxQjs7O0FBR3RCOztBQUVELFNBQU9FLGdCQUFQLEdBQTBCO0FBQ3hCLFVBQU03QixJQUFJLEdBQUcsSUFBYjtBQUNBQSxJQUFBQSxJQUFJLENBQUM4QixpQkFBTCxHQUF5QkMsY0FBS0MsWUFBTCxDQUFrQmhDLElBQUksQ0FBQ3dCLFNBQUwsQ0FBZVMsUUFBZixFQUFsQixFQUE2Q0MsTUFBN0MsQ0FBb0RsQyxJQUFJLENBQUNPLElBQXpELEVBQStELE1BQU07QUFDNUY0QixNQUFBQSxPQUFPLENBQUNDLEdBQVIsQ0FBYSxPQUFNcEMsSUFBSSxDQUFDcUMsSUFBSyxzQkFBcUJyQyxJQUFJLENBQUNPLElBQUssRUFBNUQsRUFBK0RQLElBQUksQ0FBQ1UsTUFBTCxDQUFZNEIsS0FBWixDQUFrQkMsS0FBakY7OztBQUdBLFVBQUlDLE9BQU8sQ0FBQ0MsSUFBUixLQUFpQkMsU0FBckIsRUFBZ0M7O0FBRTlCLFlBQUkxQyxJQUFJLENBQUNVLE1BQUwsQ0FBWWlDLFVBQVosSUFBMEIsYUFBOUIsRUFBNkNILE9BQU8sQ0FBQ0MsSUFBUixDQUFhLEVBQUVHLE9BQU8sRUFBRSxrQkFBWCxFQUFiO0FBQzlDO0FBQ0YsS0FSd0IsQ0FBekI7O0FBVUQsR0F4RXFDLENBSGhDLFVBU0NDLGlCQVRELEdBU3FCLEVBQ3pCQyx1QkFBdUIsRUFBRSxFQURBLEVBVHJCLFVBWUNsQixlQVpELEdBWW1CLEVBWm5CLCtCQUFWLEM7OztBQThFZTVCLEkiLCJzb3VyY2VzQ29udGVudCI6WyJpbXBvcnQgeyBkZWZhdWx0IGFzIEFwcGxpY2F0aW9uIH0gZnJvbSAnLi4vLi4vQXBwbGljYXRpb24uY2xhc3MuanMnXG5pbXBvcnQgXyBmcm9tICd1bmRlcnNjb3JlJ1xuaW1wb3J0IGZpbGVzeXN0ZW0gZnJvbSAnZnMnXG5pbXBvcnQgaHR0cHMgZnJvbSAnaHR0cHMnXG5pbXBvcnQgaHR0cCBmcm9tICdodHRwJ1xuaW1wb3J0IHsgYWRkLCBleGVjdXRlLCBhcHBseU1peGluIH0gZnJvbSAnQGRlcGVuZGVuY3kvY29tbW9uUGF0dGVybi9zb3VyY2UvZGVjb3JhdG9yVXRpbGl0eS5qcydcbmltcG9ydCB7IGV4dGVuZGVkU3ViY2xhc3NQYXR0ZXJuIH0gZnJvbSAnQGRlcGVuZGVuY3kvY29tbW9uUGF0dGVybi9zb3VyY2UvZXh0ZW5kZWRTdWJjbGFzc1BhdHRlcm4uanMnXG5pbXBvcnQgT3BlbklkQ29ubmVjdFNlcnZlciBmcm9tICdvaWRjLXByb3ZpZGVyJ1xuaW1wb3J0IHJldGhpbmtkYk9JRENBZGFwdGVyIGZyb20gJy4vcmV0aGlua2RiT0lEQ0FkYXB0ZXIuanMnXG5pbXBvcnQgbWVtb3J5QWRhcHRlciBmcm9tICdvaWRjLXByb3ZpZGVyL2xpYi9hZGFwdGVycy9tZW1vcnlfYWRhcHRlci5qcycgLy8gZm9yIGRldmVsb3BtZW50IG9ubHlcbmltcG9ydCB7IG9pZGNDb25maWd1cmF0aW9uIH0gZnJvbSAnLi9vaWRjQ29uZmlndXJhdGlvbi5qcydcbmltcG9ydCB7IGNsaWVudEFycmF5IH0gZnJvbSAnLi9jbGllbnRBcHBsaWNhdGlvbi5qcydcbmltcG9ydCBrZXlzdG9yZSBmcm9tICcuL2tleS9rZXlzdG9yZS5qc29uJ1xuXG5jb25zdCBzZWxmID1cbiAgQGV4ZWN1dGUoeyBzdGF0aWNNZXRob2Q6ICdpbml0aWFsaXplU3RhdGljQ2xhc3MnIH0pXG4gIEBleHRlbmRlZFN1YmNsYXNzUGF0dGVybi5TdWJjbGFzcygpXG4gIGNsYXNzIE9wZW5JZENvbm5lY3QgZXh0ZW5kcyBBcHBsaWNhdGlvbiB7XG4gICAgc3RhdGljIE9wZW5JZENvbm5lY3RTZXJ2ZXIgLy8gb2lkYy1wcm92aWRlciBjbGFzc1xuICAgIHN0YXRpYyBvcGVuSWRDb25uZWN0U2VydmVyIC8vIG9pZGMtcHJvdmlkZXIgaW5zdGFuY2VcbiAgICBzdGF0aWMgc2VydmVyS29hXG4gICAgc3RhdGljIGNyZWF0ZWRIdHRwU2VydmVyXG4gICAgc3RhdGljIHBvcnRcbiAgICBzdGF0aWMgZW50cnlwb2ludFNldHRpbmcgPSB7XG4gICAgICBkZWZhdWx0Q29uZGl0aW9uVHJlZUtleTogJycsXG4gICAgfVxuICAgIHN0YXRpYyBtaWRkbGV3YXJlQXJyYXkgPSBbXVxuICAgIG1pZGRsZXdhcmVBcnJheSA9IFtdXG4gICAgbmV4dFxuXG4gICAgc3RhdGljIGFzeW5jIGluaXRpYWxpemVTdGF0aWNDbGFzcyhzZWxmKSB7XG4gICAgICBzdXBlci5pbml0aWFsaXplU3RhdGljQ2xhc3MoKVxuICAgICAgc2VsZi5wb3J0ID0gODA4NFxuXG4gICAgICAvKipcbiAgICAgICAqIGluaXRpYWxpemUgb0F1dGgyIHNlcnZlclxuICAgICAgICovXG4gICAgICBzZWxmLk9wZW5JZENvbm5lY3RTZXJ2ZXIgPSBPcGVuSWRDb25uZWN0U2VydmVyXG4gICAgICBzZWxmLm9wZW5JZENvbm5lY3RTZXJ2ZXIgPSBuZXcgT3BlbklkQ29ubmVjdFNlcnZlcihcbiAgICAgICAgYCR7QXBwbGljYXRpb24uY29uZmlnLlBST1RPQ09MfSR7QXBwbGljYXRpb24uY29uZmlnLkhPU1R9OiR7c2VsZi5wb3J0fWAsIC8vIGlzc3VlciBhZGRyZXNzXG4gICAgICAgIG9pZGNDb25maWd1cmF0aW9uLFxuICAgICAgKVxuICAgICAgYXdhaXQgc2VsZi5vcGVuSWRDb25uZWN0U2VydmVyXG4gICAgICAgIC5pbml0aWFsaXplKHtcbiAgICAgICAgICAvLyBpbml0aWFsaXplIHNlcnZlci5cbiAgICAgICAgICBjbGllbnRzOiBjbGllbnRBcnJheSxcbiAgICAgICAgICBhZGFwdGVyOiBtZW1vcnlBZGFwdGVyLCAvLyBkYXRhYnNlIGFkYXB0ZXIgVE9ETzogaW1wbGVtZW50IGh0dHBzOi8vZ2l0aHViLmNvbS9wYW52YS9ub2RlLW9pZGMtcHJvdmlkZXIvYmxvYi9tYXN0ZXIvZXhhbXBsZS9teV9hZGFwdGVyLmpzXG4gICAgICAgICAga2V5c3RvcmUsIC8vIGVuY3J5cHRpb24ga2V5cyAvIGNlcnRpZmljYXRlcy4gVE9ETzogY3JlYXRlIGtleXN0b3JlIGZvciBwcm9kdWN0aW9uXG4gICAgICAgIH0pXG4gICAgICAgIC5jYXRjaChlcnJvciA9PiB7XG4gICAgICAgICAgdGhyb3cgZXJyb3JcbiAgICAgICAgfSlcbiAgICAgIGNvbnN0IG9pZGNLb2FTZXJ2ZXIgPSBzZWxmLm9wZW5JZENvbm5lY3RTZXJ2ZXIuYXBwXG5cbiAgICAgIC8vIGNvb2tpZSBzaWduaW5nIGtleXMgLy8gVE9ETzogYWRkIGVuY3J5cHRpb24ga2V5cyBmb3IgY29va2llcyB0byBwcmV2ZW50IHRhbXBlcmluZyAmIGFkZCBpbnRlcnZhbCByb3RhdGlvbiBmb3Iga2V5cy5cbiAgICAgIC8vIG9pZGNLb2FTZXJ2ZXIua2V5cyA9IFsvKiBBZGQgc2lnbmluZyBrZXlzIGZvciBjb29raWVzICYgY29uZmlndXJlIGludGVydmFsIGZvciBjcmVhdGluZyBuZXcga2V5cyAocm90YXRpb24pICovXSAvLyBhcyBleHBsYWluZWQgaW4ga29zIGRvY3MgJiBpbiBodHRwczovL2dpdGh1Yi5jb20vcGFudmEvbm9kZS1vaWRjLXByb3ZpZGVyL2Jsb2IvbWFzdGVyL2RvY3MvY29uZmlndXJhdGlvbi5tZCNjb29raWVza2V5c1xuXG4gICAgICAvLyBUT0RPOiBjaGVjayBpZiBwcm94eSBjb25maWd1cmF0aW9uIGJlbG93IGlzIG5lY2Vzc2FyeSBmb3IgdGhlIHByb2R1Y3Rpb24gc2V0dXAuXG4gICAgICAvLyBzZWxmLm9wZW5JZENvbm5lY3RTZXJ2ZXIucHJveHkgPSB0cnVlIC8vIHRydXN0IHgtZm9yd2FyZGVkIGhlYWRlcnMsIHdoaWNoIGFyZSByZXF1aXJlZCBmb3Igb2lkYyB0byBkZXRlY3QgdGhlIG9yaWdpbmFsIGlwLiAvLyBodHRwczovL2dpdGh1Yi5jb20vcGFudmEvbm9kZS1vaWRjLXByb3ZpZGVyL2Jsb2IvbWFzdGVyL2RvY3MvY29uZmlndXJhdGlvbi5tZCN0cnVzdGluZy10bHMtb2ZmbG9hZGluZy1wcm94aWVzXG4gICAgICBzZWxmLnNlcnZlcktvYS5wcm94eSA9IHRydWVcblxuICAgICAgLyoqIHN0YXRlICYgbm9uY2UgaW4gb3BlbmlkIGNvbm5lY3Qgc2VydmVyIHJlcXVlc3RzXG4gICAgICAgKiBJbiBhZGRpdGlvbiB5b3UgbmVlZCB0byBjcmVhdGUgdHdvIHJhbmRvbSBudW1iZXJzIGZvciBzdGF0ZSBhbmQgbm9uY2UuIFN0YXRlIGlzIHVzZWQgdG8gY29ycmVsYXRlIHRoZSBhdXRoZW50aWNhdGlvbiByZXNwb25zZSxcbiAgICAgICAqIG5vbmNlIGlzIHVzZWQgdG8gY29ycmVsYXRlIHRoZSBpZGVudGl0eSB0b2tlbiBjb21pbmcgYmFjay4gQm90aCB2YWx1ZXMgbmVlZCB0byBiZSBzdG9yZWQgdGVtcG9yYXJpbHkgKEkgdXNlIGEgY29va2llIGZvciB0aGF0KS5cbiAgICAgICAqIHN0YXRlIHBhcmFtZXRlciAtIHJldHVybmVkIGZyb20gdGhlIHJlc3BvbnNlIGFzIGl0IHdhcyBzZW50IGluIGEgcGFyYW1ldGVyLlxuICAgICAgICogbm9uY2UgY2xhaW0gLSBpcyBpbnRlZ3JhdGVkIGludG8gdGhlIGlkX3Rva2VuIGluIHRoZSByZXNwb25zZSBhcyBhIGNsYWltICh0b2tlbidzIGRhdGEgY29tcG9uZW50KS5cbiAgICAgICAqIElNUE9SVEFOVCAtIHRoZSBub25jZSBmb3IgZXhhbXBsZSBpbiB0aGUgY29va2llIGluIHRoZSBicm93c2VyIGlzIHNhdmVkIGFzIGEgY3J5cHRvZ3JhcGhpYyBoYXNoLCBhbmQgb25seSB0aGUgc2VydmVyIGNhbiBjaGVjayB3ZXRoZXIgdGhlIHJlY2lldmVkIG5vbmNlIGlzIGFibGUgdG8gdmVyaWZ5IGFuZCBjb21wYXJlIHRoZSBub25jZXMuXG4gICAgICAgKi9cbiAgICB9XG4gICAgY29uc3RydWN0b3Ioc2tpcENvbnN0cnVjdG9yID0gZmFsc2UpIHtcbiAgICAgIHN1cGVyKHRydWUpXG4gICAgICB0aGlzLmNvbmZpZyA9IHt9IC8vIHBvcHVsYXRlZCBieSB1c2VyYWdlbnREZXRlY3Rpb24gbW9kdWxlLlxuICAgICAgaWYgKHNraXBDb25zdHJ1Y3RvcikgcmV0dXJuXG4gICAgICAvLyBpZiAoIW5ldy50YXJnZXQpIGNvbnNvbGUubG9nKG5ldy50YXJnZXQpIC8vIG5vdCBzdXBwb3J0ZWQgYnkgYmFiZWxcbiAgICAgIC8vIGlmICghKHRoaXMgaW5zdGFuY2VvZiBXZWJhcHBVSSkpIHJldHVybiBuZXcgV2ViYXBwVUkoKSAvLyBUaGlzIGlzIHVzZWQgaW4gZmFjdG9yeSBmdW5jdGlvbnMgbm90IGNsYXNzZXMuXG4gICAgfVxuXG4gICAgc3RhdGljIGNyZWF0ZUh0dHBTZXJ2ZXIoKSB7XG4gICAgICBjb25zdCBzZWxmID0gdGhpc1xuICAgICAgc2VsZi5jcmVhdGVkSHR0cFNlcnZlciA9IGh0dHAuY3JlYXRlU2VydmVyKHNlbGYuc2VydmVyS29hLmNhbGxiYWNrKCkpLmxpc3RlbihzZWxmLnBvcnQsICgpID0+IHtcbiAgICAgICAgY29uc29sZS5sb2coYOKYlSVjICR7c2VsZi5uYW1lfSBsaXN0ZW5pbmcgb24gcG9ydCAke3NlbGYucG9ydH1gLCBzZWxmLmNvbmZpZy5zdHlsZS5ncmVlbilcbiAgICAgICAgLy8gZXZlbnRFbWl0dGVyLmVtaXQoJ2xpc3RlbmluZycpXG4gICAgICAgIC8vIHByb2Nlc3MuZW1pdCgnbGlzdGVuaW5nJylcbiAgICAgICAgaWYgKHByb2Nlc3Muc2VuZCAhPT0gdW5kZWZpbmVkKSB7XG4gICAgICAgICAgLy8gaWYgcHJvY2VzcyBpcyBhIGZvcmtlZCBjaGlsZCBwcm9jZXNzLlxuICAgICAgICAgIGlmIChzZWxmLmNvbmZpZy5ERVBMT1lNRU5UID09ICdkZXZlbG9wbWVudCcpIHByb2Nlc3Muc2VuZCh7IG1lc3NhZ2U6ICdTZXJ2ZXIgbGlzdGVuaW5nJyB9KVxuICAgICAgICB9XG4gICAgICB9KVxuICAgICAgLy8gZXZlbnRFbWl0dGVyLm9uKFwibGlzdGVuaW5nXCIsIGZ1bmN0aW9uICgpIHsgY29uc29sZS5sb2coXCJjYXRjaGVkIGxpc3RlbmluZyBvbiBzYW1lIHNjcmlwdCBmaWxlXCIpOyB9KVxuICAgIH1cbiAgfVxuXG5leHBvcnQgZGVmYXVsdCBzZWxmXG4iXX0=

@@ -1,26 +1,27 @@
-import getTableDocumentAndFilter from '@dependency/databaseUtility/source/getTableDocumentAndFilter.query.js'
+"use strict";var _interopRequireDefault = require("@babel/runtime/helpers/interopRequireDefault");Object.defineProperty(exports, "__esModule", { value: true });exports.default = void 0;var _getTableDocumentAndFilterQuery = _interopRequireDefault(require("@dependency/databaseUtility/source/getTableDocumentAndFilter.query.js"));
 
 async function debugLogMiddleNestedUnitStructure(nestedUnitKeyMiddleware) {
-  const connection = Application.rethinkdbConnection
-  let counter = 1
+  const connection = Application.rethinkdbConnection;
+  let counter = 1;
   async function getMiddlewareAndNestedMiddleware(key) {
     let getTableDocument = {
-      generate: getTableDocumentAndFilter,
-      instance: [],
-    }
-    getTableDocument.instance['middleware_nestedUnit'] = getTableDocument.generate('middleware_nestedUnit')
-    let middleware = await getTableDocument.instance['middleware_nestedUnit'](connection, { key: key })
+      generate: _getTableDocumentAndFilterQuery.default,
+      instance: [] };
 
-    let string = ''.concat(middleware.label.name, ' (', middleware.key, ') ')
+    getTableDocument.instance['middleware_nestedUnit'] = getTableDocument.generate('middleware_nestedUnit');
+    let middleware = await getTableDocument.instance['middleware_nestedUnit'](connection, { key: key });
+
+    let string = ''.concat(middleware.label.name, ' (', middleware.key, ') ');
     for (let child of middleware.children) {
-      let childString = await getMiddlewareAndNestedMiddleware(child.nestedUnit)
-      // let tabString = '\t'.repeat(counter)
-      string = await string.concat('\n', ' → ', childString)
-    }
-    counter++
-    return string
-  }
-  console.log(await getMiddlewareAndNestedMiddleware(nestedUnitKeyMiddleware))
-}
+      let childString = await getMiddlewareAndNestedMiddleware(child.nestedUnit);
 
-export default debugLogMiddleNestedUnitStructure
+      string = await string.concat('\n', ' → ', childString);
+    }
+    counter++;
+    return string;
+  }
+  console.log((await getMiddlewareAndNestedMiddleware(nestedUnitKeyMiddleware)));
+}var _default =
+
+debugLogMiddleNestedUnitStructure;exports.default = _default;
+//# sourceMappingURL=data:application/json;charset=utf-8;base64,eyJ2ZXJzaW9uIjozLCJzb3VyY2VzIjpbIi4uLy4uLy4uL3NvdXJjZS91dGlsaXR5RnVuY3Rpb24vZGVidWdMb2dNaWRkbGV3YXJlTmVzdGVkVW5pdFN0cnVjdHVyZS5qcyJdLCJuYW1lcyI6WyJkZWJ1Z0xvZ01pZGRsZU5lc3RlZFVuaXRTdHJ1Y3R1cmUiLCJuZXN0ZWRVbml0S2V5TWlkZGxld2FyZSIsImNvbm5lY3Rpb24iLCJBcHBsaWNhdGlvbiIsInJldGhpbmtkYkNvbm5lY3Rpb24iLCJjb3VudGVyIiwiZ2V0TWlkZGxld2FyZUFuZE5lc3RlZE1pZGRsZXdhcmUiLCJrZXkiLCJnZXRUYWJsZURvY3VtZW50IiwiZ2VuZXJhdGUiLCJnZXRUYWJsZURvY3VtZW50QW5kRmlsdGVyIiwiaW5zdGFuY2UiLCJtaWRkbGV3YXJlIiwic3RyaW5nIiwiY29uY2F0IiwibGFiZWwiLCJuYW1lIiwiY2hpbGQiLCJjaGlsZHJlbiIsImNoaWxkU3RyaW5nIiwibmVzdGVkVW5pdCIsImNvbnNvbGUiLCJsb2ciXSwibWFwcGluZ3MiOiJ5TEFBQTs7QUFFQSxlQUFlQSxpQ0FBZixDQUFpREMsdUJBQWpELEVBQTBFO0FBQ3hFLFFBQU1DLFVBQVUsR0FBR0MsV0FBVyxDQUFDQyxtQkFBL0I7QUFDQSxNQUFJQyxPQUFPLEdBQUcsQ0FBZDtBQUNBLGlCQUFlQyxnQ0FBZixDQUFnREMsR0FBaEQsRUFBcUQ7QUFDbkQsUUFBSUMsZ0JBQWdCLEdBQUc7QUFDckJDLE1BQUFBLFFBQVEsRUFBRUMsdUNBRFc7QUFFckJDLE1BQUFBLFFBQVEsRUFBRSxFQUZXLEVBQXZCOztBQUlBSCxJQUFBQSxnQkFBZ0IsQ0FBQ0csUUFBakIsQ0FBMEIsdUJBQTFCLElBQXFESCxnQkFBZ0IsQ0FBQ0MsUUFBakIsQ0FBMEIsdUJBQTFCLENBQXJEO0FBQ0EsUUFBSUcsVUFBVSxHQUFHLE1BQU1KLGdCQUFnQixDQUFDRyxRQUFqQixDQUEwQix1QkFBMUIsRUFBbURULFVBQW5ELEVBQStELEVBQUVLLEdBQUcsRUFBRUEsR0FBUCxFQUEvRCxDQUF2Qjs7QUFFQSxRQUFJTSxNQUFNLEdBQUcsR0FBR0MsTUFBSCxDQUFVRixVQUFVLENBQUNHLEtBQVgsQ0FBaUJDLElBQTNCLEVBQWlDLElBQWpDLEVBQXVDSixVQUFVLENBQUNMLEdBQWxELEVBQXVELElBQXZELENBQWI7QUFDQSxTQUFLLElBQUlVLEtBQVQsSUFBa0JMLFVBQVUsQ0FBQ00sUUFBN0IsRUFBdUM7QUFDckMsVUFBSUMsV0FBVyxHQUFHLE1BQU1iLGdDQUFnQyxDQUFDVyxLQUFLLENBQUNHLFVBQVAsQ0FBeEQ7O0FBRUFQLE1BQUFBLE1BQU0sR0FBRyxNQUFNQSxNQUFNLENBQUNDLE1BQVAsQ0FBYyxJQUFkLEVBQW9CLEtBQXBCLEVBQTJCSyxXQUEzQixDQUFmO0FBQ0Q7QUFDRGQsSUFBQUEsT0FBTztBQUNQLFdBQU9RLE1BQVA7QUFDRDtBQUNEUSxFQUFBQSxPQUFPLENBQUNDLEdBQVIsRUFBWSxNQUFNaEIsZ0NBQWdDLENBQUNMLHVCQUFELENBQWxEO0FBQ0QsQzs7QUFFY0QsaUMiLCJzb3VyY2VzQ29udGVudCI6WyJpbXBvcnQgZ2V0VGFibGVEb2N1bWVudEFuZEZpbHRlciBmcm9tICdAZGVwZW5kZW5jeS9kYXRhYmFzZVV0aWxpdHkvc291cmNlL2dldFRhYmxlRG9jdW1lbnRBbmRGaWx0ZXIucXVlcnkuanMnXG5cbmFzeW5jIGZ1bmN0aW9uIGRlYnVnTG9nTWlkZGxlTmVzdGVkVW5pdFN0cnVjdHVyZShuZXN0ZWRVbml0S2V5TWlkZGxld2FyZSkge1xuICBjb25zdCBjb25uZWN0aW9uID0gQXBwbGljYXRpb24ucmV0aGlua2RiQ29ubmVjdGlvblxuICBsZXQgY291bnRlciA9IDFcbiAgYXN5bmMgZnVuY3Rpb24gZ2V0TWlkZGxld2FyZUFuZE5lc3RlZE1pZGRsZXdhcmUoa2V5KSB7XG4gICAgbGV0IGdldFRhYmxlRG9jdW1lbnQgPSB7XG4gICAgICBnZW5lcmF0ZTogZ2V0VGFibGVEb2N1bWVudEFuZEZpbHRlcixcbiAgICAgIGluc3RhbmNlOiBbXSxcbiAgICB9XG4gICAgZ2V0VGFibGVEb2N1bWVudC5pbnN0YW5jZVsnbWlkZGxld2FyZV9uZXN0ZWRVbml0J10gPSBnZXRUYWJsZURvY3VtZW50LmdlbmVyYXRlKCdtaWRkbGV3YXJlX25lc3RlZFVuaXQnKVxuICAgIGxldCBtaWRkbGV3YXJlID0gYXdhaXQgZ2V0VGFibGVEb2N1bWVudC5pbnN0YW5jZVsnbWlkZGxld2FyZV9uZXN0ZWRVbml0J10oY29ubmVjdGlvbiwgeyBrZXk6IGtleSB9KVxuXG4gICAgbGV0IHN0cmluZyA9ICcnLmNvbmNhdChtaWRkbGV3YXJlLmxhYmVsLm5hbWUsICcgKCcsIG1pZGRsZXdhcmUua2V5LCAnKSAnKVxuICAgIGZvciAobGV0IGNoaWxkIG9mIG1pZGRsZXdhcmUuY2hpbGRyZW4pIHtcbiAgICAgIGxldCBjaGlsZFN0cmluZyA9IGF3YWl0IGdldE1pZGRsZXdhcmVBbmROZXN0ZWRNaWRkbGV3YXJlKGNoaWxkLm5lc3RlZFVuaXQpXG4gICAgICAvLyBsZXQgdGFiU3RyaW5nID0gJ1xcdCcucmVwZWF0KGNvdW50ZXIpXG4gICAgICBzdHJpbmcgPSBhd2FpdCBzdHJpbmcuY29uY2F0KCdcXG4nLCAnIOKGkiAnLCBjaGlsZFN0cmluZylcbiAgICB9XG4gICAgY291bnRlcisrXG4gICAgcmV0dXJuIHN0cmluZ1xuICB9XG4gIGNvbnNvbGUubG9nKGF3YWl0IGdldE1pZGRsZXdhcmVBbmROZXN0ZWRNaWRkbGV3YXJlKG5lc3RlZFVuaXRLZXlNaWRkbGV3YXJlKSlcbn1cblxuZXhwb3J0IGRlZmF1bHQgZGVidWdMb2dNaWRkbGVOZXN0ZWRVbml0U3RydWN0dXJlXG4iXX0=

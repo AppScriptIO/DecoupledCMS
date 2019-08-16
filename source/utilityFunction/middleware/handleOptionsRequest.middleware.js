@@ -1,9 +1,10 @@
-import { default as Application } from '../../class/Application.class.js'
-import createStaticInstanceClasses from '@dependency/graphTraversal'
+"use strict";var _interopRequireDefault = require("@babel/runtime/helpers/interopRequireDefault");Object.defineProperty(exports, "__esModule", { value: true });exports.default = void 0;var _ApplicationClass = _interopRequireDefault(require("../../class/Application.class.js"));var _default =
 
-export default async (context, next) => {
-  let connection = Application.rethinkdbConnection
-  context.set('Access-Control-Allow-Methods', '*' /* 'POST, GET, OPTIONS, DELETE' */)
-  context.set('Access-Control-Allow-Headers', '*' /* 'Content-Type' */) // used as a response to preflight, indicating which headers can be used in the request.
-  context.body = 'OK' // previous middlewares should have already defined cross origin all *.
-}
+
+async (context, next) => {
+  let connection = _ApplicationClass.default.rethinkdbConnection;
+  context.set('Access-Control-Allow-Methods', '*');
+  context.set('Access-Control-Allow-Headers', '*');
+  context.body = 'OK';
+};exports.default = _default;
+//# sourceMappingURL=data:application/json;charset=utf-8;base64,eyJ2ZXJzaW9uIjozLCJzb3VyY2VzIjpbIi4uLy4uLy4uLy4uL3NvdXJjZS91dGlsaXR5RnVuY3Rpb24vbWlkZGxld2FyZS9oYW5kbGVPcHRpb25zUmVxdWVzdC5taWRkbGV3YXJlLmpzIl0sIm5hbWVzIjpbImNvbnRleHQiLCJuZXh0IiwiY29ubmVjdGlvbiIsIkFwcGxpY2F0aW9uIiwicmV0aGlua2RiQ29ubmVjdGlvbiIsInNldCIsImJvZHkiXSwibWFwcGluZ3MiOiJ5TEFBQSw0Rjs7O0FBR2UsT0FBT0EsT0FBUCxFQUFnQkMsSUFBaEIsS0FBeUI7QUFDdEMsTUFBSUMsVUFBVSxHQUFHQywwQkFBWUMsbUJBQTdCO0FBQ0FKLEVBQUFBLE9BQU8sQ0FBQ0ssR0FBUixDQUFZLDhCQUFaLEVBQTRDLEdBQTVDO0FBQ0FMLEVBQUFBLE9BQU8sQ0FBQ0ssR0FBUixDQUFZLDhCQUFaLEVBQTRDLEdBQTVDO0FBQ0FMLEVBQUFBLE9BQU8sQ0FBQ00sSUFBUixHQUFlLElBQWY7QUFDRCxDIiwic291cmNlc0NvbnRlbnQiOlsiaW1wb3J0IHsgZGVmYXVsdCBhcyBBcHBsaWNhdGlvbiB9IGZyb20gJy4uLy4uL2NsYXNzL0FwcGxpY2F0aW9uLmNsYXNzLmpzJ1xuaW1wb3J0IGNyZWF0ZVN0YXRpY0luc3RhbmNlQ2xhc3NlcyBmcm9tICdAZGVwZW5kZW5jeS9ncmFwaFRyYXZlcnNhbCdcblxuZXhwb3J0IGRlZmF1bHQgYXN5bmMgKGNvbnRleHQsIG5leHQpID0+IHtcbiAgbGV0IGNvbm5lY3Rpb24gPSBBcHBsaWNhdGlvbi5yZXRoaW5rZGJDb25uZWN0aW9uXG4gIGNvbnRleHQuc2V0KCdBY2Nlc3MtQ29udHJvbC1BbGxvdy1NZXRob2RzJywgJyonIC8qICdQT1NULCBHRVQsIE9QVElPTlMsIERFTEVURScgKi8pXG4gIGNvbnRleHQuc2V0KCdBY2Nlc3MtQ29udHJvbC1BbGxvdy1IZWFkZXJzJywgJyonIC8qICdDb250ZW50LVR5cGUnICovKSAvLyB1c2VkIGFzIGEgcmVzcG9uc2UgdG8gcHJlZmxpZ2h0LCBpbmRpY2F0aW5nIHdoaWNoIGhlYWRlcnMgY2FuIGJlIHVzZWQgaW4gdGhlIHJlcXVlc3QuXG4gIGNvbnRleHQuYm9keSA9ICdPSycgLy8gcHJldmlvdXMgbWlkZGxld2FyZXMgc2hvdWxkIGhhdmUgYWxyZWFkeSBkZWZpbmVkIGNyb3NzIG9yaWdpbiBhbGwgKi5cbn1cbiJdfQ==

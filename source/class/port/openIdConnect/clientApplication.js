@@ -1,12 +1,11 @@
-export const clientArray = [
-  // private client app.
-  {
-    client_id: 'privateClientApplication', // private - i.e. it's data isn't exposed to the user.
-    client_secret: 'secret',
-    grant_types: ['client_credentials', 'authorization_code', 'implicit', 'refresh_token'],
-    response_types: ['code id_token token', 'code id_token', 'code token', 'code', 'id_token token', 'id_token', 'none'],
-    scopes: ['openid', 'offline_access', 'email'],
-    redirect_uris: ['https://lvh.me/cb'],
-    token_endpoint_auth_method: 'none', // authorization method for requests, one of either - client_secret_post, client_secret_basic, client_secret_jwt, private_key_jwt, or none. default is "client_secret_basic" https://openid.net/specs/openid-connect-registration-1_0.html#ClientMetadata
-  },
-]
+"use strict";Object.defineProperty(exports, "__esModule", { value: true });exports.clientArray = void 0;const clientArray = [
+
+{
+  client_id: 'privateClientApplication',
+  client_secret: 'secret',
+  grant_types: ['client_credentials', 'authorization_code', 'implicit', 'refresh_token'],
+  response_types: ['code id_token token', 'code id_token', 'code token', 'code', 'id_token token', 'id_token', 'none'],
+  scopes: ['openid', 'offline_access', 'email'],
+  redirect_uris: ['https://lvh.me/cb'],
+  token_endpoint_auth_method: 'none' }];exports.clientArray = clientArray;
+//# sourceMappingURL=data:application/json;charset=utf-8;base64,eyJ2ZXJzaW9uIjozLCJzb3VyY2VzIjpbIi4uLy4uLy4uLy4uLy4uL3NvdXJjZS9jbGFzcy9wb3J0L29wZW5JZENvbm5lY3QvY2xpZW50QXBwbGljYXRpb24uanMiXSwibmFtZXMiOlsiY2xpZW50QXJyYXkiLCJjbGllbnRfaWQiLCJjbGllbnRfc2VjcmV0IiwiZ3JhbnRfdHlwZXMiLCJyZXNwb25zZV90eXBlcyIsInNjb3BlcyIsInJlZGlyZWN0X3VyaXMiLCJ0b2tlbl9lbmRwb2ludF9hdXRoX21ldGhvZCJdLCJtYXBwaW5ncyI6IndHQUFPLE1BQU1BLFdBQVcsR0FBRzs7QUFFekI7QUFDRUMsRUFBQUEsU0FBUyxFQUFFLDBCQURiO0FBRUVDLEVBQUFBLGFBQWEsRUFBRSxRQUZqQjtBQUdFQyxFQUFBQSxXQUFXLEVBQUUsQ0FBQyxvQkFBRCxFQUF1QixvQkFBdkIsRUFBNkMsVUFBN0MsRUFBeUQsZUFBekQsQ0FIZjtBQUlFQyxFQUFBQSxjQUFjLEVBQUUsQ0FBQyxxQkFBRCxFQUF3QixlQUF4QixFQUF5QyxZQUF6QyxFQUF1RCxNQUF2RCxFQUErRCxnQkFBL0QsRUFBaUYsVUFBakYsRUFBNkYsTUFBN0YsQ0FKbEI7QUFLRUMsRUFBQUEsTUFBTSxFQUFFLENBQUMsUUFBRCxFQUFXLGdCQUFYLEVBQTZCLE9BQTdCLENBTFY7QUFNRUMsRUFBQUEsYUFBYSxFQUFFLENBQUMsbUJBQUQsQ0FOakI7QUFPRUMsRUFBQUEsMEJBQTBCLEVBQUUsTUFQOUIsRUFGeUIsQ0FBcEIsQyIsInNvdXJjZXNDb250ZW50IjpbImV4cG9ydCBjb25zdCBjbGllbnRBcnJheSA9IFtcbiAgLy8gcHJpdmF0ZSBjbGllbnQgYXBwLlxuICB7XG4gICAgY2xpZW50X2lkOiAncHJpdmF0ZUNsaWVudEFwcGxpY2F0aW9uJywgLy8gcHJpdmF0ZSAtIGkuZS4gaXQncyBkYXRhIGlzbid0IGV4cG9zZWQgdG8gdGhlIHVzZXIuXG4gICAgY2xpZW50X3NlY3JldDogJ3NlY3JldCcsXG4gICAgZ3JhbnRfdHlwZXM6IFsnY2xpZW50X2NyZWRlbnRpYWxzJywgJ2F1dGhvcml6YXRpb25fY29kZScsICdpbXBsaWNpdCcsICdyZWZyZXNoX3Rva2VuJ10sXG4gICAgcmVzcG9uc2VfdHlwZXM6IFsnY29kZSBpZF90b2tlbiB0b2tlbicsICdjb2RlIGlkX3Rva2VuJywgJ2NvZGUgdG9rZW4nLCAnY29kZScsICdpZF90b2tlbiB0b2tlbicsICdpZF90b2tlbicsICdub25lJ10sXG4gICAgc2NvcGVzOiBbJ29wZW5pZCcsICdvZmZsaW5lX2FjY2VzcycsICdlbWFpbCddLFxuICAgIHJlZGlyZWN0X3VyaXM6IFsnaHR0cHM6Ly9sdmgubWUvY2InXSxcbiAgICB0b2tlbl9lbmRwb2ludF9hdXRoX21ldGhvZDogJ25vbmUnLCAvLyBhdXRob3JpemF0aW9uIG1ldGhvZCBmb3IgcmVxdWVzdHMsIG9uZSBvZiBlaXRoZXIgLSBjbGllbnRfc2VjcmV0X3Bvc3QsIGNsaWVudF9zZWNyZXRfYmFzaWMsIGNsaWVudF9zZWNyZXRfand0LCBwcml2YXRlX2tleV9qd3QsIG9yIG5vbmUuIGRlZmF1bHQgaXMgXCJjbGllbnRfc2VjcmV0X2Jhc2ljXCIgaHR0cHM6Ly9vcGVuaWQubmV0L3NwZWNzL29wZW5pZC1jb25uZWN0LXJlZ2lzdHJhdGlvbi0xXzAuaHRtbCNDbGllbnRNZXRhZGF0YVxuICB9LFxuXVxuIl19

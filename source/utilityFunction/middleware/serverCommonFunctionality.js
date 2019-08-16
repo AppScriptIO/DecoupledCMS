@@ -1,38 +1,39 @@
-import serverConfig from '../../../setup/configuration/serverConfig.js'
-import compose from 'koa-compose'
-import responseTime from 'koa-response-time'
-import logger from 'koa-logger'
-// import compress from 'koa-compress'
-import bodyParser from 'koa-bodyparser'
-// import cors from 'kcors'
-// import helmet from 'koa-helmet'
-import error from 'koa-json-error'
-// import enforceHTTPS from 'koa-sslify'
-import koaCompress from 'koa-compress'
-import zlib from 'zlib'
+"use strict";var _interopRequireDefault = require("@babel/runtime/helpers/interopRequireDefault");Object.defineProperty(exports, "__esModule", { value: true });exports.default = void 0;var _serverConfig = _interopRequireDefault(require("../../../setup/configuration/serverConfig.js"));
+var _koaCompose = _interopRequireDefault(require("koa-compose"));
+var _koaResponseTime = _interopRequireDefault(require("koa-response-time"));
+var _koaLogger = _interopRequireDefault(require("koa-logger"));
 
-// Database
-import rethinkdbConfig from '../../../setup/configuration/rethinkdbConfig.js'
-import r from 'rethinkdb'
-import { handleConnection, createDatabase, createTable } from './commonDatabaseFunctionality.js'
+
+
+
+var _koaJsonError = _interopRequireDefault(require("koa-json-error"));
+
+var _koaCompress = _interopRequireDefault(require("koa-compress"));
+var _zlib = _interopRequireDefault(require("zlib"));
+
+
+
+
+
 
 let middlewareArray = [
-  responseTime(), // Response time x-response-time
-  logger(), // Console logger
-  // bodyParser(),
-  // cors(), // Cross-Origin Resource Sharing(CORS)
-  error(), // Error handler for pure-JSON Koa apps
-  // handleConnection(), // Open connection on middleware downstream, Close connection on upstream.
-  // createDatabase(),
-  // createTable(),
-  koaCompress({
-    flush: zlib.Z_SYNC_FLUSH,
-  }),
-]
-if (!serverConfig.ssl) {
-  // middleware.push(compress())  // Compress responses
-  // middleware.push(enforceHTTPS())
-  // middleware.push(helmet()) // Security header middleware collection
-}
+(0, _koaResponseTime.default)(),
+(0, _koaLogger.default)(),
 
-export default () => compose(middlewareArray)
+
+(0, _koaJsonError.default)(),
+
+
+
+(0, _koaCompress.default)({
+  flush: _zlib.default.Z_SYNC_FLUSH })];
+
+
+if (!_serverConfig.default.ssl) {
+
+
+
+}var _default =
+
+() => (0, _koaCompose.default)(middlewareArray);exports.default = _default;
+//# sourceMappingURL=data:application/json;charset=utf-8;base64,eyJ2ZXJzaW9uIjozLCJzb3VyY2VzIjpbIi4uLy4uLy4uLy4uL3NvdXJjZS91dGlsaXR5RnVuY3Rpb24vbWlkZGxld2FyZS9zZXJ2ZXJDb21tb25GdW5jdGlvbmFsaXR5LmpzIl0sIm5hbWVzIjpbIm1pZGRsZXdhcmVBcnJheSIsImZsdXNoIiwiemxpYiIsIlpfU1lOQ19GTFVTSCIsInNlcnZlckNvbmZpZyIsInNzbCJdLCJtYXBwaW5ncyI6InlMQUFBO0FBQ0E7QUFDQTtBQUNBOzs7OztBQUtBOztBQUVBO0FBQ0E7Ozs7Ozs7QUFPQSxJQUFJQSxlQUFlLEdBQUc7QUFDcEIsK0JBRG9CO0FBRXBCLHlCQUZvQjs7O0FBS3BCLDRCQUxvQjs7OztBQVNwQiwwQkFBWTtBQUNWQyxFQUFBQSxLQUFLLEVBQUVDLGNBQUtDLFlBREYsRUFBWixDQVRvQixDQUF0Qjs7O0FBYUEsSUFBSSxDQUFDQyxzQkFBYUMsR0FBbEIsRUFBdUI7Ozs7QUFJdEIsQzs7QUFFYyxNQUFNLHlCQUFRTCxlQUFSLEMiLCJzb3VyY2VzQ29udGVudCI6WyJpbXBvcnQgc2VydmVyQ29uZmlnIGZyb20gJy4uLy4uLy4uL3NldHVwL2NvbmZpZ3VyYXRpb24vc2VydmVyQ29uZmlnLmpzJ1xuaW1wb3J0IGNvbXBvc2UgZnJvbSAna29hLWNvbXBvc2UnXG5pbXBvcnQgcmVzcG9uc2VUaW1lIGZyb20gJ2tvYS1yZXNwb25zZS10aW1lJ1xuaW1wb3J0IGxvZ2dlciBmcm9tICdrb2EtbG9nZ2VyJ1xuLy8gaW1wb3J0IGNvbXByZXNzIGZyb20gJ2tvYS1jb21wcmVzcydcbmltcG9ydCBib2R5UGFyc2VyIGZyb20gJ2tvYS1ib2R5cGFyc2VyJ1xuLy8gaW1wb3J0IGNvcnMgZnJvbSAna2NvcnMnXG4vLyBpbXBvcnQgaGVsbWV0IGZyb20gJ2tvYS1oZWxtZXQnXG5pbXBvcnQgZXJyb3IgZnJvbSAna29hLWpzb24tZXJyb3InXG4vLyBpbXBvcnQgZW5mb3JjZUhUVFBTIGZyb20gJ2tvYS1zc2xpZnknXG5pbXBvcnQga29hQ29tcHJlc3MgZnJvbSAna29hLWNvbXByZXNzJ1xuaW1wb3J0IHpsaWIgZnJvbSAnemxpYidcblxuLy8gRGF0YWJhc2VcbmltcG9ydCByZXRoaW5rZGJDb25maWcgZnJvbSAnLi4vLi4vLi4vc2V0dXAvY29uZmlndXJhdGlvbi9yZXRoaW5rZGJDb25maWcuanMnXG5pbXBvcnQgciBmcm9tICdyZXRoaW5rZGInXG5pbXBvcnQgeyBoYW5kbGVDb25uZWN0aW9uLCBjcmVhdGVEYXRhYmFzZSwgY3JlYXRlVGFibGUgfSBmcm9tICcuL2NvbW1vbkRhdGFiYXNlRnVuY3Rpb25hbGl0eS5qcydcblxubGV0IG1pZGRsZXdhcmVBcnJheSA9IFtcbiAgcmVzcG9uc2VUaW1lKCksIC8vIFJlc3BvbnNlIHRpbWUgeC1yZXNwb25zZS10aW1lXG4gIGxvZ2dlcigpLCAvLyBDb25zb2xlIGxvZ2dlclxuICAvLyBib2R5UGFyc2VyKCksXG4gIC8vIGNvcnMoKSwgLy8gQ3Jvc3MtT3JpZ2luIFJlc291cmNlIFNoYXJpbmcoQ09SUylcbiAgZXJyb3IoKSwgLy8gRXJyb3IgaGFuZGxlciBmb3IgcHVyZS1KU09OIEtvYSBhcHBzXG4gIC8vIGhhbmRsZUNvbm5lY3Rpb24oKSwgLy8gT3BlbiBjb25uZWN0aW9uIG9uIG1pZGRsZXdhcmUgZG93bnN0cmVhbSwgQ2xvc2UgY29ubmVjdGlvbiBvbiB1cHN0cmVhbS5cbiAgLy8gY3JlYXRlRGF0YWJhc2UoKSxcbiAgLy8gY3JlYXRlVGFibGUoKSxcbiAga29hQ29tcHJlc3Moe1xuICAgIGZsdXNoOiB6bGliLlpfU1lOQ19GTFVTSCxcbiAgfSksXG5dXG5pZiAoIXNlcnZlckNvbmZpZy5zc2wpIHtcbiAgLy8gbWlkZGxld2FyZS5wdXNoKGNvbXByZXNzKCkpICAvLyBDb21wcmVzcyByZXNwb25zZXNcbiAgLy8gbWlkZGxld2FyZS5wdXNoKGVuZm9yY2VIVFRQUygpKVxuICAvLyBtaWRkbGV3YXJlLnB1c2goaGVsbWV0KCkpIC8vIFNlY3VyaXR5IGhlYWRlciBtaWRkbGV3YXJlIGNvbGxlY3Rpb25cbn1cblxuZXhwb3J0IGRlZmF1bHQgKCkgPT4gY29tcG9zZShtaWRkbGV3YXJlQXJyYXkpXG4iXX0=
