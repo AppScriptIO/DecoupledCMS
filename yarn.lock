@@ -969,8 +969,8 @@
     "@dependency/namedCurry" "https://github.com/AppScriptIO/namedCurry#semver:^1.x.x"
 
 "@dependency/deploymentScript@https://github.com/AppScriptIO/deploymentScript#semver:^1.x.x":
-  version "1.1.18"
-  resolved "https://github.com/AppScriptIO/deploymentScript#0ea8359b46a5d0cc36319c05518bb76880b66895"
+  version "1.1.20"
+  resolved "https://github.com/AppScriptIO/deploymentScript#cb708842df9e46f2d398943b7ca5f6d51e10b9b5"
   dependencies:
     "@dependency/buildTool" "https://github.com/AppScriptIO/buildTool#semver:^1.x.x"
     "@dependency/javascriptTestRunner" "git+https://github.com/AppScriptIO/javascriptTestRunner.git#semver:^1.x.x"
@@ -988,9 +988,9 @@
   resolved "https://github.com/AppScriptIO/fragmentIndentationObjectStream#9cb1ff843e442c5eaf34477cf4c9907eb0e74f7d"
 
 "@dependency/graphTraversal@https://github.com/AppScriptIO/graph#semver:^1.x.x":
-  version "1.2.6"
-  uid "60b22c8078c2bd514865b55c8f7220ad9a28ee81"
-  resolved "https://github.com/AppScriptIO/graph#60b22c8078c2bd514865b55c8f7220ad9a28ee81"
+  version "1.2.7"
+  uid df6398a067a18917e56aa3651ac359be6a109fcc
+  resolved "https://github.com/AppScriptIO/graph#df6398a067a18917e56aa3651ac359be6a109fcc"
   dependencies:
     "@dependency/classMixin" "https://github.com/AppScriptIO/classMixin#semver:^1.x.x"
     "@dependency/commonPattern" "https://github.com/AppScriptIO/commonPattern#semver:^1.x.x"
@@ -1006,8 +1006,8 @@
     uuid "^3.3.2"
 
 "@dependency/graphTraversal@https://github.com/AppScriptIO/graphTraversal#semver:^1.x.x":
-  version "1.2.6"
-  resolved "https://github.com/AppScriptIO/graphTraversal#60b22c8078c2bd514865b55c8f7220ad9a28ee81"
+  version "1.2.7"
+  resolved "https://github.com/AppScriptIO/graphTraversal#df6398a067a18917e56aa3651ac359be6a109fcc"
   dependencies:
     "@dependency/classMixin" "https://github.com/AppScriptIO/classMixin#semver:^1.x.x"
     "@dependency/commonPattern" "https://github.com/AppScriptIO/commonPattern#semver:^1.x.x"
