@@ -3,11 +3,13 @@
 	"main": "./entrypoint/programmaticAPI",
 	"version": "1.1.2",
 	"scripts": {
+		"exportGraphData": "yarn run scriptManager shouldCompileScript=true graphDatabase/exportGraphData \".exportGraphData({targetPath: './resource',fileName: 'taskSequence.graphData.json'})\"",
+		"loadGraphData": "yarn run scriptManager shouldCompileScript=true graphDatabase/exportGraphData \".loadGraphDataFromFile({ shouldClearDatabase: true, graphDataFilePath: './resource/taskSequence.graphData.json' })\"",
 		"buildAndRelease": "yarn run scriptManager shouldCompileScript=true JSProject/buildAndRelease \".moduleProject({})\""
 	},
 	"dependencies": {
 		"@babel/core": "^7.x.x",
-		"@dependency/graph": "https://github.com/AppScriptIO/graph#semver:^1.x.x",
+		"@dependency/graphTraversal": "https://github.com/AppScriptIO/graph#semver:^1.x.x",
 		"@dependency/multiplePrototypeChain": "https://github.com/AppScriptIO/multiplePrototypeChain#semver:^1.x.x",
 		"co-body": "*",
 		"koa": "*",

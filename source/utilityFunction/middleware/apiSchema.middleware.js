@@ -1,5 +1,5 @@
 import { default as Application } from '../../class/Application.class.js'
-import createStaticInstanceClasses from '@dependency/graph'
+import createStaticInstanceClasses from '@dependency/graphTraversal'
 import getUrlPathAsArray from '../conditionCheck/getUrlPathAsArray.js'
 
 let SchemaController = createStaticInstanceClasses({
