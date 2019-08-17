@@ -1,7 +1,7 @@
 import serverConfig from '../../../../../../setup/configuration/serverConfig.js'
 import r from 'rethinkdb'
 import compose from 'koa-compose'
-import { default as Application } from '../../../../Application.class.js'
+import { class as Application } from '../../../../Application.class.js'
 import { handleConnection, createDatabase, createTable } from '../../../../../utilityFunction/middleware/commonDatabaseFunctionality.js'
 
 // NOTE: host/api/v1/<tableName>/<havingField>/<subfield-recursive>.json

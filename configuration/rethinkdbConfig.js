@@ -1,10 +1,12 @@
-import { DEPLOYMENT as development } from './serverConfig.js'
+export function initialize({ serverConfig }) {
 
-let host = 'rethinkdb',
+  let development = serverConfig.DEPLOYMENT
+
+  let host = 'rethinkdb',
   port = 28015,
   database = 'webapp'
 
-export default {
+return {
   development: {
     host,
     port,
@@ -16,3 +18,5 @@ export default {
     database,
   },
 }[development]
+
+}

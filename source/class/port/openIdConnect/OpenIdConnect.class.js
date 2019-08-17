@@ -1,4 +1,4 @@
-import { default as Application } from '../../Application.class.js'
+import { class as Application } from '../../Application.class.js'
 import _ from 'underscore'
 import filesystem from 'fs'
 import https from 'https'

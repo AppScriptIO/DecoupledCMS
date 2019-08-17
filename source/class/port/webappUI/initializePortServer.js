@@ -1,5 +1,5 @@
 import koaViews from 'koa-views'
-import { default as Application } from '../../Application.class.js'
+import { class as Application } from '../../Application.class.js'
 import WebappUIClass from './WebappUI.class.js'
 import debugLogMiddleNestedUnitStructure from '../../../utilityFunction/debugLogMiddlewareNestedUnitStructure.js'
 import createStaticInstanceClasses from '@dependency/graphTraversal'
@@ -9,16 +9,8 @@ import implementConditionActionOnModuleUsingJson from '../../../utilityFunction/
 import languageContent from '../../../utilityFunction/middleware/languageContent.middleware.js'
 const { Issuer } = require('openid-client')
 
-let MiddlewareController = createStaticInstanceClasses({
-  Superclass: Application,
-  implementationType: 'Middleware',
-  cacheName: true,
-})
-let ConditionController = createStaticInstanceClasses({
-  Superclass: Application,
-  implementationType: 'Condition',
-  cacheName: true,
-})
+let MiddlewareController = createStaticInstanceClasses({ Superclass: Application, implementationType: 'Middleware', cacheName: true })
+let ConditionController = createStaticInstanceClasses({ Superclass: Application, implementationType: 'Condition', cacheName: true })
 
 export default ({ entrypointConditionKey } = {}) => async () => {
   const oidcPort = 8084

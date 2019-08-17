@@ -1,7 +1,7 @@
 import ApiClass from './Api.class.js'
 import createClassInstancePerRequest from '../../../utilityFunction/middleware/createClassInstancePerRequest.middleware.js'
 import createStaticInstanceClasses from '../../../module/reusableNestedUnit'
-import { default as Application } from '../../Application.class.js'
+import { class as Application } from '../../Application.class.js'
 import implementConditionActionOnModuleUsingJson from '../../../utilityFunction/middleware/implementConditionActionOnModuleUsingJson.js'
 import implementMiddlewareOnModuleUsingJson from '../../../utilityFunction/middleware/implementMiddlewareOnModuleUsingJson.js' // Middleware extending server functionality
 

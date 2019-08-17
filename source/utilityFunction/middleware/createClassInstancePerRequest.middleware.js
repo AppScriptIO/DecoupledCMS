@@ -1,6 +1,6 @@
 import path from 'path'
 import serverConfig from '../../../setup/configuration/serverConfig.js'
-import { default as Application } from '../../class/Application.class.js'
+import { class as Application } from '../../class/Application.class.js'
 
 export default Class => {
   return async (context, next) => {

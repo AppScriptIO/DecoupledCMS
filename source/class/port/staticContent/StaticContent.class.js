@@ -1,6 +1,6 @@
 // Static content server - could be upgraded to Content Delivery Network
 import Koa from 'koa' // Koa applicaiton server
-import { default as Application } from '../../Application.class.js'
+import { class as Application } from '../../Application.class.js'
 import { add, execute, applyMixin } from '@dependency/commonPattern/source/decoratorUtility.js'
 import { extendedSubclassPattern } from '@dependency/commonPattern/source/extendedSubclassPattern.js'
 

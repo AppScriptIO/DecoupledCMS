@@ -3,17 +3,16 @@ import assert from 'assert'
 import path from 'path'
 import filesystem from 'fs'
 import EventEmitter from 'events'
-import configuration from '../../setup/configuration/configuration.export.js' // Load configuration settings.
 import Koa from 'koa' // Koa applicaiton server
 import compose from 'koa-compose'
-import rethinkdbConfig from '../../setup/configuration/rethinkdbConfig.js'
-import { connect } from '../utilityFunction/middleware/commonDatabaseFunctionality.js'
+// import { connect } from '../utilityFunction/middleware/commonDatabaseFunctionality.js'
 import { add, execute, applyMixin } from '@dependency/commonPattern/source/decoratorUtility.js'
-import addStaticSubclassToClassArray from '@dependency/commonPattern/source/addStaticSubclassToClassArray.staticMethod'
 import { extendedSubclassPattern } from '@dependency/commonPattern/source/extendedSubclassPattern.js'
 import underscore from 'underscore'
-import { default as getTableDocumentDefault } from '@dependency/databaseUtility/source/getTableDocument.query.js'
 import { getMergedMultipleDocumentOfSpecificLanguage as queryPatternImplementation } from '@dependency/databaseUtility/source/patternImplementation.js'
+import { initialize as rethinkdbConfigFunction} from '../../configuration/rethinkdbConfig.js'
+import { initialize as serverConfigFunction} from '../../configuration/serverConfig.js'
+import consoleLogStyleConfig from '../../configuration/consoleLogStyleConfig.js'
 
 const self =
   @add(
@@ -28,10 +27,12 @@ const self =
 
     static rethinkdbConnection = {}
     static underscore
-    static config = configuration // Array
+    static config = {}
     static frontendStatic
 
-    static async initialize(/*staticSubclass*/) {
+    static async initialize({ targetProjectConfig } /*staticSubclass*/) {
+      let serverConfig = serverConfigFunction({ targetProjectConfig })
+      Object.assign(Application.config, serverConfig, rethinkdbConfigFunction({ serverConfig }), { appConfiguration: targetProjectConfig}, consoleLogStyleConfig)
       // One-time initialization of Applicaiton Class.
       console.info(`☕%c Running Application as ${self.config.DEPLOYMENT} - '${self.config.PROTOCOL}${self.config.HOST}'`, self.config.style.green)
       assert.notStrictEqual(self.config.HOST, undefined)
@@ -147,4 +148,4 @@ const self =
   }
 const instance = new self()
 
-export { self as default, instance }
+export { self as class, instance }

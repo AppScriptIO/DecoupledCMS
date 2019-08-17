@@ -7,7 +7,7 @@ import underscore from 'underscore'
 // import serverStatic from 'koa-static' // Static files.
 import send from 'koa-sendfile' // Static files.
 // import mount from 'koa-mount'
-import { default as Application } from '../../class/Application.class.js'
+import { class as Application } from '../../class/Application.class.js'
 import { functionWrappedMiddlewareDecorator } from '@dependency/commonPattern/source/middlewarePatternDecorator.js'
 import createStaticInstanceClasses from '../../module/reusableNestedUnit'
 import { default as getTableDocumentDefault } from '@dependency/databaseUtility/source/getTableDocument.query.js'

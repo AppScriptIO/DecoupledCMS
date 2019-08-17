@@ -1,4 +1,4 @@
-import { default as Application } from '../../class/Application.class.js'
+import { class as Application } from '../../class/Application.class.js'
 import implementMiddlewareOnModuleUsingJson from './implementMiddlewareOnModuleUsingJson.js' // Middleware extending server functionality
 import createStaticInstanceClasses from '@dependency/graphTraversal'
 let MiddlewareController = createStaticInstanceClasses({

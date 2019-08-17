@@ -1,6 +1,6 @@
 import views from 'koa-views'
 import bodyParser from 'koa-bodyparser'
-import { default as Application } from '../../Application.class.js'
+import { class as Application } from '../../Application.class.js'
 import OAuthClass from './OAuth.class.js'
 import implementMiddlewareOnModuleUsingJson from '../../../utilityFunction/middleware/implementMiddlewareOnModuleUsingJson.js' // Middleware extending server functionality
 import implementConditionActionOnModuleUsingJson from '../../../utilityFunction/middleware/implementConditionActionOnModuleUsingJson.js'

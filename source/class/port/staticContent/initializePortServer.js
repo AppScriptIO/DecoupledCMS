@@ -1,5 +1,5 @@
 import koaViews from 'koa-views'
-import { default as Application } from '../../Application.class.js'
+import { class as Application } from '../../Application.class.js'
 import StaticContentClass from './StaticContent.class.js'
 import createClassInstancePerRequest from '../../../utilityFunction/middleware/createClassInstancePerRequest.middleware.js'
 import createStaticInstanceClasses from '../../../module/reusableNestedUnit'

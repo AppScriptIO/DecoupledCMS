@@ -5,6 +5,18 @@
 - Render and serve template files using a documentKey-File map or document key in url parameter, to render a specific file with a speciific template tree on demand.
 - Think of State management strategy - Having a single observable that represents the action. With no race condition (promise race) and allowing undo actions. https://www.youtube.com/watch?v=H4EyuvGe_dg
 
+
+___
+# server side 
+-  TODO: change base url and access-control-allow-origin header according to DEPLOYMENT environment
+
+-  TODO: Custom Dataset Schema/structure/blueprint, data document, csustom dataset type, custom fields, custom content type.
+-  TODO: Condition Tree:
+-  • Ability to decide insertion position of unit in subtree. e.g. before, after, first, last.
+-  • Check non immediate children for each insertion point to insert them in their correct destination.
+- • Define unique key for each child, to allow insertion into other inserted children. i.e. extending existing trees with other trees and children.
+-  TODO: Merge ReusableNestedUnit implementations and organize them according to the requirements like returned value and algorithm executed on the nested tree.
+
 ___
 # FRONT-END
 - The build step that creates polyfilled versions of js files using polymer modulizer should be fixed. Fix build step - polyfill examples and gulp process in - https://github.com/Polymer/polymer-modulizer
