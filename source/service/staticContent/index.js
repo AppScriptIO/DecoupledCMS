@@ -1,10 +1,6 @@
+// Static content server - could be upgraded to Content Delivery Network
 import koaViews from 'koa-views'
-import { class as Application } from '../../Application.class.js'
-import StaticContentClass from './StaticContent.class.js'
-import createClassInstancePerRequest from '../../../utilityFunction/middleware/createClassInstancePerRequest.middleware.js'
-import createStaticInstanceClasses from '../../../module/reusableNestedUnit'
-import implementMiddlewareOnModuleUsingJson from '../../../utilityFunction/middleware/implementMiddlewareOnModuleUsingJson.js' // Middleware extending server functionality
-import implementConditionActionOnModuleUsingJson from '../../../utilityFunction/middleware/implementConditionActionOnModuleUsingJson.js'
+import Koa from 'koa' // Koa applicaiton server
 
 let MiddlewareController = createStaticInstanceClasses({
   Superclass: Application,
@@ -17,13 +13,14 @@ let ConditionController = createStaticInstanceClasses({
   cacheName: true,
 })
 
-export default ({ entrypointConditionKey } = {}) => async () => {
-  let Class = StaticContentClass
+;async () => {
+  let port = 8081
+  let url = `${self.config.PROTOCOL}cdn.${self.config.HOST}`
+  let entrypointConditionKey
   // Templating engine & associated extention.
-  // Class.serverKoa.use()
+  // applyKoaMiddleware
   let middlewareArray = [
     koaViews('/', { map: { html: 'underscore', js: 'underscore' } }),
-    createClassInstancePerRequest(Class),
     // async (context, next) => {
     //     // // Authorization access example:
     //     // let token = await OAuthClass.authenticateMiddleware()(context.request, context.response);
@@ -36,7 +33,6 @@ export default ({ entrypointConditionKey } = {}) => async () => {
     // },
     async (context, next) => {
       // CONDITION
-      let self = Class
       // [1] Create instances and check conditions. Get callback either a function or document
       // The instance responsible for rquests of specific port.
       let conditionController = await ConditionController.createContext({ portAppInstance: context.instance })
@@ -53,6 +49,25 @@ export default ({ entrypointConditionKey } = {}) => async () => {
       context.compress = true
     },
   ]
-  Class.applyKoaMiddleware(middlewareArray)
-  Class.createHttpServer()
+
+  await middlewareArray.forEach(middleware => serverKoa.use(middleware))
+
+  // createHttpServer
+  await new Promise((resolve, reject) => {
+    let httpServer = http.createServer(serverKoa.callback())
+    // self.httpServer.on('connection', (socket) => {
+    //     console.info('SOCKET OPENED' + JSON.stringify(socket.address()))
+    //     socket.on('end', () => { console.info('SOCKET END: other end of the socket sends a FIN packet') })
+    //     socket.on('timeout', () => { console.info('SOCKET TIMEOUT') })
+    //     socket.on('error', (error) => { console.info('SOCKET ERROR: ' + JSON.stringify(error)) })
+    //     socket.on('close', (had_error) => { console.info('SOCKET CLOSED. Is ERROR ?: ' + had_error) })
+    // })
+    // self.httpServer.setTimeout(0, () => {
+    //     console.log('HTTP server connection socket was timedout (console.log in httpServer.setTimeout)!')
+    // })
+    httpServer.listen(self.port, () => {
+      console.log(`☕%c ${self.name} listening on port ${self.port}`, self.config.style.green)
+      resolve()
+    })
+  })
 }

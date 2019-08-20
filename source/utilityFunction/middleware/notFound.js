@@ -1,7 +1,6 @@
 import path from 'path'
-import config from '../../../setup/configuration/configuration.export.js' // Load configuration settings.
+import config from '../../../configuration/configuration/configuration.export.js' // Load configuration settings.
 import send from 'koa-sendfile'
-import { class as Application } from '../../class/Application.class.js'
 
 export default () => {
   return async (context, next) => {

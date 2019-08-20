@@ -1,4 +1,2 @@
-export { microservice } from './microservice'
-// export { class as Application } from './class/Application.class.js'
-// expose local cached underscore module
-export * as underscore from 'underscore'
+export { serviceAggregator } from './service'
+export * as underscore from 'underscore' // expose local cached underscore module

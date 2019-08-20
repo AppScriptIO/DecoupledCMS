@@ -1,4 +1,4 @@
-import serverConfig from '../../../setup/configuration/serverConfig.js'
+import serverConfig from '../../../configuration/configuration/serverConfig.js'
 import compose from 'koa-compose'
 import responseTime from 'koa-response-time'
 import logger from 'koa-logger'
@@ -12,7 +12,7 @@ import koaCompress from 'koa-compress'
 import zlib from 'zlib'
 
 // Database
-import rethinkdbConfig from '../../../setup/configuration/rethinkdbConfig.js'
+import rethinkdbConfig from '../../../configuration/configuration/rethinkdbConfig.js'
 import r from 'rethinkdb'
 import { handleConnection, createDatabase, createTable } from './commonDatabaseFunctionality.js'
 

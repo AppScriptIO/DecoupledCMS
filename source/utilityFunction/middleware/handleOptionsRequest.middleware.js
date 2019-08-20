@@ -1,4 +1,3 @@
-import { class as Application } from '../../class/Application.class.js'
 import createStaticInstanceClasses from '@dependency/graphTraversal'
 
 export default async (context, next) => {

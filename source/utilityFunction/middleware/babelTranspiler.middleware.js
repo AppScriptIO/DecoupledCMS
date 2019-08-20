@@ -1,8 +1,7 @@
-import config from '../../../setup/configuration/configuration.export.js'
+import config from '../../../configuration/configuration/configuration.export.js'
 import path from 'path'
 import filesystem from 'fs'
 import stream from 'stream'
-import { class as Application } from '../../class/Application.class.js'
 import { functionWrappedMiddlewareDecorator } from '../middlewarePatternDecorator.js'
 import { streamToString } from '../streamToStringConvertion.js'
 

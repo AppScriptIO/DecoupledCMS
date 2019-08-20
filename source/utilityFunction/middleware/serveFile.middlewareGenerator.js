@@ -1,4 +1,4 @@
-import config from '../../../setup/configuration/configuration.export.js'
+import config from '../../../configuration/configuration/configuration.export.js'
 import path from 'path'
 import filesystem from 'fs'
 import Stream from 'stream'

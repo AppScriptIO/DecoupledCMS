@@ -1,5 +1,4 @@
 import compose from 'koa-compose'
-import { class as Application } from '../../class/Application.class.js'
 
 // let staticMiddlewareSetting = r
 //     .table('setting') // first field assigns name of table

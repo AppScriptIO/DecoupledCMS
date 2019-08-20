@@ -1,5 +1,4 @@
 import path from 'path'
-import { class as Application } from '../../class/Application.class.js'
 let Request = require('oauth2-server').Request
 let Response = require('oauth2-server').Response
 
