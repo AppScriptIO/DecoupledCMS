@@ -1,5 +1,3 @@
-import createStaticInstanceClasses from '@dependency/graphTraversal'
-
 export default async (context, next) => {
   let connection = Application.rethinkdbConnection
   context.set('Access-Control-Allow-Methods', '*' /* 'POST, GET, OPTIONS, DELETE' */)

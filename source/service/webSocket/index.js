@@ -1,4 +1,5 @@
 import WebSocketModule from 'ws'
+import consoleLogStyle from '../../utility/consoleLogStyleConfig.js'
 
 let port = 8087
 let webSocketServer
@@ -9,7 +10,7 @@ export const initialize = async () => {
     // WebSocket - ws package.
     const websocketPort = self.port
     self.webSocketServer = new WebSocketModule.Server({ port: websocketPort }, () => {
-      console.log(`☕%c ${self.name} listening on port ${websocketPort}`, Application.config.style.green)
+      console.log(`☕%c ${self.name} listening on port ${websocketPort}`, consoleLogStyle.green)
       resolve()
     })
   })

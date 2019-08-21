@@ -1,6 +1,7 @@
 // Static content server - could be upgraded to Content Delivery Network
 import koaViews from 'koa-views'
 import Koa from 'koa' // Koa applicaiton server
+import consoleLogStyle from '../../utility/consoleLogStyleConfig.js'
 
 let MiddlewareController = createStaticInstanceClasses({
   Superclass: Application,
@@ -40,7 +41,7 @@ let ConditionController = createStaticInstanceClasses({
       let callback = await conditionController.initializeNestedUnit({ nestedUnitKey: entrypointConditionKey })
       // if(process.env.SZN_DEBUG == 'true') console.log(`🍊 Callback object: ${callback.name}`)
       // [2] Use callback
-      if (process.env.SZN_DEBUG == 'true' && context.header.debug == 'true') console.log(`🔀✔️ Choosen callback is: %c ${callback.name}`, self.config.style.green)
+      if (process.env.SZN_DEBUG == 'true' && context.header.debug == 'true') console.log(`🔀✔️ Choosen callback is: %c ${callback.name}`, consoleLogStyle.green)
       await implementConditionActionOnModuleUsingJson({ setting: callback })(context, next)
     },
     async (context, next) => {
@@ -66,7 +67,7 @@ let ConditionController = createStaticInstanceClasses({
     //     console.log('HTTP server connection socket was timedout (console.log in httpServer.setTimeout)!')
     // })
     httpServer.listen(self.port, () => {
-      console.log(`☕%c ${self.name} listening on port ${self.port}`, self.config.style.green)
+      console.log(`☕%c ${self.name} listening on port ${self.port}`, consoleLogStyle.green)
       resolve()
     })
   })

@@ -1,10 +1,7 @@
 import createStaticInstanceClasses from '@dependency/graphTraversal'
 import getUrlPathAsArray from '../conditionCheck/getUrlPathAsArray.js'
 
-let SchemaController = createStaticInstanceClasses({
-  implementationType: 'Schema',
-  cacheName: true,
-})
+let SchemaController = createStaticInstanceClasses({ implementationType: 'Schema', cacheName: true })
 
 export default async (context, next) => {
   let connection = Application.rethinkdbConnection

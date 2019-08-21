@@ -1,19 +1,14 @@
-import { class as  } from '../../class/Application.class.js'
 import implementMiddlewareOnModuleUsingJson from './implementMiddlewareOnModuleUsingJson.js' // Middleware extending server functionality
 import createStaticInstanceClasses from '@dependency/graphTraversal'
-let MiddlewareController = createStaticInstanceClasses({
-  implementationType: 'Middleware',
-  cacheName: true,
-})
+import consoleLogStyle from '../consoleLogStyleConfig.js'
 
 /**
  * @param {object} Setting holds the json configurations. Where each json is composed of setting.type, setting.name.
  */
-export default ({
-  setting, // condition nested unit callback properties's options.
-}) => {
+export default ({ setting /** condition nested unit callback properties's options. */ }) => {
   let executionType = setting.type // condition callback property
   return async (context, next) => {
+    console.log(setting)
     let isCalledNext = false
     // console.log(setting)
     switch (executionType) {
@@ -24,7 +19,7 @@ export default ({
         let middlewareArray
         let middlewareController = await MiddlewareController.createContext({ portAppInstance: portAppInstance })
         middlewareArray = await middlewareController.initializeNestedUnit({ nestedUnitKey: nestedUnitKey })
-        if (process.env.SZN_DEBUG == 'true' && context.header.debug == 'true') {
+        if (context.header.debug == 'true') {
           // print middleware file paths
           console.group(`🍊 Middleware Array:`)
           middlewareArray.map(middlewareNode => {
@@ -51,7 +46,7 @@ export default ({
         console.log(setting.name)
         break
       default:
-        if (process.env.SZN_DEBUG == 'true') console.log("SZN - %c Setting (callback) doesn't match any kind.", Application.config.style.red)
+        console.log("SZN - %c Setting (callback) doesn't match any kind.", consoleLogStyle.red)
     }
     return isCalledNext
   }

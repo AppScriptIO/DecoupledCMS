@@ -1,11 +1,6 @@
 import compose from 'koa-compose'
 
-// let staticMiddlewareSetting = r
-//     .table('setting') // first field assigns name of table
-//     .run(context.rethinkdbConnection)
-//     .then((cursor) => {
-//         return cursor.toArray()
-//     })
+// let staticMiddlewareSetting = r.table('setting') // first field assigns name of table
 
 /**
  * @param {array} staticMiddlewareSetting holds the json middle configurations. Where each json is composed of executionType, filePath, arguments.

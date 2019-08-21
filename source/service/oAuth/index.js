@@ -1,14 +1,15 @@
 import filesystem from 'fs'
 import https from 'https'
 import http from 'http'
-import _ from 'underscore'
+import underscore from 'underscore'
 import views from 'koa-views'
 import bodyParser from 'koa-bodyparser'
 import OAuth2Server from 'oauth2-server'
 import oAuth2ServerModel from './oAuth2Server.model.js'
+import consoleLogStyle from '../../utility/consoleLogStyleConfig.js'
 
-let MiddlewareController = createStaticInstanceClasses({ Superclass: Application, implementationType: 'Middleware', cacheName: true })
-let ConditionController = createStaticInstanceClasses({ Superclass: Application, implementationType: 'Condition', cacheName: true })
+let MiddlewareController = createStaticInstanceClasses({ implementationType: 'Middleware', cacheName: true })
+let ConditionController = createStaticInstanceClasses({ implementationType: 'Condition', cacheName: true })
 
 export const initialize = async () => {
   let Request = OAuth2Server.Request
@@ -33,9 +34,8 @@ export const initialize = async () => {
     model: oAuth2ServerModel,
   })
 
-  let Class = OAuthClass
   // Templating engine & associated extention.
-  Class.serverKoa.use(views('/', { map: { html: 'underscore', js: 'underscore' } }))
+  serverKoa.use(views('/', { map: { html: 'underscore', js: 'underscore' } }))
   let middlewareArray = [
     bodyParser(),
     async (context, next) => {
@@ -57,7 +57,6 @@ export const initialize = async () => {
     },
     async (context, next) => {
       // CONDITION
-      let self = Class
       // [1] Create instances and check conditions. Get callback either a function or document
       // The instance responsible for rquests of specific port.
       let conditionController = await ConditionController.createContext({ portAppInstance: context.instance })
@@ -65,7 +64,7 @@ export const initialize = async () => {
       let entrypointConditionTree = '0681f25c-4c00-4295-b12a-6ab81a3cb440'
       if (process.env.SZN_DEBUG == 'true' && context.header.debug == 'true') console.log(`🍊 Entrypoint Condition Key: ${entrypointConditionTree} \n \n`)
       let callback = await conditionController.initializeNestedUnit({ nestedUnitKey: entrypointConditionTree })
-      if (process.env.SZN_DEBUG == 'true' && context.header.debug == 'true') console.log(`🔀✔️ Choosen callback is: %c ${callback.name}`, self.config.style.green)
+      if (process.env.SZN_DEBUG == 'true' && context.header.debug == 'true') console.log(`🔀✔️ Choosen callback is: %c ${callback.name}`, consoleLogStyle.green)
       // [2] Use callback
       await implementConditionActionOnModuleUsingJson({ setting: callback })(context, next)
 
@@ -84,7 +83,7 @@ export const initialize = async () => {
   middlewareArray.forEach(middleware => serverKoa.use(middleware))
 
   http.createServer(self.serverKoa.callback()).listen(self.port, () => {
-    console.log(`☕%c ${self.name} listening on port ${self.port}`, self.config.style.green)
+    console.log(`☕%c ${self.name} listening on port ${self.port}`, consoleLogStyle.green)
     // eventEmitter.emit('listening')
     // process.emit('listening')
     if (process.send !== undefined) {
@@ -142,9 +141,7 @@ async function authorize(request, response) {
   }
   let oAuthRequest = new Request(request)
   let oAuthResponse = new Response(response)
-  let authorizationCode = await self.oAuth2Server.authorize(oAuthRequest, oAuthResponse, options).catch(error => {
-    console.log(error)
-  })
+  let authorizationCode = await self.oAuth2Server.authorize(oAuthRequest, oAuthResponse, options).catch(error => console.log(error))
   return authorizationCode
 }
 

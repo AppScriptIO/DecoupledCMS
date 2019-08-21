@@ -1,2 +1,1 @@
-export { serviceAggregator } from './service'
-export * as underscore from 'underscore' // expose local cached underscore module
+export { serviceAggregator } from './serviceAggregator.js'

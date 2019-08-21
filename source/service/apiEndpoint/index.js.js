@@ -1,6 +1,7 @@
 import Koa from 'koa' // Koa applicaiton server
 import implementConditionActionOnModuleUsingJson from '../../../utility/middleware/implementConditionActionOnModuleUsingJson.js'
 import implementMiddlewareOnModuleUsingJson from '../../../utility/middleware/implementMiddlewareOnModuleUsingJson.js' // Middleware extending server functionality
+import consoleLogStyle from '../../utility/consoleLogStyleConfig.js'
 
 let MiddlewareController = createStaticInstanceClasses({ implementationType: 'Middleware', cacheName: true })
 
@@ -55,7 +56,7 @@ let url = `${self.config.PROTOCOL}api.${self.config.HOST}/`
     //     console.log('HTTP server connection socket was timedout (console.log in httpServer.setTimeout)!')
     // })
     httpServer.listen(self.port, () => {
-      console.log(`☕%c ${self.name} listening on port ${self.port}`, self.config.style.green)
+      console.log(`☕%c ${self.name} listening on port ${self.port}`, consoleLogStyle.green)
       resolve()
     })
   })
