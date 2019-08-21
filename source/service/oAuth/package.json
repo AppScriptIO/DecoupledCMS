@@ -6,10 +6,9 @@
 	"dependencies": {
 		"koa-bodyparser": "*",
 		"koa-views": "*",
-		"underscore": "*",
+		"oauth2-server": "*",
 		"rethinkdb": "*",
-		"oauth2-server": "*"
-
+		"underscore": "*"
 	},
 	"devDependencies": {}
 }

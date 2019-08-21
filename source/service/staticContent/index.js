@@ -23,14 +23,14 @@ let ConditionController = createStaticInstanceClasses({
   let middlewareArray = [
     koaViews('/', { map: { html: 'underscore', js: 'underscore' } }),
     // async (context, next) => {
-    //     // // Authorization access example:
-    //     // let token = await OAuthClass.authenticateMiddleware()(context.request, context.response);
-    //     // if(token) {
-    //     //     await next()
-    //     // } else {
-    //     //     console.log('Sorry unauthorized access')
-    //     // }
+    //   // Authorization access example:
+    //   let token = await OAuthClass.authenticateMiddleware()(context.request, context.response)
+    //   if (token) {
     //     await next()
+    //   } else {
+    //     console.log('Sorry unauthorized access')
+    //   }
+    //   await next()
     // },
     async (context, next) => {
       // CONDITION

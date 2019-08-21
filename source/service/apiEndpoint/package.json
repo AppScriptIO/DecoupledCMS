@@ -5,8 +5,8 @@
 	"scripts": {},
 	"dependencies": {
 		"koa": "*",
-		"koa-router": "*",
 		"koa-compose": "*",
+		"koa-router": "*",
 		"rethinkdb": "*"
 	},
 	"devDependencies": {}

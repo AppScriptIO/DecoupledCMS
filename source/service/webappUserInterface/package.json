@@ -4,10 +4,10 @@
 	"version": "1.0.0",
 	"scripts": {},
 	"dependencies": {
-		"underscore": "*",
+		"koa": "*",
 		"koa-views": "*",
 		"openid-client": "*",
-		"koa": "*"
+		"underscore": "*"
 	},
 	"devDependencies": {}
 }

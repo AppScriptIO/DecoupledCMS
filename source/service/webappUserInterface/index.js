@@ -7,6 +7,11 @@ import Koa from 'koa' // Koa applicaiton server
 import serviceConfig from './configuration.js'
 import consoleLogStyle from '../../utility/consoleLogStyleConfig.js'
 import implementConditionActionOnModuleUsingJson from '../../utility/middleware/implementConditionActionOnModuleUsingJson.js'
+import { Graph as GraphModule } from '@dependency/graphTraversal'
+const { Graph } = GraphModule
+
+let configuredGraph = Graph.clientInterface({})
+let graph = new configuredGraph({})
 
 export async function initialize({ targetProjectConfig }) {
   let entrypointKey = 'default'
@@ -21,7 +26,8 @@ export async function initialize({ targetProjectConfig }) {
     },
     async (context, next) => {
       if (context.header.debug == 'true') console.log(`🍊 Entrypoint Condition Key: ${entrypointKey} \n \n`)
-      let callbackOption = await traverseGraph(entrypointKey)
+      let callbackOption = await graph.traverse({ nodeKey: entrypointKey })
+
       if (context.header.debug == 'true') console.log(`🔀✔️ Choosen callback is: %c ${callbackOption.name}`, consoleLogStyle.green)
 
       await implementConditionActionOnModuleUsingJson({ setting: callbackOption })(context, next)

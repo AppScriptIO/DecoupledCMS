@@ -4,11 +4,11 @@
 	"version": "1.0.0",
 	"scripts": {},
 	"dependencies": {
-		"oidc-provider": "*",
-		"openid-client": "*",
 		"koa-bodyparser": "*",
 		"koa-mount": "*",
-		"koa-views": "*"
+		"koa-views": "*",
+		"oidc-provider": "*",
+		"openid-client": "*"
 	},
 	"devDependencies": {}
 }
