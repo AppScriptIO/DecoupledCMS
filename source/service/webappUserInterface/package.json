@@ -1,0 +1,13 @@
+{
+	"name": "@service/webappUserInterface",
+	"main": ".",
+	"version": "1.0.0",
+	"scripts": {},
+	"dependencies": {
+		"underscore": "*",
+		"koa-views": "*",
+		"openid-client": "*",
+		"koa": "*"
+	},
+	"devDependencies": {}
+}

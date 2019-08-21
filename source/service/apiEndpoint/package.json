@@ -1,0 +1,13 @@
+{
+	"name": "@service/apiEndpoint",
+	"main": ".",
+	"version": "1.0.0",
+	"scripts": {},
+	"dependencies": {
+		"koa": "*",
+		"koa-router": "*",
+		"koa-compose": "*",
+		"rethinkdb": "*"
+	},
+	"devDependencies": {}
+}

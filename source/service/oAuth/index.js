@@ -1,17 +1,16 @@
-import views from 'koa-views'
-import bodyParser from 'koa-bodyparser'
-import OAuthClass from './OAuth.class.js'
-import _ from 'underscore'
 import filesystem from 'fs'
 import https from 'https'
 import http from 'http'
+import _ from 'underscore'
+import views from 'koa-views'
+import bodyParser from 'koa-bodyparser'
 import OAuth2Server from 'oauth2-server'
 import oAuth2ServerModel from './oAuth2Server.model.js'
 
 let MiddlewareController = createStaticInstanceClasses({ Superclass: Application, implementationType: 'Middleware', cacheName: true })
 let ConditionController = createStaticInstanceClasses({ Superclass: Application, implementationType: 'Condition', cacheName: true })
 
-;async () => {
+export const initialize = async () => {
   let Request = OAuth2Server.Request
   let Response = OAuth2Server.Response
 
@@ -82,7 +81,7 @@ let ConditionController = createStaticInstanceClasses({ Superclass: Application,
       await next()
     },
   ]
-  await middlewareArray.forEach(middleware => serverKoa.use(middleware))
+  middlewareArray.forEach(middleware => serverKoa.use(middleware))
 
   http.createServer(self.serverKoa.callback()).listen(self.port, () => {
     console.log(`☕%c ${self.name} listening on port ${self.port}`, self.config.style.green)

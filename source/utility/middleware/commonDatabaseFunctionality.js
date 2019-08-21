@@ -1,4 +1,4 @@
-import rethinkdbConfig from '../../../configuration/configuration/rethinkdbConfig.js'
+import rethinkdbConfig from '../../../configuration/rethinkdbConfig.js'
 import r from 'rethinkdb'
 import _ from 'underscore'
 
@@ -50,7 +50,7 @@ export function createTable() {
   }
 }
 
-export async function connect() {
+export async function connect(rethinkdbConfig) {
   let connection
   try {
     connection = await r // Create connection

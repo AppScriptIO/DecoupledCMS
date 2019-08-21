@@ -5,11 +5,11 @@ import filesystem from 'fs'
 import EventEmitter from 'events'
 import compose from 'koa-compose'
 import underscore from 'underscore'
-import { connect } from '../utilityFunction/middleware/commonDatabaseFunctionality.js'
-import { getMergedMultipleDocumentOfSpecificLanguage as queryPatternImplementation } from '@dependency/databaseUtility/source/patternImplementation.js'
+import { connect } from '../utility/middleware/commonDatabaseFunctionality.js'
 import { initialize as rethinkdbConfigFunction } from '../../configuration/rethinkdbConfig.js'
 import { initialize as serverConfigFunction } from '../../configuration/serverConfig.js'
 import consoleLogStyleConfig from '../../configuration/consoleLogStyleConfig.js'
+import { initialize as webappUserInterface } from './webappUserInterface'
 
 /**
  * - Connect to database
@@ -17,29 +17,11 @@ import consoleLogStyleConfig from '../../configuration/consoleLogStyleConfig.js'
  * - create http server
  */
 export async function serviceAggregator({ targetProjectConfig, entrypointConditionKey, databaseData }) {
-  let serverConfig = serverConfigFunction({ targetProjectConfig })
-  Object.assign(Application.config, serverConfig, rethinkdbConfigFunction({ serverConfig }), { appConfiguration: targetProjectConfig }, consoleLogStyleConfig)
+  let targetConfig = {}
+  Object.assign(targetConfig, serverConfigFunction({ targetProjectConfig }), rethinkdbConfigFunction({ targetProjectConfig }), { appConfiguration: targetProjectConfig }, consoleLogStyleConfig)
+
   // One-time initialization of Applicaiton Class.
-  console.info(`☕%c Running Application as ${self.config.DEPLOYMENT} - '${self.config.PROTOCOL}${self.config.HOST}'`, self.config.style.green)
-  assert.notStrictEqual(self.config.HOST, undefined)
-
-  self.rethinkdbConnection = await connect()
-
-  // TODO: Sync settings between multiple underscore installations or fix issue when multiple installations present.
-  // Solution option - when underscore used outside appscript module, export it to get it's settings.
-  // underscore template should have one single instance accross application - To affect changes of _ to the main app.
-  let underscorePath = require.resolve('underscore')
-  let appLevelUnderscorePath = path.resolve(__dirname, '../../../node_modules/underscore/underscore.js')
-  if (filesystem.existsSync(appLevelUnderscorePath) && underscorePath !== appLevelUnderscorePath) {
-    // case - multiple underscore installations present
-    console.log(`• Underscore template - Found multiple underscore installations, Using appscript local underscore instance (module in lower hierarchy) i.e. ${underscorePath}.`)
-    // self.underscore = require(appLevelUnderscorePath)
-    // throw 'Found multiple underscore installations. This will prevent consistent settings between modules that use underscore for templating e.g. koa-view and local appscript underscore usage.'
-  } else {
-    // single either appscript module installation or applevel installation.
-    console.log(`• Underscore template - Found a single installation of underscore, using ${underscorePath}.`)
-    // self.underscore = require(underscorePath)
-  }
+  console.info(`☕%c Running Application as ${targetConfig.DEPLOYMENT} - '${targetConfig.PROTOCOL}${targetConfig.HOST}'`, targetConfig.style.green)
 
   underscore.templateSettings = {
     // initial underscore template settings on first import gets applied on the rest.
@@ -49,42 +31,39 @@ export async function serviceAggregator({ targetProjectConfig, entrypointConditi
   }
   console.info(`• Underscore template setting set as ${underscore.templateSettings.evaluate} ${underscore.templateSettings.interpolate} ${underscore.templateSettings.escape}`)
 
-  await self.loadFrontendData() // initialize template document front end.
+  // let rethinkdbConnection = await connect(targetConfig)
+  // await loadDatabaseData({ databaseData })
+  // await loadFrontendData({ targetConfig }) // initialize template document front end.
 
-  // if(staticSubclass) self.addStaticSubclassToClassArray(staticSubclass)
-  console.log('• App up & running !')
-
-  // -------------------------------------
-
-  console.log('run services')
-  await initializeDatabaseData({ databaseVersion: targetProjectConfig.databaseVersion, databaseData })()
-  console.groupCollapsed('Port classes initialization:')
-  await oAuthInitializePortServer()()
-  await openIdConnectInitializePortServer()()
-  await webappUIInitializePortServer()()
-  await staticContentInitializePortServer({ entrypointConditionKey })()
-  await apiInitializePortServer()()
-  await websocketInitializePortServer()()
+  console.groupCollapsed('• Run services:')
+  await webappUserInterface({ targetConfig })
+  // await oAuthInitializePortServer()()
+  // await openIdConnectInitializePortServer()()
+  // await staticContentInitializePortServer({ entrypointConditionKey })()
+  // await apiInitializePortServer()()
+  // await websocketInitializePortServer()()
   console.groupEnd()
+
+  console.log('• App up & running !')
 }
 
-async function loadFrontendData() {
+async function loadFrontendData({ targetConfig }) {
   let getTableDocument = { generate: getTableDocumentDefault, instance: [] }
   getTableDocument.instance['template_documentFrontend'] = await getTableDocument.generate('webappSetting', 'template_documentFrontend')
-  const documentFrontendData = await getTableDocument.instance['template_documentFrontend'](self.rethinkdbConnection)
+  const documentFrontendData = await getTableDocument.instance['template_documentFrontend'](targetConfig.rethinkdbConnection)
   let defaultLanguage = 'English'
   // let uiContent = await queryPatternImplementation({
   //     databaseConnection: Application.rethinkdbConnection,
   //     languageDocumentKey: defaultLanguage,
   //     dataTableName: 'ui'
   // })
-  self.frontendStatic = {
+  targetConfig.frontendStatic = {
     // Configurations passed to frontend
-    config: self.config,
+    config: targetConfig,
     setting: {
       location: {
-        routeBasePath: `${self.config.PROTOCOL}${self.config.HOST}`,
-        cdnBasePath: self.extendedSubclass.static['StaticContent'].url,
+        routeBasePath: `${targetConfig.PROTOCOL}${targetConfig.HOST}`,
+        cdnBasePath: targetConfig.extendedSubclass.static['StaticContent'].url,
       },
       mode: {
         // version / mode of app

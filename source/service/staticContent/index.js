@@ -50,7 +50,7 @@ let ConditionController = createStaticInstanceClasses({
     },
   ]
 
-  await middlewareArray.forEach(middleware => serverKoa.use(middleware))
+  middlewareArray.forEach(middleware => serverKoa.use(middleware))
 
   // createHttpServer
   await new Promise((resolve, reject) => {

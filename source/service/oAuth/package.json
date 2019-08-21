@@ -1,0 +1,15 @@
+{
+	"name": "@service/oAuth",
+	"main": ".",
+	"version": "1.0.0",
+	"scripts": {},
+	"dependencies": {
+		"koa-bodyparser": "*",
+		"koa-views": "*",
+		"underscore": "*",
+		"rethinkdb": "*",
+		"oauth2-server": "*"
+
+	},
+	"devDependencies": {}
+}

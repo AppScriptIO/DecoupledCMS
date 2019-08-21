@@ -1,4 +1,3 @@
-import { class as Application } from '../../Application.class.js'
 import rethinkDB from 'rethinkdb'
 import getTableDocumentAndFilter from '@dependency/databaseUtility/source/getTableDocumentAndFilter.query.js'
 

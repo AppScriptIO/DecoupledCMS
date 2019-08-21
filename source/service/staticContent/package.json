@@ -1,0 +1,11 @@
+{
+	"name": "@service/staticContent",
+	"main": ".",
+	"version": "1.0.0",
+	"scripts": {},
+	"dependencies": {
+		"koa-views": "*",
+		"koa": "*"
+	},
+	"devDependencies": {}
+}

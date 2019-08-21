@@ -1,16 +1,10 @@
 import Koa from 'koa' // Koa applicaiton server
-import implementConditionActionOnModuleUsingJson from '../../../utilityFunction/middleware/implementConditionActionOnModuleUsingJson.js'
-import implementMiddlewareOnModuleUsingJson from '../../../utilityFunction/middleware/implementMiddlewareOnModuleUsingJson.js' // Middleware extending server functionality
+import implementConditionActionOnModuleUsingJson from '../../../utility/middleware/implementConditionActionOnModuleUsingJson.js'
+import implementMiddlewareOnModuleUsingJson from '../../../utility/middleware/implementMiddlewareOnModuleUsingJson.js' // Middleware extending server functionality
 
-let MiddlewareController = createStaticInstanceClasses({
-  implementationType: 'Middleware',
-  cacheName: true,
-})
+let MiddlewareController = createStaticInstanceClasses({ implementationType: 'Middleware', cacheName: true })
 
-let ConditionController = createStaticInstanceClasses({
-  implementationType: 'Condition',
-  cacheName: true,
-})
+let ConditionController = createStaticInstanceClasses({ implementationType: 'Condition', cacheName: true })
 
 let port = 8082
 let url = `${self.config.PROTOCOL}api.${self.config.HOST}/`
@@ -45,7 +39,7 @@ let url = `${self.config.PROTOCOL}api.${self.config.HOST}/`
       // console.log('Reached last middleware')
     },
   ]
-  await middlewareArray.forEach(middleware => serverKoa.use(middleware))
+  middlewareArray.forEach(middleware => serverKoa.use(middleware))
 
   // createHttpServer
   await new Promise((resolve, reject) => {

@@ -1,0 +1,14 @@
+{
+	"name": "@service/openIdConnect",
+	"main": ".",
+	"version": "1.0.0",
+	"scripts": {},
+	"dependencies": {
+		"oidc-provider": "*",
+		"openid-client": "*",
+		"koa-bodyparser": "*",
+		"koa-mount": "*",
+		"koa-views": "*"
+	},
+	"devDependencies": {}
+}

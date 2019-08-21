@@ -1,9 +1,7 @@
-import views from 'koa-views'
-import bodyParser from 'koa-bodyparser'
 import koaBodyParser from 'koa-bodyParser'
 import koaMount from 'koa-mount' // mount koa app as middleware to another koa app
 import koaViews from 'koa-views'
-import { oidcInteractionEntrypoint, oidcInteractionLogin, oidcInteractionConfirm } from '../../../utilityFunction/middleware/oidcInteraction.middleware.js'
+import { oidcInteractionEntrypoint, oidcInteractionLogin, oidcInteractionConfirm } from '../../../utility/middleware/oidcInteraction.middleware.js'
 
 let MiddlewareController = createStaticInstanceClasses({ implementationType: 'Middleware', cacheName: true })
 let ConditionController = createStaticInstanceClasses({ implementationType: 'Condition', cacheName: true })
@@ -87,7 +85,7 @@ export default ({} = {}) => async () => {
     oidcInteractionConfirm({ openIdConnectServer: openIdConnectServer }),
   ]
 
-  await middlewareArray.forEach(middleware => serverKoa.use(middleware))
+  middlewareArray.forEach(middleware => serverKoa.use(middleware))
 
   // createHttpServer
   await new Promise((resolve, reject) => {
