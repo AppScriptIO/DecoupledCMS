@@ -3,20 +3,10 @@ import koaViews from 'koa-views'
 import Koa from 'koa' // Koa applicaiton server
 import consoleLogStyle from '../../utility/consoleLogStyleConfig.js'
 
-let MiddlewareController = createStaticInstanceClasses({
-  Superclass: Application,
-  implementationType: 'Middleware',
-  cacheName: true,
-})
-let ConditionController = createStaticInstanceClasses({
-  Superclass: Application,
-  implementationType: 'Condition',
-  cacheName: true,
-})
+let MiddlewareController = createStaticInstanceClasses({ implementationType: 'Middleware', cacheName: true })
+let ConditionController = createStaticInstanceClasses({ implementationType: 'Condition', cacheName: true })
 
 ;async () => {
-  let port = 8081
-  let url = `${self.config.PROTOCOL}cdn.${self.config.HOST}`
   let entrypointConditionKey
   // Templating engine & associated extention.
   // applyKoaMiddleware
@@ -41,7 +31,7 @@ let ConditionController = createStaticInstanceClasses({
       let callback = await conditionController.initializeNestedUnit({ nestedUnitKey: entrypointConditionKey })
       // if(process.env.SZN_DEBUG == 'true') console.log(`🍊 Callback object: ${callback.name}`)
       // [2] Use callback
-      if (process.env.SZN_DEBUG == 'true' && context.header.debug == 'true') console.log(`🔀✔️ Choosen callback is: %c ${callback.name}`, consoleLogStyle.green)
+      if (process.env.SZN_DEBUG == 'true' && context.header.debug == 'true') console.log(`🔀✔️ Choosen callback is: %c ${callback.name}`, consoleLogStyle.style.green)
       await implementConditionActionOnModuleUsingJson({ setting: callback })(context, next)
     },
     async (context, next) => {
@@ -67,7 +57,7 @@ let ConditionController = createStaticInstanceClasses({
     //     console.log('HTTP server connection socket was timedout (console.log in httpServer.setTimeout)!')
     // })
     httpServer.listen(self.port, () => {
-      console.log(`☕%c ${self.name} listening on port ${self.port}`, consoleLogStyle.green)
+      console.log(`☕%c ${self.name} listening on port ${self.port}`, consoleLogStyle.style.green)
       resolve()
     })
   })

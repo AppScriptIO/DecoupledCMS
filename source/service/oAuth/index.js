@@ -20,8 +20,6 @@ export const initialize = async () => {
   let oAuth2Server // oauth2-server instance
   let entrypointSetting = { defaultConditionTreeKey: 'XYZ' }
 
-  let port = 8088
-
   /**
    * initialize oAuth2 server
    */
@@ -64,7 +62,7 @@ export const initialize = async () => {
       let entrypointConditionTree = '0681f25c-4c00-4295-b12a-6ab81a3cb440'
       if (process.env.SZN_DEBUG == 'true' && context.header.debug == 'true') console.log(`🍊 Entrypoint Condition Key: ${entrypointConditionTree} \n \n`)
       let callback = await conditionController.initializeNestedUnit({ nestedUnitKey: entrypointConditionTree })
-      if (process.env.SZN_DEBUG == 'true' && context.header.debug == 'true') console.log(`🔀✔️ Choosen callback is: %c ${callback.name}`, consoleLogStyle.green)
+      if (process.env.SZN_DEBUG == 'true' && context.header.debug == 'true') console.log(`🔀✔️ Choosen callback is: %c ${callback.name}`, consoleLogStyle.style.green)
       // [2] Use callback
       await implementConditionActionOnModuleUsingJson({ setting: callback })(context, next)
 
@@ -83,7 +81,7 @@ export const initialize = async () => {
   middlewareArray.forEach(middleware => serverKoa.use(middleware))
 
   http.createServer(self.serverKoa.callback()).listen(self.port, () => {
-    console.log(`☕%c ${self.name} listening on port ${self.port}`, consoleLogStyle.green)
+    console.log(`☕%c ${self.name} listening on port ${self.port}`, consoleLogStyle.style.green)
     // eventEmitter.emit('listening')
     // process.emit('listening')
     if (process.send !== undefined) {

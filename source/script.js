@@ -1,1 +1,1 @@
-export { serviceAggregator } from './serviceAggregator.js'
+export * as webappUserInterface from './service/webappUserInterface'

@@ -46,7 +46,7 @@ export default ({ setting /** condition nested unit callback properties's option
         console.log(setting.name)
         break
       default:
-        console.log("SZN - %c Setting (callback) doesn't match any kind.", consoleLogStyle.red)
+        console.log("SZN - %c Setting (callback) doesn't match any kind.", consoleLogStyle.style.red)
     }
     return isCalledNext
   }

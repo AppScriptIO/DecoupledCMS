@@ -4,11 +4,7 @@ import implementMiddlewareOnModuleUsingJson from '../../../utility/middleware/im
 import consoleLogStyle from '../../utility/consoleLogStyleConfig.js'
 
 let MiddlewareController = createStaticInstanceClasses({ implementationType: 'Middleware', cacheName: true })
-
 let ConditionController = createStaticInstanceClasses({ implementationType: 'Condition', cacheName: true })
-
-let port = 8082
-let url = `${self.config.PROTOCOL}api.${self.config.HOST}/`
 
 ;async () => {
   // createKoaServer
@@ -36,27 +32,14 @@ let url = `${self.config.PROTOCOL}api.${self.config.HOST}/`
       let isCalledNext = await implementConditionActionOnModuleUsingJson({ setting: callback })(context, next)
       if (!isCalledNext) await next()
     },
-    async (context, next) => {
-      // console.log('Reached last middleware')
-    },
   ]
   middlewareArray.forEach(middleware => serverKoa.use(middleware))
 
   // createHttpServer
   await new Promise((resolve, reject) => {
     let httpServer = http.createServer(serverKoa.callback())
-    // self.httpServer.on('connection', (socket) => {
-    //     console.info('SOCKET OPENED' + JSON.stringify(socket.address()))
-    //     socket.on('end', () => { console.info('SOCKET END: other end of the socket sends a FIN packet') })
-    //     socket.on('timeout', () => { console.info('SOCKET TIMEOUT') })
-    //     socket.on('error', (error) => { console.info('SOCKET ERROR: ' + JSON.stringify(error)) })
-    //     socket.on('close', (had_error) => { console.info('SOCKET CLOSED. Is ERROR ?: ' + had_error) })
-    // })
-    // self.httpServer.setTimeout(0, () => {
-    //     console.log('HTTP server connection socket was timedout (console.log in httpServer.setTimeout)!')
-    // })
-    httpServer.listen(self.port, () => {
-      console.log(`☕%c ${self.name} listening on port ${self.port}`, consoleLogStyle.green)
+    httpServer.listen(2, () => {
+      console.log(`☕%c ${self.name} listening on port ${2}`, consoleLogStyle.style.green)
       resolve()
     })
   })

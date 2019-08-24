@@ -16,7 +16,6 @@
 	"private": true,
 	"dependencies": {
 		"@babel/core": "*",
-		"@dependency/graphTraversal": "https://github.com/AppScriptIO/graph#semver:^1.x.x",
 		"co-body": "*",
 		"koa-compress": "*",
 		"koa-json-error": "*",

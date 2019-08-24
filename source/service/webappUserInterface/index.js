@@ -7,32 +7,37 @@ import Koa from 'koa' // Koa applicaiton server
 import serviceConfig from './configuration.js'
 import consoleLogStyle from '../../utility/consoleLogStyleConfig.js'
 import implementConditionActionOnModuleUsingJson from '../../utility/middleware/implementConditionActionOnModuleUsingJson.js'
-import { Graph as GraphModule } from '@dependency/graphTraversal'
+import { Graph as GraphModule, Context as ContextModule } from '@dependency/graphTraversal'
 const { Graph } = GraphModule
+const { Context } = ContextModule
 
-let configuredGraph = Graph.clientInterface({})
-let graph = new configuredGraph({})
-
-export async function initialize({ targetProjectConfig }) {
-  let entrypointKey = 'default'
+export async function initialize({ targetProjectConfig, entrypointKey = 'default' }) {
+  underscore.templateSettings = serviceConfig.underscore
+  console.info(`• Underscore template setting set as ${underscore.templateSettings.evaluate} ${underscore.templateSettings.interpolate} ${underscore.templateSettings.escape}`)
 
   let serverKoa = new Koa() // export if script is required.
   serverKoa.subdomainOffset = 1 // for localhost domain.
-  ;[
+
+  let middlewareArray = [
     koaViews('/', { map: { html: 'underscore', js: 'underscore' } }),
     async (context, next) => {
       context.set('connection', 'keep-alive')
       await next()
     },
     async (context, next) => {
-      if (context.header.debug == 'true') console.log(`🍊 Entrypoint Condition Key: ${entrypointKey} \n \n`)
+      let contextInstance = new Context.clientInterface({ targetProjectConfig })
+      let configuredGraph = Graph.clientInterface({ parameter: [{ concreteBehaviorList: [contextInstance] }] })
+      let graph = new configuredGraph({})
+      if (context.header.debug == 'true') console.log(`• Entrypoint Key: ${entrypointKey} \n \n`)
       let callbackOption = await graph.traverse({ nodeKey: entrypointKey })
 
-      if (context.header.debug == 'true') console.log(`🔀✔️ Choosen callback is: %c ${callbackOption.name}`, consoleLogStyle.green)
+      if (context.header.debug == 'true') console.log(`🔀✔️ Choosen callback is: %c ${callbackOption.name}`, consoleLogStyle.style.green)
 
-      await implementConditionActionOnModuleUsingJson({ setting: callbackOption })(context, next)
+      let composedMiddleware = await implementConditionActionOnModuleUsingJson({ setting: callbackOption })
+      await composedMiddleware(context, next)
     },
-  ] |> (middlewareArray => middlewareArray.forEach(middleware => serverKoa.use(middleware)))
+  ]
+  middlewareArray.forEach(middleware => serverKoa.use(middleware))
 
   http
     .createServer(serverKoa.callback())
@@ -44,16 +49,9 @@ export async function initialize({ targetProjectConfig }) {
       // socket.on('close', had_error => console.info('SOCKET CLOSED. Is ERROR ?: ' + had_error))
     })
     .setTimeout(0, () => console.log('HTTP server connection socket was timedout (console.log in httpServer.setTimeout)!'))
-    .listen(serviceConfig.port, () => {
+    .listen(1, () => {
       if (process.send !== undefined) process.send({ message: 'Server listening' }) // if process is a forked child process.
-      // eventEmitter.emit('listening')
-      // process.emit('listening')
-      console.log(`☕%c ${serviceConfig.name} listening on port ${serviceConfig.port}`, consoleLogStyle.green)
+      process.emit('listening')
+      console.log(`☕%c ${serviceConfig.serviceName} listening on port ${1}`, consoleLogStyle.style.green)
     })
-
-  if (serviceConfig.ssl)
-    https
-      .createServer({ key: serviceConfig.ssl.key, cert: serviceConfig.ssl.cert }, serverKoa.callback())
-      .on('connection', socket => socket.setTimeout(120))
-      .listen(443, () => console.log(`☕%c ${serviceConfig.name} listening on port 443`, consoleLogStyle.green))
 }

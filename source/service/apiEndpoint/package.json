@@ -4,6 +4,7 @@
 	"version": "1.0.0",
 	"scripts": {},
 	"dependencies": {
+		"@dependency/graphTraversal": "https://github.com/AppScriptIO/graph#semver:^1.x.x",
 		"koa": "*",
 		"koa-compose": "*",
 		"koa-router": "*",

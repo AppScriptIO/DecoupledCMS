@@ -14,16 +14,13 @@ import { clientArray } from './clientApplication.js'
 import keystore from './key/keystore.json'
 import consoleLogStyle from '../../utility/consoleLogStyleConfig.js'
 
-let MiddlewareController = createStaticInstanceClasses({ implementationType: 'Middleware', cacheName: true })
-let ConditionController = createStaticInstanceClasses({ implementationType: 'Condition', cacheName: true })
-
 export default ({} = {}) => async () => {
   let OpenIdConnectServer // oidc-provider class
   let openIdConnectServer = new OpenIdConnectServer(
-    `${Application.config.PROTOCOL}${Application.config.HOST}:${self.port}`, // issuer address
+    `${PROTOCOL}${HOST}:${self.port}`, // issuer address
     oidcConfiguration,
   ) // oidc-provider instance
-  let port = 8084
+
   let entrypointSetting = { defaultConditionTreeKey: '' }
 
   /**
@@ -85,7 +82,7 @@ export default ({} = {}) => async () => {
   // createHttpServer
   await new Promise((resolve, reject) => {
     http.createServer(self.serverKoa.callback()).listen(self.port, () => {
-      console.log(`☕%c ${self.name} listening on port ${self.port}`, consoleLogStyle.green)
+      console.log(`☕%c ${self.name} listening on port ${self.port}`, consoleLogStyle.style.green)
       // eventEmitter.emit('listening')
       // process.emit('listening')
       if (process.send !== undefined) {
