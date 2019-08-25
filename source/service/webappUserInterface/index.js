@@ -7,17 +7,16 @@ import Koa from 'koa' // Koa applicaiton server
 import serviceConfig from './configuration.js'
 import consoleLogStyle from '../../utility/consoleLogStyleConfig.js'
 import implementConditionActionOnModuleUsingJson from '../../utility/middleware/implementConditionActionOnModuleUsingJson.js'
-import { Graph as GraphModule, Context as ContextModule, Database as DatabaseModule } from '@dependency/graphTraversal'
-import { boltCypherModelAdapterFunction } from '@dependency/graphTraversal/source/implementationPlugin/databaseModelAdapter/boltCypherModelAdapter.js'
+import { Graph as GraphModule, Context as ContextModule, Database as DatabaseModule, modelAdapter } from '@dependency/graphTraversal'
 const { Graph } = GraphModule
 const { Context } = ContextModule
 const { Database } = DatabaseModule
-import * as graphData from '../../../resource/taskSequence.graphData.json'
+import * as graphData from '../../../resource/sequence.graphData.js'
 
 async function initializeGraph({ targetProjectConfig, additionalData }) {
   let contextInstance = new Context.clientInterface({ targetProjectConfig })
   let concreteDatabaseBehavior = new Database.clientInterface({
-    implementationList: { boltCypherModelAdapter: boltCypherModelAdapterFunction({ url: { protocol: 'bolt', hostname: 'localhost', port: 7687 } }) },
+    implementationList: { boltCypherModelAdapter: modelAdapter.boltCypherModelAdapterFunction({ url: { protocol: 'bolt', hostname: 'localhost', port: 7687 } }) },
     defaultImplementation: 'boltCypherModelAdapter',
   })
   // let concereteDatabaseInstance = concreteDatabaseBehavior[Entity.reference.getInstanceOf](Database)
