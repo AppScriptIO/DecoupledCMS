@@ -3,16 +3,16 @@ import { connect } from 'utility/middleware/commonDatabaseFunctionality.js'
 export async function loadData({ targetProjectConfig, databaseData }) {
   let rethinkdbConnection = await connect(rethinkdbConfig)
   await loadDatabaseData({ databaseData })
-  await loadFrontendData({ targetConfig }) // initialize template document front end.
+  await loadFrontendData({ targetConfig, rethinkdbConnection }) // initialize template document front end.
 }
 
-async function loadFrontendData({ targetConfig }) {
+async function loadFrontendData({ targetConfig, rethinkdbConnection }) {
   let getTableDocument = { generate: getTableDocumentDefault, instance: [] }
   getTableDocument.instance['template_documentFrontend'] = await getTableDocument.generate('webappSetting', 'template_documentFrontend')
   const documentFrontendData = await getTableDocument.instance['template_documentFrontend'](targetConfig.rethinkdbConnection)
   let defaultLanguage = 'English'
   let uiContent = await queryPatternImplementation({
-    databaseConnection: Application.rethinkdbConnection,
+    databaseConnection: rethinkdbConnection,
     languageDocumentKey: defaultLanguage,
     dataTableName: 'ui',
   })

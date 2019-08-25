@@ -7,11 +7,35 @@ import Koa from 'koa' // Koa applicaiton server
 import serviceConfig from './configuration.js'
 import consoleLogStyle from '../../utility/consoleLogStyleConfig.js'
 import implementConditionActionOnModuleUsingJson from '../../utility/middleware/implementConditionActionOnModuleUsingJson.js'
-import { Graph as GraphModule, Context as ContextModule } from '@dependency/graphTraversal'
+import { Graph as GraphModule, Context as ContextModule, Database as DatabaseModule } from '@dependency/graphTraversal'
+import { boltCypherModelAdapterFunction } from '@dependency/graphTraversal/source/implementationPlugin/databaseModelAdapter/boltCypherModelAdapter.js'
 const { Graph } = GraphModule
 const { Context } = ContextModule
+const { Database } = DatabaseModule
+import * as graphData from '../../../resource/taskSequence.graphData.json'
 
-export async function initialize({ targetProjectConfig, entrypointKey = 'default' }) {
+async function initializeGraph({ targetProjectConfig, additionalData }) {
+  let contextInstance = new Context.clientInterface({ targetProjectConfig })
+  let concreteDatabaseBehavior = new Database.clientInterface({
+    implementationList: { boltCypherModelAdapter: boltCypherModelAdapterFunction({ url: { protocol: 'bolt', hostname: 'localhost', port: 7687 } }) },
+    defaultImplementation: 'boltCypherModelAdapter',
+  })
+  // let concereteDatabaseInstance = concreteDatabaseBehavior[Entity.reference.getInstanceOf](Database)
+  // let concereteDatabase = concereteDatabaseInstance[Database.reference.key.getter]()
+  let configuredGraph = Graph.clientInterface({ parameter: [{ database: concreteDatabaseBehavior, concreteBehaviorList: [contextInstance] }] })
+  let graph = new configuredGraph({})
+  await graph.database.loadGraphData({ nodeEntryData: graphData.node, connectionEntryData: graphData.edge })
+  console.log(`• loaded service graph data.`)
+  if (additionalData) {
+    await graph.database.loadGraphData({ nodeEntryData: additionalData.node, connectionEntryData: additionalData.edge })
+    console.log(`• loaded additional graph data.`)
+  }
+  return graph
+}
+
+export async function initialize({ targetProjectConfig, entrypointKey = 'default', additionalData }) {
+  let graph = await initializeGraph({ targetProjectConfig, additionalData })
+
   underscore.templateSettings = serviceConfig.underscore
   console.info(`• Underscore template setting set as ${underscore.templateSettings.evaluate} ${underscore.templateSettings.interpolate} ${underscore.templateSettings.escape}`)
 
@@ -25,9 +49,6 @@ export async function initialize({ targetProjectConfig, entrypointKey = 'default
       await next()
     },
     async (context, next) => {
-      let contextInstance = new Context.clientInterface({ targetProjectConfig })
-      let configuredGraph = Graph.clientInterface({ parameter: [{ concreteBehaviorList: [contextInstance] }] })
-      let graph = new configuredGraph({})
       if (context.header.debug == 'true') console.log(`• Entrypoint Key: ${entrypointKey} \n \n`)
       let callbackOption = await graph.traverse({ nodeKey: entrypointKey })
 
