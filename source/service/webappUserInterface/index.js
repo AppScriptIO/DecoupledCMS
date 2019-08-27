@@ -11,7 +11,7 @@ import { Graph as GraphModule, Context as ContextModule, Database as DatabaseMod
 const { Graph } = GraphModule
 const { Context } = ContextModule
 const { Database } = DatabaseModule
-import * as graphData from '../../../resource/sequence.graphData.js'
+import * as graphData from '../../../resource/sequence.graphData.json'
 
 async function initializeGraph({ targetProjectConfig, additionalData }) {
   let contextInstance = new Context.clientInterface({ targetProjectConfig })
