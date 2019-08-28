@@ -4,6 +4,7 @@
 - Share webcompoennts & javascript modules between different projects using appscript.
 - Render and serve template files using a documentKey-File map or document key in url parameter, to render a specific file with a speciific template tree on demand.
 - Think of State management strategy - Having a single observable that represents the action. With no race condition (promise race) and allowing undo actions. https://www.youtube.com/watch?v=H4EyuvGe_dg
+- Implement a graph based koa like server, where the graph traversal executes the middlewares immediately and decides when to continue and when to halt further middleware execution for each request.
 
 
 ___
