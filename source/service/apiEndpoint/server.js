@@ -10,7 +10,7 @@ export async function initialize({ targetProjectConfig }) {
   const registerMiddleware = middleware => serverKoa.use(middleware)
   serverKoa.subdomainOffset = 1 // for localhost domain.
 
-  let { graph, createGraphMiddleware } = await initializeGraph({ targetProjectConfig })
+  let { createGraphMiddleware } = await initializeGraph({ targetProjectConfig })
 
   // applyKoaMiddleware
   ;[
@@ -21,9 +21,7 @@ export async function initialize({ targetProjectConfig }) {
       await next()
     },
     createGraphMiddleware({ entrypointKey: '05bd55ed-212c-4609-8caf-e464a7cceb74' }),
-    async (context, next) => {
-      console.log('last middleware')
-    },
+    async (context, next) => console.log('last middleware reached.'),
   ].forEach(registerMiddleware)
 
   // createHttpServer
