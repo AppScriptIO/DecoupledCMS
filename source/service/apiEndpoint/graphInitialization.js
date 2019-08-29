@@ -14,13 +14,14 @@ const { Graph } = GraphModule,
 import * as graphData from './graphData.json'
 import { bodyParserMiddleware } from '../../middleware/bodyParser.middleware.js'
 import composeMiddleware from 'koa-compose'
-import { immediatelyExecuteMiddleware, returnMiddlewareFunction } from '../../graphTraversalImplementation.js'
 
 const debugGraphMiddleware = targetMiddleware =>
   new Proxy(targetMiddleware, {
     apply: function(target, thisArg, argumentsList) {
-      console.log(target.name, ' middleware executing.')
-      return Reflect.apply(...arguments)
+      console.log(target.name, ' Openning.')
+      let result = Reflect.apply(...arguments)
+      console.log(target.name, ' Closing.')
+      return result
     },
   })
 
@@ -37,7 +38,7 @@ const functionContext = {
 
 export async function initializeGraph({ targetProjectConfig }) {
   // context
-  let contextInstance = new Context.clientInterface({ targetProjectConfig, functionContext, conditionContext })
+  let contextInstance = new Context.clientInterface({ targetProjectConfig, functionContext, conditionContext, implementationKey: { traversalInterception: 'handleMiddlewareNextCall' } })
   // database
   let concreteDatabaseBehavior = new Database.clientInterface({
     implementationList: { boltCypherModelAdapter: modelAdapter.boltCypherModelAdapterFunction({ url: { protocol: 'bolt', hostname: 'localhost', port: 7687 } }) },
@@ -53,14 +54,14 @@ export async function initializeGraph({ targetProjectConfig }) {
     defaultImplementationList
     |> (list => {
       // add specific graph dependent implementations
-      list.processData['immediatelyExecuteMiddleware'] = immediatelyExecuteMiddleware
-      list.processData['returnMiddlewareFunction'] = returnMiddlewareFunction
+      // list.processData['someCustomImplementation'] = function() {}
       return list
     })
   let concreteGraphTraversalBehavior = new GraphTraversal.clientInterface({
     implementationList: { middlewareGraph: implementationList },
     defaultImplementation: 'middlewareGraph',
   })
+
   let configuredGraph = Graph.clientInterface({
     parameter: [
       {
@@ -76,8 +77,9 @@ export async function initializeGraph({ targetProjectConfig }) {
 
 // Immediately executing middlewares in graph traversal.
 const createGraphMiddlewareFunction = configuredGraph => ({ entrypointKey }) => async (context, next) => {
-  let graph = new configuredGraph({ data: { middlewareParameter: { context, next } } })
+  let graph = new configuredGraph({ data: { middlewareParameter: { context } } })
   await graph.traverse({ nodeKey: entrypointKey }) // implementation key is derived from the graph nodes - usally 'immediatelyExecuteMiddleware'
+  await next()
 }
 
 // Aggregating middleware approach - return a middleware array, then use koa-compose to merge the middlewares and execute it.
