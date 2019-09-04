@@ -21,23 +21,18 @@ export let transformJavascript = functionWrappedMiddlewareDecorator(async functi
     let scriptCode = context.body
     let transformBabelPlugin = []
 
-    if (path.includes('webcomponent/@package')) {
-      // in case an npm webcomponent package
-      transformBabelPlugin = nativeClientSideRuntimeCompilerConfig.plugins
-    } else {
-      // in case a custom project element
-      transformBabelPlugin = nativeClientSideRuntimeCompilerConfig.plugins
-    }
+    // in case an npm webcomponent package
+    if (path.includes('webcomponent/@package')) transformBabelPlugin = nativeClientSideRuntimeCompilerConfig.plugins
+    // in case a custom project element
+    else transformBabelPlugin = nativeClientSideRuntimeCompilerConfig.plugins
+
     let transformBabelPreset = nativeClientSideRuntimeCompilerConfig.presets
 
     if (transformBabelPlugin.length) {
       // convert stream into string
       if (scriptCode instanceof stream.Stream) scriptCode = await streamToString(scriptCode)
       // transform code using array of plugins.
-      let transformedObject = babel.transformSync(scriptCode, {
-        presets: transformBabelPreset,
-        plugins: transformBabelPlugin,
-      })
+      let transformedObject = babel.transformSync(scriptCode, { presets: transformBabelPreset, plugins: transformBabelPlugin })
       context.body = transformedObject.code
     }
   }

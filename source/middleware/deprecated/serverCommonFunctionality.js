@@ -12,8 +12,6 @@ import koaCompress from 'koa-compress'
 import zlib from 'zlib'
 
 // Database
-import rethinkdbConfig from '../../../configuration/configuration/rethinkdbConfig.js'
-import r from 'rethinkdb'
 import { handleConnection, createDatabase, createTable } from './commonDatabaseFunctionality.js'
 
 let middlewareArray = [

@@ -25,11 +25,6 @@ const debugGraphMiddleware = targetMiddleware =>
     },
   })
 
-// TODO: add other stages to the graph with evaluations
-// let callback = await conditionController.initializeNestedUnit({ nestedUnitKey: 'asdf8-d9fb-4890-a6e9-51052a8c011f' })
-// let isCalledNext = await implementConditionActionOnModuleUsingJson({ setting: callback })(context, next)
-// if (!isCalledNext) await next()
-
 // context that will be used by the graph traversal during execution.
 const functionContext = {
     bodyParser: bodyParserMiddleware |> debugGraphMiddleware,
