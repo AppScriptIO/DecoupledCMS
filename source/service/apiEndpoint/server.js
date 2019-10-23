@@ -1,31 +1,32 @@
-import Koa from 'koa' // Koa applicaiton server
-import http from 'http'
-import consoleLogStyle from '../../utility/consoleLogStyleConfig.js'
-import serviceConfig from './configuration.js'
-import { initializeGraph } from './graphInitialization.js'
+"use strict";var _interopRequireDefault = require("@babel/runtime/helpers/interopRequireDefault");Object.defineProperty(exports, "__esModule", { value: true });exports.initialize = initialize;var _koa = _interopRequireDefault(require("koa"));
+var _http = _interopRequireDefault(require("http"));
+var _consoleLogStyleConfig = _interopRequireDefault(require("../../utility/consoleLogStyleConfig.js"));
+var _configuration = _interopRequireDefault(require("./configuration.js"));
+var _graphInitialization = require("./graphInitialization.js");
 
-export async function initialize({ targetProjectConfig }) {
-  // createKoaServer
-  const serverKoa = new Koa() // export if script is required.
-  const registerMiddleware = middleware => serverKoa.use(middleware)
-  serverKoa.subdomainOffset = 1 // for localhost domain.
+async function initialize({ targetProjectConfig }) {
 
-  let { createGraphMiddleware } = await initializeGraph({ targetProjectConfig })
+  const serverKoa = new _koa.default();
+  const registerMiddleware = middleware => serverKoa.use(middleware);
+  serverKoa.subdomainOffset = 1;
 
-  // applyKoaMiddleware
-  ;[
-    async (context, next) => {
-      context.set('connection', 'keep-alive')
-      context.set('Access-Control-Allow-Origin', '*')
-      await context.req.setTimeout(30000)
-      await next()
-    },
-    createGraphMiddleware({ entrypointKey: '05bd55ed-212c-4609-8caf-e464a7cceb74' }),
-    async (context, next) => console.log('last middleware reached.'),
-  ].forEach(registerMiddleware)
+  let { createGraphMiddleware } = await (0, _graphInitialization.initializeGraph)({ targetProjectConfig });
 
-  // createHttpServer
+
+  [
+  async (context, next) => {
+    context.set('connection', 'keep-alive');
+    context.set('Access-Control-Allow-Origin', '*');
+    await context.req.setTimeout(30000);
+    await next();
+  },
+  createGraphMiddleware({ entrypointKey: '05bd55ed-212c-4609-8caf-e464a7cceb74' }),
+  async (context, next) => console.log('last middleware reached.')].
+  forEach(registerMiddleware);
+
+
   await new Promise((resolve, reject) =>
-    http.createServer(serverKoa.callback()).listen(2, () => console.log(`☕%c ${serviceConfig.serviceName} listening on port ${2}`, consoleLogStyle.style.green) && resolve()),
-  )
+  _http.default.createServer(serverKoa.callback()).listen(2, () => console.log(`☕%c ${_configuration.default.serviceName} listening on port ${2}`, _consoleLogStyleConfig.default.style.green) && resolve()));
+
 }
+//# sourceMappingURL=data:application/json;charset=utf-8;base64,eyJ2ZXJzaW9uIjozLCJzb3VyY2VzIjpbIi4uLy4uLy4uLy4uL3NvdXJjZS9zZXJ2aWNlL2FwaUVuZHBvaW50L3NlcnZlci5qcyJdLCJuYW1lcyI6WyJpbml0aWFsaXplIiwidGFyZ2V0UHJvamVjdENvbmZpZyIsInNlcnZlcktvYSIsIktvYSIsInJlZ2lzdGVyTWlkZGxld2FyZSIsIm1pZGRsZXdhcmUiLCJ1c2UiLCJzdWJkb21haW5PZmZzZXQiLCJjcmVhdGVHcmFwaE1pZGRsZXdhcmUiLCJjb250ZXh0IiwibmV4dCIsInNldCIsInJlcSIsInNldFRpbWVvdXQiLCJlbnRyeXBvaW50S2V5IiwiY29uc29sZSIsImxvZyIsImZvckVhY2giLCJQcm9taXNlIiwicmVzb2x2ZSIsInJlamVjdCIsImh0dHAiLCJjcmVhdGVTZXJ2ZXIiLCJjYWxsYmFjayIsImxpc3RlbiIsInNlcnZpY2VDb25maWciLCJzZXJ2aWNlTmFtZSIsImNvbnNvbGVMb2dTdHlsZSIsInN0eWxlIiwiZ3JlZW4iXSwibWFwcGluZ3MiOiJnTUFBQTtBQUNBO0FBQ0E7QUFDQTtBQUNBOztBQUVPLGVBQWVBLFVBQWYsQ0FBMEIsRUFBRUMsbUJBQUYsRUFBMUIsRUFBbUQ7O0FBRXhELFFBQU1DLFNBQVMsR0FBRyxJQUFJQyxZQUFKLEVBQWxCO0FBQ0EsUUFBTUMsa0JBQWtCLEdBQUdDLFVBQVUsSUFBSUgsU0FBUyxDQUFDSSxHQUFWLENBQWNELFVBQWQsQ0FBekM7QUFDQUgsRUFBQUEsU0FBUyxDQUFDSyxlQUFWLEdBQTRCLENBQTVCOztBQUVBLE1BQUksRUFBRUMscUJBQUYsS0FBNEIsTUFBTSwwQ0FBZ0IsRUFBRVAsbUJBQUYsRUFBaEIsQ0FBdEM7OztBQUdDO0FBQ0MsU0FBT1EsT0FBUCxFQUFnQkMsSUFBaEIsS0FBeUI7QUFDdkJELElBQUFBLE9BQU8sQ0FBQ0UsR0FBUixDQUFZLFlBQVosRUFBMEIsWUFBMUI7QUFDQUYsSUFBQUEsT0FBTyxDQUFDRSxHQUFSLENBQVksNkJBQVosRUFBMkMsR0FBM0M7QUFDQSxVQUFNRixPQUFPLENBQUNHLEdBQVIsQ0FBWUMsVUFBWixDQUF1QixLQUF2QixDQUFOO0FBQ0EsVUFBTUgsSUFBSSxFQUFWO0FBQ0QsR0FORjtBQU9DRixFQUFBQSxxQkFBcUIsQ0FBQyxFQUFFTSxhQUFhLEVBQUUsc0NBQWpCLEVBQUQsQ0FQdEI7QUFRQyxTQUFPTCxPQUFQLEVBQWdCQyxJQUFoQixLQUF5QkssT0FBTyxDQUFDQyxHQUFSLENBQVksMEJBQVosQ0FSMUI7QUFTQ0MsRUFBQUEsT0FURCxDQVNTYixrQkFUVDs7O0FBWUQsUUFBTSxJQUFJYyxPQUFKLENBQVksQ0FBQ0MsT0FBRCxFQUFVQyxNQUFWO0FBQ2hCQyxnQkFBS0MsWUFBTCxDQUFrQnBCLFNBQVMsQ0FBQ3FCLFFBQVYsRUFBbEIsRUFBd0NDLE1BQXhDLENBQStDLENBQS9DLEVBQWtELE1BQU1ULE9BQU8sQ0FBQ0MsR0FBUixDQUFhLE9BQU1TLHVCQUFjQyxXQUFZLHNCQUFxQixDQUFFLEVBQXBFLEVBQXVFQywrQkFBZ0JDLEtBQWhCLENBQXNCQyxLQUE3RixLQUF1R1YsT0FBTyxFQUF0SyxDQURJLENBQU47O0FBR0QiLCJzb3VyY2VzQ29udGVudCI6WyJpbXBvcnQgS29hIGZyb20gJ2tvYScgLy8gS29hIGFwcGxpY2FpdG9uIHNlcnZlclxuaW1wb3J0IGh0dHAgZnJvbSAnaHR0cCdcbmltcG9ydCBjb25zb2xlTG9nU3R5bGUgZnJvbSAnLi4vLi4vdXRpbGl0eS9jb25zb2xlTG9nU3R5bGVDb25maWcuanMnXG5pbXBvcnQgc2VydmljZUNvbmZpZyBmcm9tICcuL2NvbmZpZ3VyYXRpb24uanMnXG5pbXBvcnQgeyBpbml0aWFsaXplR3JhcGggfSBmcm9tICcuL2dyYXBoSW5pdGlhbGl6YXRpb24uanMnXG5cbmV4cG9ydCBhc3luYyBmdW5jdGlvbiBpbml0aWFsaXplKHsgdGFyZ2V0UHJvamVjdENvbmZpZyB9KSB7XG4gIC8vIGNyZWF0ZUtvYVNlcnZlclxuICBjb25zdCBzZXJ2ZXJLb2EgPSBuZXcgS29hKCkgLy8gZXhwb3J0IGlmIHNjcmlwdCBpcyByZXF1aXJlZC5cbiAgY29uc3QgcmVnaXN0ZXJNaWRkbGV3YXJlID0gbWlkZGxld2FyZSA9PiBzZXJ2ZXJLb2EudXNlKG1pZGRsZXdhcmUpXG4gIHNlcnZlcktvYS5zdWJkb21haW5PZmZzZXQgPSAxIC8vIGZvciBsb2NhbGhvc3QgZG9tYWluLlxuXG4gIGxldCB7IGNyZWF0ZUdyYXBoTWlkZGxld2FyZSB9ID0gYXdhaXQgaW5pdGlhbGl6ZUdyYXBoKHsgdGFyZ2V0UHJvamVjdENvbmZpZyB9KVxuXG4gIC8vIGFwcGx5S29hTWlkZGxld2FyZVxuICA7W1xuICAgIGFzeW5jIChjb250ZXh0LCBuZXh0KSA9PiB7XG4gICAgICBjb250ZXh0LnNldCgnY29ubmVjdGlvbicsICdrZWVwLWFsaXZlJylcbiAgICAgIGNvbnRleHQuc2V0KCdBY2Nlc3MtQ29udHJvbC1BbGxvdy1PcmlnaW4nLCAnKicpXG4gICAgICBhd2FpdCBjb250ZXh0LnJlcS5zZXRUaW1lb3V0KDMwMDAwKVxuICAgICAgYXdhaXQgbmV4dCgpXG4gICAgfSxcbiAgICBjcmVhdGVHcmFwaE1pZGRsZXdhcmUoeyBlbnRyeXBvaW50S2V5OiAnMDViZDU1ZWQtMjEyYy00NjA5LThjYWYtZTQ2NGE3Y2NlYjc0JyB9KSxcbiAgICBhc3luYyAoY29udGV4dCwgbmV4dCkgPT4gY29uc29sZS5sb2coJ2xhc3QgbWlkZGxld2FyZSByZWFjaGVkLicpLFxuICBdLmZvckVhY2gocmVnaXN0ZXJNaWRkbGV3YXJlKVxuXG4gIC8vIGNyZWF0ZUh0dHBTZXJ2ZXJcbiAgYXdhaXQgbmV3IFByb21pc2UoKHJlc29sdmUsIHJlamVjdCkgPT5cbiAgICBodHRwLmNyZWF0ZVNlcnZlcihzZXJ2ZXJLb2EuY2FsbGJhY2soKSkubGlzdGVuKDIsICgpID0+IGNvbnNvbGUubG9nKGDimJUlYyAke3NlcnZpY2VDb25maWcuc2VydmljZU5hbWV9IGxpc3RlbmluZyBvbiBwb3J0ICR7Mn1gLCBjb25zb2xlTG9nU3R5bGUuc3R5bGUuZ3JlZW4pICYmIHJlc29sdmUoKSksXG4gIClcbn1cbiJdfQ==

@@ -1,13 +1,14 @@
-import path from 'path'
-let Request = require('oauth2-server').Request
-let Response = require('oauth2-server').Response
+"use strict";Object.defineProperty(exports, "__esModule", { value: true });exports.default = void 0;
+let Request = require('oauth2-server').Request;
+let Response = require('oauth2-server').Response;var _default =
 
-export default async (context, next) => {
-  console.log(context.request.body)
-  var request = new Request(context.request)
-  var response = new Response(context.response)
-  let token = await oAuth2Server.authorize(request, response)
-  console.log(token)
+async (context, next) => {
+  console.log(context.request.body);
+  var request = new Request(context.request);
+  var response = new Response(context.response);
+  let token = await oAuth2Server.authorize(request, response);
+  console.log(token);
 
-  await next()
-}
+  await next();
+};exports.default = _default;
+//# sourceMappingURL=data:application/json;charset=utf-8;base64,eyJ2ZXJzaW9uIjozLCJzb3VyY2VzIjpbIi4uLy4uLy4uLy4uL3NvdXJjZS9zZXJ2aWNlL29BdXRoL29BdXRoQXV0aG9yaXplLm1pZGRsZXdhcmUuanMiXSwibmFtZXMiOlsiUmVxdWVzdCIsInJlcXVpcmUiLCJSZXNwb25zZSIsImNvbnRleHQiLCJuZXh0IiwiY29uc29sZSIsImxvZyIsInJlcXVlc3QiLCJib2R5IiwicmVzcG9uc2UiLCJ0b2tlbiIsIm9BdXRoMlNlcnZlciIsImF1dGhvcml6ZSJdLCJtYXBwaW5ncyI6IjtBQUNBLElBQUlBLE9BQU8sR0FBR0MsT0FBTyxDQUFDLGVBQUQsQ0FBUCxDQUF5QkQsT0FBdkM7QUFDQSxJQUFJRSxRQUFRLEdBQUdELE9BQU8sQ0FBQyxlQUFELENBQVAsQ0FBeUJDLFFBQXhDLEM7O0FBRWUsT0FBT0MsT0FBUCxFQUFnQkMsSUFBaEIsS0FBeUI7QUFDdENDLEVBQUFBLE9BQU8sQ0FBQ0MsR0FBUixDQUFZSCxPQUFPLENBQUNJLE9BQVIsQ0FBZ0JDLElBQTVCO0FBQ0EsTUFBSUQsT0FBTyxHQUFHLElBQUlQLE9BQUosQ0FBWUcsT0FBTyxDQUFDSSxPQUFwQixDQUFkO0FBQ0EsTUFBSUUsUUFBUSxHQUFHLElBQUlQLFFBQUosQ0FBYUMsT0FBTyxDQUFDTSxRQUFyQixDQUFmO0FBQ0EsTUFBSUMsS0FBSyxHQUFHLE1BQU1DLFlBQVksQ0FBQ0MsU0FBYixDQUF1QkwsT0FBdkIsRUFBZ0NFLFFBQWhDLENBQWxCO0FBQ0FKLEVBQUFBLE9BQU8sQ0FBQ0MsR0FBUixDQUFZSSxLQUFaOztBQUVBLFFBQU1OLElBQUksRUFBVjtBQUNELEMiLCJzb3VyY2VzQ29udGVudCI6WyJpbXBvcnQgcGF0aCBmcm9tICdwYXRoJ1xubGV0IFJlcXVlc3QgPSByZXF1aXJlKCdvYXV0aDItc2VydmVyJykuUmVxdWVzdFxubGV0IFJlc3BvbnNlID0gcmVxdWlyZSgnb2F1dGgyLXNlcnZlcicpLlJlc3BvbnNlXG5cbmV4cG9ydCBkZWZhdWx0IGFzeW5jIChjb250ZXh0LCBuZXh0KSA9PiB7XG4gIGNvbnNvbGUubG9nKGNvbnRleHQucmVxdWVzdC5ib2R5KVxuICB2YXIgcmVxdWVzdCA9IG5ldyBSZXF1ZXN0KGNvbnRleHQucmVxdWVzdClcbiAgdmFyIHJlc3BvbnNlID0gbmV3IFJlc3BvbnNlKGNvbnRleHQucmVzcG9uc2UpXG4gIGxldCB0b2tlbiA9IGF3YWl0IG9BdXRoMlNlcnZlci5hdXRob3JpemUocmVxdWVzdCwgcmVzcG9uc2UpXG4gIGNvbnNvbGUubG9nKHRva2VuKVxuXG4gIGF3YWl0IG5leHQoKVxufVxuIl19

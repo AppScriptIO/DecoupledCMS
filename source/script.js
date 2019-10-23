@@ -1,2 +1,2 @@
-export * as webappUserInterface from './service/webappUserInterface'
-export * as apiEndpoint from './service/apiEndpoint'
+"use strict";var _interopRequireWildcard = require("@babel/runtime/helpers/interopRequireWildcard");Object.defineProperty(exports, "__esModule", { value: true });exports.apiEndpoint = exports.webappUserInterface = void 0;var _webappUserInterface = _interopRequireWildcard(require("./service/webappUserInterface"));exports.webappUserInterface = _webappUserInterface;var _apiEndpoint = _interopRequireWildcard(require("./service/apiEndpoint"));exports.apiEndpoint = _apiEndpoint;
+//# sourceMappingURL=data:application/json;charset=utf-8;base64,eyJ2ZXJzaW9uIjozLCJzb3VyY2VzIjpbXSwibmFtZXMiOltdLCJtYXBwaW5ncyI6IiIsInNvdXJjZXNDb250ZW50IjpbXX0=

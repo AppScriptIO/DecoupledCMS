@@ -1,71 +1,72 @@
-export function getMethod({ node, context }) {
-  let requestContext = context.middlewareParameter.context
-  return requestContext.request.method
+"use strict";Object.defineProperty(exports, "__esModule", { value: true });exports.getMethod = getMethod;exports.isExistUrlPathLevel2 = exports.isExistUrlPathLevel1 = exports.ifLevel1IncludesAt = exports.ifLastUrlPathtIncludesFunction = exports.getUrlPathLevel3 = exports.getUrlPathLevel2 = exports.getUrlPathLevel1 = exports.getUrlPathAsArray = void 0;function getMethod({ node, context }) {
+  let requestContext = context.middlewareParameter.context;
+  return requestContext.request.method;
 }
 
-export const getUrlPathAsArray = async ({ node, context }) => {
-  let requestContext = context.middlewareParameter.context
-  let path = requestContext.request.url // get path
+const getUrlPathAsArray = async ({ node, context }) => {
+  let requestContext = context.middlewareParameter.context;
+  let path = requestContext.request.url;
 
-  // Remove parameters starting with "?" after last slash
-  let lastSlash = path.lastIndexOf('/')
-  let lastQuestionMark = path.lastIndexOf('?')
-  if (lastQuestionMark > lastSlash) path = path.substring(0, lastQuestionMark)
 
-  let pathArray = await path.split('/') // split path sections to an array.
-  pathArray = await pathArray.filter(String) // remove empty string.
-  pathArray = pathArray.filter(string => !string.startsWith('?')) // remove parameters from individual path in the array. i.e. don't count params as path.
-  return pathArray
-}
+  let lastSlash = path.lastIndexOf('/');
+  let lastQuestionMark = path.lastIndexOf('?');
+  if (lastQuestionMark > lastSlash) path = path.substring(0, lastQuestionMark);
 
-export const getUrlPathLevel1 = async ({ node, context }) => {
-  let pathArray = await getUrlPathAsArray(...arguments)
-  return pathArray[0]
-}
+  let pathArray = await path.split('/');
+  pathArray = await pathArray.filter(String);
+  pathArray = pathArray.filter(string => !string.startsWith('?'));
+  return pathArray;
+};exports.getUrlPathAsArray = getUrlPathAsArray;
 
-export const getUrlPathLevel2 = async ({ node, context }) => {
-  let pathArray = await getUrlPathAsArray(...arguments)
+const getUrlPathLevel1 = async ({ node, context }) => {
+  let pathArray = await getUrlPathAsArray(...arguments);
+  return pathArray[0];
+};exports.getUrlPathLevel1 = getUrlPathLevel1;
+
+const getUrlPathLevel2 = async ({ node, context }) => {
+  let pathArray = await getUrlPathAsArray(...arguments);
   if (pathArray[1] == null) {
-    return false
+    return false;
   } else {
-    return pathArray[1]
+    return pathArray[1];
   }
-}
-export const getUrlPathLevel3 = async ({ node, context }) => {
-  let pathArray = await getUrlPathAsArray(...arguments)
-  return pathArray[3]
-}
+};exports.getUrlPathLevel2 = getUrlPathLevel2;
+const getUrlPathLevel3 = async ({ node, context }) => {
+  let pathArray = await getUrlPathAsArray(...arguments);
+  return pathArray[3];
+};exports.getUrlPathLevel3 = getUrlPathLevel3;
 
-export const ifLastUrlPathtIncludesFunction = async ({ node, context }) => {
-  let requestContext = context.middlewareParameter.context
-  let pathArray = await getUrlPathAsArray(...arguments)
-  let lastPath = pathArray.pop() // get url path
+const ifLastUrlPathtIncludesFunction = async ({ node, context }) => {
+  let requestContext = context.middlewareParameter.context;
+  let pathArray = await getUrlPathAsArray(...arguments);
+  let lastPath = pathArray.pop();
 
-  // remove parameters
-  if (lastPath.includes('?')) lastPath = lastPath.substr(0, lastPath.lastIndexOf('?'))
 
-  // check if function sign exists
-  return lastPath.includes('$') ? true : false
-}
+  if (lastPath.includes('?')) lastPath = lastPath.substr(0, lastPath.lastIndexOf('?'));
 
-// previous name: `ifLevel1Includes@.js`
-export const ifLevel1IncludesAt = async ({ node, context }) => {
-  let requestContext = context.middlewareParameter.context
-  let pathArray = await getUrlPathAsArray(...arguments)
-  let firstPath = pathArray.shift() // get url path
 
-  // check if function sign exists
-  return firstPath.includes('@') ? true : false
-}
+  return lastPath.includes('$') ? true : false;
+};exports.ifLastUrlPathtIncludesFunction = ifLastUrlPathtIncludesFunction;
 
-export const isExistUrlPathLevel1 = async ({ node, context }) => {
-  let requestContext = context.middlewareParameter.context
-  let pathArray = await getUrlPathAsArray(...arguments)
-  return pathArray[0] == null ? false : true
-}
 
-export const isExistUrlPathLevel2 = async ({ node, context }) => {
-  let requestContext = context.middlewareParameter.context
-  let pathArray = await getUrlPathAsArray(...arguments)
-  return pathArray[1] == null ? false : true
-}
+const ifLevel1IncludesAt = async ({ node, context }) => {
+  let requestContext = context.middlewareParameter.context;
+  let pathArray = await getUrlPathAsArray(...arguments);
+  let firstPath = pathArray.shift();
+
+
+  return firstPath.includes('@') ? true : false;
+};exports.ifLevel1IncludesAt = ifLevel1IncludesAt;
+
+const isExistUrlPathLevel1 = async ({ node, context }) => {
+  let requestContext = context.middlewareParameter.context;
+  let pathArray = await getUrlPathAsArray(...arguments);
+  return pathArray[0] == null ? false : true;
+};exports.isExistUrlPathLevel1 = isExistUrlPathLevel1;
+
+const isExistUrlPathLevel2 = async ({ node, context }) => {
+  let requestContext = context.middlewareParameter.context;
+  let pathArray = await getUrlPathAsArray(...arguments);
+  return pathArray[1] == null ? false : true;
+};exports.isExistUrlPathLevel2 = isExistUrlPathLevel2;
+//# sourceMappingURL=data:application/json;charset=utf-8;base64,eyJ2ZXJzaW9uIjozLCJzb3VyY2VzIjpbIi4uLy4uL3NvdXJjZS9ub2RlRXZhbHVhdGlvblByb2Nlc3MuanMiXSwibmFtZXMiOlsiZ2V0TWV0aG9kIiwibm9kZSIsImNvbnRleHQiLCJyZXF1ZXN0Q29udGV4dCIsIm1pZGRsZXdhcmVQYXJhbWV0ZXIiLCJyZXF1ZXN0IiwibWV0aG9kIiwiZ2V0VXJsUGF0aEFzQXJyYXkiLCJwYXRoIiwidXJsIiwibGFzdFNsYXNoIiwibGFzdEluZGV4T2YiLCJsYXN0UXVlc3Rpb25NYXJrIiwic3Vic3RyaW5nIiwicGF0aEFycmF5Iiwic3BsaXQiLCJmaWx0ZXIiLCJTdHJpbmciLCJzdHJpbmciLCJzdGFydHNXaXRoIiwiZ2V0VXJsUGF0aExldmVsMSIsImFyZ3VtZW50cyIsImdldFVybFBhdGhMZXZlbDIiLCJnZXRVcmxQYXRoTGV2ZWwzIiwiaWZMYXN0VXJsUGF0aHRJbmNsdWRlc0Z1bmN0aW9uIiwibGFzdFBhdGgiLCJwb3AiLCJpbmNsdWRlcyIsInN1YnN0ciIsImlmTGV2ZWwxSW5jbHVkZXNBdCIsImZpcnN0UGF0aCIsInNoaWZ0IiwiaXNFeGlzdFVybFBhdGhMZXZlbDEiLCJpc0V4aXN0VXJsUGF0aExldmVsMiJdLCJtYXBwaW5ncyI6ImlXQUFPLFNBQVNBLFNBQVQsQ0FBbUIsRUFBRUMsSUFBRixFQUFRQyxPQUFSLEVBQW5CLEVBQXNDO0FBQzNDLE1BQUlDLGNBQWMsR0FBR0QsT0FBTyxDQUFDRSxtQkFBUixDQUE0QkYsT0FBakQ7QUFDQSxTQUFPQyxjQUFjLENBQUNFLE9BQWYsQ0FBdUJDLE1BQTlCO0FBQ0Q7O0FBRU0sTUFBTUMsaUJBQWlCLEdBQUcsT0FBTyxFQUFFTixJQUFGLEVBQVFDLE9BQVIsRUFBUCxLQUE2QjtBQUM1RCxNQUFJQyxjQUFjLEdBQUdELE9BQU8sQ0FBQ0UsbUJBQVIsQ0FBNEJGLE9BQWpEO0FBQ0EsTUFBSU0sSUFBSSxHQUFHTCxjQUFjLENBQUNFLE9BQWYsQ0FBdUJJLEdBQWxDOzs7QUFHQSxNQUFJQyxTQUFTLEdBQUdGLElBQUks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QUMvRCxNQUFJQyxjQUFjLEdBQUdELE9BQU8sQ0FBQ0UsbUJBQVIsQ0FBNEJGLE9BQWpEO0FBQ0EsTUFBSVksU0FBUyxHQUFHLE1BQU1QLGlCQUFpQixDQUFDLEdBQUdjLFNBQUosQ0FBdkM7QUFDQSxTQUFPUCxTQUFTLENBQUMsQ0FBRCxDQUFULElBQWdCLElBQWhCLEdBQXVCLEtBQXZCLEdBQStCLElBQXRDO0FBQ0QsQ0FKTSxDOztBQU1BLE1BQU1tQixvQkFBb0IsR0FBRyxPQUFPLEVBQUVoQyxJQUFGLEVBQVFDLE9BQVIsRUFBUCxLQUE2QjtBQUMvRCxNQUFJQyxjQUFjLEdBQUdELE9BQU8sQ0FBQ0UsbUJBQVIsQ0FBNEJGLE9BQWpEO0FBQ0EsTUFBSVksU0FBUyxHQUFHLE1BQU1QLGlCQUFpQixDQUFDLEdBQUdjLFNBQUosQ0FBdkM7QUFDQSxTQUFPUCxTQUFTLENBQUMsQ0FBRCxDQUFULElBQWdCLElBQWhCLEdBQXVCLEtBQXZCLEdBQStCLElBQXRDO0FBQ0QsQ0FKTSxDIiwic291cmNlc0NvbnRlbnQiOlsiZXhwb3J0IGZ1bmN0aW9uIGdldE1ldGhvZCh7IG5vZGUsIGNvbnRleHQgfSkge1xuICBsZXQgcmVxdWVzdENvbnRleHQgPSBjb250ZXh0Lm1pZGRsZXdhcmVQYXJhbWV0ZXIuY29udGV4dFxuICByZXR1cm4gcmVxdWVzdENvbnRleHQucmVxdWVzdC5tZXRob2Rcbn1cblxuZXhwb3J0IGNvbnN0IGdldFVybFBhdGhBc0FycmF5ID0gYXN5bmMgKHsgbm9kZSwgY29udGV4dCB9KSA9PiB7XG4gIGxldCByZXF1ZXN0Q29udGV4dCA9IGNvbnRleHQubWlkZGxld2FyZVBhcmFtZXRlci5jb250ZXh0XG4gIGxldCBwYXRoID0gcmVxdWVzdENvbnRleHQucmVxdWVzdC51cmwgLy8gZ2V0IHBhdGhcblxuICAvLyBSZW1vdmUgcGFyYW1ldGVycyBzdGFydGluZyB3aXRoIFwiP1wiIGFmdGVyIGxhc3Qgc2xhc2hcbiAgbGV0IGxhc3RTbGFzaCA9IHBhdGgubGFzdEluZGV4T2YoJy8nKVxuICBsZXQgbGFzdFF1ZXN0aW9uTWFyayA9IHBhdGgubGFzdEluZGV4T2YoJz8nKVxuICBpZiAobGFzdFF1ZXN0aW9uTWFyayA+IGxhc3RTbGFzaCkgcGF0aCA9IHBhdGguc3Vic3RyaW5nKDAsIGxhc3RRdWVzdGlvbk1hcmspXG5cbiAgbGV0IHBhdGhBcnJheSA9IGF3YWl0IHBhdGguc3BsaXQoJy8nKSAvLyBzcGxpdCBwYXRoIHNlY3Rpb25zIHRvIGFuIGFycmF5LlxuICBwYXRoQXJyYXkgPSBhd2FpdCBwYXRoQXJyYXkuZmlsdGVyKFN0cmluZykgLy8gcmVtb3ZlIGVtcHR5IHN0cmluZy5cbiAgcGF0aEFycmF5ID0gcGF0aEFycmF5LmZpbHRlcihzdHJpbmcgPT4gIXN0cmluZy5zdGFydHNXaXRoKCc/JykpIC8vIHJlbW92ZSBwYXJhbWV0ZXJzIGZyb20gaW5kaXZpZHVhbCBwYXRoIGluIHRoZSBhcnJheS4gaS5lLiBkb24ndCBjb3VudCBwYXJhbXMgYXMgcGF0aC5cbiAgcmV0dXJuIHBhdGhBcnJheVxufVxuXG5leHBvcnQgY29uc3QgZ2V0VXJsUGF0aExldmVsMSA9IGFzeW5jICh7IG5vZGUsIGNvbnRleHQgfSkgPT4ge1xuICBsZXQgcGF0aEFycmF5ID0gYXdhaXQgZ2V0VXJsUGF0aEFzQXJyYXkoLi4uYXJndW1lbnRzKVxuICByZXR1cm4gcGF0aEFycmF5WzBdXG59XG5cbmV4cG9ydCBjb25zdCBnZXRVcmxQYXRoTGV2ZWwyID0gYXN5bmMgKHsgbm9kZSwgY29udGV4dCB9KSA9PiB7XG4gIGxldCBwYXRoQXJyYXkgPSBhd2FpdCBnZXRVcmxQYXRoQXNBcnJheSguLi5hcmd1bWVudHMpXG4gIGlmIChwYXRoQXJyYXlbMV0gPT0gbnVsbCkge1xuICAgIHJldHVybiBmYWxzZVxuICB9IGVsc2Uge1xuICAgIHJldHVybiBwYXRoQXJyYXlbMV1cbiAgfVxufVxuZXhwb3J0IGNvbnN0IGdldFVybFBhdGhMZXZlbDMgPSBhc3luYyAoeyBub2RlLCBjb250ZXh0IH0pID0+IHtcbiAgbGV0IHBhdGhBcnJheSA9IGF3YWl0IGdldFVybFBhdGhBc0FycmF5KC4uLmFyZ3VtZW50cylcbiAgcmV0dXJuIHBhdGhBcnJheVszXVxufVxuXG5leHBvcnQgY29uc3QgaWZMYXN0VXJsUGF0aHRJbmNsdWRlc0Z1bmN0aW9uID0gYXN5bmMgKHsgbm9kZSwgY29udGV4dCB9KSA9PiB7XG4gIGxldCByZXF1ZXN0Q29udGV4dCA9IGNvbnRleHQubWlkZGxld2FyZVBhcmFtZXRlci5jb250ZXh0XG4gIGxldCBwYXRoQXJyYXkgPSBhd2FpdCBnZXRVcmxQYXRoQXNBcnJheSguLi5hcmd1bWVudHMpXG4gIGxldCBsYXN0UGF0aCA9IHBhdGhBcnJheS5wb3AoKSAvLyBnZXQgdXJsIHBhdGhcblxuICAvLyByZW1vdmUgcGFyYW1ldGVyc1xuICBpZiAobGFzdFBhdGguaW5jbHVkZXMoJz8nKSkgbGFzdFBhdGggPSBsYXN0UGF0aC5zdWJzdHIoMCwgbGFzdFBhdGgubGFzdEluZGV4T2YoJz8nKSlcblxuICAvLyBjaGVjayBpZiBmdW5jdGlvbiBzaWduIGV4aXN0c1xuICByZXR1cm4gbGFzdFBhdGguaW5jbHVkZXMoJyQnKSA/IHRydWUgOiBmYWxzZVxufVxuXG4vLyBwcmV2aW91cyBuYW1lOiBgaWZMZXZlbDFJbmNsdWRlc0AuanNgXG5leHBvcnQgY29uc3QgaWZMZXZlbDFJbmNsdWRlc0F0ID0gYXN5bmMgKHsgbm9kZSwgY29udGV4dCB9KSA9PiB7XG4gIGxldCByZXF1ZXN0Q29udGV4dCA9IGNvbnRleHQubWlkZGxld2FyZVBhcmFtZXRlci5jb250ZXh0XG4gIGxldCBwYXRoQXJyYXkgPSBhd2FpdCBnZXRVcmxQYXRoQXNBcnJheSguLi5hcmd1bWVudHMpXG4gIGxldCBmaXJzdFBhdGggPSBwYXRoQXJyYXkuc2hpZnQoKSAvLyBnZXQgdXJsIHBhdGhcblxuICAvLyBjaGVjayBpZiBmdW5jdGlvbiBzaWduIGV4aXN0c1xuICByZXR1cm4gZmlyc3RQYXRoLmluY2x1ZGVzKCdAJykgPyB0cnVlIDogZmFsc2Vcbn1cblxuZXhwb3J0IGNvbnN0IGlzRXhpc3RVcmxQYXRoTGV2ZWwxID0gYXN5bmMgKHsgbm9kZSwgY29udGV4dCB9KSA9PiB7XG4gIGxldCByZXF1ZXN0Q29udGV4dCA9IGNvbnRleHQubWlkZGxld2FyZVBhcmFtZXRlci5jb250ZXh0XG4gIGxldCBwYXRoQXJyYXkgPSBhd2FpdCBnZXRVcmxQYXRoQXNBcnJheSguLi5hcmd1bWVudHMpXG4gIHJldHVybiBwYXRoQXJyYXlbMF0gPT0gbnVsbCA/IGZhbHNlIDogdHJ1ZVxufVxuXG5leHBvcnQgY29uc3QgaXNFeGlzdFVybFBhdGhMZXZlbDIgPSBhc3luYyAoeyBub2RlLCBjb250ZXh0IH0pID0+IHtcbiAgbGV0IHJlcXVlc3RDb250ZXh0ID0gY29udGV4dC5taWRkbGV3YXJlUGFyYW1ldGVyLmNvbnRleHRcbiAgbGV0IHBhdGhBcnJheSA9IGF3YWl0IGdldFVybFBhdGhBc0FycmF5KC4uLmFyZ3VtZW50cylcbiAgcmV0dXJuIHBhdGhBcnJheVsxXSA9PSBudWxsID8gZmFsc2UgOiB0cnVlXG59XG4iXX0=

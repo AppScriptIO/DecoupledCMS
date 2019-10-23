@@ -1,4 +1,4 @@
-export default {
+"use strict";Object.defineProperty(exports, "__esModule", { value: true });exports.default = void 0;var _default = {
   serviceName: 'webappUserInterface',
-  underscore: { evaluate: /\{\%(.+?)\%\}/g, interpolate: /\{\%=(.+?)\%\}/g, escape: /\{\%-(.+?)\%\}/g }, // initial underscore template settings on first import gets applied on the rest.
-}
+  underscore: { evaluate: /\{\%(.+?)\%\}/g, interpolate: /\{\%=(.+?)\%\}/g, escape: /\{\%-(.+?)\%\}/g } };exports.default = _default;
+//# sourceMappingURL=data:application/json;charset=utf-8;base64,eyJ2ZXJzaW9uIjozLCJzb3VyY2VzIjpbIi4uLy4uLy4uLy4uL3NvdXJjZS9zZXJ2aWNlL3dlYmFwcFVzZXJJbnRlcmZhY2UvY29uZmlndXJhdGlvbi5qcyJdLCJuYW1lcyI6WyJzZXJ2aWNlTmFtZSIsInVuZGVyc2NvcmUiLCJldmFsdWF0ZSIsImludGVycG9sYXRlIiwiZXNjYXBlIl0sIm1hcHBpbmdzIjoibUhBQWU7QUFDYkEsRUFBQUEsV0FBVyxFQUFFLHFCQURBO0FBRWJDLEVBQUFBLFVBQVUsRUFBRSxFQUFFQyxRQUFRLEVBQUUsZ0JBQVosRUFBOEJDLFdBQVcsRUFBRSxpQkFBM0MsRUFBOERDLE1BQU0sRUFBRSxpQkFBdEUsRUFGQyxFIiwic291cmNlc0NvbnRlbnQiOlsiZXhwb3J0IGRlZmF1bHQge1xuICBzZXJ2aWNlTmFtZTogJ3dlYmFwcFVzZXJJbnRlcmZhY2UnLFxuICB1bmRlcnNjb3JlOiB7IGV2YWx1YXRlOiAvXFx7XFwlKC4rPylcXCVcXH0vZywgaW50ZXJwb2xhdGU6IC9cXHtcXCU9KC4rPylcXCVcXH0vZywgZXNjYXBlOiAvXFx7XFwlLSguKz8pXFwlXFx9L2cgfSwgLy8gaW5pdGlhbCB1bmRlcnNjb3JlIHRlbXBsYXRlIHNldHRpbmdzIG9uIGZpcnN0IGltcG9ydCBnZXRzIGFwcGxpZWQgb24gdGhlIHJlc3QuXG59XG4iXX0=

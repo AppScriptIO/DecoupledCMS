@@ -1,12 +1,13 @@
-import path from 'path'
-import config from '../../../configuration/configuration/configuration.export.js' // Load configuration settings.
-import send from 'koa-sendfile'
+"use strict";Object.defineProperty(exports, "__esModule", { value: true });exports.default = void 0;var _default =
 
-export default () => {
+
+
+() => {
   return async (context, next) => {
-    // fallback to sending the app index. If not found.
-    await next()
-    if (404 != context.status) return
-    // return send(context, path.normalize(`${context.instance.config.clientBasePath}/root/entrypoint.html`))
-  }
-}
+
+    await next();
+    if (404 != context.status) return;
+
+  };
+};exports.default = _default;
+//# sourceMappingURL=data:application/json;charset=utf-8;base64,eyJ2ZXJzaW9uIjozLCJzb3VyY2VzIjpbIi4uLy4uLy4uLy4uL3NvdXJjZS9taWRkbGV3YXJlL2RlcHJlY2F0ZWQvbm90Rm91bmQuanMiXSwibmFtZXMiOlsiY29udGV4dCIsIm5leHQiLCJzdGF0dXMiXSwibWFwcGluZ3MiOiI7Ozs7QUFJZSxNQUFNO0FBQ25CLFNBQU8sT0FBT0EsT0FBUCxFQUFnQkMsSUFBaEIsS0FBeUI7O0FBRTlCLFVBQU1BLElBQUksRUFBVjtBQUNBLFFBQUksT0FBT0QsT0FBTyxDQUFDRSxNQUFuQixFQUEyQjs7QUFFNUIsR0FMRDtBQU1ELEMiLCJzb3VyY2VzQ29udGVudCI6WyJpbXBvcnQgcGF0aCBmcm9tICdwYXRoJ1xuaW1wb3J0IGNvbmZpZyBmcm9tICcuLi8uLi8uLi9jb25maWd1cmF0aW9uL2NvbmZpZ3VyYXRpb24vY29uZmlndXJhdGlvbi5leHBvcnQuanMnIC8vIExvYWQgY29uZmlndXJhdGlvbiBzZXR0aW5ncy5cbmltcG9ydCBzZW5kIGZyb20gJ2tvYS1zZW5kZmlsZSdcblxuZXhwb3J0IGRlZmF1bHQgKCkgPT4ge1xuICByZXR1cm4gYXN5bmMgKGNvbnRleHQsIG5leHQpID0+IHtcbiAgICAvLyBmYWxsYmFjayB0byBzZW5kaW5nIHRoZSBhcHAgaW5kZXguIElmIG5vdCBmb3VuZC5cbiAgICBhd2FpdCBuZXh0KClcbiAgICBpZiAoNDA0ICE9IGNvbnRleHQuc3RhdHVzKSByZXR1cm5cbiAgICAvLyByZXR1cm4gc2VuZChjb250ZXh0LCBwYXRoLm5vcm1hbGl6ZShgJHtjb250ZXh0Lmluc3RhbmNlLmNvbmZpZy5jbGllbnRCYXNlUGF0aH0vcm9vdC9lbnRyeXBvaW50Lmh0bWxgKSlcbiAgfVxufVxuIl19

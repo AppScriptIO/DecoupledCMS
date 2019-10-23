@@ -1,64 +1,65 @@
-// Static content server - could be upgraded to Content Delivery Network
-import koaViews from 'koa-views'
-import Koa from 'koa' // Koa applicaiton server
-import consoleLogStyle from '../../utility/consoleLogStyleConfig.js'
+"use strict";var _interopRequireDefault = require("@babel/runtime/helpers/interopRequireDefault");
+var _koaViews = _interopRequireDefault(require("koa-views"));
 
-let MiddlewareController = createStaticInstanceClasses({ implementationType: 'Middleware', cacheName: true })
-let ConditionController = createStaticInstanceClasses({ implementationType: 'Condition', cacheName: true })
+var _consoleLogStyleConfig = _interopRequireDefault(require("../../utility/consoleLogStyleConfig.js"));
 
-;async () => {
-  let entrypointConditionKey
-  // Templating engine & associated extention.
-  // applyKoaMiddleware
+let MiddlewareController = createStaticInstanceClasses({ implementationType: 'Middleware', cacheName: true });
+let ConditionController = createStaticInstanceClasses({ implementationType: 'Condition', cacheName: true });
+
+async () => {
+  let entrypointConditionKey;
+
+
   let middlewareArray = [
-    koaViews('/', { map: { html: 'underscore', js: 'underscore' } }),
-    // async (context, next) => {
-    //   // Authorization access example:
-    //   let token = await OAuthClass.authenticateMiddleware()(context.request, context.response)
-    //   if (token) {
-    //     await next()
-    //   } else {
-    //     console.log('Sorry unauthorized access')
-    //   }
-    //   await next()
-    // },
-    async (context, next) => {
-      // CONDITION
-      // [1] Create instances and check conditions. Get callback either a function or document
-      // The instance responsible for rquests of specific port.
-      let conditionController = await ConditionController.createContext({ portAppInstance: context.instance })
-      if (process.env.SZN_DEBUG == 'true' && context.header.debug == 'true') console.log(`🍊 Entrypoint Condition Key: ${entrypointConditionKey} \n \n`)
-      let callback = await conditionController.initializeNestedUnit({ nestedUnitKey: entrypointConditionKey })
-      // if(process.env.SZN_DEBUG == 'true') console.log(`🍊 Callback object: ${callback.name}`)
-      // [2] Use callback
-      if (process.env.SZN_DEBUG == 'true' && context.header.debug == 'true') console.log(`🔀✔️ Choosen callback is: %c ${callback.name}`, consoleLogStyle.style.green)
-      await implementConditionActionOnModuleUsingJson({ setting: callback })(context, next)
-    },
-    async (context, next) => {
-      // console.log('Last Middleware reached.')
-      await next()
-      context.compress = true
-    },
-  ]
+  (0, _koaViews.default)('/', { map: { html: 'underscore', js: 'underscore' } }),
 
-  middlewareArray.forEach(middleware => serverKoa.use(middleware))
 
-  // createHttpServer
+
+
+
+
+
+
+
+
+  async (context, next) => {
+
+
+
+    let conditionController = await ConditionController.createContext({ portAppInstance: context.instance });
+    if (process.env.SZN_DEBUG == 'true' && context.header.debug == 'true') console.log(`🍊 Entrypoint Condition Key: ${entrypointConditionKey} \n \n`);
+    let callback = await conditionController.initializeNestedUnit({ nestedUnitKey: entrypointConditionKey });
+
+
+    if (process.env.SZN_DEBUG == 'true' && context.header.debug == 'true') console.log(`🔀✔️ Choosen callback is: %c ${callback.name}`, _consoleLogStyleConfig.default.style.green);
+    await implementConditionActionOnModuleUsingJson({ setting: callback })(context, next);
+  },
+  async (context, next) => {
+
+    await next();
+    context.compress = true;
+  }];
+
+
+  middlewareArray.forEach(middleware => serverKoa.use(middleware));
+
+
   await new Promise((resolve, reject) => {
-    let httpServer = http.createServer(serverKoa.callback())
-    // self.httpServer.on('connection', (socket) => {
-    //     console.info('SOCKET OPENED' + JSON.stringify(socket.address()))
-    //     socket.on('end', () => { console.info('SOCKET END: other end of the socket sends a FIN packet') })
-    //     socket.on('timeout', () => { console.info('SOCKET TIMEOUT') })
-    //     socket.on('error', (error) => { console.info('SOCKET ERROR: ' + JSON.stringify(error)) })
-    //     socket.on('close', (had_error) => { console.info('SOCKET CLOSED. Is ERROR ?: ' + had_error) })
-    // })
-    // self.httpServer.setTimeout(0, () => {
-    //     console.log('HTTP server connection socket was timedout (console.log in httpServer.setTimeout)!')
-    // })
+    let httpServer = http.createServer(serverKoa.callback());
+
+
+
+
+
+
+
+
+
+
     httpServer.listen(self.port, () => {
-      console.log(`☕%c ${self.name} listening on port ${self.port}`, consoleLogStyle.style.green)
-      resolve()
-    })
-  })
-}
+      console.log(`☕%c ${self.name} listening on port ${self.port}`, _consoleLogStyleConfig.default.style.green);
+      resolve();
+    });
+  });
+};
+//# sourceMappingURL=data:application/json;charset=utf-8;base64,eyJ2ZXJzaW9uIjozLCJzb3VyY2VzIjpbIi4uLy4uLy4uLy4uL3NvdXJjZS9zZXJ2aWNlL3N0YXRpY0NvbnRlbnQvaW5kZXguanMiXSwibmFtZXMiOlsiTWlkZGxld2FyZUNvbnRyb2xsZXIiLCJjcmVhdGVTdGF0aWNJbnN0YW5jZUNsYXNzZXMiLCJpbXBsZW1lbnRhdGlvblR5cGUiLCJjYWNoZU5hbWUiLCJDb25kaXRpb25Db250cm9sbGVyIiwiZW50cnlwb2ludENvbmRpdGlvbktleSIsIm1pZGRsZXdhcmVBcnJheSIsIm1hcCIsImh0bWwiLCJqcyIsImNvbnRleHQiLCJuZXh0IiwiY29uZGl0aW9uQ29udHJvbGxlciIsImNyZWF0ZUNvbnRleHQiLCJwb3J0QXBwSW5zdGFuY2UiLCJpbnN0YW5jZSIsInByb2Nlc3MiLCJlbnYiLCJTWk5fREVCVUciLCJoZWFkZXIiLCJkZWJ1ZyIsImNvbnNvbGUiLCJsb2ciLCJjYWxsYmFjayIsImluaXRpYWxpemVOZXN0ZWRVbml0IiwibmVzdGVkVW5pdEtleSIsIm5hbWUiLCJjb25zb2xlTG9nU3R5bGUiLCJzdHlsZSIsImdyZWVuIiwiaW1wbGVtZW50Q29uZGl0aW9uQWN0aW9uT25Nb2R1bGVVc2luZ0pzb24iLCJzZXR0aW5nIiwiY29tcHJlc3MiLCJmb3JFYWNoIiwibWlkZGxld2FyZSIsInNlcnZlcktvYSIsInVzZSIsIlByb21pc2UiLCJyZXNvbHZlIiwicmVqZWN0IiwiaHR0cFNlcnZlciIsImh0dHAiLCJjcmVhdGVTZXJ2ZXIiLCJsaXN0ZW4iLCJzZWxmIiwicG9ydCJdLCJtYXBwaW5ncyI6IjtBQUNBOztBQUVBOztBQUVBLElBQUlBLG9CQUFvQixHQUFHQywyQkFBMkIsQ0FBQyxFQUFFQyxrQkFBa0IsRUFBRSxZQUF0QixFQUFvQ0MsU0FBUyxFQUFFLElBQS9DLEVBQUQsQ0FBdEQ7QUFDQSxJQUFJQyxtQkFBbUIsR0FBR0gsMkJBQTJCLENBQUMsRUFBRUMsa0JBQWtCLEVBQUUsV0FBdEIsRUFBbUNDLFNBQVMsRUFBRSxJQUE5QyxFQUFELENBQXJEOztBQUVDLFlBQVk7QUFDWCxNQUFJRSxzQkFBSjs7O0FBR0EsTUFBSUMsZUFBZSxHQUFHO0FBQ3BCLHlCQUFTLEdBQVQsRUFBYyxFQUFFQyxHQUFHLEVBQUUsRUFBRUMsSUFBSSxFQUFFLFlBQVIsRUFBc0JDLEVBQUUsRUFBRSxZQUExQixFQUFQLEVBQWQsQ0FEb0I7Ozs7Ozs7Ozs7O0FBWXBCLFNBQU9DLE9BQVAsRUFBZ0JDLElBQWhCLEtBQXlCOzs7O0FBSXZCLFFBQUlDLG1CQUFtQixHQUFHLE1BQU1SLG1CQUFtQixDQUFDUyxhQUFwQixDQUFrQyxFQUFFQyxlQUFlLEVBQUVKLE9BQU8sQ0FBQ0ssUUFBM0IsRUFBbEMsQ0FBaEM7QUFDQSxRQUFJQyxPQUFPLENBQUNDLEdBQVIsQ0FBWUMsU0FBWixJQUF5QixNQUF6QixJQUFtQ1IsT0FBTyxDQUFDUyxNQUFSLENBQWVDLEtBQWYsSUFBd0IsTUFBL0QsRUFBdUVDLE9BQU8sQ0FBQ0MsR0FBUixDQUFhLGdDQUErQmpCLHNCQUF1QixRQUFuRTtBQUN2RSxRQUFJa0IsUUFBUSxHQUFHLE1BQU1YLG1CQUFtQixDQUFDWSxvQkFBcEIsQ0FBeUMsRUFBRUMsYUFBYSxFQUFFcEIsc0JBQWpCLEVBQXpDLENBQXJCOzs7QUFHQSxRQUFJVyxPQUFPLENBQUNDLEdBQVIsQ0FBWUMsU0FBWixJQUF5QixNQUF6QixJQUFtQ1IsT0FBTyxDQUFDUyxNQUFSLENBQWVDLEtBQWYsSUFBd0IsTUFBL0QsRUFBdUVDLE9BQU8sQ0FBQ0MsR0FBUixDQUFhLGdDQUErQkMsUUFBUSxDQUFDRyxJQUFLLEVBQTFELEVBQTZEQywrQkFBZ0JDLEtBQWhCLENBQXNCQyxLQUFuRjtBQUN2RSxVQUFNQyx5Q0FBeUMsQ0FBQyxFQUFFQyxPQUFPLEVBQUVSLFFBQVgsRUFBRCxDQUF6QyxDQUFpRWIsT0FBakUsRUFBMEVDLElBQTFFLENBQU47QUFDRCxHQXZCbUI7QUF3QnBCLFNBQU9ELE9BQVAsRUFBZ0JDLElBQWhCLEtBQXlCOztBQUV2QixVQUFNQSxJQUFJLEVBQVY7QUFDQUQsSUFBQUEsT0FBTyxDQUFDc0IsUUFBUixHQUFtQixJQUFuQjtBQUNELEdBNUJtQixDQUF0Qjs7O0FBK0JBMUIsRUFBQUEsZUFBZSxDQUFDMkIsT0FBaEIsQ0FBd0JDLFVBQVUsSUFBSUMsU0FBUyxDQUFDQyxHQUFWLENBQWNGLFVBQWQsQ0FBdEM7OztBQUdBLFFBQU0sSUFBSUcsT0FBSixDQUFZLENBQUNDLE9BQUQsRUFBVUMsTUFBVixLQUFxQjtBQUNyQyxRQUFJQyxVQUFVLEdBQUdDLElBQUksQ0FBQ0MsWUFBTCxDQUFrQlAsU0FBUyxDQUFDWixRQUFWLEVBQWxCLENBQWpCOzs7Ozs7Ozs7OztBQVdBaUIsSUFBQUEsVUFBVSxDQUFDRyxNQUFYLENBQWtCQyxJQUFJLENBQUNDLElBQXZCLEVBQTZCLE1BQU07QUFDakN4QixNQUFBQSxPQUFPLENBQUNDLEdBQVIsQ0FBYSxPQUFNc0IsSUFBSSxDQUFDbEIsSUFBSyxzQkFBcUJrQixJQUFJLENBQUNDLElBQUssRUFBNUQsRUFBK0RsQiwrQkFBZ0JDLEtBQWhCLENBQXNCQyxLQUFyRjtBQUNBUyxNQUFBQSxPQUFPO0FBQ1IsS0FIRDtBQUlELEdBaEJLLENBQU47QUFpQkQsQ0F2REEiLCJzb3VyY2VzQ29udGVudCI6WyIvLyBTdGF0aWMgY29udGVudCBzZXJ2ZXIgLSBjb3VsZCBiZSB1cGdyYWRlZCB0byBDb250ZW50IERlbGl2ZXJ5IE5ldHdvcmtcbmltcG9ydCBrb2FWaWV3cyBmcm9tICdrb2Etdmlld3MnXG5pbXBvcnQgS29hIGZyb20gJ2tvYScgLy8gS29hIGFwcGxpY2FpdG9uIHNlcnZlclxuaW1wb3J0IGNvbnNvbGVMb2dTdHlsZSBmcm9tICcuLi8uLi91dGlsaXR5L2NvbnNvbGVMb2dTdHlsZUNvbmZpZy5qcydcblxubGV0IE1pZGRsZXdhcmVDb250cm9sbGVyID0gY3JlYXRlU3RhdGljSW5zdGFuY2VDbGFzc2VzKHsgaW1wbGVtZW50YXRpb25UeXBlOiAnTWlkZGxld2FyZScsIGNhY2hlTmFtZTogdHJ1ZSB9KVxubGV0IENvbmRpdGlvbkNvbnRyb2xsZXIgPSBjcmVhdGVTdGF0aWNJbnN0YW5jZUNsYXNzZXMoeyBpbXBsZW1lbnRhdGlvblR5cGU6ICdDb25kaXRpb24nLCBjYWNoZU5hbWU6IHRydWUgfSlcblxuO2FzeW5jICgpID0+IHtcbiAgbGV0IGVudHJ5cG9pbnRDb25kaXRpb25LZXlcbiAgLy8gVGVtcGxhdGluZyBlbmdpbmUgJiBhc3NvY2lhdGVkIGV4dGVudGlvbi5cbiAgLy8gYXBwbHlLb2FNaWRkbGV3YXJlXG4gIGxldCBtaWRkbGV3YXJlQXJyYXkgPSBbXG4gICAga29hVmlld3MoJy8nLCB7IG1hcDogeyBodG1sOiAndW5kZXJzY29yZScsIGpzOiAndW5kZXJzY29yZScgfSB9KSxcbiAgICAvLyBhc3luYyAoY29udGV4dCwgbmV4dCkgPT4ge1xuICAgIC8vICAgLy8gQXV0aG9yaXphdGlvbiBhY2Nlc3MgZXhhbXBsZTpcbiAgICAvLyAgIGxldCB0b2tlbiA9IGF3YWl0IE9BdXRoQ2xhc3MuYXV0aGVudGljYXRlTWlkZGxld2FyZSgpKGNvbnRleHQucmVxdWVzdCwgY29udGV4dC5yZXNwb25zZSlcbiAgICAvLyAgIGlmICh0b2tlbikge1xuICAgIC8vICAgICBhd2FpdCBuZXh0KClcbiAgICAvLyAgIH0gZWxzZSB7XG4gICAgLy8gICAgIGNvbnNvbGUubG9nKCdTb3JyeSB1bmF1dGhvcml6ZWQgYWNjZXNzJylcbiAgICAvLyAgIH1cbiAgICAvLyAgIGF3YWl0IG5leHQoKVxuICAgIC8vIH0sXG4gICAgYXN5bmMgKGNvbnRleHQsIG5leHQpID0+IHtcbiAgICAgIC8vIENPTkRJVElPTlxuICAgICAgLy8gWzFdIENyZWF0ZSBpbnN0YW5jZXMgYW5kIGNoZWNrIGNvbmRpdGlvbnMuIEdldCBjYWxsYmFjayBlaXRoZXIgYSBmdW5jdGlvbiBvciBkb2N1bWVudFxuICAgICAgLy8gVGhlIGluc3RhbmNlIHJlc3BvbnNpYmxlIGZvciBycXVlc3RzIG9mIHNwZWNpZmljIHBvcnQuXG4gICAgICBsZXQgY29uZGl0aW9uQ29udHJvbGxlciA9IGF3YWl0IENvbmRpdGlvbkNvbnRyb2xsZXIuY3JlYXRlQ29udGV4dCh7IHBvcnRBcHBJbnN0YW5jZTogY29udGV4dC5pbnN0YW5jZSB9KVxuICAgICAgaWYgKHByb2Nlc3MuZW52LlNaTl9ERUJVRyA9PSAndHJ1ZScgJiYgY29udGV4dC5oZWFkZXIuZGVidWcgPT0gJ3RydWUnKSBjb25zb2xlLmxvZyhg8J+NiiBFbnRyeXBvaW50IENvbmRpdGlvbiBLZXk6ICR7ZW50cnlwb2ludENvbmRpdGlvbktleX0gXFxuIFxcbmApXG4gICAgICBsZXQgY2FsbGJhY2sgPSBhd2FpdCBjb25kaXRpb25Db250cm9sbGVyLmluaXRpYWxpemVOZXN0ZWRVbml0KHsgbmVzdGVkVW5pdEtleTogZW50cnlwb2ludENvbmRpdGlvbktleSB9KVxuICAgICAgLy8gaWYocHJvY2Vzcy5lbnYuU1pOX0RFQlVHID09ICd0cnVlJykgY29uc29sZS5sb2coYPCfjYogQ2FsbGJhY2sgb2JqZWN0OiAke2NhbGxiYWNrLm5hbWV9YClcbiAgICAgIC8vIFsyXSBVc2UgY2FsbGJhY2tcbiAgICAgIGlmIChwcm9jZXNzLmVudi5TWk5fREVCVUcgPT0gJ3RydWUnICYmIGNvbnRleHQuaGVhZGVyLmRlYnVnID09ICd0cnVlJykgY29uc29sZS5sb2coYPCflIDinJTvuI8gQ2hvb3NlbiBjYWxsYmFjayBpczogJWMgJHtjYWxsYmFjay5uYW1lfWAsIGNvbnNvbGVMb2dTdHlsZS5zdHlsZS5ncmVlbilcbiAgICAgIGF3YWl0IGltcGxlbWVudENvbmRpdGlvbkFjdGlvbk9uTW9kdWxlVXNpbmdKc29uKHsgc2V0dGluZzogY2FsbGJhY2sgfSkoY29udGV4dCwgbmV4dClcbiAgICB9LFxuICAgIGFzeW5jIChjb250ZXh0LCBuZXh0KSA9PiB7XG4gICAgICAvLyBjb25zb2xlLmxvZygnTGFzdCBNaWRkbGV3YXJlIHJlYWNoZWQuJylcbiAgICAgIGF3YWl0IG5leHQoKVxuICAgICAgY29udGV4dC5jb21wcmVzcyA9IHRydWVcbiAgICB9LFxuICBdXG5cbiAgbWlkZGxld2FyZUFycmF5LmZvckVhY2gobWlkZGxld2FyZSA9PiBzZXJ2ZXJLb2EudXNlKG1pZGRsZXdhcmUpKVxuXG4gIC8vIGNyZWF0ZUh0dHBTZXJ2ZXJcbiAgYXdhaXQgbmV3IFByb21pc2UoKHJlc29sdmUsIHJlamVjdCkgPT4ge1xuICAgIGxldCBodHRwU2VydmVyID0gaHR0cC5jcmVhdGVTZXJ2ZXIoc2VydmVyS29hLmNhbGxiYWNrKCkpXG4gICAgLy8gc2VsZi5odHRwU2VydmVyLm9uKCdjb25uZWN0aW9uJywgKHNvY2tldCkgPT4ge1xuICAgIC8vICAgICBjb25zb2xlLmluZm8oJ1NPQ0tFVCBPUEVORUQnICsgSlNPTi5zdHJpbmdpZnkoc29ja2V0LmFkZHJlc3MoKSkpXG4gICAgLy8gICAgIHNvY2tldC5vbignZW5kJywgKCkgPT4geyBjb25zb2xlLmluZm8oJ1NPQ0tFVCBFTkQ6IG90aGVyIGVuZCBvZiB0aGUgc29ja2V0IHNlbmRzIGEgRklOIHBhY2tldCcpIH0pXG4gICAgLy8gICAgIHNvY2tldC5vbigndGltZW91dCcsICgpID0+IHsgY29uc29sZS5pbmZvKCdTT0NLRVQgVElNRU9VVCcpIH0pXG4gICAgLy8gICAgIHNvY2tldC5vbignZXJyb3InLCAoZXJyb3IpID0+IHsgY29uc29sZS5pbmZvKCdTT0NLRVQgRVJST1I6ICcgKyBKU09OLnN0cmluZ2lmeShlcnJvcikpIH0pXG4gICAgLy8gICAgIHNvY2tldC5vbignY2xvc2UnLCAoaGFkX2Vycm9yKSA9PiB7IGNvbnNvbGUuaW5mbygnU09DS0VUIENMT1NFRC4gSXMgRVJST1IgPzogJyArIGhhZF9lcnJvcikgfSlcbiAgICAvLyB9KVxuICAgIC8vIHNlbGYuaHR0cFNlcnZlci5zZXRUaW1lb3V0KDAsICgpID0+IHtcbiAgICAvLyAgICAgY29uc29sZS5sb2coJ0hUVFAgc2VydmVyIGNvbm5lY3Rpb24gc29ja2V0IHdhcyB0aW1lZG91dCAoY29uc29sZS5sb2cgaW4gaHR0cFNlcnZlci5zZXRUaW1lb3V0KSEnKVxuICAgIC8vIH0pXG4gICAgaHR0cFNlcnZlci5saXN0ZW4oc2VsZi5wb3J0LCAoKSA9PiB7XG4gICAgICBjb25zb2xlLmxvZyhg4piVJWMgJHtzZWxmLm5hbWV9IGxpc3RlbmluZyBvbiBwb3J0ICR7c2VsZi5wb3J0fWAsIGNvbnNvbGVMb2dTdHlsZS5zdHlsZS5ncmVlbilcbiAgICAgIHJlc29sdmUoKVxuICAgIH0pXG4gIH0pXG59XG4iXX0=
