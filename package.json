@@ -1,7 +1,7 @@
 {
 	"name": "@dependency/appscript",
 	"main": "./entrypoint/programmaticAPI",
-	"version": "1.1.4",
+	"version": "1.1.5",
 	"scripts": {
 		"exportGraphData": "yarn run scriptManager shouldCompileScript=true graphDatabase/exportGraphData \".exportGraphData({targetPath: './resource',fileName: 'taskSequence.graphData.json'})\"",
 		"loadGraphData": "yarn run scriptManager shouldCompileScript=true graphDatabase/exportGraphData \".loadGraphDataFromFile({ shouldClearDatabase: true, graphDataFilePath: './resource/taskSequence.graphData.json' })\"",
