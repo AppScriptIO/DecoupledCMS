@@ -2,7 +2,7 @@
 const { Issuer } = require('openid-client')
 
 const oidcPort = 8084
-const issuer = await Issuer.discover(`http://localhost:${oidcPort}`)
+const issuer = Issuer.discover(`http://localhost:${oidcPort}`) // TODO: Fix ! this is a promise that should be awaited.
 const oidcClient = new issuer.Client(
   {
     client_id: 'privateClientApplication',
@@ -28,4 +28,4 @@ async (context, next) => {
     context.body = introspection
   }
   await next()
-},
+}
