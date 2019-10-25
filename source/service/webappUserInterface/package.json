@@ -1,6 +1,6 @@
 {
 	"name": "@service/webappUserInterface",
-	"main": ".",
+	"main": "./script.js",
 	"version": "1.0.0",
 	"scripts": {},
 	"dependencies": {

@@ -1,23 +1,18 @@
 import filesystem from 'fs'
-import https from 'https'
-import http from 'http'
-import underscore from 'underscore'
 import koaBodyParser from 'koa-bodyParser'
 import koaMount from 'koa-mount' // mount koa app as middleware to another koa app
-import koaViews from 'koa-views'
 import { oidcInteractionEntrypoint, oidcInteractionLogin, oidcInteractionConfirm } from '../../../utility/middleware/oidcInteraction.middleware.js'
 import OpenIdConnectServer from 'oidc-provider'
-import rethinkdbOIDCAdapter from './rethinkdbOIDCAdapter.js'
 import memoryAdapter from 'oidc-provider/lib/adapters/memory_adapter.js' // for development only
 import { oidcConfiguration } from './oidcConfiguration.js'
 import { clientArray } from './clientApplication.js'
 import keystore from './key/keystore.json'
-import consoleLogStyle from '../../utility/consoleLogStyleConfig.js'
+import { createTemplateRenderingMiddleware } from './middleware/templateRendering.js'
 
-export default ({} = {}) => async () => {
+export async function initialize({ targetProjectConfig, entrypointKey }) {
   let OpenIdConnectServer // oidc-provider class
   let openIdConnectServer = new OpenIdConnectServer(
-    `${PROTOCOL}${HOST}:${self.port}`, // issuer address
+    `${PROTOCOL}${HOST}:${port}`, // issuer address
     oidcConfiguration,
   ) // oidc-provider instance
 
@@ -26,7 +21,7 @@ export default ({} = {}) => async () => {
   /**
    * initialize oAuth2 server
    */
-  await self.openIdConnectServer
+  await openIdConnectServer
     .initialize({
       // initialize server.
       clients: clientArray,
@@ -36,14 +31,14 @@ export default ({} = {}) => async () => {
     .catch(error => {
       throw error
     })
-  const oidcKoaServer = self.openIdConnectServer.app
+  const oidcKoaServer = openIdConnectServer.app
 
   // cookie signing keys // TODO: add encryption keys for cookies to prevent tampering & add interval rotation for keys.
   // oidcKoaServer.keys = [/* Add signing keys for cookies & configure interval for creating new keys (rotation) */] // as explained in kos docs & in https://github.com/panva/node-oidc-provider/blob/master/docs/configuration.md#cookieskeys
 
   // TODO: check if proxy configuration below is necessary for the production setup.
-  // self.openIdConnectServer.proxy = true // trust x-forwarded headers, which are required for oidc to detect the original ip. // https://github.com/panva/node-oidc-provider/blob/master/docs/configuration.md#trusting-tls-offloading-proxies
-  self.serverKoa.proxy = true
+  // openIdConnectServer.proxy = true // trust x-forwarded headers, which are required for oidc to detect the original ip. // https://github.com/panva/node-oidc-provider/blob/master/docs/configuration.md#trusting-tls-offloading-proxies
+  serverKoa.proxy = true
 
   /** state & nonce in openid connect server requests
    * In addition you need to create two random numbers for state and nonce. State is used to correlate the authentication response,
@@ -58,38 +53,19 @@ export default ({} = {}) => async () => {
    * add middlware to the oidc koa server array following instructions - https://github.com/panva/node-oidc-provider/blob/master/docs/configuration.md#registering-module-middlewares-helmet-ip-filters-rate-limiters-etc
    */
   let middlewareArray = [
-    koaViews('/', { map: { html: 'underscore', js: 'underscore' } }), // add koa views for html rendering.
-    koaMount(
-      // mount oidc koa app as middlewares
-      '/' /* base path to mount to */,
-      openIdConnectServer.app,
-    ),
+    createTemplateRenderingMiddleware(),
+    // mount oidc koa app as middlewares
+    koaMount('/' /* base path to mount to */, openIdConnectServer.app),
     koaBodyParser(),
-    // async (context, next) => {
-    //     // instance.middlewareArray.push(middleware)
-    //     // await context.req.setTimeout(0); // changes default Nodejs timeout (default 120 seconds).
-    //     await context.set('Access-Control-Allow-Origin', '*')
-    //     await context.set('connection', 'keep-alive')
-    //     await next()
-    // },
+    async (context, next) => {
+      // instance.middlewareArray.push(middleware)
+      // await context.req.setTimeout(0); // changes default Nodejs timeout (default 120 seconds).
+      await context.set('Access-Control-Allow-Origin', '*')
+      await context.set('connection', 'keep-alive')
+      await next()
+    },
     oidcInteractionEntrypoint({ openIdConnectServer: openIdConnectServer }),
     oidcInteractionLogin({ openIdConnectServer: openIdConnectServer }),
     oidcInteractionConfirm({ openIdConnectServer: openIdConnectServer }),
   ]
-
-  middlewareArray.forEach(middleware => serverKoa.use(middleware))
-
-  // createHttpServer
-  await new Promise((resolve, reject) => {
-    http.createServer(self.serverKoa.callback()).listen(self.port, () => {
-      console.log(`☕%c ${self.name} listening on port ${self.port}`, consoleLogStyle.style.green)
-      // eventEmitter.emit('listening')
-      // process.emit('listening')
-      if (process.send !== undefined) {
-        // if process is a forked child process.
-        if (self.config.DEPLOYMENT == 'development') process.send({ message: 'Server listening' })
-      }
-    })
-    // eventEmitter.on("listening", function () { console.log("catched listening on same script file"); })
-  })
 }

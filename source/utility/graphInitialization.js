@@ -7,13 +7,14 @@ import {
   Entity,
   defaultImplementationList,
 } from '@dependency/graphTraversal'
+
 const { Graph } = GraphModule,
   { Context } = ContextModule,
   { Database } = DatabaseModule,
   { GraphTraversal } = GraphTraversalModule
-import * as graphData from './graphData.json'
-import { bodyParserMiddleware } from '../../middleware/bodyParser.middleware.js'
+
 import composeMiddleware from 'koa-compose'
+import { bodyParserMiddleware } from '../middleware/bodyParser.middleware.js'
 
 const debugGraphMiddleware = targetMiddleware =>
   new Proxy(targetMiddleware, {
@@ -31,7 +32,7 @@ const functionContext = {
   },
   conditionContext = {}
 
-export async function initializeGraph({ targetProjectConfig }) {
+export async function initializeGraph({ targetProjectConfig, graphDataArray = [] }) {
   // context
   let contextInstance = new Context.clientInterface({ targetProjectConfig, functionContext, conditionContext, implementationKey: { traversalInterception: 'handleMiddlewareNextCall' } })
   // database
@@ -39,11 +40,6 @@ export async function initializeGraph({ targetProjectConfig }) {
     implementationList: { boltCypherModelAdapter: modelAdapter.boltCypherModelAdapterFunction({ url: { protocol: 'bolt', hostname: 'localhost', port: 7687 } }) },
     defaultImplementation: 'boltCypherModelAdapter',
   })
-  let concereteDatabaseInstance = concreteDatabaseBehavior[Entity.reference.getInstanceOf](Database)
-  let concereteDatabase = concereteDatabaseInstance[Database.reference.key.getter]()
-  //! /////////////////////////////////////////////! DEBUG: commented out for debugging purposes
-  // await concereteDatabase.loadGraphData({ nodeEntryData: graphData.node, connectionEntryData: graphData.edge })
-  console.log(`• loaded service graph data.`)
   // traversal implementation
   let implementationList =
     defaultImplementationList
@@ -52,11 +48,8 @@ export async function initializeGraph({ targetProjectConfig }) {
       // list.processData['someCustomImplementation'] = function() {}
       return list
     })
-  let concreteGraphTraversalBehavior = new GraphTraversal.clientInterface({
-    implementationList: { middlewareGraph: implementationList },
-    defaultImplementation: 'middlewareGraph',
-  })
-
+  let concreteGraphTraversalBehavior = new GraphTraversal.clientInterface({ implementationList: { middlewareGraph: implementationList }, defaultImplementation: 'middlewareGraph' })
+  // configured graph
   let configuredGraph = Graph.clientInterface({
     parameter: [
       {
@@ -67,18 +60,24 @@ export async function initializeGraph({ targetProjectConfig }) {
     ],
   })
 
-  return { createGraphMiddleware: createGraphMiddlewareFunction(configuredGraph), configuredGraph }
+  // load graph data:
+  console.log(`• loading service graph data...`)
+  let concereteDatabaseInstance = concreteDatabaseBehavior[Entity.reference.getInstanceOf](Database)
+  let concereteDatabase = concereteDatabaseInstance[Database.reference.key.getter]()
+  for (let graphData of graphDataArray) await concereteDatabase.loadGraphData({ nodeEntryData: graphData.node, connectionEntryData: graphData.edge })
+
+  return { createGraphMiddleware: createGraphMiddlewareImmediatelyExecutedCallback(configuredGraph), configuredGraph }
 }
 
 // Immediately executing middlewares in graph traversal.
-const createGraphMiddlewareFunction = configuredGraph => ({ entrypointKey }) => async (context, next) => {
+const createGraphMiddlewareImmediatelyExecutedCallback = configuredGraph => ({ entrypointKey }) => async (context, next) => {
   let graph = new configuredGraph({ data: { middlewareParameter: { context } } })
   await graph.traverse({ nodeKey: entrypointKey }) // implementation key is derived from the graph nodes - usally 'immediatelyExecuteMiddleware'
   await next()
 }
 
 // Aggregating middleware approach - return a middleware array, then use koa-compose to merge the middlewares and execute it.
-const createGraphMiddlewareFunctionApproad2 = configuredGraph => ({ entrypointKey }) => async (context, next) => {
+const createGraphMiddlewareAggregationCallback = configuredGraph => ({ entrypointKey }) => async (context, next) => {
   let graph = new configuredGraph({})
   let middlewareArray = await graph.traverse({ nodeKey: entrypointKey, implementationKey: { processData: 'returnMiddlewareFunction' } })
   await composeMiddleware(middlewareArray)(context, next)

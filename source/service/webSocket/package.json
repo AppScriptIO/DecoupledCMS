@@ -1,10 +1,8 @@
 {
 	"name": "@service/webSocket",
-	"main": ".",
+	"main": "./script.js",
 	"version": "1.0.0",
 	"scripts": {},
-	"dependencies": {
-		"ws": "*"
-	},
+	"dependencies": {},
 	"devDependencies": {}
 }

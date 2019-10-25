@@ -15,8 +15,13 @@
 	"flat": false,
 	"private": true,
 	"dependencies": {
+		"@dependency/graphTraversal": "https://github.com/AppScriptIO/graphTraversal#semver:^1.x.x",
+		"ws": "*",
+		"engine.io": "*",
+		"socket.io": "*",
 		"@babel/core": "*",
 		"co-body": "*",
+		"koa": "*",
 		"koa-compress": "*",
 		"koa-json-error": "*",
 		"koa-logger": "*",
