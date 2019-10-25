@@ -1,8 +1,6 @@
 import { createHttpServer } from '../../utility/server.js'
 import { graphMiddleware } from './middleware/graphMiddleware.js'
-import serviceConfig from './configuration.js'
-
-const port = 11
+import serviceConfig from './configuration/configuration.js'
 
 export async function initialize({ targetProjectConfig }) {
   let middlewareArray = [
@@ -17,5 +15,5 @@ export async function initialize({ targetProjectConfig }) {
   ]
 
   // create http server
-  await createHttpServer({ port, middlewareArray })
+  await createHttpServer({ port: serviceConfig.port, middlewareArray })
 }
