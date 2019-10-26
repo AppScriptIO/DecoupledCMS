@@ -15,12 +15,10 @@
 	"flat": false,
 	"private": true,
 	"dependencies": {
-		"@dependency/graphTraversal": "https://github.com/AppScriptIO/graphTraversal#semver:^1.x.x",
-		"ws": "*",
-		"engine.io": "*",
-		"socket.io": "*",
 		"@babel/core": "*",
+		"@dependency/graphTraversal": "https://github.com/AppScriptIO/graphTraversal#semver:^1.x.x",
 		"co-body": "*",
+		"engine.io": "*",
 		"koa": "*",
 		"koa-compress": "*",
 		"koa-json-error": "*",
@@ -30,7 +28,9 @@
 		"moment": "*",
 		"multistream": "*",
 		"promise-events": "*",
-		"useragent": "*"
+		"socket.io": "*",
+		"useragent": "*",
+		"ws": "*"
 	},
 	"devDependencies": {
 		"@dependency/deploymentScript": "https://github.com/AppScriptIO/deploymentScript#semver:^1.x.x",
