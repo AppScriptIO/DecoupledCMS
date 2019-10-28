@@ -4,7 +4,7 @@
 	"version": "1.1.5",
 	"scripts": {
 		"exportGraphData": "yarn run scriptManager shouldCompileScript=true graphDatabase/graphDataLoading \".exportAllGraphData({targetPath: './temporary/resource',fileName: 'graphData.json'})\"",
-		"loadGraphData": "yarn run scriptManager shouldCompileScript=true graphDatabase/exportGraphData \".loadGraphDataFromFile({ shouldClearDatabase: true, graphDataFilePath: './resource/graphData.json' })\"",
+		"loadGraphData": "yarn run scriptManager shouldCompileScript=true graphDatabase/graphDataLoading.js \".loadGraphDataFromFile({ shouldClearDatabase: true, graphDataFilePath: './resource/graphData.json' })\"",
 		"buildAndRelease": "yarn run scriptManager shouldCompileScript=true JSProject/buildAndRelease \".moduleProject({})\"",
 		"install": "yarn workspaces run install",
 		"upgrade": "yarn workspaces run upgrade"
