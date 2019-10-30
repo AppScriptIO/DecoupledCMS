@@ -1,4 +1,4 @@
-export default {
+"use strict";Object.defineProperty(exports, "__esModule", { value: true });exports.default = void 0;var _default = {
   implementationName: 'oAuth',
-  dataArray: ['client', 'token', 'user'],
-}
+  dataArray: ['client', 'token', 'user'] };exports.default = _default;
+//# sourceMappingURL=data:application/json;charset=utf-8;base64,eyJ2ZXJzaW9uIjozLCJzb3VyY2VzIjpbIi4uLy4uLy4uLy4uLy4uL3NvdXJjZS9zZXJ2aWNlL29BdXRoL2RhdGFiYXNlL2luZGV4LmpzIl0sIm5hbWVzIjpbImltcGxlbWVudGF0aW9uTmFtZSIsImRhdGFBcnJheSJdLCJtYXBwaW5ncyI6Im1IQUFlO0FBQ2JBLEVBQUFBLGtCQUFrQixFQUFFLE9BRFA7QUFFYkMsRUFBQUEsU0FBUyxFQUFFLENBQUMsUUFBRCxFQUFXLE9BQVgsRUFBb0IsTUFBcEIsQ0FGRSxFIiwic291cmNlc0NvbnRlbnQiOlsiZXhwb3J0IGRlZmF1bHQge1xuICBpbXBsZW1lbnRhdGlvbk5hbWU6ICdvQXV0aCcsXG4gIGRhdGFBcnJheTogWydjbGllbnQnLCAndG9rZW4nLCAndXNlciddLFxufVxuIl19

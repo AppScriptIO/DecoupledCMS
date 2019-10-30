@@ -1,7 +1,8 @@
-import { initializeGraph } from '../../../utility/graphInitialization.js'
-import * as graphData from '../resource/graphData.json'
+"use strict";var _interopRequireWildcard = require("@babel/runtime/helpers/interopRequireWildcard");Object.defineProperty(exports, "__esModule", { value: true });exports.graphMiddleware = graphMiddleware;var _graphInitialization = require("../../../utility/graphInitialization.js");
+var graphData = _interopRequireWildcard(require("../resource/graphData.json"));
 
-export async function graphMiddleware({ targetProjectConfig, entrypointKey = '05bd55ed-212c-4609-8caf-e464a7cceb74' }) {
-  let { createGraphMiddleware } = await initializeGraph({ targetProjectConfig, graphDataArray: [graphData] })
-  return createGraphMiddleware({ entrypointKey })
+async function graphMiddleware({ targetProjectConfig, entrypointKey = '05bd55ed-212c-4609-8caf-e464a7cceb74' }) {
+  let { createGraphMiddleware } = await (0, _graphInitialization.initializeGraph)({ targetProjectConfig, graphDataArray: [graphData] });
+  return createGraphMiddleware({ entrypointKey });
 }
+//# sourceMappingURL=data:application/json;charset=utf-8;base64,eyJ2ZXJzaW9uIjozLCJzb3VyY2VzIjpbIi4uLy4uLy4uLy4uLy4uL3NvdXJjZS9zZXJ2aWNlL2FwaUVuZHBvaW50L21pZGRsZXdhcmUvZ3JhcGhNaWRkbGV3YXJlLmpzIl0sIm5hbWVzIjpbImdyYXBoTWlkZGxld2FyZSIsInRhcmdldFByb2plY3RDb25maWciLCJlbnRyeXBvaW50S2V5IiwiY3JlYXRlR3JhcGhNaWRkbGV3YXJlIiwiZ3JhcGhEYXRhQXJyYXkiLCJncmFwaERhdGEiXSwibWFwcGluZ3MiOiI0TUFBQTtBQUNBOztBQUVPLGVBQWVBLGVBQWYsQ0FBK0IsRUFBRUMsbUJBQUYsRUFBdUJDLGFBQWEsR0FBRyxzQ0FBdkMsRUFBL0IsRUFBZ0g7QUFDckgsTUFBSSxFQUFFQyxxQkFBRixLQUE0QixNQUFNLDBDQUFnQixFQUFFRixtQkFBRixFQUF1QkcsY0FBYyxFQUFFLENBQUNDLFNBQUQsQ0FBdkMsRUFBaEIsQ0FBdEM7QUFDQSxTQUFPRixxQkFBcUIsQ0FBQyxFQUFFRCxhQUFGLEVBQUQsQ0FBNUI7QUFDRCIsInNvdXJjZXNDb250ZW50IjpbImltcG9ydCB7IGluaXRpYWxpemVHcmFwaCB9IGZyb20gJy4uLy4uLy4uL3V0aWxpdHkvZ3JhcGhJbml0aWFsaXphdGlvbi5qcydcbmltcG9ydCAqIGFzIGdyYXBoRGF0YSBmcm9tICcuLi9yZXNvdXJjZS9ncmFwaERhdGEuanNvbidcblxuZXhwb3J0IGFzeW5jIGZ1bmN0aW9uIGdyYXBoTWlkZGxld2FyZSh7IHRhcmdldFByb2plY3RDb25maWcsIGVudHJ5cG9pbnRLZXkgPSAnMDViZDU1ZWQtMjEyYy00NjA5LThjYWYtZTQ2NGE3Y2NlYjc0JyB9KSB7XG4gIGxldCB7IGNyZWF0ZUdyYXBoTWlkZGxld2FyZSB9ID0gYXdhaXQgaW5pdGlhbGl6ZUdyYXBoKHsgdGFyZ2V0UHJvamVjdENvbmZpZywgZ3JhcGhEYXRhQXJyYXk6IFtncmFwaERhdGFdIH0pXG4gIHJldHVybiBjcmVhdGVHcmFwaE1pZGRsZXdhcmUoeyBlbnRyeXBvaW50S2V5IH0pXG59XG4iXX0=

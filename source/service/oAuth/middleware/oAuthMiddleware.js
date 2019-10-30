@@ -1,80 +1,81 @@
-/**
- * Authenticates a request, i.e. validates a token.
- * (See: https://tools.ietf.org/html/rfc6749#section-7)
- * @return {object} tokenData - access token object returned from Model#getAccessToken().
- */
+"use strict";
+
+
+
+
 function authenticateMiddleware() {
   return async (request, response) => {
-    console.log('authenticate function')
+    console.log('authenticate function');
 
     let options = {
-      scope: undefined, // The scope(s) to authenticate
-      addAcceptedScopesHeader: true, // Set the X-Accepted-OAuth-Scopes HTTP header on response objects.
-      addAuthorizedScopesHeader: true, // Set the X-OAuth-Scopes HTTP header on response objects.
-      allowBearerTokensInQueryString: false, // Allow clients to pass bearer tokens in the query string of a request
-    }
-    let oAuthRequest = new Request(request)
-    let oAuthResponse = new Response(response)
+      scope: undefined,
+      addAcceptedScopesHeader: true,
+      addAuthorizedScopesHeader: true,
+      allowBearerTokensInQueryString: false };
+
+    let oAuthRequest = new Request(request);
+    let oAuthResponse = new Response(response);
     let tokenData = await self.oAuth2Server.authenticate(oAuthRequest, oAuthResponse, options).catch(error => {
-      console.log(error)
-    })
-    return tokenData
-  }
+      console.log(error);
+    });
+    return tokenData;
+  };
 }
 
-/**
- * Authorizes a token request. i.e. Authorize a client to request tokens.
- * The authorization endpoint is used to interact with the resource owner and obtain an authorization grant.
- * (See: https://tools.ietf.org/html/rfc6749#section-3.1)
- * @return {object} authorizationCode - authorization code object returned from Model#saveAuthorizationCode()
- * If request.query.allowed equals the string 'false' the access request is denied and the returned promise is rejected with an AccessDeniedError.
- */
+
+
+
+
+
+
+
 async function authorize(request, response) {
-  console.log('authorize function')
+  console.log('authorize function');
 
   let options = {
     authenticateHandler: {
       handle: data => {
-        // Whatever you need to do to authorize / retrieve your user from post data here
-        // check if the user that clicked authorize button is logged-in/authenticated.
-        return { username: 'example' }
-      },
-    }, // {function} that gets the authenticated user. This option will allow to return user object.
-    authorizationCodeLifetime: 300, // Lifetime of generated authorization codes in seconds (default = 300 seconds = 5 minutes)
-    // allowEmptyState: false, // Allow clients to specify an empty state
-  }
-  let oAuthRequest = new Request(request)
-  let oAuthResponse = new Response(response)
-  let authorizationCode = await self.oAuth2Server.authorize(oAuthRequest, oAuthResponse, options).catch(error => console.log(error))
-  return authorizationCode
+
+
+        return { username: 'example' };
+      } },
+
+    authorizationCodeLifetime: 300 };
+
+
+  let oAuthRequest = new Request(request);
+  let oAuthResponse = new Response(response);
+  let authorizationCode = await self.oAuth2Server.authorize(oAuthRequest, oAuthResponse, options).catch(error => console.log(error));
+  return authorizationCode;
 }
 
-/**
- * Retrieves a new token for an authorized token request. i.e. grant tokens to valid requests.
- * The token endpoint is used by the client to obtain an access token by presenting its authorization grant or refresh token.
- * (See: https://tools.ietf.org/html/rfc6749#section-3.2)
- * @return
- */
+
+
+
+
+
+
 async function token(request, response) {
-  console.log('token function')
+  console.log('token function');
   let options = {
-    accessTokenLifetime: 3600, // default 3,600 seconds (1 hour)
-    refreshTokenLifetime: 1209600, // default 1,209,600 seconds (2 weeks)
-    allowExtendedTokenAttributes: true, // Allow extended attributes to be set on the returned token. any additional properties set on the object returned from Model#saveToken() are copied to the token response sent to the client.
-    alwaysIssueNewRefreshToken: false, // Always revoke the used refresh token and issue a new one for the refresh_token grant.
+    accessTokenLifetime: 3600,
+    refreshTokenLifetime: 1209600,
+    allowExtendedTokenAttributes: true,
+    alwaysIssueNewRefreshToken: false,
     requireClientAuthentication: {
-      // By default all grant types require the client to send it’s client_secret with the token request
+
       password: false,
       authorization_code: true,
       client_credentials: true,
-      refresh_token: false,
-    },
-    // extendedGrantTypes: {} // additional supported grant types. (see https://oauth2-server.readthedocs.io/en/latest/misc/extension-grants.html)
-  }
-  let oAuthRequest = new Request(request)
-  let oAuthResponse = new Response(response)
+      refresh_token: false } };
+
+
+
+  let oAuthRequest = new Request(request);
+  let oAuthResponse = new Response(response);
   let tokenData = await self.oAuth2Server.token(oAuthRequest, oAuthResponse, options).catch(error => {
-    console.log('token function:' + error)
-  })
-  return tokenData
+    console.log('token function:' + error);
+  });
+  return tokenData;
 }
+//# sourceMappingURL=data:application/json;charset=utf-8;base64,eyJ2ZXJzaW9uIjozLCJzb3VyY2VzIjpbIi4uLy4uLy4uLy4uLy4uL3NvdXJjZS9zZXJ2aWNlL29BdXRoL21pZGRsZXdhcmUvb0F1dGhNaWRkbGV3YXJlLmpzIl0sIm5hbWVzIjpbImF1dGhlbnRpY2F0ZU1pZGRsZXdhcmUiLCJyZXF1ZXN0IiwicmVzcG9uc2UiLCJjb25zb2xlIiwibG9nIiwib3B0aW9ucyIsInNjb3BlIiwidW5kZWZpbmVkIiwiYWRkQWNjZXB0ZWRTY29wZXNIZWFkZXIiLCJhZGRBdXRob3JpemVkU2NvcGVzSGVhZGVyIiwiYWxsb3dCZWFyZXJUb2tlbnNJblF1ZXJ5U3RyaW5nIiwib0F1dGhSZXF1ZXN0IiwiUmVxdWVzdCIsIm9BdXRoUmVzcG9uc2UiLCJSZXNwb25zZSIsInRva2VuRGF0YSIsInNlbGYiLCJvQXV0aDJTZXJ2ZXIiLCJhdXRoZW50aWNhdGUiLCJjYXRjaCIsImVycm9yIiwiYXV0aG9yaXplIiwiYXV0aGVudGljYXRlSGFuZGxlciIsImhhbmRsZSIsImRhdGEiLCJ1c2VybmFtZSIsImF1dGhvcml6YXRpb25Db2RlTGlmZXRpbWUiLCJhdXRob3JpemF0aW9uQ29kZSIsInRva2VuIiwiYWNjZXNzVG9rZW5MaWZldGltZSIsInJlZnJlc2hUb2tlbkxpZmV0aW1lIiwiYWxsb3dFeHRlbmRlZFRva2VuQXR0cmlidXRlcyIsImFsd2F5c0lzc3VlTmV3UmVmcmVzaFRva2VuIiwicmVxdWlyZUNsaWVudEF1dGhlbnRpY2F0aW9uIiwicGFzc3dvcmQiLCJhdXRob3JpemF0aW9uX2NvZGUiLCJjbGllbnRfY3JlZGVudGlhbHMiLCJyZWZyZXNoX3Rva2VuIl0sIm1hcHBpbmdzIjoiOzs7OztBQUtBLFNBQVNBLHNCQUFULEdBQWtDO0FBQ2hDLFNBQU8sT0FBT0MsT0FBUCxFQUFnQkMsUUFBaEIsS0FBNkI7QUFDbENDLElBQUFBLE9BQU8sQ0FBQ0MsR0FBUixDQUFZLHVCQUFaOztBQUVBLFFBQUlDLE9BQU8sR0FBRztBQUNaQyxNQUFBQSxLQUFLLEVBQUVDLFNBREs7QUFFWkMsTUFBQUEsdUJBQXVCLEVBQUUsSUFGYjtBQUdaQyxNQUFBQSx5QkFBeUIsRUFBRSxJQUhmO0FBSVpDLE1BQUFBLDhCQUE4QixFQUFFLEtBSnBCLEVBQWQ7O0FBTUEsUUFBSUMsWUFBWSxHQUFHLElBQUlDLE9BQUosQ0FBWVgsT0FBWixDQUFuQjtBQUNBLFFBQUlZLGFBQWEsR0FBRyxJQUFJQyxRQUFKLENBQWFaLFFBQWIsQ0FBcEI7QUFDQSxRQUFJYSxTQUFTLEdBQUcsTUFBTUMsSUFBSSxDQUFDQyxZQUFMLENBQWtCQyxZQUFsQixDQUErQlAsWUFBL0IsRUFBNkNFLGFBQTdDLEVBQTREUixPQUE1RCxFQUFxRWMsS0FBckUsQ0FBMkVDLEtBQUssSUFBSTtBQUN4R2pCLE1BQUFBLE9BQU8sQ0FBQ0MsR0FBUixDQUFZZ0IsS0FBWjtBQUNELEtBRnFCLENBQXRCO0FBR0EsV0FBT0wsU0FBUDtBQUNELEdBZkQ7QUFnQkQ7Ozs7Ozs7OztBQVNELGVBQWVNLFNBQWYsQ0FBeUJwQixPQUF6QixFQUFrQ0MsUUFBbEMsRUFBNEM7QUFDMUNDLEVBQUFBLE9BQU8sQ0FBQ0MsR0FBUixDQUFZLG9CQUFaOztBQUVBLE1BQUlDLE9BQU8sR0FBRztBQUNaaUIsSUFBQUEsbUJBQW1CLEVBQUU7QUFDbkJDLE1BQUFBLE1BQU0sRUFBRUMsSUFBSSxJQUFJOzs7QUFHZCxlQUFPLEVBQUVDLFFBQVEsRUFBRSxTQUFaLEVBQVA7QUFDRCxPQUxrQixFQURUOztBQVFaQyxJQUFBQSx5QkFBeUIsRUFBRSxHQVJmLEVBQWQ7OztBQVdBLE1BQUlmLFlBQVksR0FBRyxJQUFJQyxPQUFKLENBQVlYLE9BQVosQ0FBbkI7QUFDQSxNQUFJWSxhQUFhLEdBQUcsSUFBSUMsUUFBSixDQUFhWixRQUFiLENBQXBCO0FBQ0EsTUFBSXlCLGlCQUFpQixHQUFHLE1BQU1YLElBQUksQ0FBQ0MsWUFBTCxDQUFrQkksU0FBbEIsQ0FBNEJWLFlBQTVCLEVBQTBDRSxhQUExQyxFQUF5RFIsT0FBekQsRUFBa0VjLEtBQWxFLENBQXdFQyxLQUFLLElBQUlqQixPQUFPLENBQUNDLEdBQVIsQ0FBWWdCLEtBQVosQ0FBakYsQ0FBOUI7QUFDQSxTQUFPTyxpQkFBUDtBQUNEOzs7Ozs7OztBQVFELGVBQWVDLEtBQWYsQ0FBcUIzQixPQUFyQixFQUE4QkMsUUFBOUIsRUFBd0M7QUFDdENDLEVBQUFBLE9BQU8sQ0FBQ0MsR0FBUixDQUFZLGdCQUFaO0FBQ0EsTUFBSUMsT0FBTyxHQUFHO0FBQ1p3QixJQUFBQSxtQkFBbUIsRUFBRSxJQURUO0FBRVpDLElBQUFBLG9CQUFvQixFQUFFLE9BRlY7QUFHWkMsSUFBQUEsNEJBQTRCLEVBQUUsSUFIbEI7QUFJWkMsSUFBQUEsMEJBQTBCLEVBQUUsS0FKaEI7QUFLWkMsSUFBQUEsMkJBQTJCLEVBQUU7O0FBRTNCQyxNQUFBQSxRQUFRLEVBQUUsS0FGaUI7QUFHM0JDLE1BQUFBLGtCQUFrQixFQUFFLElBSE87QUFJM0JDLE1BQUFBLGtCQUFrQixFQUFFLElBSk87QUFLM0JDLE1BQUFBLGFBQWEsRUFBRSxLQUxZLEVBTGpCLEVBQWQ7Ozs7QUFjQSxNQUFJMUIsWUFBWSxHQUFHLElBQUlDLE9BQUosQ0FBWVgsT0FBWixDQUFuQjtBQUNBLE1BQUlZLGFBQWEsR0FBRyxJQUFJQyxRQUFKLENBQWFaLFFBQWIsQ0FBcEI7QUFDQSxNQUFJYSxTQUFTLEdBQUcsTUFBTUMsSUFBSSxDQUFDQyxZQUFMLENBQWtCVyxLQUFsQixDQUF3QmpCLFlBQXhCLEVBQXNDRSxhQUF0QyxFQUFxRFIsT0FBckQsRUFBOERjLEtBQTlELENBQW9FQyxLQUFLLElBQUk7QUFDakdqQixJQUFBQSxPQUFPLENBQUNDLEdBQVIsQ0FBWSxvQkFBb0JnQixLQUFoQztBQUNELEdBRnFCLENBQXRCO0FBR0EsU0FBT0wsU0FBUDtBQUNEIiwic291cmNlc0NvbnRlbnQiOlsiLyoqXG4gKiBBdXRoZW50aWNhdGVzIGEgcmVxdWVzdCwgaS5lLiB2YWxpZGF0ZXMgYSB0b2tlbi5cbiAqIChTZWU6IGh0dHBzOi8vdG9vbHMuaWV0Zi5vcmcvaHRtbC9yZmM2NzQ5I3NlY3Rpb24tNylcbiAqIEByZXR1cm4ge29iamVjdH0gdG9rZW5EYXRhIC0gYWNjZXNzIHRva2VuIG9iamVjdCByZXR1cm5lZCBmcm9tIE1vZGVsI2dldEFjY2Vzc1Rva2VuKCkuXG4gKi9cbmZ1bmN0aW9uIGF1dGhlbnRpY2F0ZU1pZGRsZXdhcmUoKSB7XG4gIHJldHVybiBhc3luYyAocmVxdWVzdCwgcmVzcG9uc2UpID0+IHtcbiAgICBjb25zb2xlLmxvZygnYXV0aGVudGljYXRlIGZ1bmN0aW9uJylcblxuICAgIGxldCBvcHRpb25zID0ge1xuICAgICAgc2NvcGU6IHVuZGVmaW5lZCwgLy8gVGhlIHNjb3BlKHMpIHRvIGF1dGhlbnRpY2F0ZVxuICAgICAgYWRkQWNjZXB0ZWRTY29wZXNIZWFkZXI6IHRydWUsIC8vIFNldCB0aGUgWC1BY2NlcHRlZC1PQXV0aC1TY29wZXMgSFRUUCBoZWFkZXIgb24gcmVzcG9uc2Ugb2JqZWN0cy5cbiAgICAgIGFkZEF1dGhvcml6ZWRTY29wZXNIZWFkZXI6IHRydWUsIC8vIFNldCB0aGUgWC1PQXV0aC1TY29wZXMgSFRUUCBoZWFkZXIgb24gcmVzcG9uc2Ugb2JqZWN0cy5cbiAgICAgIGFsbG93QmVhcmVyVG9rZW5zSW5RdWVyeVN0cmluZzogZmFsc2UsIC8vIEFsbG93IGNsaWVudHMgdG8gcGFzcyBiZWFyZXIgdG9rZW5zIGluIHRoZSBxdWVyeSBzdHJpbmcgb2YgYSByZXF1ZXN0XG4gICAgfVxuICAgIGxldCBvQXV0aFJlcXVlc3QgPSBuZXcgUmVxdWVzdChyZXF1ZXN0KVxuICAgIGxldCBvQXV0aFJlc3BvbnNlID0gbmV3IFJlc3BvbnNlKHJlc3BvbnNlKVxuICAgIGxldCB0b2tlbkRhdGEgPSBhd2FpdCBzZWxmLm9BdXRoMlNlcnZlci5hdXRoZW50aWNhdGUob0F1dGhSZXF1ZXN0LCBvQXV0aFJlc3BvbnNlLCBvcHRpb25zKS5jYXRjaChlcnJvciA9PiB7XG4gICAgICBjb25zb2xlLmxvZyhlcnJvcilcbiAgICB9KVxuICAgIHJldHVybiB0b2tlbkRhdGFcbiAgfVxufVxuXG4vKipcbiAqIEF1dGhvcml6ZXMgYSB0b2tlbiByZXF1ZXN0LiBpLmUuIEF1dGhvcml6ZSBhIGNsaWVudCB0byByZXF1ZXN0IHRva2Vucy5cbiAqIFRoZSBhdXRob3JpemF0aW9uIGVuZHBvaW50IGlzIHVzZWQgdG8gaW50ZXJhY3Qgd2l0aCB0aGUgcmVzb3VyY2Ugb3duZXIgYW5kIG9idGFpbiBhbiBhdXRob3JpemF0aW9uIGdyYW50LlxuICogKFNlZTogaHR0cHM6Ly90b29scy5pZXRmLm9yZy9odG1sL3JmYzY3NDkjc2VjdGlvbi0zLjEpXG4gKiBAcmV0dXJuIHtvYmplY3R9IGF1dGhvcml6YXRpb25Db2RlIC0gYXV0aG9yaXphdGlvbiBjb2RlIG9iamVjdCByZXR1cm5lZCBmcm9tIE1vZGVsI3NhdmVBdXRob3JpemF0aW9uQ29kZSgpXG4gKiBJZiByZXF1ZXN0LnF1ZXJ5LmFsbG93ZWQgZXF1YWxzIHRoZSBzdHJpbmcgJ2ZhbHNlJyB0aGUgYWNjZXNzIHJlcXVlc3QgaXMgZGVuaWVkIGFuZCB0aGUgcmV0dXJuZWQgcHJvbWlzZSBpcyByZWplY3RlZCB3aXRoIGFuIEFjY2Vzc0RlbmllZEVycm9yLlxuICovXG5hc3luYyBmdW5jdGlvbiBhdXRob3JpemUocmVxdWVzdCwgcmVzcG9uc2UpIHtcbiAgY29uc29sZS5sb2coJ2F1dGhvcml6ZSBmdW5jdGlvbicpXG5cbiAgbGV0IG9wdGlvbnMgPSB7XG4gICAgYXV0aGVudGljYXRlSGFuZGxlcjoge1xuICAgICAgaGFuZGxlOiBkYXRhID0+IHtcbiAgICAgICAgLy8gV2hhdGV2ZXIgeW91IG5lZWQgdG8gZG8gdG8gYXV0aG9yaXplIC8gcmV0cmlldmUgeW91ciB1c2VyIGZyb20gcG9zdCBkYXRhIGhlcmVcbiAgICAgICAgLy8gY2hlY2sgaWYgdGhlIHVzZXIgdGhhdCBjbGlja2VkIGF1dGhvcml6ZSBidXR0b24gaXMgbG9nZ2VkLWluL2F1dGhlbnRpY2F0ZWQuXG4gICAgICAgIHJldHVybiB7IHVzZXJuYW1lOiAnZXhhbXBsZScgfVxuICAgICAgfSxcbiAgICB9LCAvLyB7ZnVuY3Rpb259IHRoYXQgZ2V0cyB0aGUgYXV0aGVudGljYXRlZCB1c2VyLiBUaGlzIG9wdGlvbiB3aWxsIGFsbG93IHRvIHJldHVybiB1c2VyIG9iamVjdC5cbiAgICBhdXRob3JpemF0aW9uQ29kZUxpZmV0aW1lOiAzMDAsIC8vIExpZmV0aW1lIG9mIGdlbmVyYXRlZCBhdXRob3JpemF0aW9uIGNvZGVzIGluIHNlY29uZHMgKGRlZmF1bHQgPSAzMDAgc2Vjb25kcyA9IDUgbWludXRlcylcbiAgICAvLyBhbGxvd0VtcHR5U3RhdGU6IGZhbHNlLCAvLyBBbGxvdyBjbGllbnRzIHRvIHNwZWNpZnkgYW4gZW1wdHkgc3RhdGVcbiAgfVxuICBsZXQgb0F1dGhSZXF1ZXN0ID0gbmV3IFJlcXVlc3QocmVxdWVzdClcbiAgbGV0IG9BdXRoUmVzcG9uc2UgPSBuZXcgUmVzcG9uc2UocmVzcG9uc2UpXG4gIGxldCBhdXRob3JpemF0aW9uQ29kZSA9IGF3YWl0IHNlbGYub0F1dGgyU2VydmVyLmF1dGhvcml6ZShvQXV0aFJlcXVlc3QsIG9BdXRoUmVzcG9uc2UsIG9wdGlvbnMpLmNhdGNoKGVycm9yID0+IGNvbnNvbGUubG9nKGVycm9yKSlcbiAgcmV0dXJuIGF1dGhvcml6YXRpb25Db2RlXG59XG5cbi8qKlxuICogUmV0cmlldmVzIGEgbmV3IHRva2VuIGZvciBhbiBhdXRob3JpemVkIHRva2VuIHJlcXVlc3QuIGkuZS4gZ3JhbnQgdG9rZW5zIHRvIHZhbGlkIHJlcXVlc3RzLlxuICogVGhlIHRva2VuIGVuZHBvaW50IGlzIHVzZWQgYnkgdGhlIGNsaWVudCB0byBvYnRhaW4gYW4gYWNjZXNzIHRva2VuIGJ5IHByZXNlbnRpbmcgaXRzIGF1dGhvcml6YXRpb24gZ3JhbnQgb3IgcmVmcmVzaCB0b2tlbi5cbiAqIChTZWU6IGh0dHBzOi8vdG9vbHMuaWV0Zi5vcmcvaHRtbC9yZmM2NzQ5I3NlY3Rpb24tMy4yKVxuICogQHJldHVyblxuICovXG5hc3luYyBmdW5jdGlvbiB0b2tlbihyZXF1ZXN0LCByZXNwb25zZSkge1xuICBjb25zb2xlLmxvZygndG9rZW4gZnVuY3Rpb24nKVxuICBsZXQgb3B0aW9ucyA9IHtcbiAgICBhY2Nlc3NUb2tlbkxpZmV0aW1lOiAzNjAwLCAvLyBkZWZhdWx0IDMsNjAwIHNlY29uZHMgKDEgaG91cilcbiAgICByZWZyZXNoVG9rZW5MaWZldGltZTogMTIwOTYwMCwgLy8gZGVmYXVsdCAxLDIwOSw2MDAgc2Vjb25kcyAoMiB3ZWVrcylcbiAgICBhbGxvd0V4dGVuZGVkVG9rZW5BdHRyaWJ1dGVzOiB0cnVlLCAvLyBBbGxvdyBleHRlbmRlZCBhdHRyaWJ1dGVzIHRvIGJlIHNldCBvbiB0aGUgcmV0dXJuZWQgdG9rZW4uIGFueSBhZGRpdGlvbmFsIHByb3BlcnRpZXMgc2V0IG9uIHRoZSBvYmplY3QgcmV0dXJuZWQgZnJvbSBNb2RlbCNzYXZlVG9rZW4oKSBhcmUgY29waWVkIHRvIHRoZSB0b2tlbiByZXNwb25zZSBzZW50IHRvIHRoZSBjbGllbnQuXG4gICAgYWx3YXlzSXNzdWVOZXdSZWZyZXNoVG9rZW46IGZhbHNlLCAvLyBBbHdheXMgcmV2b2tlIHRoZSB1c2VkIHJlZnJlc2ggdG9rZW4gYW5kIGlzc3VlIGEgbmV3IG9uZSBmb3IgdGhlIHJlZnJlc2hfdG9rZW4gZ3JhbnQuXG4gICAgcmVxdWlyZUNsaWVudEF1dGhlbnRpY2F0aW9uOiB7XG4gICAgICAvLyBCeSBkZWZhdWx0IGFsbCBncmFudCB0eXBlcyByZXF1aXJlIHRoZSBjbGllbnQgdG8gc2VuZCBpdOKAmXMgY2xpZW50X3NlY3JldCB3aXRoIHRoZSB0b2tlbiByZXF1ZXN0XG4gICAgICBwYXNzd29yZDogZmFsc2UsXG4gICAgICBhdXRob3JpemF0aW9uX2NvZGU6IHRydWUsXG4gICAgICBjbGllbnRfY3JlZGVudGlhbHM6IHRydWUsXG4gICAgICByZWZyZXNoX3Rva2VuOiBmYWxzZSxcbiAgICB9LFxuICAgIC8vIGV4dGVuZGVkR3JhbnRUeXBlczoge30gLy8gYWRkaXRpb25hbCBzdXBwb3J0ZWQgZ3JhbnQgdHlwZXMuIChzZWUgaHR0cHM6Ly9vYXV0aDItc2VydmVyLnJlYWR0aGVkb2NzLmlvL2VuL2xhdGVzdC9taXNjL2V4dGVuc2lvbi1ncmFudHMuaHRtbClcbiAgfVxuICBsZXQgb0F1dGhSZXF1ZXN0ID0gbmV3IFJlcXVlc3QocmVxdWVzdClcbiAgbGV0IG9BdXRoUmVzcG9uc2UgPSBuZXcgUmVzcG9uc2UocmVzcG9uc2UpXG4gIGxldCB0b2tlbkRhdGEgPSBhd2FpdCBzZWxmLm9BdXRoMlNlcnZlci50b2tlbihvQXV0aFJlcXVlc3QsIG9BdXRoUmVzcG9uc2UsIG9wdGlvbnMpLmNhdGNoKGVycm9yID0+IHtcbiAgICBjb25zb2xlLmxvZygndG9rZW4gZnVuY3Rpb246JyArIGVycm9yKVxuICB9KVxuICByZXR1cm4gdG9rZW5EYXRhXG59XG4iXX0=

@@ -1,10 +1,11 @@
-import filesystem from 'fs'
-import path from 'path'
-const { createKeyStore } = require('oidc-provider')
+"use strict";var _interopRequireDefault = require("@babel/runtime/helpers/interopRequireDefault");var _fs = _interopRequireDefault(require("fs"));
+var _path = _interopRequireDefault(require("path"));
+const { createKeyStore } = require('oidc-provider');
 
-const keystore = createKeyStore()
+const keystore = createKeyStore();
 
 Promise.all([keystore.generate('RSA', 2048), keystore.generate('EC', 'P-256'), keystore.generate('EC', 'P-384'), keystore.generate('EC', 'P-521')]).then(() => {
-  console.log('• Generated key for OIDC provider token signature.')
-  filesystem.writeFileSync(path.join(__dirname, '/key/keystore.json'), JSON.stringify(keystore.toJSON(true), null, 2))
-})
+  console.log('• Generated key for OIDC provider token signature.');
+  _fs.default.writeFileSync(_path.default.join(__dirname, '/key/keystore.json'), JSON.stringify(keystore.toJSON(true), null, 2));
+});
+//# sourceMappingURL=data:application/json;charset=utf-8;base64,eyJ2ZXJzaW9uIjozLCJzb3VyY2VzIjpbIi4uLy4uLy4uLy4uLy4uL3NvdXJjZS9zZXJ2aWNlL29wZW5JZENvbm5lY3QvbWlkZGxld2FyZS9nZW5lcmF0ZUtleS5qcyJdLCJuYW1lcyI6WyJjcmVhdGVLZXlTdG9yZSIsInJlcXVpcmUiLCJrZXlzdG9yZSIsIlByb21pc2UiLCJhbGwiLCJnZW5lcmF0ZSIsInRoZW4iLCJjb25zb2xlIiwibG9nIiwiZmlsZXN5c3RlbSIsIndyaXRlRmlsZVN5bmMiLCJwYXRoIiwiam9pbiIsIl9fZGlybmFtZSIsIkpTT04iLCJzdHJpbmdpZnkiLCJ0b0pTT04iXSwibWFwcGluZ3MiOiJrR0FBQTtBQUNBO0FBQ0EsTUFBTSxFQUFFQSxjQUFGLEtBQXFCQyxPQUFPLENBQUMsZUFBRCxDQUFsQzs7QUFFQSxNQUFNQyxRQUFRLEdBQUdGLGNBQWMsRUFBL0I7O0FBRUFHLE9BQU8sQ0FBQ0MsR0FBUixDQUFZLENBQUNGLFFBQVEsQ0FBQ0csUUFBVCxDQUFrQixLQUFsQixFQUF5QixJQUF6QixDQUFELEVBQWlDSCxRQUFRLENBQUNHLFFBQVQsQ0FBa0IsSUFBbEIsRUFBd0IsT0FBeEIsQ0FBakMsRUFBbUVILFFBQVEsQ0FBQ0csUUFBVCxDQUFrQixJQUFsQixFQUF3QixPQUF4QixDQUFuRSxFQUFxR0gsUUFBUSxDQUFDRyxRQUFULENBQWtCLElBQWxCLEVBQXdCLE9BQXhCLENBQXJHLENBQVosRUFBb0pDLElBQXBKLENBQXlKLE1BQU07QUFDN0pDLEVBQUFBLE9BQU8sQ0FBQ0MsR0FBUixDQUFZLG9EQUFaO0FBQ0FDLGNBQVdDLGFBQVgsQ0FBeUJDLGNBQUtDLElBQUwsQ0FBVUMsU0FBVixFQUFxQixvQkFBckIsQ0FBekIsRUFBcUVDLElBQUksQ0FBQ0MsU0FBTCxDQUFlYixRQUFRLENBQUNjLE1BQVQsQ0FBZ0IsSUFBaEIsQ0FBZixFQUFzQyxJQUF0QyxFQUE0QyxDQUE1QyxDQUFyRTtBQUNELENBSEQiLCJzb3VyY2VzQ29udGVudCI6WyJpbXBvcnQgZmlsZXN5c3RlbSBmcm9tICdmcydcbmltcG9ydCBwYXRoIGZyb20gJ3BhdGgnXG5jb25zdCB7IGNyZWF0ZUtleVN0b3JlIH0gPSByZXF1aXJlKCdvaWRjLXByb3ZpZGVyJylcblxuY29uc3Qga2V5c3RvcmUgPSBjcmVhdGVLZXlTdG9yZSgpXG5cblByb21pc2UuYWxsKFtrZXlzdG9yZS5nZW5lcmF0ZSgnUlNBJywgMjA0OCksIGtleXN0b3JlLmdlbmVyYXRlKCdFQycsICdQLTI1NicpLCBrZXlzdG9yZS5nZW5lcmF0ZSgnRUMnLCAnUC0zODQnKSwga2V5c3RvcmUuZ2VuZXJhdGUoJ0VDJywgJ1AtNTIxJyldKS50aGVuKCgpID0+IHtcbiAgY29uc29sZS5sb2coJ+KAoiBHZW5lcmF0ZWQga2V5IGZvciBPSURDIHByb3ZpZGVyIHRva2VuIHNpZ25hdHVyZS4nKVxuICBmaWxlc3lzdGVtLndyaXRlRmlsZVN5bmMocGF0aC5qb2luKF9fZGlybmFtZSwgJy9rZXkva2V5c3RvcmUuanNvbicpLCBKU09OLnN0cmluZ2lmeShrZXlzdG9yZS50b0pTT04odHJ1ZSksIG51bGwsIDIpKVxufSlcbiJdfQ==

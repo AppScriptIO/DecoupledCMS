@@ -1,31 +1,32 @@
-// Authorization client example
-const { Issuer } = require('openid-client')
+"use strict";
+const { Issuer } = require('openid-client');
 
-const oidcPort = 8084
-const issuer = Issuer.discover(`http://localhost:${oidcPort}`) // TODO: Fix ! this is a promise that should be awaited.
+const oidcPort = 8084;
+const issuer = Issuer.discover(`http://localhost:${oidcPort}`);
 const oidcClient = new issuer.Client(
-  {
-    client_id: 'privateClientApplication',
-    client_secret: 'secret',
-    id_token_signed_response_alg: 'RS256', // defaults to RS256
-    token_endpoint_auth_method: 'client_secret_basic', // defaults to client_secret_basic
-  } /*[ keystore ]*/,
-) // keystore is an optional argument for instantiating a client with configured asymmetrical ID Token or UserInfo response encryption
+{
+  client_id: 'privateClientApplication',
+  client_secret: 'secret',
+  id_token_signed_response_alg: 'RS256',
+  token_endpoint_auth_method: 'client_secret_basic' });
+
+
 let authURL = oidcClient.authorizationUrl({
   redirect_uri: 'https://lvh.me/cb',
-  scope: 'openid',
-})
+  scope: 'openid' });
+
 
 
 async (context, next) => {
   if (context.path == '/oidcClient') {
-    console.log(authURL)
-    let introspection = await oidcClient
-      .introspect('token') // => Promise
-      .then(function(response) {
-        return response
-      })
-    context.body = introspection
+    console.log(authURL);
+    let introspection = await oidcClient.
+    introspect('token').
+    then(function (response) {
+      return response;
+    });
+    context.body = introspection;
   }
-  await next()
-}
+  await next();
+};
+//# sourceMappingURL=data:application/json;charset=utf-8;base64,eyJ2ZXJzaW9uIjozLCJzb3VyY2VzIjpbIi4uLy4uLy4uLy4uLy4uL3NvdXJjZS9zZXJ2aWNlL29wZW5JZENvbm5lY3QvbWlkZGxld2FyZS9jbGllbnRPcGVuSWRDb25uZWN0Q2xpZW50LmpzIl0sIm5hbWVzIjpbIklzc3VlciIsInJlcXVpcmUiLCJvaWRjUG9ydCIsImlzc3VlciIsImRpc2NvdmVyIiwib2lkY0NsaWVudCIsIkNsaWVudCIsImNsaWVudF9pZCIsImNsaWVudF9zZWNyZXQiLCJpZF90b2tlbl9zaWduZWRfcmVzcG9uc2VfYWxnIiwidG9rZW5fZW5kcG9pbnRfYXV0aF9tZXRob2QiLCJhdXRoVVJMIiwiYXV0aG9yaXphdGlvblVybCIsInJlZGlyZWN0X3VyaSIsInNjb3BlIiwiY29udGV4dCIsIm5leHQiLCJwYXRoIiwiY29uc29sZSIsImxvZyIsImludHJvc3BlY3Rpb24iLCJpbnRyb3NwZWN0IiwidGhlbiIsInJlc3BvbnNlIiwiYm9keSJdLCJtYXBwaW5ncyI6IjtBQUNBLE1BQU0sRUFBRUEsTUFBRixLQUFhQyxPQUFPLENBQUMsZUFBRCxDQUExQjs7QUFFQSxNQUFNQyxRQUFRLEdBQUcsSUFBakI7QUFDQSxNQUFNQyxNQUFNLEdBQUdILE1BQU0sQ0FBQ0ksUUFBUCxDQUFpQixvQkFBbUJGLFFBQVMsRUFBN0MsQ0FBZjtBQUNBLE1BQU1HLFVBQVUsR0FBRyxJQUFJRixNQUFNLENBQUNHLE1BQVg7QUFDakI7QUFDRUMsRUFBQUEsU0FBUyxFQUFFLDBCQURiO0FBRUVDLEVBQUFBLGFBQWEsRUFBRSxRQUZqQjtBQUdFQyxFQUFBQSw0QkFBNEIsRUFBRSxPQUhoQztBQUlFQyxFQUFBQSwwQkFBMEIsRUFBRSxxQkFKOUIsRUFEaUIsQ0FBbkI7OztBQVFBLElBQUlDLE9BQU8sR0FBR04sVUFBVSxDQUFDTyxnQkFBWCxDQUE0QjtBQUN4Q0MsRUFBQUEsWUFBWSxFQUFFLG1CQUQwQjtBQUV4Q0MsRUFBQUEsS0FBSyxFQUFFLFFBRmlDLEVBQTVCLENBQWQ7Ozs7QUFNQSxPQUFPQyxPQUFQLEVBQWdCQyxJQUFoQixLQUF5QjtBQUN2QixNQUFJRCxPQUFPLENBQUNFLElBQVIsSUFBZ0IsYUFBcEIsRUFBbUM7QUFDakNDLElBQUFBLE9BQU8sQ0FBQ0MsR0FBUixDQUFZUixPQUFaO0FBQ0EsUUFBSVMsYUFBYSxHQUFHLE1BQU1mLFVBQVU7QUFDakNnQixJQUFBQSxVQUR1QixDQUNaLE9BRFk7QUFFdkJDLElBQUFBLElBRnVCLENBRWxCLFVBQVNDLFFBQVQsRUFBbUI7QUFDdkIsYUFBT0EsUUFBUDtBQUNELEtBSnVCLENBQTFCO0FBS0FSLElBQUFBLE9BQU8sQ0FBQ1MsSUFBUixHQUFlSixhQUFmO0FBQ0Q7QUFDRCxRQUFNSixJQUFJLEVBQVY7QUFDRCxDQVhEIiwic291cmNlc0NvbnRlbnQiOlsiLy8gQXV0aG9yaXphdGlvbiBjbGllbnQgZXhhbXBsZVxuY29uc3QgeyBJc3N1ZXIgfSA9IHJlcXVpcmUoJ29wZW5pZC1jbGllbnQnKVxuXG5jb25zdCBvaWRjUG9ydCA9IDgwODRcbmNvbnN0IGlzc3VlciA9IElzc3Vlci5kaXNjb3ZlcihgaHR0cDovL2xvY2FsaG9zdDoke29pZGNQb3J0fWApIC8vIFRPRE86IEZpeCAhIHRoaXMgaXMgYSBwcm9taXNlIHRoYXQgc2hvdWxkIGJlIGF3YWl0ZWQuXG5jb25zdCBvaWRjQ2xpZW50ID0gbmV3IGlzc3Vlci5DbGllbnQoXG4gIHtcbiAgICBjbGllbnRfaWQ6ICdwcml2YXRlQ2xpZW50QXBwbGljYXRpb24nLFxuICAgIGNsaWVudF9zZWNyZXQ6ICdzZWNyZXQnLFxuICAgIGlkX3Rva2VuX3NpZ25lZF9yZXNwb25zZV9hbGc6ICdSUzI1NicsIC8vIGRlZmF1bHRzIHRvIFJTMjU2XG4gICAgdG9rZW5fZW5kcG9pbnRfYXV0aF9tZXRob2Q6ICdjbGllbnRfc2VjcmV0X2Jhc2ljJywgLy8gZGVmYXVsdHMgdG8gY2xpZW50X3NlY3JldF9iYXNpY1xuICB9IC8qWyBrZXlzdG9yZSBdKi8sXG4pIC8vIGtleXN0b3JlIGlzIGFuIG9wdGlvbmFsIGFyZ3VtZW50IGZvciBpbnN0YW50aWF0aW5nIGEgY2xpZW50IHdpdGggY29uZmlndXJlZCBhc3ltbWV0cmljYWwgSUQgVG9rZW4gb3IgVXNlckluZm8gcmVzcG9uc2UgZW5jcnlwdGlvblxubGV0IGF1dGhVUkwgPSBvaWRjQ2xpZW50LmF1dGhvcml6YXRpb25Vcmwoe1xuICByZWRpcmVjdF91cmk6ICdodHRwczovL2x2aC5tZS9jYicsXG4gIHNjb3BlOiAnb3BlbmlkJyxcbn0pXG5cblxuYXN5bmMgKGNvbnRleHQsIG5leHQpID0+IHtcbiAgaWYgKGNvbnRleHQucGF0aCA9PSAnL29pZGNDbGllbnQnKSB7XG4gICAgY29uc29sZS5sb2coYXV0aFVSTClcbiAgICBsZXQgaW50cm9zcGVjdGlvbiA9IGF3YWl0IG9pZGNDbGllbnRcbiAgICAgIC5pbnRyb3NwZWN0KCd0b2tlbicpIC8vID0+IFByb21pc2VcbiAgICAgIC50aGVuKGZ1bmN0aW9uKHJlc3BvbnNlKSB7XG4gICAgICAgIHJldHVybiByZXNwb25zZVxuICAgICAgfSlcbiAgICBjb250ZXh0LmJvZHkgPSBpbnRyb3NwZWN0aW9uXG4gIH1cbiAgYXdhaXQgbmV4dCgpXG59XG4iXX0=

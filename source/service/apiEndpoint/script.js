@@ -1,19 +1,20 @@
-import { createHttpServer } from '../../utility/server.js'
-import { graphMiddleware } from './middleware/graphMiddleware.js'
-import serviceConfig from './configuration/configuration.js'
+"use strict";var _interopRequireDefault = require("@babel/runtime/helpers/interopRequireDefault");Object.defineProperty(exports, "__esModule", { value: true });exports.initialize = initialize;var _server = require("../../utility/server.js");
+var _graphMiddleware = require("./middleware/graphMiddleware.js");
+var _configuration = _interopRequireDefault(require("./configuration/configuration.js"));
 
-export async function initialize({ targetProjectConfig }) {
+async function initialize({ targetProjectConfig }) {
   let middlewareArray = [
-    async (context, next) => {
-      context.set('connection', 'keep-alive')
-      context.set('Access-Control-Allow-Origin', '*')
-      await context.req.setTimeout(30000)
-      await next()
-    },
-    await graphMiddleware({ targetProjectConfig }),
-    async (context, next) => console.log('last middleware reached.'),
-  ]
+  async (context, next) => {
+    context.set('connection', 'keep-alive');
+    context.set('Access-Control-Allow-Origin', '*');
+    await context.req.setTimeout(30000);
+    await next();
+  },
+  await (0, _graphMiddleware.graphMiddleware)({ targetProjectConfig }),
+  async (context, next) => console.log('last middleware reached.')];
 
-  // create http server
-  await createHttpServer({ port: serviceConfig.port, middlewareArray })
+
+
+  await (0, _server.createHttpServer)({ port: _configuration.default.port, middlewareArray });
 }
+//# sourceMappingURL=data:application/json;charset=utf-8;base64,eyJ2ZXJzaW9uIjozLCJzb3VyY2VzIjpbIi4uLy4uLy4uLy4uL3NvdXJjZS9zZXJ2aWNlL2FwaUVuZHBvaW50L3NjcmlwdC5qcyJdLCJuYW1lcyI6WyJpbml0aWFsaXplIiwidGFyZ2V0UHJvamVjdENvbmZpZyIsIm1pZGRsZXdhcmVBcnJheSIsImNvbnRleHQiLCJuZXh0Iiwic2V0IiwicmVxIiwic2V0VGltZW91dCIsImNvbnNvbGUiLCJsb2ciLCJwb3J0Iiwic2VydmljZUNvbmZpZyJdLCJtYXBwaW5ncyI6ImdNQUFBO0FBQ0E7QUFDQTs7QUFFTyxlQUFlQSxVQUFmLENBQTBCLEVBQUVDLG1CQUFGLEVBQTFCLEVBQW1EO0FBQ3hELE1BQUlDLGVBQWUsR0FBRztBQUNwQixTQUFPQyxPQUFQLEVBQWdCQyxJQUFoQixLQUF5QjtBQUN2QkQsSUFBQUEsT0FBTyxDQUFDRSxHQUFSLENBQVksWUFBWixFQUEwQixZQUExQjtBQUNBRixJQUFBQSxPQUFPLENBQUNFLEdBQVIsQ0FBWSw2QkFBWixFQUEyQyxHQUEzQztBQUNBLFVBQU1GLE9BQU8sQ0FBQ0csR0FBUixDQUFZQyxVQUFaLENBQXVCLEtBQXZCLENBQU47QUFDQSxVQUFNSCxJQUFJLEVBQVY7QUFDRCxHQU5tQjtBQU9wQixRQUFNLHNDQUFnQixFQUFFSCxtQkFBRixFQUFoQixDQVBjO0FBUXBCLFNBQU9FLE9BQVAsRUFBZ0JDLElBQWhCLEtBQXlCSSxPQUFPLENBQUNDLEdBQVIsQ0FBWSwwQkFBWixDQVJMLENBQXRCOzs7O0FBWUEsUUFBTSw4QkFBaUIsRUFBRUMsSUFBSSxFQUFFQyx1QkFBY0QsSUFBdEIsRUFBNEJSLGVBQTVCLEVBQWpCLENBQU47QUFDRCIsInNvdXJjZXNDb250ZW50IjpbImltcG9ydCB7IGNyZWF0ZUh0dHBTZXJ2ZXIgfSBmcm9tICcuLi8uLi91dGlsaXR5L3NlcnZlci5qcydcbmltcG9ydCB7IGdyYXBoTWlkZGxld2FyZSB9IGZyb20gJy4vbWlkZGxld2FyZS9ncmFwaE1pZGRsZXdhcmUuanMnXG5pbXBvcnQgc2VydmljZUNvbmZpZyBmcm9tICcuL2NvbmZpZ3VyYXRpb24vY29uZmlndXJhdGlvbi5qcydcblxuZXhwb3J0IGFzeW5jIGZ1bmN0aW9uIGluaXRpYWxpemUoeyB0YXJnZXRQcm9qZWN0Q29uZmlnIH0pIHtcbiAgbGV0IG1pZGRsZXdhcmVBcnJheSA9IFtcbiAgICBhc3luYyAoY29udGV4dCwgbmV4dCkgPT4ge1xuICAgICAgY29udGV4dC5zZXQoJ2Nvbm5lY3Rpb24nLCAna2VlcC1hbGl2ZScpXG4gICAgICBjb250ZXh0LnNldCgnQWNjZXNzLUNvbnRyb2wtQWxsb3ctT3JpZ2luJywgJyonKVxuICAgICAgYXdhaXQgY29udGV4dC5yZXEuc2V0VGltZW91dCgzMDAwMClcbiAgICAgIGF3YWl0IG5leHQoKVxuICAgIH0sXG4gICAgYXdhaXQgZ3JhcGhNaWRkbGV3YXJlKHsgdGFyZ2V0UHJvamVjdENvbmZpZyB9KSxcbiAgICBhc3luYyAoY29udGV4dCwgbmV4dCkgPT4gY29uc29sZS5sb2coJ2xhc3QgbWlkZGxld2FyZSByZWFjaGVkLicpLFxuICBdXG5cbiAgLy8gY3JlYXRlIGh0dHAgc2VydmVyXG4gIGF3YWl0IGNyZWF0ZUh0dHBTZXJ2ZXIoeyBwb3J0OiBzZXJ2aWNlQ29uZmlnLnBvcnQsIG1pZGRsZXdhcmVBcnJheSB9KVxufVxuIl19
