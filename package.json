@@ -20,6 +20,7 @@
 		"co-body": "*",
 		"engine.io": "*",
 		"koa": "*",
+		"koa-bodyparser": "^4.2.1",
 		"koa-compress": "*",
 		"koa-json-error": "*",
 		"koa-logger": "*",
