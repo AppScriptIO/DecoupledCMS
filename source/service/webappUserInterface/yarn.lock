@@ -35,8 +35,8 @@
     lodash "^4.17.11"
 
 "@dependency/graphTraversal@https://github.com/AppScriptIO/graphTraversal#semver:^1.x.x":
-  version "1.2.9"
-  resolved "https://github.com/AppScriptIO/graphTraversal#6357e314a0b0b8f6fc05bd9173c3cd4388b0dc68"
+  version "1.2.12"
+  resolved "https://github.com/AppScriptIO/graphTraversal#4cfa78754523549db04994e93528512edab1f0e4"
   dependencies:
     "@dependency/classMixin" "https://github.com/AppScriptIO/classMixin#semver:^1.x.x"
     "@dependency/commonPattern" "https://github.com/AppScriptIO/commonPattern#semver:^1.x.x"
@@ -498,9 +498,9 @@ is-whitespace@^0.3.0:
   integrity sha1-Fjnssb4DauxppUy7QBz77XEUq38=
 
 jose@^1.10.1:
-  version "1.10.1"
-  resolved "https://registry.yarnpkg.com/jose/-/jose-1.10.1.tgz#c09876d99601a39b240a930d94529a2cbd514157"
-  integrity sha512-E6ev76KFgNT/+qN/owc7EYG7M3nJGSLguF7Jr2bpImUTpIwZS5ALsZA7l5/MOlVm52Kc+lcM/FeOfg3i/VG7qA==
+  version "1.10.2"
+  resolved "https://registry.yarnpkg.com/jose/-/jose-1.10.2.tgz#62fb285ce30c84a4e407056a5e6198ce5134a99e"
+  integrity sha512-xpH8tqepxOv1wlG5gwScZEJxbSPZKzIhPud7cvv1avNDexsF4zK3vCjKmMIs9Fs7Sgo46tcH3lXlwu2UiO/4Ew==
   dependencies:
     asn1.js "^5.2.0"
 
@@ -561,11 +561,6 @@ koa-convert@^1.2.0:
     co "^4.6.0"
     koa-compose "^3.0.0"
 
-koa-is-json@^1.0.0:
-  version "1.0.0"
-  resolved "https://registry.yarnpkg.com/koa-is-json/-/koa-is-json-1.0.0.tgz#273c07edcdcb8df6a2c1ab7d59ee76491451ec14"
-  integrity sha1-JzwH7c3Ljfaiwat9We52SRRR7BQ=
-
 koa-send@^5.0.0:
   version "5.0.0"
   resolved "https://registry.yarnpkg.com/koa-send/-/koa-send-5.0.0.tgz#5e8441e07ef55737734d7ced25b842e50646e7eb"
@@ -589,9 +584,9 @@ koa-views@*:
     pretty "^2.0.0"
 
 koa@*:
-  version "2.10.0"
-  resolved "https://registry.yarnpkg.com/koa/-/koa-2.10.0.tgz#86a583ff280896dce3a36b0b6dae80f9559240d3"
-  integrity sha512-vcZopGEWHDokchYtjU6jF1BCy+2MA2hnvGP7xPi26qWoIS0OiAUb4+lCqkqf05qG5ULnGYUFTvFnSK9RyOoiKw==
+  version "2.11.0"
+  resolved "https://registry.yarnpkg.com/koa/-/koa-2.11.0.tgz#fe5a51c46f566d27632dd5dc8fd5d7dd44f935a4"
+  integrity sha512-EpR9dElBTDlaDgyhDMiLkXrPwp6ZqgAIBvhhmxQ9XN4TFgW+gEz6tkcsNI6BnUbUftrKDjVFj4lW2/J2aNBMMA==
   dependencies:
     accepts "^1.3.5"
     cache-content-type "^1.0.0"
@@ -611,7 +606,6 @@ koa@*:
     is-generator-function "^1.0.7"
     koa-compose "^4.1.0"
     koa-convert "^1.2.0"
-    koa-is-json "^1.0.0"
     on-finished "^2.3.0"
     only "~0.0.2"
     parseurl "^1.3.2"
