@@ -1,6 +1,7 @@
-import { initializeGraph } from '../../../utility/graphInitialization.js'
+"use strict";Object.defineProperty(exports, "__esModule", { value: true });exports.graphMiddleware = graphMiddleware;var _graphInitialization = require("../../../utility/graphInitialization.js");
 
-export async function graphMiddleware({ targetProjectConfig, entrypointKey }) {
-  let { createGraphMiddleware } = await initializeGraph({ targetProjectConfig })
-  return createGraphMiddleware({ entrypointKey })
+async function graphMiddleware({ targetProjectConfig, entrypointKey }) {
+  let { createGraphMiddleware } = await (0, _graphInitialization.initializeGraph)({ targetProjectConfig });
+  return createGraphMiddleware({ entrypointKey });
 }
+//# sourceMappingURL=data:application/json;charset=utf-8;base64,eyJ2ZXJzaW9uIjozLCJzb3VyY2VzIjpbIi4uLy4uLy4uLy4uLy4uL3NvdXJjZS9zZXJ2aWNlL3N0YXRpY0NvbnRlbnQvbWlkZGxld2FyZS9ncmFwaE1pZGRsZXdhcmUuanMiXSwibmFtZXMiOlsiZ3JhcGhNaWRkbGV3YXJlIiwidGFyZ2V0UHJvamVjdENvbmZpZyIsImVudHJ5cG9pbnRLZXkiLCJjcmVhdGVHcmFwaE1pZGRsZXdhcmUiXSwibWFwcGluZ3MiOiJxSEFBQTs7QUFFTyxlQUFlQSxlQUFmLENBQStCLEVBQUVDLG1CQUFGLEVBQXVCQyxhQUF2QixFQUEvQixFQUF1RTtBQUM1RSxNQUFJLEVBQUVDLHFCQUFGLEtBQTRCLE1BQU0sMENBQWdCLEVBQUVGLG1CQUFGLEVBQWhCLENBQXRDO0FBQ0EsU0FBT0UscUJBQXFCLENBQUMsRUFBRUQsYUFBRixFQUFELENBQTVCO0FBQ0QiLCJzb3VyY2VzQ29udGVudCI6WyJpbXBvcnQgeyBpbml0aWFsaXplR3JhcGggfSBmcm9tICcuLi8uLi8uLi91dGlsaXR5L2dyYXBoSW5pdGlhbGl6YXRpb24uanMnXG5cbmV4cG9ydCBhc3luYyBmdW5jdGlvbiBncmFwaE1pZGRsZXdhcmUoeyB0YXJnZXRQcm9qZWN0Q29uZmlnLCBlbnRyeXBvaW50S2V5IH0pIHtcbiAgbGV0IHsgY3JlYXRlR3JhcGhNaWRkbGV3YXJlIH0gPSBhd2FpdCBpbml0aWFsaXplR3JhcGgoeyB0YXJnZXRQcm9qZWN0Q29uZmlnIH0pXG4gIHJldHVybiBjcmVhdGVHcmFwaE1pZGRsZXdhcmUoeyBlbnRyeXBvaW50S2V5IH0pXG59XG4iXX0=

@@ -1,13 +1,14 @@
-import path from 'path'
-let Request = require('oauth2-server').Request
-let Response = require('oauth2-server').Response
+"use strict";Object.defineProperty(exports, "__esModule", { value: true });exports.default = void 0;
+let Request = require('oauth2-server').Request;
+let Response = require('oauth2-server').Response;var _default =
 
-export default async (context, next) => {
-  console.log(context.request.body)
-  var request = new Request(context.request)
-  var response = new Response(context.response)
-  let token = await oAuth2Server.authorize(request, response)
-  console.log(token)
+async (context, next) => {
+  console.log(context.request.body);
+  var request = new Request(context.request);
+  var response = new Response(context.response);
+  let token = await oAuth2Server.authorize(request, response);
+  console.log(token);
 
-  await next()
-}
+  await next();
+};exports.default = _default;
+//# sourceMappingURL=data:application/json;charset=utf-8;base64,eyJ2ZXJzaW9uIjozLCJzb3VyY2VzIjpbIi4uLy4uLy4uLy4uLy4uL3NvdXJjZS9zZXJ2aWNlL29BdXRoL21pZGRsZXdhcmUvb0F1dGhBdXRob3JpemUubWlkZGxld2FyZS5qcyJdLCJuYW1lcyI6WyJSZXF1ZXN0IiwicmVxdWlyZSIsIlJlc3BvbnNlIiwiY29udGV4dCIsIm5leHQiLCJjb25zb2xlIiwibG9nIiwicmVxdWVzdCIsImJvZHkiLCJyZXNwb25zZSIsInRva2VuIiwib0F1dGgyU2VydmVyIiwiYXV0aG9yaXplIl0sIm1hcHBpbmdzIjoiO0FBQ0EsSUFBSUEsT0FBTyxHQUFHQyxPQUFPLENBQUMsZUFBRCxDQUFQLENBQXlCRCxPQUF2QztBQUNBLElBQUlFLFFBQVEsR0FBR0QsT0FBTyxDQUFDLGVBQUQsQ0FBUCxDQUF5QkMsUUFBeEMsQzs7QUFFZSxPQUFPQyxPQUFQLEVBQWdCQyxJQUFoQixLQUF5QjtBQUN0Q0MsRUFBQUEsT0FBTyxDQUFDQyxHQUFSLENBQVlILE9BQU8sQ0FBQ0ksT0FBUixDQUFnQkMsSUFBNUI7QUFDQSxNQUFJRCxPQUFPLEdBQUcsSUFBSVAsT0FBSixDQUFZRyxPQUFPLENBQUNJLE9BQXBCLENBQWQ7QUFDQSxNQUFJRSxRQUFRLEdBQUcsSUFBSVAsUUFBSixDQUFhQyxPQUFPLENBQUNNLFFBQXJCLENBQWY7QUFDQSxNQUFJQyxLQUFLLEdBQUcsTUFBTUMsWUFBWSxDQUFDQyxTQUFiLENBQXVCTCxPQUF2QixFQUFnQ0UsUUFBaEMsQ0FBbEI7QUFDQUosRUFBQUEsT0FBTyxDQUFDQyxHQUFSLENBQVlJLEtBQVo7O0FBRUEsUUFBTU4sSUFBSSxFQUFWO0FBQ0QsQyIsInNvdXJjZXNDb250ZW50IjpbImltcG9ydCBwYXRoIGZyb20gJ3BhdGgnXG5sZXQgUmVxdWVzdCA9IHJlcXVpcmUoJ29hdXRoMi1zZXJ2ZXInKS5SZXF1ZXN0XG5sZXQgUmVzcG9uc2UgPSByZXF1aXJlKCdvYXV0aDItc2VydmVyJykuUmVzcG9uc2VcblxuZXhwb3J0IGRlZmF1bHQgYXN5bmMgKGNvbnRleHQsIG5leHQpID0+IHtcbiAgY29uc29sZS5sb2coY29udGV4dC5yZXF1ZXN0LmJvZHkpXG4gIHZhciByZXF1ZXN0ID0gbmV3IFJlcXVlc3QoY29udGV4dC5yZXF1ZXN0KVxuICB2YXIgcmVzcG9uc2UgPSBuZXcgUmVzcG9uc2UoY29udGV4dC5yZXNwb25zZSlcbiAgbGV0IHRva2VuID0gYXdhaXQgb0F1dGgyU2VydmVyLmF1dGhvcml6ZShyZXF1ZXN0LCByZXNwb25zZSlcbiAgY29uc29sZS5sb2codG9rZW4pXG5cbiAgYXdhaXQgbmV4dCgpXG59XG4iXX0=

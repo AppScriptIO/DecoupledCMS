@@ -1,8 +1,9 @@
-import underscore from 'underscore'
-import koaViews from 'koa-views'
+"use strict";var _interopRequireDefault = require("@babel/runtime/helpers/interopRequireDefault");Object.defineProperty(exports, "__esModule", { value: true });exports.createTemplateRenderingMiddleware = createTemplateRenderingMiddleware;var _underscore = _interopRequireDefault(require("underscore"));
+var _koaViews = _interopRequireDefault(require("koa-views"));
 
-export function createTemplateRenderingMiddleware() {
-  underscore.templateSettings = serviceConfig.underscore
-  console.info(`• Underscore template setting set as ${underscore.templateSettings.evaluate} ${underscore.templateSettings.interpolate} ${underscore.templateSettings.escape}`)
-  return koaViews('/', { map: { html: 'underscore', js: 'underscore' } })
+function createTemplateRenderingMiddleware() {
+  _underscore.default.templateSettings = serviceConfig.underscore;
+  console.info(`• Underscore template setting set as ${_underscore.default.templateSettings.evaluate} ${_underscore.default.templateSettings.interpolate} ${_underscore.default.templateSettings.escape}`);
+  return (0, _koaViews.default)('/', { map: { html: 'underscore', js: 'underscore' } });
 }
+//# sourceMappingURL=data:application/json;charset=utf-8;base64,eyJ2ZXJzaW9uIjozLCJzb3VyY2VzIjpbIi4uLy4uLy4uLy4uLy4uL3NvdXJjZS9zZXJ2aWNlL3dlYmFwcFVzZXJJbnRlcmZhY2UvbWlkZGxld2FyZS90ZW1wbGF0ZVJlbmRlcmluZy5qcyJdLCJuYW1lcyI6WyJjcmVhdGVUZW1wbGF0ZVJlbmRlcmluZ01pZGRsZXdhcmUiLCJ1bmRlcnNjb3JlIiwidGVtcGxhdGVTZXR0aW5ncyIsInNlcnZpY2VDb25maWciLCJjb25zb2xlIiwiaW5mbyIsImV2YWx1YXRlIiwiaW50ZXJwb2xhdGUiLCJlc2NhcGUiLCJtYXAiLCJodG1sIiwianMiXSwibWFwcGluZ3MiOiI4T0FBQTtBQUNBOztBQUVPLFNBQVNBLGlDQUFULEdBQTZDO0FBQ2xEQyxzQkFBV0MsZ0JBQVgsR0FBOEJDLGFBQWEsQ0FBQ0YsVUFBNUM7QUFDQUcsRUFBQUEsT0FBTyxDQUFDQyxJQUFSLENBQWMsd0NBQXVDSixvQkFBV0MsZ0JBQVgsQ0FBNEJJLFFBQVMsSUFBR0wsb0JBQVdDLGdCQUFYLENBQTRCSyxXQUFZLElBQUdOLG9CQUFXQyxnQkFBWCxDQUE0Qk0sTUFBTyxFQUEzSztBQUNBLFNBQU8sdUJBQVMsR0FBVCxFQUFjLEVBQUVDLEdBQUcsRUFBRSxFQUFFQyxJQUFJLEVBQUUsWUFBUixFQUFzQkMsRUFBRSxFQUFFLFlBQTFCLEVBQVAsRUFBZCxDQUFQO0FBQ0QiLCJzb3VyY2VzQ29udGVudCI6WyJpbXBvcnQgdW5kZXJzY29yZSBmcm9tICd1bmRlcnNjb3JlJ1xuaW1wb3J0IGtvYVZpZXdzIGZyb20gJ2tvYS12aWV3cydcblxuZXhwb3J0IGZ1bmN0aW9uIGNyZWF0ZVRlbXBsYXRlUmVuZGVyaW5nTWlkZGxld2FyZSgpIHtcbiAgdW5kZXJzY29yZS50ZW1wbGF0ZVNldHRpbmdzID0gc2VydmljZUNvbmZpZy51bmRlcnNjb3JlXG4gIGNvbnNvbGUuaW5mbyhg4oCiIFVuZGVyc2NvcmUgdGVtcGxhdGUgc2V0dGluZyBzZXQgYXMgJHt1bmRlcnNjb3JlLnRlbXBsYXRlU2V0dGluZ3MuZXZhbHVhdGV9ICR7dW5kZXJzY29yZS50ZW1wbGF0ZVNldHRpbmdzLmludGVycG9sYXRlfSAke3VuZGVyc2NvcmUudGVtcGxhdGVTZXR0aW5ncy5lc2NhcGV9YClcbiAgcmV0dXJuIGtvYVZpZXdzKCcvJywgeyBtYXA6IHsgaHRtbDogJ3VuZGVyc2NvcmUnLCBqczogJ3VuZGVyc2NvcmUnIH0gfSlcbn1cbiJdfQ==

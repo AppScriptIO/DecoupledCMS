@@ -1,58 +1,59 @@
-import http from 'http'
-import https from 'https'
-import Koa from 'koa' // Koa applicaiton server
-import webSocket from 'ws'
-import engineIO from 'engine.io'
-import socketIO from 'socket.io'
-import consoleLogStyle from './consoleLogStyleConfig.js'
+"use strict";var _interopRequireDefault = require("@babel/runtime/helpers/interopRequireDefault");Object.defineProperty(exports, "__esModule", { value: true });exports.createHttpServer = createHttpServer;exports.createWebSocketServerWS = createWebSocketServerWS;exports.createWebSocketServerIO = createWebSocketServerIO;exports.createWebSocketServerEngineIO = createWebSocketServerEngineIO;var _http = _interopRequireDefault(require("http"));
 
-export async function createHttpServer({ port, middlewareArray }) {
-  const serverKoa = new Koa() // create Koa server
-  serverKoa.subdomainOffset = 1 // for localhost domain.
-  // register middleware
-  middlewareArray.forEach(middleware => serverKoa.use(middleware))
+var _koa = _interopRequireDefault(require("koa"));
+var _ws = _interopRequireDefault(require("ws"));
+var _engine = _interopRequireDefault(require("engine.io"));
+var _socket = _interopRequireDefault(require("socket.io"));
+var _consoleLogStyleConfig = _interopRequireDefault(require("./consoleLogStyleConfig.js"));
+
+async function createHttpServer({ port, middlewareArray }) {
+  const serverKoa = new _koa.default();
+  serverKoa.subdomainOffset = 1;
+
+  middlewareArray.forEach(middleware => serverKoa.use(middleware));
   await new Promise(
-    (resolve, reject) =>
-      http
-        .createServer(serverKoa.callback())
-        .listen(port, () => {
-          if (process.send !== undefined) process.send({ message: 'Server listening' }) // if process is a forked child process.
-          process.emit('listening')
-          console.log(`☕%c Server listening on port ${port}`, consoleLogStyle.style.green)
-        })
-        .on('connection', socket => {
-          console.info('SOCKET OPENED' + JSON.stringify(socket.address()))
-          socket.on('end', () => console.info('SOCKET END: other end of the socket sends a FIN packet'))
-          socket.on('timeout', () => console.info('SOCKET TIMEOUT'))
-          socket.on('error', error => console.info('SOCKET ERROR: ' + JSON.stringify(error)))
-          socket.on('close', had_error => console.info('SOCKET CLOSED. Is ERROR ?: ' + had_error))
-        })
-        .setTimeout(0, () => console.log('HTTP server connection socket was timedout (console.log in httpServer.setTimeout)!')) && resolve(),
-  )
+  (resolve, reject) =>
+  _http.default.
+  createServer(serverKoa.callback()).
+  listen(port, () => {
+    if (process.send !== undefined) process.send({ message: 'Server listening' });
+    process.emit('listening');
+    console.log(`☕%c Server listening on port ${port}`, _consoleLogStyleConfig.default.style.green);
+  }).
+  on('connection', socket => {
+    console.info('SOCKET OPENED' + JSON.stringify(socket.address()));
+    socket.on('end', () => console.info('SOCKET END: other end of the socket sends a FIN packet'));
+    socket.on('timeout', () => console.info('SOCKET TIMEOUT'));
+    socket.on('error', error => console.info('SOCKET ERROR: ' + JSON.stringify(error)));
+    socket.on('close', had_error => console.info('SOCKET CLOSED. Is ERROR ?: ' + had_error));
+  }).
+  setTimeout(0, () => console.log('HTTP server connection socket was timedout (console.log in httpServer.setTimeout)!')) && resolve());
+
 }
 
-// Using `ws` package.
-export async function createWebSocketServerWS({ port }) {
+
+async function createWebSocketServerWS({ port }) {
   let server = await new Promise(
-    (resolve, reject) =>
-      new webSocket.Server({ port }, () => {
-        console.log(`☕%c Websocket server listening on port ${port}`, consoleLogStyle.style.green)
-        resolve()
-      }),
-  )
-  return server
+  (resolve, reject) =>
+  new _ws.default.Server({ port }, () => {
+    console.log(`☕%c Websocket server listening on port ${port}`, _consoleLogStyleConfig.default.style.green);
+    resolve();
+  }));
+
+  return server;
 }
 
-// Using `io` package.
-export async function createWebSocketServerIO({ port }) {
-  let httpServer = http.createServer().listen(port)
-  let server = socketIO(httpServer)
-  return server
+
+async function createWebSocketServerIO({ port }) {
+  let httpServer = _http.default.createServer().listen(port);
+  let server = (0, _socket.default)(httpServer);
+  return server;
 }
 
-// Engine.io - engine.io package and client package JSPM.
-export async function createWebSocketServerEngineIO({ port }) {
-  let httpServer = http.createServer().listen(port)
-  let server = engineIO.attach(httpServer)
-  return server
+
+async function createWebSocketServerEngineIO({ port }) {
+  let httpServer = _http.default.createServer().listen(port);
+  let server = _engine.default.attach(httpServer);
+  return server;
 }
+//# sourceMappingURL=data:application/json;charset=utf-8;base64,eyJ2ZXJzaW9uIjozLCJzb3VyY2VzIjpbIi4uLy4uLy4uL3NvdXJjZS91dGlsaXR5L3NlcnZlci5qcyJdLCJuYW1lcyI6WyJjcmVhdGVIdHRwU2VydmVyIiwicG9ydCIsIm1pZGRsZXdhcmVBcnJheSIsInNlcnZlcktvYSIsIktvYSIsInN1YmRvbWFpbk9mZnNldCIsImZvckVhY2giLCJtaWRkbGV3YXJlIiwidXNlIiwiUHJvbWlzZSIsInJlc29sdmUiLCJyZWplY3QiLCJodHRwIiwiY3JlYXRlU2VydmVyIiwiY2FsbGJhY2siLCJsaXN0ZW4iLCJwcm9jZXNzIiwic2VuZCIsInVuZGVmaW5lZCIsIm1lc3NhZ2UiLCJlbWl0IiwiY29uc29sZSIsImxvZyIsImNvbnNvbGVMb2dTdHlsZSIsInN0eWxlIiwiZ3JlZW4iLCJvbiIsInNvY2tldCIsImluZm8iLCJKU09OIiwic3RyaW5naWZ5IiwiYWRkcmVzcyIsImVycm9yIiwiaGFkX2Vycm9yIiwic2V0VGltZW91dCIsImNyZWF0ZVdlYlNvY2tldFNlcnZlcldTIiwic2VydmVyIiwid2ViU29ja2V0IiwiU2VydmVyIiwiY3JlYXRlV2ViU29ja2V0U2VydmVySU8iLCJodHRwU2VydmVyIiwiY3JlYXRlV2ViU29ja2V0U2VydmVyRW5naW5lSU8iLCJlbmdpbmVJTyIsImF0dGFjaCJdLCJtYXBwaW5ncyI6InNZQUFBOztBQUVBO0FBQ0E7QUFDQTtBQUNBO0FBQ0E7O0FBRU8sZUFBZUEsZ0JBQWYsQ0FBZ0MsRUFBRUMsSUFBRixFQUFRQyxlQUFSLEVBQWhDLEVBQTJEO0FBQ2hFLFFBQU1DLFNBQVMsR0FBRyxJQUFJQyxZQUFKLEVBQWxCO0FBQ0FELEVBQUFBLFNBQVMsQ0FBQ0UsZUFBVixHQUE0QixDQUE1Qjs7QUFFQUgsRUFBQUEsZUFBZSxDQUFDSSxPQUFoQixDQUF3QkMsVUFBVSxJQUFJSixTQUFTLENBQUNLLEdBQVYsQ0FBY0QsVUFBZCxDQUF0QztBQUNBLFFBQU0sSUFBSUUsT0FBSjtBQUNKLEdBQUNDLE9BQUQsRUFBVUMsTUFBVjtBQUNFQztBQUNHQyxFQUFBQSxZQURILENBQ2dCVixTQUFTLENBQUNXLFFBQVYsRUFEaEI7QUFFR0MsRUFBQUEsTUFGSCxDQUVVZCxJQUZWLEVBRWdCLE1BQU07QUFDbEIsUUFBSWUsT0FBTyxDQUFDQyxJQUFSLEtBQWlCQyxTQUFyQixFQUFnQ0YsT0FBTyxDQUFDQyxJQUFSLENBQWEsRUFBRUUsT0FBTyxFQUFFLGtCQUFYLEVBQWI7QUFDaENILElBQUFBLE9BQU8sQ0FBQ0ksSUFBUixDQUFhLFdBQWI7QUFDQUMsSUFBQUEsT0FBTyxDQUFDQyxHQUFSLENBQWEsZ0NBQStCckIsSUFBSyxFQUFqRCxFQUFvRHNCLCtCQUFnQkMsS0FBaEIsQ0FBc0JDLEtBQTFFO0FBQ0QsR0FOSDtBQU9HQyxFQUFBQSxFQVBILENBT00sWUFQTixFQU9vQkMsTUFBTSxJQUFJO0FBQzFCTixJQUFBQSxPQUFPLENBQUNPLElBQVIsQ0FBYSxrQkFBa0JDLElBQUksQ0FBQ0MsU0FBTCxDQUFlSCxNQUFNLENBQUNJLE9BQVAsRUFBZixDQUEvQjtBQUNBSixJQUFBQSxNQUFNLENBQUNELEVBQVAsQ0FBVSxLQUFWLEVBQWlCLE1BQU1MLE9BQU8sQ0FBQ08sSUFBUixDQUFhLHdEQUFiLENBQXZCO0FBQ0FELElBQUFBLE1BQU0sQ0FBQ0QsRUFBUCxDQUFVLFNBQVYsRUFBcUIsTUFBTUwsT0FBTyxDQUFDTyxJQUFSLENBQWEsZ0JBQWIsQ0FBM0I7QUFDQUQsSUFBQUEsTUFBTSxDQUFDRCxFQUFQLENBQVUsT0FBVixFQUFtQk0sS0FBSyxJQUFJWCxPQUFPLENBQUNPLElBQVIsQ0FBYSxtQkFBbUJDLElBQUksQ0FBQ0MsU0FBTCxDQUFlRSxLQUFmLENBQWhDLENBQTVCO0FBQ0FMLElBQUFBLE1BQU0sQ0FBQ0QsRUFBUCxDQUFVLE9BQVYsRUFBbUJPLFNBQVMsSUFBSVosT0FBTyxDQUFDTyxJQUFSLENBQWEsZ0NBQWdDSyxTQUE3QyxDQUFoQztBQUNELEdBYkg7QUFjR0MsRUFBQUEsVUFkSCxDQWNjLENBZGQsRUFjaUIsTUFBTWIsT0FBTyxDQUFDQyxHQUFSLENBQVksb0ZBQVosQ0FkdkIsS0FjNkhaLE9BQU8sRUFoQmxJLENBQU47O0FBa0JEOzs7QUFHTSxlQUFleUIsdUJBQWYsQ0FBdUMsRUFBRWxDLElBQUYsRUFBdkMsRUFBaUQ7QUFDdEQsTUFBSW1DLE1BQU0sR0FBRyxNQUFNLElBQUkzQixPQUFKO0FBQ2pCLEdBQUNDLE9BQUQsRUFBVUMsTUFBVjtBQUNFLE1BQUkwQixZQUFVQyxNQUFkLENBQXFCLEVBQUVyQyxJQUFGLEVBQXJCLEVBQStCLE1BQU07QUFDbkNvQixJQUFBQSxPQUFPLENBQUNDLEdBQVIsQ0FBYSwwQ0FBeUNyQixJQUFLLEVBQTNELEVBQThEc0IsK0JBQWdCQyxLQUFoQixDQUFzQkMsS0FBcEY7QUFDQWYsSUFBQUEsT0FBTztBQUNSLEdBSEQsQ0FGZSxDQUFuQjs7QUFPQSxTQUFPMEIsTUFBUDtBQUNEOzs7QUFHTSxlQUFlRyx1QkFBZixDQUF1QyxFQUFFdEMsSUFBRixFQUF2QyxFQUFpRDtBQUN0RCxNQUFJdUMsVUFBVSxHQUFHNUIsY0FBS0MsWUFBTCxHQUFvQkUsTUFBcEIsQ0FBMkJkLElBQTNCLENBQWpCO0FBQ0EsTUFBSW1DLE1BQU0sR0FBRyxxQkFBU0ksVUFBVCxDQUFiO0FBQ0EsU0FBT0osTUFBUDtBQUNEOzs7QUFHTSxlQUFlSyw2QkFBZixDQUE2QyxFQUFFeEMsSUFBRixFQUE3QyxFQUF1RDtBQUM1RCxNQUFJdUMsVUFBVSxHQUFHNUIsY0FBS0MsWUFBTCxHQUFvQkUsTUFBcEIsQ0FBMkJkLElBQTNCLENBQWpCO0FBQ0EsTUFBSW1DLE1BQU0sR0FBR00sZ0JBQVNDLE1BQVQsQ0FBZ0JILFVBQWhCLENBQWI7QUFDQSxTQUFPSixNQUFQO0FBQ0QiLCJzb3VyY2VzQ29udGVudCI6WyJpbXBvcnQgaHR0cCBmcm9tICdodHRwJ1xuaW1wb3J0IGh0dHBzIGZyb20gJ2h0dHBzJ1xuaW1wb3J0IEtvYSBmcm9tICdrb2EnIC8vIEtvYSBhcHBsaWNhaXRvbiBzZXJ2ZXJcbmltcG9ydCB3ZWJTb2NrZXQgZnJvbSAnd3MnXG5pbXBvcnQgZW5naW5lSU8gZnJvbSAnZW5naW5lLmlvJ1xuaW1wb3J0IHNvY2tldElPIGZyb20gJ3NvY2tldC5pbydcbmltcG9ydCBjb25zb2xlTG9nU3R5bGUgZnJvbSAnLi9jb25zb2xlTG9nU3R5bGVDb25maWcuanMnXG5cbmV4cG9ydCBhc3luYyBmdW5jdGlvbiBjcmVhdGVIdHRwU2VydmVyKHsgcG9ydCwgbWlkZGxld2FyZUFycmF5IH0pIHtcbiAgY29uc3Qgc2VydmVyS29hID0gbmV3IEtvYSgpIC8vIGNyZWF0ZSBLb2Egc2VydmVyXG4gIHNlcnZlcktvYS5zdWJkb21haW5PZmZzZXQgPSAxIC8vIGZvciBsb2NhbGhvc3QgZG9tYWluLlxuICAvLyByZWdpc3RlciBtaWRkbGV3YXJlXG4gIG1pZGRsZXdhcmVBcnJheS5mb3JFYWNoKG1pZGRsZXdhcmUgPT4gc2VydmVyS29hLnVzZShtaWRkbGV3YXJlKSlcbiAgYXdhaXQgbmV3IFByb21pc2UoXG4gICAgKHJlc29sdmUsIHJlamVjdCkgPT5cbiAgICAgIGh0dHBcbiAgICAgICAgLmNyZWF0ZVNlcnZlcihzZXJ2ZXJLb2EuY2FsbGJhY2soKSlcbiAgICAgICAgLmxpc3Rlbihwb3J0LCAoKSA9PiB7XG4gICAgICAgICAgaWYgKHByb2Nlc3Muc2VuZCAhPT0gdW5kZWZpbmVkKSBwcm9jZXNzLnNlbmQoeyBtZXNzYWdlOiAnU2VydmVyIGxpc3RlbmluZycgfSkgLy8gaWYgcHJvY2VzcyBpcyBhIGZvcmtlZCBjaGlsZCBwcm9jZXNzLlxuICAgICAgICAgIHByb2Nlc3MuZW1pdCgnbGlzdGVuaW5nJylcbiAgICAgICAgICBjb25zb2xlLmxvZyhg4piVJWMgU2VydmVyIGxpc3RlbmluZyBvbiBwb3J0ICR7cG9ydH1gLCBjb25zb2xlTG9nU3R5bGUuc3R5bGUuZ3JlZW4pXG4gICAgICAgIH0pXG4gICAgICAgIC5vbignY29ubmVjdGlvbicsIHNvY2tldCA9PiB7XG4gICAgICAgICAgY29uc29sZS5pbmZvKCdTT0NLRVQgT1BFTkVEJyArIEpTT04uc3RyaW5naWZ5KHNvY2tldC5hZGRyZXNzKCkpKVxuICAgICAgICAgIHNvY2tldC5vbignZW5kJywgKCkgPT4gY29uc29sZS5pbmZvKCdTT0NLRVQgRU5EOiBvdGhlciBlbmQgb2YgdGhlIHNvY2tldCBzZW5kcyBhIEZJTiBwYWNrZXQnKSlcbiAgICAgICAgICBzb2NrZXQub24oJ3RpbWVvdXQnLCAoKSA9PiBjb25zb2xlLmluZm8oJ1NPQ0tFVCBUSU1FT1VUJykpXG4gICAgICAgICAgc29ja2V0Lm9uKCdlcnJvcicsIGVycm9yID0+IGNvbnNvbGUuaW5mbygnU09DS0VUIEVSUk9SOiAnICsgSlNPTi5zdHJpbmdpZnkoZXJyb3IpKSlcbiAgICAgICAgICBzb2NrZXQub24oJ2Nsb3NlJywgaGFkX2Vycm9yID0+IGNvbnNvbGUuaW5mbygnU09DS0VUIENMT1NFRC4gSXMgRVJST1IgPzogJyArIGhhZF9lcnJvcikpXG4gICAgICAgIH0pXG4gICAgICAgIC5zZXRUaW1lb3V0KDAsICgpID0+IGNvbnNvbGUubG9nKCdIVFRQIHNlcnZlciBjb25uZWN0aW9uIHNvY2tldCB3YXMgdGltZWRvdXQgKGNvbnNvbGUubG9nIGluIGh0dHBTZXJ2ZXIuc2V0VGltZW91dCkhJykpICYmIHJlc29sdmUoKSxcbiAgKVxufVxuXG4vLyBVc2luZyBgd3NgIHBhY2thZ2UuXG5leHBvcnQgYXN5bmMgZnVuY3Rpb24gY3JlYXRlV2ViU29ja2V0U2VydmVyV1MoeyBwb3J0IH0pIHtcbiAgbGV0IHNlcnZlciA9IGF3YWl0IG5ldyBQcm9taXNlKFxuICAgIChyZXNvbHZlLCByZWplY3QpID0+XG4gICAgICBuZXcgd2ViU29ja2V0LlNlcnZlcih7IHBvcnQgfSwgKCkgPT4ge1xuICAgICAgICBjb25zb2xlLmxvZyhg4piVJWMgV2Vic29ja2V0IHNlcnZlciBsaXN0ZW5pbmcgb24gcG9ydCAke3BvcnR9YCwgY29uc29sZUxvZ1N0eWxlLnN0eWxlLmdyZWVuKVxuICAgICAgICByZXNvbHZlKClcbiAgICAgIH0pLFxuICApXG4gIHJldHVybiBzZXJ2ZXJcbn1cblxuLy8gVXNpbmcgYGlvYCBwYWNrYWdlLlxuZXhwb3J0IGFzeW5jIGZ1bmN0aW9uIGNyZWF0ZVdlYlNvY2tldFNlcnZlcklPKHsgcG9ydCB9KSB7XG4gIGxldCBodHRwU2VydmVyID0gaHR0cC5jcmVhdGVTZXJ2ZXIoKS5saXN0ZW4ocG9ydClcbiAgbGV0IHNlcnZlciA9IHNvY2tldElPKGh0dHBTZXJ2ZXIpXG4gIHJldHVybiBzZXJ2ZXJcbn1cblxuLy8gRW5naW5lLmlvIC0gZW5naW5lLmlvIHBhY2thZ2UgYW5kIGNsaWVudCBwYWNrYWdlIEpTUE0uXG5leHBvcnQgYXN5bmMgZnVuY3Rpb24gY3JlYXRlV2ViU29ja2V0U2VydmVyRW5naW5lSU8oeyBwb3J0IH0pIHtcbiAgbGV0IGh0dHBTZXJ2ZXIgPSBodHRwLmNyZWF0ZVNlcnZlcigpLmxpc3Rlbihwb3J0KVxuICBsZXQgc2VydmVyID0gZW5naW5lSU8uYXR0YWNoKGh0dHBTZXJ2ZXIpXG4gIHJldHVybiBzZXJ2ZXJcbn1cbiJdfQ==

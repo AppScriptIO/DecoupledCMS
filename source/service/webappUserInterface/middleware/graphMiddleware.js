@@ -1,10 +1,11 @@
-import { initializeGraph } from '../../../utility/graphInitialization.js'
+"use strict";Object.defineProperty(exports, "__esModule", { value: true });exports.graphMiddleware = graphMiddleware;var _graphInitialization = require("../../../utility/graphInitialization.js");
 
-// TODO: use equivalent functionality
-import { createTemplateRenderingMiddleware } from './middleware/templateRendering.js'
-import implementConditionActionOnModuleUsingJson from '../../utility/middleware/implementConditionActionOnModuleUsingJson.js'
 
-export async function graphMiddleware({ targetProjectConfig, entrypointKey }) {
-  let { createGraphMiddleware } = await initializeGraph({ targetProjectConfig })
-  return createGraphMiddleware({ entrypointKey })
+
+
+
+async function graphMiddleware({ targetProjectConfig, entrypointKey }) {
+  let { createGraphMiddleware } = await (0, _graphInitialization.initializeGraph)({ targetProjectConfig });
+  return createGraphMiddleware({ entrypointKey });
 }
+//# sourceMappingURL=data:application/json;charset=utf-8;base64,eyJ2ZXJzaW9uIjozLCJzb3VyY2VzIjpbIi4uLy4uLy4uLy4uLy4uL3NvdXJjZS9zZXJ2aWNlL3dlYmFwcFVzZXJJbnRlcmZhY2UvbWlkZGxld2FyZS9ncmFwaE1pZGRsZXdhcmUuanMiXSwibmFtZXMiOlsiZ3JhcGhNaWRkbGV3YXJlIiwidGFyZ2V0UHJvamVjdENvbmZpZyIsImVudHJ5cG9pbnRLZXkiLCJjcmVhdGVHcmFwaE1pZGRsZXdhcmUiXSwibWFwcGluZ3MiOiJxSEFBQTs7Ozs7O0FBTU8sZUFBZUEsZUFBZixDQUErQixFQUFFQyxtQkFBRixFQUF1QkMsYUFBdkIsRUFBL0IsRUFBdUU7QUFDNUUsTUFBSSxFQUFFQyxxQkFBRixLQUE0QixNQUFNLDBDQUFnQixFQUFFRixtQkFBRixFQUFoQixDQUF0QztBQUNBLFNBQU9FLHFCQUFxQixDQUFDLEVBQUVELGFBQUYsRUFBRCxDQUE1QjtBQUNEIiwic291cmNlc0NvbnRlbnQiOlsiaW1wb3J0IHsgaW5pdGlhbGl6ZUdyYXBoIH0gZnJvbSAnLi4vLi4vLi4vdXRpbGl0eS9ncmFwaEluaXRpYWxpemF0aW9uLmpzJ1xuXG4vLyBUT0RPOiB1c2UgZXF1aXZhbGVudCBmdW5jdGlvbmFsaXR5XG5pbXBvcnQgeyBjcmVhdGVUZW1wbGF0ZVJlbmRlcmluZ01pZGRsZXdhcmUgfSBmcm9tICcuL21pZGRsZXdhcmUvdGVtcGxhdGVSZW5kZXJpbmcuanMnXG5pbXBvcnQgaW1wbGVtZW50Q29uZGl0aW9uQWN0aW9uT25Nb2R1bGVVc2luZ0pzb24gZnJvbSAnLi4vLi4vdXRpbGl0eS9taWRkbGV3YXJlL2ltcGxlbWVudENvbmRpdGlvbkFjdGlvbk9uTW9kdWxlVXNpbmdKc29uLmpzJ1xuXG5leHBvcnQgYXN5bmMgZnVuY3Rpb24gZ3JhcGhNaWRkbGV3YXJlKHsgdGFyZ2V0UHJvamVjdENvbmZpZywgZW50cnlwb2ludEtleSB9KSB7XG4gIGxldCB7IGNyZWF0ZUdyYXBoTWlkZGxld2FyZSB9ID0gYXdhaXQgaW5pdGlhbGl6ZUdyYXBoKHsgdGFyZ2V0UHJvamVjdENvbmZpZyB9KVxuICByZXR1cm4gY3JlYXRlR3JhcGhNaWRkbGV3YXJlKHsgZW50cnlwb2ludEtleSB9KVxufVxuIl19
