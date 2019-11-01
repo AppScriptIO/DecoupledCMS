@@ -6,7 +6,7 @@ import engineIO from 'engine.io'
 import socketIO from 'socket.io'
 import consoleLogStyle from './consoleLogStyleConfig.js'
 
-export async function createHttpServer({ port, middlewareArray }) {
+export async function createHttpServer({ label, port, middlewareArray }) {
   const serverKoa = new Koa() // create Koa server
   serverKoa.subdomainOffset = 1 // for localhost domain.
   // register middleware
@@ -18,7 +18,7 @@ export async function createHttpServer({ port, middlewareArray }) {
         .listen(port, () => {
           if (process.send !== undefined) process.send({ message: 'Server listening' }) // if process is a forked child process.
           process.emit('listening')
-          console.log(`☕%c Server listening on port ${port}`, consoleLogStyle.style.green)
+          console.log(`☕%c ${label} server listening on port ${port}`, consoleLogStyle.style.green)
         })
         .on('connection', socket => {
           console.info('SOCKET OPENED' + JSON.stringify(socket.address()))
@@ -33,13 +33,13 @@ export async function createHttpServer({ port, middlewareArray }) {
 
 // Using `ws` package.
 export async function createWebSocketServerWS({ port }) {
-  let server = await new Promise(
-    (resolve, reject) =>
-      new webSocket.Server({ port }, () => {
-        console.log(`☕%c Websocket server listening on port ${port}`, consoleLogStyle.style.green)
-        resolve()
-      }),
-  )
+  let server
+  await new Promise((resolve, reject) => {
+    server = new webSocket.Server({ port }, () => {
+      console.log(`☕%c Websocket server listening on port ${port}`, consoleLogStyle.style.green)
+      resolve()
+    })
+  })
   return server
 }
 

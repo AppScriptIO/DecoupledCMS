@@ -1,4 +1,3 @@
-import config from '../../../configuration/configuration/configuration.export.js'
 import path from 'path'
 import filesystem from 'fs'
 import Stream from 'stream'
@@ -7,10 +6,6 @@ import underscore from 'underscore'
 // import serverStatic from 'koa-static' // Static files.
 import send from 'koa-sendfile' // Static files.
 // import mount from 'koa-mount'
-import { class as Application } from '../../class/Application.class.js'
-import { functionWrappedMiddlewareDecorator } from '@dependency/commonPattern/source/middlewarePatternDecorator.js'
-import createStaticInstanceClasses from '../../module/reusableNestedUnit'
-import { default as getTableDocumentDefault } from '@dependency/databaseUtility/source/getTableDocument.query.js'
 import { wrapStringStream } from '@dependency/wrapStringStream'
 import { streamToString } from '@dependency/streamToStringConvertion'
 
@@ -18,24 +13,23 @@ import { streamToString } from '@dependency/streamToStringConvertion'
  * serve static file.
  * @dependence userAgent middleware
  */
-export let serveStaticFile = functionWrappedMiddlewareDecorator(async function(context, next, option) {
-  let relativeFilePath = option.filePath || context.path // a predefined path or an extracted url path
-  let baseFolderRelativePath = option.directoryRelativePath || '' // additional folder path.
-  let clientSidePath = context.instance.config.clientSidePath
-  let absoluteFilePath = path.normalize(path.join(clientSidePath, baseFolderRelativePath, relativeFilePath))
-  let fileStats = await send(context, absoluteFilePath)
-  if (!fileStats || !fileStats.isFile()) {
+export let serveStaticFile = option =>
+  async function(context, next) {
+    let relativeFilePath = option.filePath || context.path // a predefined path or an extracted url path
+    let baseFolderRelativePath = option.directoryRelativePath || '' // additional folder path.
+    let clientSidePath = targetProjectConfig.clientSidePath
+    let absoluteFilePath = path.normalize(path.join(clientSidePath, baseFolderRelativePath, relativeFilePath))
+    let fileStats = await send(context, absoluteFilePath)
     // if file doesn't exist then pass to the next middleware.
-    await next()
+    if (!fileStats || !fileStats.isFile()) await next()
+    // Previously used - serving directoryPath:
+    // let directoryPath = await path.resolve(path.normalize(`${context.instance.config.clientBasePath}${setting.directoryPath}`))
+    // let mountMiddleware = mount(setting.urlPath, serverStatic(`${directoryPath}`, setting.options))
   }
-  // Previously used - serving directoryPath:
-  // let directoryPath = await path.resolve(path.normalize(`${context.instance.config.clientBasePath}${setting.directoryPath}`))
-  // let mountMiddleware = mount(setting.urlPath, serverStatic(`${directoryPath}`, setting.options))
-})
 
 // read streams and send them using koa - https://github.com/koajs/koa/issues/944 http://book.mixu.net/node/ch9.html
 // TODO: change file name to something like 'render serverside javascript' & convert function to be used for other files not only web components.
-async function serveServerSideRenderedFile(context, next, option) {
+export const serveServerSideRenderedFile = option => async (context, next) => {
   let clientSidePath = context.instance.config.clientSidePath
   let baseFolderRelativePath = option.directoryRelativePath || '' // additional folder path.
   let filePath = option.filePath || context.path // a predefined path or an extracted url path
@@ -110,8 +104,6 @@ async function serveServerSideRenderedFile(context, next, option) {
   // let directoryPath = await path.resolve(path.normalize(`${context.instance.config.clientBasePath}${option.directoryPath}`))
   // let mountMiddleware = mount(option.urlPath, serverStatic(`${directoryPath}`, option.options))
 }
-serveServerSideRenderedFile = functionWrappedMiddlewareDecorator(serveServerSideRenderedFile)
-export { serveServerSideRenderedFile }
 
 /** Wrap css style in a tag (created using javascript) - to support shared styles in Polymer 3 javascript imports
  * Polyfill from https://github.com/Polymer/polymer-modulizer/blob/f1ef5dea3978a9601248d73f4d23dc033382286c/fixtures/packages/polymer/expected/test/unit/styling-import-shared-styles.js
@@ -177,11 +169,11 @@ function renderHTMLImportWebcomponent({ filePath, context }) {
 /**
  * Render document using template nested unit tree.
  */
-let getTableDocument = {
-  generate: getTableDocumentDefault,
-  instance: [],
-}
-getTableDocument.instance['template_documentBackend'] = getTableDocument.generate('webappSetting', 'template_documentBackend')
+// let getTableDocument = {
+//   generate: getTableDocumentDefault,
+//   instance: [],
+// }
+// getTableDocument.instance['template_documentBackend'] = getTableDocument.generate('webappSetting', 'template_documentBackend')
 export function renderTemplateDocument({ documentKey }) {
   let TemplateController = createStaticInstanceClasses({
     Superclass: Application,

@@ -3,6 +3,21 @@ import bodyParser from 'koa-bodyparser'
 import OAuth2Server from 'oauth2-server'
 import oAuth2ServerModel from './oAuth2Server.model.js'
 
+/**
+Database setting: 
+  implementationName: 'oAuth',
+  dataArray: ['client', 'token', 'user']
+
+
+Condition Graph: 
+conditionCheck/getMethod.js == 'POST' --> callback: "{"name":"post","type":"consoleLogMessage"}"
+    /token --> callback: "{"name":"token","type":"portClassMethodMiddleware"}"
+    /authorize --> callback: "{"name":"authorize","type":"portClassMethodMiddleware"}"
+
+
+
+*/
+
 export const initialize = async () => {
   let entrypointSetting = { defaultConditionTreeKey: 'XYZ' }
 

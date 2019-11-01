@@ -1184,6 +1184,16 @@
     upath "^1.1.0"
     yargs "^12.0.2"
 
+"@dependency/streamToStringConvertion@https://github.com/AppScriptIO/streamToStringConvertion#semver:^1.x.x":
+  version "1.0.2"
+  resolved "https://github.com/AppScriptIO/streamToStringConvertion#98912cb4b6d7b9cf1ea430a0765b66c7e5dfd24f"
+
+"@dependency/wrapStringStream@https://github.com/AppScriptIO/wrapStringStream#semver:^1.x.x":
+  version "1.0.2"
+  resolved "https://github.com/AppScriptIO/wrapStringStream#4a2051793276cc01f614a6fd7cdc1b512998dd72"
+  dependencies:
+    multistream "^2.1.1"
+
 "@gulp-sourcemaps/identity-map@1.X":
   version "1.0.2"
   resolved "https://registry.yarnpkg.com/@gulp-sourcemaps/identity-map/-/identity-map-1.0.2.tgz#1e6fe5d8027b1f285dc0d31762f566bccd73d5a9"
@@ -7176,6 +7186,14 @@ multistream@*:
   integrity sha512-t0C8MAtH/d3Y+5nooEtUMWli92lVw9Jhx4uOhRl5GAwS5vc+YTmp/VXNJNsCBAMeEyK/6zhbk6x9JE3AiCvo4g==
   dependencies:
     readable-stream "^3.4.0"
+
+multistream@^2.1.1:
+  version "2.1.1"
+  resolved "https://registry.yarnpkg.com/multistream/-/multistream-2.1.1.tgz#629d3a29bd76623489980d04519a2c365948148c"
+  integrity sha512-xasv76hl6nr1dEy3lPvy7Ej7K/Lx3O/FCvwge8PeVJpciPPoNCbaANcNiBug3IpdvTveZUcAV0DJzdnUDMesNQ==
+  dependencies:
+    inherits "^2.0.1"
+    readable-stream "^2.0.5"
 
 mute-stdout@^1.0.0:
   version "1.0.1"

@@ -1,10 +1,10 @@
-import { createWebSocketServerWS, createWebSocketServerIO, createWebSocketServerEngineIO } from '../utility/server.js'
+import { createWebSocketServerWS, createWebSocketServerIO, createWebSocketServerEngineIO } from '../../utility/server.js'
 
 // let url = `${config.SOCKET_PROTOCOL}websocket.${config.HOST}`
 let port = 8087
 
 export async function initialize({ targetProjectConfig }) {
-  let server = await createWebSocketServerWSو({ port })
+  let server = await createWebSocketServerWS({ port })
   server.on('connection', client => {
     console.log('client connected !')
     client.on('message', message => {

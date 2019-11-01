@@ -1,4 +1,3 @@
-import serverConfig from '../../../configuration/configuration/serverConfig.js'
 import compose from 'koa-compose'
 import responseTime from 'koa-response-time'
 import logger from 'koa-logger'

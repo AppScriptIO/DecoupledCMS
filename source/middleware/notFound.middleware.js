@@ -1,5 +1,4 @@
 import path from 'path'
-import config from '../../../configuration/configuration/configuration.export.js' // Load configuration settings.
 import send from 'koa-sendfile'
 
 export default () => {

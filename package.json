@@ -18,6 +18,8 @@
 	"dependencies": {
 		"@babel/core": "*",
 		"@dependency/graphTraversal": "https://github.com/AppScriptIO/graphTraversal#semver:^1.x.x",
+		"@dependency/streamToStringConvertion": "https://github.com/AppScriptIO/streamToStringConvertion#semver:^1.x.x",
+		"@dependency/wrapStringStream": "https://github.com/AppScriptIO/wrapStringStream#semver:^1.x.x",
 		"co-body": "*",
 		"engine.io": "*",
 		"koa": "*",
