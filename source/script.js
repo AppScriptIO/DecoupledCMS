@@ -1,6 +1,0 @@
-export * as apiEndpoint from './service/apiEndpoint'
-// export * as oAuth from './service/oAuth'
-// export * as openIdConnect from './service/openIdConnect'
-export * as staticContent from './service/staticContent'
-// export * as webappUserInterface from './service/webappUserInterface'
-export * as webSocket from './service/webSocket'

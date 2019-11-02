@@ -13,7 +13,7 @@ import { streamToString } from '@dependency/streamToStringConvertion'
  * serve static file.
  * @dependence userAgent middleware
  */
-export let serveStaticFile = option =>
+export let serveStaticFile = ({ targetProjectConfig } = {}) =>
   async function(context, next) {
     let relativeFilePath = option.filePath || context.path // a predefined path or an extracted url path
     let baseFolderRelativePath = option.directoryRelativePath || '' // additional folder path.
@@ -109,9 +109,8 @@ export const serveServerSideRenderedFile = option => async (context, next) => {
  * Polyfill from https://github.com/Polymer/polymer-modulizer/blob/f1ef5dea3978a9601248d73f4d23dc033382286c/fixtures/packages/polymer/expected/test/unit/styling-import-shared-styles.js
  */
 async function convertSharedStylesToJS({ filePath, context }) {
-  let fileStream = filesystem.createReadStream(filePath)
   return await wrapStringStream({
-    stream: fileStream,
+    stream: filesystem.createReadStream(filePath),
     beforeString: "const $_documentContainer = document.createElement('div'); $_documentContainer.setAttribute('style', 'display: none;'); $_documentContainer.innerHTML = `",
     afterString: '`;document.head.appendChild($_documentContainer);',
   })

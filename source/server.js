@@ -1,9 +1,6 @@
 import http from 'http'
 import https from 'https'
 import Koa from 'koa' // Koa applicaiton server
-import webSocket from 'ws'
-import engineIO from 'engine.io'
-import socketIO from 'socket.io'
 import consoleLogStyle from './consoleLogStyleConfig.js'
 
 export async function createHttpServer({ label, port, middlewareArray }) {
@@ -29,30 +26,4 @@ export async function createHttpServer({ label, port, middlewareArray }) {
         })
         .setTimeout(0, () => console.log('HTTP server connection socket was timedout (console.log in httpServer.setTimeout)!')) && resolve(),
   )
-}
-
-// Using `ws` package.
-export async function createWebSocketServerWS({ port }) {
-  let server
-  await new Promise((resolve, reject) => {
-    server = new webSocket.Server({ port }, () => {
-      console.log(`☕%c Websocket server listening on port ${port}`, consoleLogStyle.style.green)
-      resolve()
-    })
-  })
-  return server
-}
-
-// Using `io` package.
-export async function createWebSocketServerIO({ port }) {
-  let httpServer = http.createServer().listen(port)
-  let server = socketIO(httpServer)
-  return server
-}
-
-// Engine.io - engine.io package and client package JSPM.
-export async function createWebSocketServerEngineIO({ port }) {
-  let httpServer = http.createServer().listen(port)
-  let server = engineIO.attach(httpServer)
-  return server
 }
