@@ -1,0 +1,2 @@
+- Repository was split into separate repositories - Breaking up `appscript` monolithic app modules, into different services, modules, utility tools. 
+- Check commit/release history for viewing the previous monolithic application.
